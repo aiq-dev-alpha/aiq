@@ -1,4 +1,4 @@
-module {{PROJECT_NAME}}
+module github.com/example/go-gin-template
 
 go 1.22
 

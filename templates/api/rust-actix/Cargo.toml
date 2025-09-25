@@ -1,5 +1,5 @@
 [package]
-name = "{{PROJECT_NAME}}"
+name = "rust_actix_template"
 version = "0.1.0"
 edition = "2021"
 
