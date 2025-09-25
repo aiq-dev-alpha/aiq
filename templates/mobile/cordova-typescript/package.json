@@ -1,0 +1,71 @@
+{
+  "name": "cordova-typescript-template",
+  "displayName": "Cordova TypeScript App",
+  "version": "1.0.0",
+  "description": "A Cordova TypeScript application template",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --mode production",
+    "dev": "webpack --mode development --watch",
+    "serve": "webpack serve --mode development",
+    "prepare": "cordova prepare",
+    "android": "cordova run android",
+    "ios": "cordova run ios",
+    "browser": "cordova run browser",
+    "clean": "rm -rf www/js www/css platforms plugins",
+    "lint": "eslint src --ext .ts",
+    "test": "jest"
+  },
+  "keywords": [
+    "ecosystem:cordova"
+  ],
+  "devDependencies": {
+    "@types/node": "^20.14.11",
+    "@typescript-eslint/eslint-plugin": "^7.16.1",
+    "@typescript-eslint/parser": "^7.16.1",
+    "cordova-android": "^12.0.0",
+    "cordova-browser": "^7.0.0",
+    "cordova-ios": "^7.0.0",
+    "css-loader": "^6.8.0",
+    "eslint": "^8.57.0",
+    "html-webpack-plugin": "^5.5.0",
+    "mini-css-extract-plugin": "^2.7.0",
+    "style-loader": "^3.3.0",
+    "ts-loader": "^9.5.0",
+    "typescript": "^5.5.3",
+    "webpack": "^5.93.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.0.4"
+  },
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-device": {},
+      "cordova-plugin-dialogs": {},
+      "cordova-plugin-file": {},
+      "cordova-plugin-geolocation": {},
+      "cordova-plugin-camera": {},
+      "cordova-plugin-network-information": {},
+      "cordova-plugin-splashscreen": {},
+      "cordova-plugin-statusbar": {},
+      "cordova-plugin-vibration": {},
+      "cordova-plugin-inappbrowser": {}
+    },
+    "platforms": [
+      "android",
+      "ios",
+      "browser"
+    ]
+  },
+  "dependencies": {
+    "cordova-plugin-camera": "^7.0.0",
+    "cordova-plugin-device": "^2.1.0",
+    "cordova-plugin-dialogs": "^2.0.2",
+    "cordova-plugin-file": "^8.0.0",
+    "cordova-plugin-geolocation": "^5.0.0",
+    "cordova-plugin-inappbrowser": "^6.0.0",
+    "cordova-plugin-network-information": "^3.0.0",
+    "cordova-plugin-splashscreen": "^6.0.2",
+    "cordova-plugin-statusbar": "^4.0.0",
+    "cordova-plugin-vibration": "^3.1.1"
+  }
+}

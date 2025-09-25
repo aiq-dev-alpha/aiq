@@ -1,0 +1,135 @@
+.home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.hero-section {
+  padding: 3rem 0;
+
+  .hero-title {
+    font-size: 3rem;
+    font-weight: 300;
+    margin-bottom: 1rem;
+    color: #333;
+
+    @media (max-width: 768px) {
+      font-size: 2rem;
+    }
+  }
+
+  .hero-subtitle {
+    font-size: 1.25rem;
+    color: #666;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}
+
+.demo-section {
+  .demo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .demo-card {
+    height: 100%;
+
+    mat-card-content {
+      padding-top: 1rem;
+    }
+  }
+}
+
+.counter-display {
+  text-align: center;
+
+  .counter-value {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #3f51b5;
+    margin-bottom: 1rem;
+  }
+
+  .counter-actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+
+    button {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+  }
+}
+
+.feature-list {
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+
+    mat-icon {
+      color: #3f51b5;
+    }
+
+    span {
+      font-weight: 500;
+    }
+  }
+}
+
+.features-section {
+  .features-title {
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: #333;
+  }
+
+  .feature-card {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+
+    .feature-icon {
+      margin-bottom: 1rem;
+
+      mat-icon {
+        font-size: 3rem;
+        width: 3rem;
+        height: 3rem;
+        color: #3f51b5;
+      }
+    }
+
+    .feature-title {
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+
+    .feature-description {
+      color: #666;
+      line-height: 1.5;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .home-container {
+    padding: 0 0.5rem;
+  }
+
+  .demo-section .demo-grid {
+    grid-template-columns: 1fr;
+  }
+}

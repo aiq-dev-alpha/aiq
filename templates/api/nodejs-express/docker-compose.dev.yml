@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # Development API Service
+  api-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: {{PROJECT_NAME}}-api-dev
+    ports:
+      - "${DEV_PORT:-3001}:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - MONGODB_URI=mongodb://mongodb-dev:27017/{{PROJECT_NAME}}_dev
+      - JWT_SECRET=${JWT_SECRET:-development-jwt-secret-key}
+      - JWT_EXPIRE=1d
+      - JWT_COOKIE_EXPIRE=1
+      - BCRYPT_SALT_ROUNDS=4
+      - RATE_LIMIT_WINDOW_MS=60000
+      - RATE_LIMIT_MAX_REQUESTS=1000
+      - CORS_ORIGIN=*
+      - LOG_LEVEL=debug
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - ./logs:/app/logs
+    depends_on:
+      mongodb-dev:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - dev-network
+    command: npm run dev
+
+  # Development MongoDB Service
+  mongodb-dev:
+    image: mongo:6.0
+    container_name: {{PROJECT_NAME}}-mongodb-dev
+    ports:
+      - "${DEV_MONGODB_PORT:-27018}:27017"
+    environment:
+      MONGO_INITDB_DATABASE: {{PROJECT_NAME}}_dev
+    volumes:
+      - mongodb_dev_data:/data/db
+    restart: unless-stopped
+    networks:
+      - dev-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Development Redis Service (Optional)
+  redis-dev:
+    image: redis:7.0-alpine
+    container_name: {{PROJECT_NAME}}-redis-dev
+    ports:
+      - "${DEV_REDIS_PORT:-6380}:6379"
+    restart: unless-stopped
+    networks:
+      - dev-network
+    profiles:
+      - cache
+
+volumes:
+  mongodb_dev_data:
+    driver: local
+
+networks:
+  dev-network:
+    driver: bridge

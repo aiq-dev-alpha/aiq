@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+    <meta name="color-scheme" content="light dark">
+    <title>Cordova TypeScript App</title>
+</head>
+<body>
+    <div id="app">
+        <header class="app-header">
+            <h1>Cordova TypeScript App</h1>
+        </header>
+
+        <main class="app-main">
+            <section id="device-info" class="card">
+                <h2>Device Information</h2>
+                <div id="device-details">Loading...</div>
+            </section>
+
+            <section class="card">
+                <h2>Features</h2>
+                <div class="button-group">
+                    <button id="btn-camera" class="btn btn-primary">
+                        📷 Camera
+                    </button>
+                    <button id="btn-location" class="btn btn-primary">
+                        📍 Location
+                    </button>
+                    <button id="btn-dialog" class="btn btn-primary">
+                        💬 Dialog
+                    </button>
+                    <button id="btn-vibrate" class="btn btn-primary">
+                        📳 Vibrate
+                    </button>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>Network Status</h2>
+                <div id="network-status">Checking...</div>
+            </section>
+
+            <section class="card">
+                <h2>Output</h2>
+                <div id="output" class="output-area">
+                    <p>Ready for testing...</p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <p>Powered by Apache Cordova</p>
+        </footer>
+    </div>
+
+    <script type="text/javascript" src="cordova.js"></script>
+</body>
+</html>
