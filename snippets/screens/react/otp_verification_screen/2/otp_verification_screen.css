@@ -1,4 +1,4 @@
-.modern-otp-container {
+.modern_otp_container {
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -8,7 +8,7 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-.modern-otp-card {
+.modern_otp_card {
   background: white;
   border-radius: 2rem;
   padding: 3rem 2.5rem;
@@ -31,7 +31,7 @@
   }
 }
 
-.back-btn-modern {
+.back_btn_modern {
   position: absolute;
   top: 1.5rem;
   left: 1.5rem;
@@ -45,19 +45,19 @@
   transition: all 0.2s;
 }
 
-.back-btn-modern:hover {
+.back_btn_modern:hover {
   background: #e0e0e0;
   transform: translateX(-2px);
 }
 
-.phone-icon-container {
+.phone_icon_container {
   position: relative;
   margin: 0 auto 1.5rem;
   width: 100px;
   height: 100px;
 }
 
-.phone-icon {
+.phone_icon {
   width: 80px;
   height: 80px;
   margin: 0 auto;
@@ -72,7 +72,7 @@
   50% { transform: translateY(-8px); }
 }
 
-.phone-screen {
+.phone_screen {
   position: absolute;
   top: 12px;
   left: 12px;
@@ -82,7 +82,7 @@
   border-radius: 12px;
 }
 
-.phone-notch {
+.phone_notch {
   position: absolute;
   top: 16px;
   left: 50%;
@@ -93,7 +93,7 @@
   border-radius: 2px;
 }
 
-.success-ring {
+.success_ring {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -118,30 +118,30 @@
   }
 }
 
-.modern-otp-title {
+.modern_otp_title {
   font-size: 2rem;
   font-weight: 700;
   color: #1a1a1a;
   margin: 0 0 0.75rem 0;
 }
 
-.modern-otp-subtitle {
+.modern_otp_subtitle {
   color: #666;
   margin-bottom: 2.5rem;
   line-height: 1.6;
 }
 
-.modern-otp-subtitle strong {
+.modern_otp_subtitle strong {
   color: #667eea;
   font-weight: 600;
 }
 
-.otp-input-section {
+.otp_input_section {
   position: relative;
   margin-bottom: 1.5rem;
 }
 
-.modern-otp-input {
+.modern_otp_input {
   width: 100%;
   padding: 1.5rem;
   font-size: 2rem;
@@ -155,7 +155,7 @@
   background: #fafafa;
 }
 
-.modern-otp-input:focus {
+.modern_otp_input:focus {
   border-color: #667eea;
   background: white;
   box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
@@ -178,19 +178,19 @@
   75% { transform: translateX(10px); }
 }
 
-.modern-otp-input::placeholder {
+.modern_otp_input::placeholder {
   color: #d0d0d0;
   font-weight: 400;
 }
 
-.verification-loader {
+.verification_loader {
   position: absolute;
   right: 1.5rem;
   top: 50%;
   transform: translateY(-50%);
 }
 
-.loader-ring {
+.loader_ring {
   width: 28px;
   height: 28px;
   border: 3px solid rgba(102, 126, 234, 0.2);
@@ -203,7 +203,7 @@
   to { transform: rotate(360deg); }
 }
 
-.success-checkmark {
+.success_checkmark {
   position: absolute;
   right: 1.5rem;
   top: 50%;
@@ -226,7 +226,7 @@
   100% { transform: translateY(-50%) scale(1); }
 }
 
-.modern-error-msg {
+.modern_error_msg {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -239,18 +239,18 @@
   margin-bottom: 1.5rem;
 }
 
-.error-icon-modern {
+.error_icon_modern {
   font-size: 1.125rem;
 }
 
-.progress-dots {
+.progress_dots {
   display: flex;
   justify-content: center;
   gap: 0.75rem;
   margin-bottom: 2rem;
 }
 
-.progress-dot {
+.progress_dot {
   width: 12px;
   height: 12px;
   border-radius: 50%;
@@ -267,21 +267,21 @@
   background: #10b981;
 }
 
-.resend-section-modern {
+.resend_section_modern {
   margin-bottom: 2rem;
 }
 
-.countdown-text {
+.countdown_text {
   color: #666;
   font-size: 0.9375rem;
 }
 
-.countdown-timer {
+.countdown_timer {
   color: #667eea;
   font-weight: 600;
 }
 
-.resend-btn-modern {
+.resend_btn_modern {
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
   border: none;
@@ -296,51 +296,51 @@
   gap: 0.5rem;
 }
 
-.resend-btn-modern:hover:not(:disabled) {
+.resend_btn_modern:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
 }
 
-.resend-btn-modern:disabled {
+.resend_btn_modern:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-.resend-icon {
+.resend_icon {
   font-size: 1.125rem;
 }
 
-.help-section-modern {
+.help_section_modern {
   padding-top: 1.5rem;
   border-top: 1px solid #e0e0e0;
 }
 
-.help-section-modern p {
+.help_section_modern p {
   color: #999;
   font-size: 0.875rem;
   margin: 0;
 }
 
-.help-section-modern a {
+.help_section_modern a {
   color: #667eea;
   text-decoration: none;
   font-weight: 600;
 }
 
-.help-section-modern a:hover {
+.help_section_modern a:hover {
   text-decoration: underline;
 }
 
 @media (max-width: 640px) {
-  .modern-otp-card {
+  .modern_otp_card {
     padding: 2.5rem 1.5rem;
   }
 
-  .modern-otp-title {
+  .modern_otp_title {
     font-size: 1.75rem;
   }
 
-  .modern-otp-input {
+  .modern_otp_input {
     font-size: 1.5rem;
     letter-spacing: 0.3rem;
   }

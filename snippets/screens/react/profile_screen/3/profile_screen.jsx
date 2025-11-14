@@ -30,42 +30,42 @@ const ProfileScreen = () => {
   ];
 
   return (
-    <div className="minimal-profile">
-      <div className="minimal-profile-content">
-        <header className="minimal-profile-header">
-          <div className="profile-avatar-minimal">AM</div>
-          <div className="profile-details-minimal">
-            <h1 className="profile-name-minimal">{profile.name}</h1>
-            <p className="profile-email-minimal">{profile.email}</p>
-            <p className="profile-joined-minimal">Joined {profile.joined}</p>
+    <div className="minimal_profile">
+      <div className="minimal_profile_content">
+        <header className="minimal_profile_header">
+          <div className="profile_avatar_minimal">AM</div>
+          <div className="profile_details_minimal">
+            <h1 className="profile_name_minimal">{profile.name}</h1>
+            <p className="profile_email_minimal">{profile.email}</p>
+            <p className="profile_joined_minimal">Joined {profile.joined}</p>
           </div>
         </header>
 
         {menuSections.map((section, index) => (
-          <div key={index} className="profile-section-minimal">
-            <h2 className="section-heading-minimal">{section.title}</h2>
-            <div className="section-items-minimal">
+          <div key={index} className="profile_section_minimal">
+            <h2 className="section_heading_minimal">{section.title}</h2>
+            <div className="section_items_minimal">
               {section.items.map((item, itemIndex) => (
                 <a
                   key={itemIndex}
                   href={item.href}
-                  className="profile-link-minimal"
+                  className="profile_link_minimal"
                 >
                   {item.label}
-                  <span className="arrow-minimal">→</span>
+                  <span className="arrow_minimal">→</span>
                 </a>
               ))}
             </div>
           </div>
         ))}
 
-        <div className="profile-section-minimal">
-          <h2 className="section-heading-minimal">Actions</h2>
-          <div className="section-items-minimal">
-            <button className="profile-link-minimal">
+        <div className="profile_section_minimal">
+          <h2 className="section_heading_minimal">Actions</h2>
+          <div className="section_items_minimal">
+            <button className="profile_link_minimal">
               Edit profile
             </button>
-            <button className="profile-link-minimal danger">
+            <button className="profile_link_minimal danger">
               Sign out
             </button>
           </div>

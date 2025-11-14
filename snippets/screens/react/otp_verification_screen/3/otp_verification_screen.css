@@ -1,4 +1,4 @@
-.minimal-otp {
+.minimal_otp {
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -8,12 +8,12 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-.minimal-otp-content {
+.minimal_otp_content {
   max-width: 480px;
   width: 100%;
 }
 
-.minimal-back {
+.minimal_back {
   background: none;
   border: none;
   color: #666;
@@ -24,15 +24,15 @@
   transition: color 0.2s;
 }
 
-.minimal-back:hover {
+.minimal_back:hover {
   color: #000;
 }
 
-.minimal-header-otp {
+.minimal_header_otp {
   margin-bottom: 3rem;
 }
 
-.minimal-header-otp h1 {
+.minimal_header_otp h1 {
   font-size: 2.5rem;
   font-weight: 300;
   color: #000;
@@ -40,20 +40,20 @@
   letter-spacing: -0.03em;
 }
 
-.minimal-header-otp p {
+.minimal_header_otp p {
   color: #666;
   font-size: 1rem;
   margin: 0;
 }
 
-.otp-boxes {
+.otp_boxes {
   display: flex;
   gap: 1rem;
   justify-content: center;
   margin-bottom: 2rem;
 }
 
-.otp-box {
+.otp_box {
   width: 56px;
   height: 72px;
   position: relative;
@@ -84,7 +84,7 @@
   75% { transform: translateX(8px); }
 }
 
-.otp-input-minimal {
+.otp_input_minimal {
   width: 100%;
   height: 100%;
   border: none;
@@ -97,11 +97,11 @@
   caret-color: #000;
 }
 
-.otp-input-minimal:disabled {
+.otp_input_minimal:disabled {
   cursor: not-allowed;
 }
 
-.verifying-state {
+.verifying_state {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -111,7 +111,7 @@
   margin-bottom: 1.5rem;
 }
 
-.minimal-spinner {
+.minimal_spinner {
   width: 18px;
   height: 18px;
   border: 2px solid #e0e0e0;
@@ -124,7 +124,7 @@
   to { transform: rotate(360deg); }
 }
 
-.minimal-error {
+.minimal_error {
   text-align: center;
   color: #ef4444;
   font-size: 0.9375rem;
@@ -134,19 +134,19 @@
   border-radius: 6px;
 }
 
-.resend-area {
+.resend_area {
   text-align: center;
   padding-top: 2rem;
   border-top: 1px solid #e0e0e0;
 }
 
-.resend-timer-text {
+.resend_timer_text {
   color: #999;
   font-size: 0.9375rem;
   margin: 0;
 }
 
-.resend-link {
+.resend_link {
   background: none;
   border: none;
   color: #000;
@@ -158,25 +158,25 @@
   transition: opacity 0.2s;
 }
 
-.resend-link:hover {
+.resend_link:hover {
   opacity: 0.7;
 }
 
 @media (max-width: 640px) {
-  .minimal-header-otp h1 {
+  .minimal_header_otp h1 {
     font-size: 2rem;
   }
 
-  .otp-boxes {
+  .otp_boxes {
     gap: 0.5rem;
   }
 
-  .otp-box {
+  .otp_box {
     width: 48px;
     height: 64px;
   }
 
-  .otp-input-minimal {
+  .otp_input_minimal {
     font-size: 1.75rem;
   }
 }

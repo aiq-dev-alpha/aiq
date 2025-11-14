@@ -27,26 +27,26 @@ const ProductListScreen = () => {
   };
 
   const ProductCard = ({ index, category }) => (
-    <div className="carousel-product-card">
-      <div className="product-badge">New</div>
-      <div className="product-image-large">
-        <div className="image-placeholder">
+    <div className="carousel_product_card">
+      <div className="product_badge">New</div>
+      <div className="product_image_large">
+        <div className="image_placeholder">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
             <circle cx="8.5" cy="8.5" r="1.5" />
             <polyline points="21 15 16 10 5 21" />
           </svg>
         </div>
-        <button className="wishlist-btn">
+        <button className="wishlist_btn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
           </svg>
         </button>
       </div>
-      <div className="product-content">
-        <div className="product-category">{category}</div>
-        <h3 className="product-title">Premium Product {index}</h3>
-        <div className="product-rating">
+      <div className="product_content">
+        <div className="product_category">{category}</div>
+        <h3 className="product_title">Premium Product {index}</h3>
+        <div className="product_rating">
           <div className="stars">
             {[...Array(5)].map((_, i) => (
               <svg key={i} viewBox="0 0 20 20" fill={i < 4 ? "currentColor" : "none"} stroke="currentColor">
@@ -54,14 +54,14 @@ const ProductListScreen = () => {
               </svg>
             ))}
           </div>
-          <span className="rating-count">4.5 (234)</span>
+          <span className="rating_count">4.5 (234)</span>
         </div>
-        <div className="product-footer">
-          <div className="price-section">
-            <span className="original-price">${(index * 15 + 20).99}</span>
-            <span className="current-price">${(index * 10).99}</span>
+        <div className="product_footer">
+          <div className="price_section">
+            <span className="original_price">${(index * 15 + 20).99}</span>
+            <span className="current_price">${(index * 10).99}</span>
           </div>
-          <button className="add-btn">
+          <button className="add_btn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
@@ -72,13 +72,13 @@ const ProductListScreen = () => {
   );
 
   const CategorySection = ({ category, index }) => (
-    <div className="category-section">
-      <div className="category-header">
+    <div className="category_section">
+      <div className="category_header">
         <div>
           <h2>{category.name}</h2>
           <p>{category.items} items available</p>
         </div>
-        <button className="see-all-btn">
+        <button className="see_all_btn">
           See All
           <svg viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
@@ -86,9 +86,9 @@ const ProductListScreen = () => {
         </button>
       </div>
 
-      <div className="carousel-container">
+      <div className="carousel_container">
         <button
-          className="carousel-nav left"
+          className="carousel_nav left"
           onClick={() => scrollCarousel(index, 'left')}
         >
           <svg viewBox="0 0 20 20" fill="currentColor">
@@ -97,7 +97,7 @@ const ProductListScreen = () => {
         </button>
 
         <div
-          className="products-carousel"
+          className="products_carousel"
           ref={(el) => (carouselRefs.current[index] = el)}
         >
           {[...Array(category.items)].map((_, i) => (
@@ -106,7 +106,7 @@ const ProductListScreen = () => {
         </div>
 
         <button
-          className="carousel-nav right"
+          className="carousel_nav right"
           onClick={() => scrollCarousel(index, 'right')}
         >
           <svg viewBox="0 0 20 20" fill="currentColor">
@@ -118,30 +118,30 @@ const ProductListScreen = () => {
   );
 
   return (
-    <div className="carousel-product-screen">
-      <header className="main-header">
-        <div className="header-content">
+    <div className="carousel_product_screen">
+      <header className="main_header">
+        <div className="header_content">
           <h1>Discover Products</h1>
-          <div className="header-actions">
-            <button className="icon-btn">
+          <div className="header_actions">
+            <button className="icon_btn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </button>
-            <button className="icon-btn cart">
+            <button className="icon_btn cart">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
-              <span className="cart-badge">3</span>
+              <span className="cart_badge">3</span>
             </button>
           </div>
         </div>
 
-        <div className="category-tabs">
+        <div className="category_tabs">
           {categories.map((cat, idx) => (
             <button
               key={cat.name}
-              className={`category-tab ${selectedCategory === idx ? 'active' : ''}`}
+              className={`category_tab ${selectedCategory === idx ? 'active' : ''}`}
               onClick={() => setSelectedCategory(idx)}
             >
               {cat.name}
@@ -150,7 +150,7 @@ const ProductListScreen = () => {
         </div>
       </header>
 
-      <div className="sections-container">
+      <div className="sections_container">
         {categories.map((category, index) => (
           <CategorySection key={category.name} category={category} index={index} />
         ))}

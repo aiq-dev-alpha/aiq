@@ -25,50 +25,50 @@ const CartScreen = () => {
   const total = subtotal + shipping;
 
   return (
-    <div className="minimal-cart">
-      <div className="minimal-cart-content">
-        <header className="minimal-cart-header">
+    <div className="minimal_cart">
+      <div className="minimal_cart_content">
+        <header className="minimal_cart_header">
           <h1>Cart</h1>
-          <a href="#" className="continue-link">Continue shopping</a>
+          <a href="#" className="continue_link">Continue shopping</a>
         </header>
 
-        <div className="cart-list-minimal">
+        <div className="cart_list_minimal">
           {items.map((item, index) => (
-            <div key={item.id} className="minimal-cart-item">
-              <div className="item-number">{String(index + 1).padStart(2, '0')}</div>
+            <div key={item.id} className="minimal_cart_item">
+              <div className="item_number">{String(index + 1).padStart(2, '0')}</div>
               
-              <div className="item-info-minimal">
-                <h2 className="item-name-minimal">{item.name}</h2>
-                <p className="item-price-minimal">${item.price}</p>
+              <div className="item_info_minimal">
+                <h2 className="item_name_minimal">{item.name}</h2>
+                <p className="item_price_minimal">${item.price}</p>
               </div>
 
-              <div className="item-qty-minimal">
+              <div className="item_qty_minimal">
                 <button
-                  className="qty-adjust"
+                  className="qty_adjust"
                   onClick={() => updateQuantity(item.id, item.quantity - 1)}
                 >
                   −
                 </button>
-                <span className="qty-value">{item.quantity}</span>
+                <span className="qty_value">{item.quantity}</span>
                 <button
-                  className="qty-adjust"
+                  className="qty_adjust"
                   onClick={() => updateQuantity(item.id, item.quantity + 1)}
                 >
                   +
                 </button>
               </div>
 
-              <div className="item-subtotal-minimal">
+              <div className="item_subtotal_minimal">
                 ${(item.price * item.quantity).toFixed(2)}
               </div>
 
-              <div className="item-divider"></div>
+              <div className="item_divider"></div>
             </div>
           ))}
         </div>
 
         {items.length === 0 && (
-          <div className="empty-cart">
+          <div className="empty_cart">
             <p>Your cart is empty</p>
             <a href="#">Start shopping</a>
           </div>
@@ -76,27 +76,27 @@ const CartScreen = () => {
 
         {items.length > 0 && (
           <>
-            <div className="cart-totals-minimal">
-              <div className="total-row">
+            <div className="cart_totals_minimal">
+              <div className="total_row">
                 <span>Subtotal</span>
                 <span>${subtotal.toFixed(2)}</span>
               </div>
-              <div className="total-row">
+              <div className="total_row">
                 <span>Shipping</span>
                 <span>{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
               </div>
               {shipping > 0 && subtotal < 100 && (
-                <p className="shipping-note">
+                <p className="shipping_note">
                   Add ${(100 - subtotal).toFixed(2)} more for free shipping
                 </p>
               )}
-              <div className="total-row final">
+              <div className="total_row final">
                 <span>Total</span>
                 <span>${total.toFixed(2)}</span>
               </div>
             </div>
 
-            <button className="checkout-btn-minimal">
+            <button className="checkout_btn_minimal">
               Checkout
             </button>
           </>

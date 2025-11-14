@@ -60,37 +60,37 @@ export const ForgotPasswordScreen: React.FC = () => {
 
   if (emailSent) {
     return (
-      <div className="modern-forgot-container">
-        <div className="modern-card success-card">
-          <div className="animated-checkmark">
+      <div className="modern_forgot_container">
+        <div className="modern_card success_card">
+          <div className="animated_checkmark">
             <svg className="checkmark" viewBox="0 0 52 52">
-              <circle className="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
-              <path className="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+              <circle className="checkmark_circle" cx="26" cy="26" r="25" fill="none"/>
+              <path className="checkmark_check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
             </svg>
           </div>
 
-          <h1 className="modern-title">Email Sent!</h1>
-          <p className="modern-subtitle">
+          <h1 className="modern_title">Email Sent!</h1>
+          <p className="modern_subtitle">
             We've sent a password reset link to
           </p>
-          <p className="email-display">{email}</p>
+          <p className="email_display">{email}</p>
 
-          <div className="info-box">
-            <div className="info-icon">💡</div>
+          <div className="info_box">
+            <div className="info_icon">💡</div>
             <p>The link will expire in 15 minutes. Check your spam folder if you don't see it.</p>
           </div>
 
           <button
-            className="modern-button primary"
+            className="modern_button primary"
             onClick={() => window.location.href = '#'}
             disabled={isLoading}
           >
-            <span className="button-icon">✉️</span>
+            <span className="button_icon">✉️</span>
             Open Email App
           </button>
 
           <button
-            className={`modern-button secondary ${countdown > 0 ? 'disabled' : ''}`}
+            className={`modern_button secondary ${countdown > 0 ? 'disabled' : ''}`}
             onClick={handleResend}
             disabled={countdown > 0 || isLoading}
           >
@@ -98,14 +98,14 @@ export const ForgotPasswordScreen: React.FC = () => {
               <>Resend in {countdown}s</>
             ) : (
               <>
-                <span className="button-icon">🔄</span>
+                <span className="button_icon">🔄</span>
                 Resend Link
               </>
             )}
           </button>
 
           <button
-            className="back-link"
+            className="back_link"
             onClick={() => setEmailSent(false)}
           >
             Use different email
@@ -116,25 +116,25 @@ export const ForgotPasswordScreen: React.FC = () => {
   }
 
   return (
-    <div className="modern-forgot-container">
-      <div className="modern-card">
-        <div className="icon-container">
-          <div className="lock-icon">
-            <div className="lock-body">
-              <div className="lock-keyhole"></div>
+    <div className="modern_forgot_container">
+      <div className="modern_card">
+        <div className="icon_container">
+          <div className="lock_icon">
+            <div className="lock_body">
+              <div className="lock_keyhole"></div>
             </div>
-            <div className="lock-shackle"></div>
+            <div className="lock_shackle"></div>
           </div>
         </div>
 
-        <h1 className="modern-title">Forgot Password?</h1>
-        <p className="modern-subtitle">
+        <h1 className="modern_title">Forgot Password?</h1>
+        <p className="modern_subtitle">
           No worries! Enter your email and we'll send you reset instructions.
         </p>
 
-        <form onSubmit={handleSubmit} className="modern-form">
-          <div className="input-group">
-            <div className="input-icon">📧</div>
+        <form onSubmit={handleSubmit} className="modern_form">
+          <div className="input_group">
+            <div className="input_icon">📧</div>
             <input
               type="email"
               placeholder="Enter your email"
@@ -149,25 +149,25 @@ export const ForgotPasswordScreen: React.FC = () => {
           </div>
 
           {error && (
-            <div className="error-message">
-              <span className="error-icon">⚠️</span>
+            <div className="error_message">
+              <span className="error_icon">⚠️</span>
               {error}
             </div>
           )}
 
           <button
             type="submit"
-            className="modern-button primary"
+            className="modern_button primary"
             disabled={isLoading}
           >
             {isLoading ? (
-              <div className="loading-spinner">
+              <div className="loading_spinner">
                 <div className="spinner"></div>
                 <span>Sending...</span>
               </div>
             ) : (
               <>
-                <span className="button-icon">🚀</span>
+                <span className="button_icon">🚀</span>
                 Send Reset Link
               </>
             )}
@@ -175,16 +175,16 @@ export const ForgotPasswordScreen: React.FC = () => {
 
           <button
             type="button"
-            className="modern-button secondary"
+            className="modern_button secondary"
             onClick={() => window.history.back()}
           >
-            <span className="button-icon">←</span>
+            <span className="button_icon">←</span>
             Back to Sign In
           </button>
         </form>
 
-        <div className="help-text">
-          <span className="help-icon">🔒</span>
+        <div className="help_text">
+          <span className="help_icon">🔒</span>
           Your data is safe with us. We use industry-standard encryption.
         </div>
       </div>

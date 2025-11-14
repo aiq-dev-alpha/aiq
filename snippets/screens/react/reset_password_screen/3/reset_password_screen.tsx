@@ -26,14 +26,14 @@ export const ResetPasswordScreen: React.FC = () => {
 
   if (isSuccess) {
     return (
-      <div className="minimal-reset">
-        <div className="minimal-reset-content">
-          <div className="success-mark">✓</div>
-          <h1 className="minimal-reset-h1">All set</h1>
-          <p className="minimal-reset-p">
+      <div className="minimal_reset">
+        <div className="minimal_reset_content">
+          <div className="success_mark">✓</div>
+          <h1 className="minimal_reset_h1">All set</h1>
+          <p className="minimal_reset_p">
             Your password has been reset successfully.
           </p>
-          <a href="#" className="minimal-link-primary">
+          <a href="#" className="minimal_link_primary">
             Continue to sign in
           </a>
         </div>
@@ -42,16 +42,16 @@ export const ResetPasswordScreen: React.FC = () => {
   }
 
   return (
-    <div className="minimal-reset">
-      <div className="minimal-reset-content">
-        <h1 className="minimal-reset-h1">New password</h1>
-        <p className="minimal-reset-p">
+    <div className="minimal_reset">
+      <div className="minimal_reset_content">
+        <h1 className="minimal_reset_h1">New password</h1>
+        <p className="minimal_reset_p">
           Choose a strong password with at least 8 characters.
         </p>
 
-        <form onSubmit={handleSubmit} className="minimal-reset-form">
-          <div className={`minimal-field-group ${focusedField === 'password' ? 'focused' : ''} ${password ? 'filled' : ''}`}>
-            <label htmlFor="password" className="minimal-field-label">
+        <form onSubmit={handleSubmit} className="minimal_reset_form">
+          <div className={`minimal_field_group ${focusedField === 'password' ? 'focused' : ''} ${password ? 'filled' : ''}`}>
+            <label htmlFor="password" className="minimal_field_label">
               Password
             </label>
             <input
@@ -61,20 +61,20 @@ export const ResetPasswordScreen: React.FC = () => {
               onChange={(e) => setPassword(e.target.value)}
               onFocus={() => setFocusedField('password')}
               onBlur={() => setFocusedField(null)}
-              className="minimal-field-input"
+              className="minimal_field_input"
               required
             />
-            <div className="minimal-field-line"></div>
+            <div className="minimal_field_line"></div>
           </div>
 
           {password && !isPasswordValid && (
-            <p className="minimal-hint">
+            <p className="minimal_hint">
               Must be 8+ characters with uppercase, lowercase, and numbers
             </p>
           )}
 
-          <div className={`minimal-field-group ${focusedField === 'confirm' ? 'focused' : ''} ${confirmPassword ? 'filled' : ''}`}>
-            <label htmlFor="confirm" className="minimal-field-label">
+          <div className={`minimal_field_group ${focusedField === 'confirm' ? 'focused' : ''} ${confirmPassword ? 'filled' : ''}`}>
+            <label htmlFor="confirm" className="minimal_field_label">
               Confirm password
             </label>
             <input
@@ -84,21 +84,21 @@ export const ResetPasswordScreen: React.FC = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
               onFocus={() => setFocusedField('confirm')}
               onBlur={() => setFocusedField(null)}
-              className="minimal-field-input"
+              className="minimal_field_input"
               required
             />
-            <div className="minimal-field-line"></div>
+            <div className="minimal_field_line"></div>
           </div>
 
           {confirmPassword && !passwordsMatch && (
-            <p className="minimal-hint error">
+            <p className="minimal_hint error">
               Passwords do not match
             </p>
           )}
 
           <button
             type="submit"
-            className="minimal-submit"
+            className="minimal_submit"
             disabled={!isPasswordValid || !passwordsMatch || isLoading}
           >
             {isLoading ? 'Resetting...' : 'Reset password'}

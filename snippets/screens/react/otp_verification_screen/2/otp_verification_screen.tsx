@@ -89,27 +89,27 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
   };
 
   return (
-    <div className="modern-otp-container">
-      <div className="modern-otp-card">
-        <button className="back-btn-modern" onClick={onNavigateBack}>
+    <div className="modern_otp_container">
+      <div className="modern_otp_card">
+        <button className="back_btn_modern" onClick={onNavigateBack}>
           ←
         </button>
 
-        <div className="phone-icon-container">
-          <div className="phone-icon">
-            <div className="phone-screen"></div>
-            <div className="phone-notch"></div>
+        <div className="phone_icon_container">
+          <div className="phone_icon">
+            <div className="phone_screen"></div>
+            <div className="phone_notch"></div>
           </div>
-          {isSuccess && <div className="success-ring"></div>}
+          {isSuccess && <div className="success_ring"></div>}
         </div>
 
-        <h1 className="modern-otp-title">Enter Verification Code</h1>
-        <p className="modern-otp-subtitle">
+        <h1 className="modern_otp_title">Enter Verification Code</h1>
+        <p className="modern_otp_subtitle">
           We've sent a 6-digit code to<br />
           <strong>{phoneNumber || email}</strong>
         </p>
 
-        <div className="otp-input-section">
+        <div className="otp_input_section">
           <input
             ref={inputRef}
             type="text"
@@ -118,56 +118,56 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
             onChange={handleChange}
             onPaste={handlePaste}
             placeholder="• • • • • •"
-            className={`modern-otp-input ${error ? 'error' : ''} ${isSuccess ? 'success' : ''}`}
+            className={`modern_otp_input ${error ? 'error' : ''} ${isSuccess ? 'success' : ''}`}
             disabled={isLoading || isSuccess}
             maxLength={11}
           />
 
           {isLoading && (
-            <div className="verification-loader">
-              <div className="loader-ring"></div>
+            <div className="verification_loader">
+              <div className="loader_ring"></div>
             </div>
           )}
 
           {isSuccess && (
-            <div className="success-checkmark">✓</div>
+            <div className="success_checkmark">✓</div>
           )}
         </div>
 
         {error && (
-          <div className="modern-error-msg">
-            <span className="error-icon-modern">⚠</span>
+          <div className="modern_error_msg">
+            <span className="error_icon_modern">⚠</span>
             {error}
           </div>
         )}
 
-        <div className="progress-dots">
+        <div className="progress_dots">
           {[0, 1, 2, 3, 4, 5].map(i => (
             <div
               key={i}
-              className={`progress-dot ${i < otpValue.length ? 'filled' : ''} ${isSuccess ? 'success' : ''}`}
+              className={`progress_dot ${i < otpValue.length ? 'filled' : ''} ${isSuccess ? 'success' : ''}`}
             />
           ))}
         </div>
 
-        <div className="resend-section-modern">
+        <div className="resend_section_modern">
           {countdown > 0 ? (
-            <p className="countdown-text">
-              Resend code in <span className="countdown-timer">{countdown}s</span>
+            <p className="countdown_text">
+              Resend code in <span className="countdown_timer">{countdown}s</span>
             </p>
           ) : (
             <button
-              className="resend-btn-modern"
+              className="resend_btn_modern"
               onClick={handleResend}
               disabled={isLoading}
             >
-              <span className="resend-icon">🔄</span>
+              <span className="resend_icon">🔄</span>
               Resend Code
             </button>
           )}
         </div>
 
-        <div className="help-section-modern">
+        <div className="help_section_modern">
           <p>Having trouble? <a href="#">Contact support</a></p>
         </div>
       </div>

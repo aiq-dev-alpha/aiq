@@ -122,24 +122,24 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
   };
 
   return (
-    <div className="minimal-otp">
-      <div className="minimal-otp-content">
-        <button className="minimal-back" onClick={onNavigateBack}>
+    <div className="minimal_otp">
+      <div className="minimal_otp_content">
+        <button className="minimal_back" onClick={onNavigateBack}>
           ← Back
         </button>
 
-        <div className="minimal-header-otp">
+        <div className="minimal_header_otp">
           <h1>Verify code</h1>
           <p>
             Sent to {phoneNumber || email}
           </p>
         </div>
 
-        <div className="otp-boxes" onPaste={handlePaste}>
+        <div className="otp_boxes" onPaste={handlePaste}>
           {otp.map((digit, index) => (
             <div
               key={index}
-              className={`otp-box ${activeIndex === index ? 'active' : ''} ${digit ? 'filled' : ''} ${error ? 'error' : ''}`}
+              className={`otp_box ${activeIndex === index ? 'active' : ''} ${digit ? 'filled' : ''} ${error ? 'error' : ''}`}
             >
               <input
                 ref={el => inputRefs.current[index] = el}
@@ -151,32 +151,32 @@ export const OTPVerificationScreen: React.FC<OTPVerificationScreenProps> = ({
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 onFocus={() => setActiveIndex(index)}
                 disabled={isVerifying}
-                className="otp-input-minimal"
+                className="otp_input_minimal"
               />
             </div>
           ))}
         </div>
 
         {isVerifying && (
-          <div className="verifying-state">
-            <div className="minimal-spinner"></div>
+          <div className="verifying_state">
+            <div className="minimal_spinner"></div>
             <span>Verifying...</span>
           </div>
         )}
 
         {error && (
-          <div className="minimal-error">
+          <div className="minimal_error">
             {error}
           </div>
         )}
 
-        <div className="resend-area">
+        <div className="resend_area">
           {resendTimer > 0 ? (
-            <p className="resend-timer-text">
+            <p className="resend_timer_text">
               Resend code in {resendTimer}s
             </p>
           ) : (
-            <button className="resend-link" onClick={handleResend}>
+            <button className="resend_link" onClick={handleResend}>
               Resend code
             </button>
           )}

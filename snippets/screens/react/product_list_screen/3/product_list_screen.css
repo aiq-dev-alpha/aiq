@@ -1,4 +1,4 @@
-.minimal-product-list {
+.minimal_product_list {
   min-height: 100vh;
   padding: 3rem 2rem;
   max-width: 1200px;
@@ -7,18 +7,18 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-.minimal-header {
+.minimal_header {
   margin-bottom: 4rem;
 }
 
-.header-top {
+.header_top {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   margin-bottom: 3rem;
 }
 
-.header-top h1 {
+.header_top h1 {
   font-size: 4rem;
   font-weight: 300;
   letter-spacing: -0.04em;
@@ -26,7 +26,7 @@
   color: #000;
 }
 
-.cart-link {
+.cart_link {
   background: none;
   border: none;
   font-size: 0.9375rem;
@@ -39,11 +39,11 @@
   transition: color 0.2s;
 }
 
-.cart-link:hover {
+.cart_link:hover {
   color: #000;
 }
 
-.cart-count {
+.cart_count {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -56,13 +56,13 @@
   padding: 0 0.375rem;
 }
 
-.filter-bar {
+.filter_bar {
   display: flex;
   gap: 2rem;
   border-bottom: 1px solid #e0e0e0;
 }
 
-.filter-btn {
+.filter_btn {
   background: none;
   border: none;
   padding: 0.75rem 0;
@@ -73,7 +73,7 @@
   transition: color 0.2s;
 }
 
-.filter-btn:hover {
+.filter_btn:hover {
   color: #000;
 }
 
@@ -92,20 +92,20 @@
   background: #000;
 }
 
-.product-grid-minimal {
+.product_grid_minimal {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 0;
 }
 
-.minimal-product-item {
+.minimal_product_item {
   padding: 2.5rem 0;
   position: relative;
   cursor: pointer;
   transition: background 0.2s;
 }
 
-.minimal-product-item:hover {
+.minimal_product_item:hover {
   background: #fafafa;
 }
 
@@ -113,7 +113,7 @@
   grid-column: span 2;
 }
 
-.product-number {
+.product_number {
   font-size: 0.75rem;
   color: #ccc;
   margin-bottom: 1rem;
@@ -121,18 +121,18 @@
   letter-spacing: 0.1em;
 }
 
-.product-main {
+.product_main {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 2rem;
 }
 
-.product-text {
+.product_text {
   flex: 1;
 }
 
-.product-name {
+.product_name {
   font-size: 1.5rem;
   font-weight: 400;
   margin: 0 0 0.5rem 0;
@@ -140,11 +140,11 @@
   letter-spacing: -0.01em;
 }
 
-.minimal-product-item.wide .product-name {
+.minimal-product-item.wide .product_name {
   font-size: 2rem;
 }
 
-.product-category {
+.product_category {
   color: #999;
   font-size: 0.875rem;
   margin: 0;
@@ -152,27 +152,27 @@
   letter-spacing: 0.05em;
 }
 
-.product-meta {
+.product_meta {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: 0.5rem;
 }
 
-.product-price {
+.product_price {
   font-size: 1.125rem;
   color: #000;
   font-weight: 400;
 }
 
-.out-of-stock {
+.out_of_stock {
   font-size: 0.75rem;
   color: #ef4444;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-.add-button-minimal {
+.add_button_minimal {
   position: absolute;
   right: 0;
   bottom: 2.5rem;
@@ -192,17 +192,17 @@
   transform: translateX(0);
 }
 
-.add-button-minimal:hover:not(:disabled) {
+.add_button_minimal:hover:not(:disabled) {
   background: #333;
 }
 
-.add-button-minimal:disabled {
+.add_button_minimal:disabled {
   background: #e0e0e0;
   color: #999;
   cursor: not-allowed;
 }
 
-.divider-line {
+.divider_line {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -211,14 +211,14 @@
   background: #e0e0e0;
 }
 
-.minimal-footer {
+.minimal_footer {
   margin-top: 4rem;
   padding-top: 2rem;
   border-top: 1px solid #e0e0e0;
   text-align: center;
 }
 
-.minimal-footer p {
+.minimal_footer p {
   color: #999;
   font-size: 0.875rem;
   margin: 0;
@@ -231,27 +231,27 @@
 }
 
 @media (max-width: 768px) {
-  .minimal-product-list {
+  .minimal_product_list {
     padding: 2rem 1.5rem;
   }
 
-  .header-top h1 {
+  .header_top h1 {
     font-size: 3rem;
   }
 
-  .product-grid-minimal {
+  .product_grid_minimal {
     grid-template-columns: 1fr;
   }
 
-  .minimal-product-item.wide .product-name {
+  .minimal-product-item.wide .product_name {
     font-size: 1.5rem;
   }
 
-  .filter-bar {
+  .filter_bar {
     gap: 1rem;
   }
 
-  .add-button-minimal {
+  .add_button_minimal {
     position: static;
     opacity: 1;
     transform: none;

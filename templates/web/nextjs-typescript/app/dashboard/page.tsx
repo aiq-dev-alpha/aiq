@@ -2,11 +2,11 @@ import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { authOptions } from '@/lib/auth';
-import { DashboardShell } from '@/components/layout/dashboard-shell';
-import { DashboardHeader } from '@/components/layout/dashboard-header';
+import { DashboardShell } from '@/components/layout/dashboard_shell';
+import { DashboardHeader } from '@/components/layout/dashboard_header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Overview } from '@/components/ui/overview';
-import { RecentActivity } from '@/components/ui/recent-activity';
+import { RecentActivity } from '@/components/ui/recent_activity';
 
 export const metadata: Metadata = {
   title: 'Dashboard',

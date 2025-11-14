@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/components/ui/use_toast';
 import { signInSchema, type SignInFormData } from '@/lib/validations';
 import { Loader2, Github } from 'lucide-react';
 

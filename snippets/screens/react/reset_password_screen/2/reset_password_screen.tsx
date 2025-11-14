@@ -39,22 +39,22 @@ export const ResetPasswordScreen: React.FC = () => {
 
   if (isSuccess) {
     return (
-      <div className="modern-reset-container">
-        <div className="modern-reset-card">
-          <div className="success-animation">
-            <div className="success-circle">
+      <div className="modern_reset_container">
+        <div className="modern_reset_card">
+          <div className="success_animation">
+            <div className="success_circle">
               <div className="checkmark">✓</div>
             </div>
           </div>
 
-          <h1 className="success-title">Password Reset!</h1>
-          <p className="success-message">
+          <h1 className="success_title">Password Reset!</h1>
+          <p className="success_message">
             Your password has been successfully reset.
             You can now sign in with your new password.
           </p>
 
           <button
-            className="modern-btn primary"
+            className="modern_btn primary"
             onClick={() => window.location.href = '#'}
           >
             Go to Sign In
@@ -65,32 +65,32 @@ export const ResetPasswordScreen: React.FC = () => {
   }
 
   return (
-    <div className="modern-reset-container">
-      <div className="modern-reset-card">
-        <div className="icon-lock">
-          <div className="lock-body-modern"></div>
-          <div className="lock-shackle-modern"></div>
+    <div className="modern_reset_container">
+      <div className="modern_reset_card">
+        <div className="icon_lock">
+          <div className="lock_body_modern"></div>
+          <div className="lock_shackle_modern"></div>
         </div>
 
-        <h1 className="modern-reset-title">Create New Password</h1>
-        <p className="modern-reset-subtitle">
+        <h1 className="modern_reset_title">Create New Password</h1>
+        <p className="modern_reset_subtitle">
           Your new password must be different from previously used passwords.
         </p>
 
-        <form onSubmit={handleSubmit} className="modern-reset-form">
-          <div className="input-container">
-            <label className="modern-label">New Password</label>
-            <div className="password-input-wrapper">
+        <form onSubmit={handleSubmit} className="modern_reset_form">
+          <div className="input_container">
+            <label className="modern_label">New Password</label>
+            <div className="password_input_wrapper">
               <input
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="modern-input"
+                className="modern_input"
                 placeholder="Enter new password"
               />
               <button
                 type="button"
-                className="toggle-visibility"
+                className="toggle_visibility"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? '👁️' : '👁️‍🗨️'}
@@ -98,13 +98,13 @@ export const ResetPasswordScreen: React.FC = () => {
             </div>
           </div>
 
-          <div className="requirements-grid">
+          <div className="requirements_grid">
             {requirements.map((req, index) => (
               <div
                 key={index}
-                className={`requirement-item ${req.test(password) ? 'met' : ''}`}
+                className={`requirement_item ${req.test(password) ? 'met' : ''}`}
               >
-                <div className="requirement-icon">
+                <div className="requirement_icon">
                   {req.test(password) ? '✓' : '○'}
                 </div>
                 <span>{req.label}</span>
@@ -112,31 +112,31 @@ export const ResetPasswordScreen: React.FC = () => {
             ))}
           </div>
 
-          <div className="input-container">
-            <label className="modern-label">Confirm Password</label>
+          <div className="input_container">
+            <label className="modern_label">Confirm Password</label>
             <input
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className={`modern-input ${confirmPassword && !passwordsMatch ? 'error' : ''} ${passwordsMatch ? 'success' : ''}`}
+              className={`modern_input ${confirmPassword && !passwordsMatch ? 'error' : ''} ${passwordsMatch ? 'success' : ''}`}
               placeholder="Re-enter password"
             />
             {confirmPassword && !passwordsMatch && (
-              <span className="error-hint">Passwords do not match</span>
+              <span className="error_hint">Passwords do not match</span>
             )}
             {passwordsMatch && (
-              <span className="success-hint">✓ Passwords match</span>
+              <span className="success_hint">✓ Passwords match</span>
             )}
           </div>
 
           <button
             type="submit"
-            className="modern-btn primary"
+            className="modern_btn primary"
             disabled={!allRequirementsMet || !passwordsMatch || isLoading}
           >
             {isLoading ? (
-              <div className="loading-state">
-                <div className="spinner-modern"></div>
+              <div className="loading_state">
+                <div className="spinner_modern"></div>
                 <span>Resetting...</span>
               </div>
             ) : (

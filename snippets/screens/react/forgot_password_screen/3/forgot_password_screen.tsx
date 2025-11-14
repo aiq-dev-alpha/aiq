@@ -21,31 +21,31 @@ export const ForgotPasswordScreen: React.FC = () => {
 
   if (emailSent) {
     return (
-      <div className="minimal-forgot">
-        <div className="minimal-content">
-          <div className="success-indicator">
-            <div className="checkmark-line"></div>
-            <div className="checkmark-line checkmark-line-tip"></div>
+      <div className="minimal_forgot">
+        <div className="minimal_content">
+          <div className="success_indicator">
+            <div className="checkmark_line"></div>
+            <div className="checkmark_line checkmark_line_tip"></div>
           </div>
 
-          <h1 className="minimal-h1">Check your inbox</h1>
+          <h1 className="minimal_h1">Check your inbox</h1>
           
-          <div className="email-sent-info">
+          <div className="email_sent_info">
             <p>We sent a recovery link to</p>
             <strong>{email}</strong>
           </div>
 
-          <div className="minimal-divider"></div>
+          <div className="minimal_divider"></div>
 
-          <div className="action-group">
+          <div className="action_group">
             <button
-              className="minimal-link-btn"
+              className="minimal_link_btn"
               onClick={() => setEmailSent(false)}
             >
               Try another email
             </button>
-            <span className="dot-separator">•</span>
-            <a href="#" className="minimal-link-btn">
+            <span className="dot_separator">•</span>
+            <a href="#" className="minimal_link_btn">
               Back to sign in
             </a>
           </div>
@@ -55,18 +55,18 @@ export const ForgotPasswordScreen: React.FC = () => {
   }
 
   return (
-    <div className="minimal-forgot">
-      <div className="minimal-content">
-        <div className="header-section">
-          <h1 className="minimal-h1">Reset password</h1>
-          <p className="minimal-description">
+    <div className="minimal_forgot">
+      <div className="minimal_content">
+        <div className="header_section">
+          <h1 className="minimal_h1">Reset password</h1>
+          <p className="minimal_description">
             Enter your email address and we'll send you a link to get back into your account.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="minimal-form-section">
-          <div className={`minimal-input-wrapper ${isFocused || email ? 'active' : ''}`}>
-            <label htmlFor="email" className="minimal-label">
+        <form onSubmit={handleSubmit} className="minimal_form_section">
+          <div className={`minimal_input_wrapper ${isFocused || email ? 'active' : ''}`}>
+            <label htmlFor="email" className="minimal_label">
               Email address
             </label>
             <input
@@ -76,19 +76,19 @@ export const ForgotPasswordScreen: React.FC = () => {
               onChange={(e) => setEmail(e.target.value)}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
-              className="minimal-input"
+              className="minimal_input"
               required
             />
-            <div className="minimal-underline"></div>
+            <div className="minimal_underline"></div>
           </div>
 
           <button
             type="submit"
-            className="minimal-submit-btn"
+            className="minimal_submit_btn"
             disabled={isLoading || !email}
           >
             {isLoading ? (
-              <span className="loading-text">
+              <span className="loading_text">
                 Sending<span className="dots"></span>
               </span>
             ) : (
@@ -97,8 +97,8 @@ export const ForgotPasswordScreen: React.FC = () => {
           </button>
         </form>
 
-        <div className="minimal-footer">
-          <a href="#" className="back-to-login">
+        <div className="minimal_footer">
+          <a href="#" className="back_to_login">
             ← Back to sign in
           </a>
         </div>

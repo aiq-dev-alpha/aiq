@@ -27,81 +27,81 @@ const ProfileScreen = () => {
   ];
 
   return (
-    <div className="modern-profile">
-      <div className="modern-profile-container">
-        <div className="profile-header-modern">
-          <button className="back-btn-profile">←</button>
-          <button className="menu-btn-profile">⋯</button>
+    <div className="modern_profile">
+      <div className="modern_profile_container">
+        <div className="profile_header_modern">
+          <button className="back_btn_profile">←</button>
+          <button className="menu_btn_profile">⋯</button>
         </div>
 
-        <div className="profile-hero">
-          <div className="cover-gradient"></div>
-          <div className="avatar-modern">
-            <div className="avatar-circle">SJ</div>
-            <button className="avatar-edit-btn">📷</button>
+        <div className="profile_hero">
+          <div className="cover_gradient"></div>
+          <div className="avatar_modern">
+            <div className="avatar_circle">SJ</div>
+            <button className="avatar_edit_btn">📷</button>
           </div>
         </div>
 
-        <div className="profile-info-modern">
-          <h1 className="profile-name-modern">{profile.name}</h1>
-          <p className="profile-username-modern">{profile.username}</p>
-          <p className="profile-bio-modern">{profile.bio}</p>
+        <div className="profile_info_modern">
+          <h1 className="profile_name_modern">{profile.name}</h1>
+          <p className="profile_username_modern">{profile.username}</p>
+          <p className="profile_bio_modern">{profile.bio}</p>
 
-          <div className="profile-meta-modern">
-            <span className="meta-item">📍 {profile.location}</span>
-            <span className="meta-item">✉️ {profile.email}</span>
+          <div className="profile_meta_modern">
+            <span className="meta_item">📍 {profile.location}</span>
+            <span className="meta_item">✉️ {profile.email}</span>
           </div>
 
-          <div className="action-buttons-modern">
-            <button className="btn-primary-modern">
+          <div className="action_buttons_modern">
+            <button className="btn_primary_modern">
               Edit Profile
             </button>
-            <button className="btn-secondary-modern">
+            <button className="btn_secondary_modern">
               Share Profile
             </button>
           </div>
         </div>
 
-        <div className="stats-grid-modern">
+        <div className="stats_grid_modern">
           {stats.map((stat, index) => (
-            <div key={index} className="stat-card-modern">
-              <div className="stat-icon-modern">{stat.icon}</div>
-              <div className="stat-value-modern">{stat.value}</div>
-              <div className="stat-label-modern">{stat.label}</div>
+            <div key={index} className="stat_card_modern">
+              <div className="stat_icon_modern">{stat.icon}</div>
+              <div className="stat_value_modern">{stat.value}</div>
+              <div className="stat_label_modern">{stat.label}</div>
             </div>
           ))}
         </div>
 
-        <div className="achievements-section-modern">
-          <h2 className="section-title-modern">Achievements</h2>
-          <div className="achievements-grid">
+        <div className="achievements_section_modern">
+          <h2 className="section_title_modern">Achievements</h2>
+          <div className="achievements_grid">
             {achievements.map((achievement, index) => (
-              <div key={index} className="achievement-badge">
-                <div className="achievement-icon">{achievement.icon}</div>
+              <div key={index} className="achievement_badge">
+                <div className="achievement_icon">{achievement.icon}</div>
                 <span>{achievement.title}</span>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="profile-menu-modern">
-          <button className="menu-item-modern">
+        <div className="profile_menu_modern">
+          <button className="menu_item_modern">
             <span>⚙️ Settings</span>
             <span>→</span>
           </button>
-          <button className="menu-item-modern">
+          <button className="menu_item_modern">
             <span>🔔 Notifications</span>
             <span>→</span>
           </button>
-          <button className="menu-item-modern">
+          <button className="menu_item_modern">
             <span>🔒 Privacy</span>
             <span>→</span>
           </button>
-          <button className="menu-item-modern">
+          <button className="menu_item_modern">
             <span>💳 Billing</span>
             <span>→</span>
           </button>
-          <button className="menu-item-modern logout">
+          <button className="menu_item_modern logout">
             <span>🚪 Sign Out</span>
           </button>
         </div>

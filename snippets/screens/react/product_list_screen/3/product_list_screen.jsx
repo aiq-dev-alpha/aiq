@@ -21,20 +21,20 @@ const ProductListScreen = () => {
   ];
 
   return (
-    <div className="minimal-product-list">
-      <header className="minimal-header">
-        <div className="header-top">
+    <div className="minimal_product_list">
+      <header className="minimal_header">
+        <div className="header_top">
           <h1>Shop</h1>
-          <button className="cart-link">
-            Cart <span className="cart-count">3</span>
+          <button className="cart_link">
+            Cart <span className="cart_count">3</span>
           </button>
         </div>
 
-        <div className="filter-bar">
+        <div className="filter_bar">
           {filters.map(filter => (
             <button
               key={filter}
-              className={`filter-btn ${selectedFilter === filter ? 'active' : ''}`}
+              className={`filter_btn ${selectedFilter === filter ? 'active' : ''}`}
               onClick={() => setSelectedFilter(filter)}
             >
               {filter}
@@ -43,47 +43,47 @@ const ProductListScreen = () => {
         </div>
       </header>
 
-      <div className="product-grid-minimal">
+      <div className="product_grid_minimal">
         {products.map((product, index) => (
           <div
             key={product.id}
-            className={`minimal-product-item ${index % 3 === 0 ? 'wide' : ''}`}
+            className={`minimal_product_item ${index % 3 === 0 ? 'wide' : ''}`}
             onMouseEnter={() => setHoveredProduct(product.id)}
             onMouseLeave={() => setHoveredProduct(null)}
           >
-            <div className="product-number">
+            <div className="product_number">
               {String(index + 1).padStart(2, '0')}
             </div>
 
-            <div className="product-main">
-              <div className="product-text">
-                <h2 className="product-name">{product.name}</h2>
-                <p className="product-category">{product.category}</p>
+            <div className="product_main">
+              <div className="product_text">
+                <h2 className="product_name">{product.name}</h2>
+                <p className="product_category">{product.category}</p>
               </div>
 
-              <div className="product-meta">
-                <span className="product-price">
+              <div className="product_meta">
+                <span className="product_price">
                   ${product.price}
                 </span>
                 {!product.inStock && (
-                  <span className="out-of-stock">Out of stock</span>
+                  <span className="out_of_stock">Out of stock</span>
                 )}
               </div>
             </div>
 
             <button
-              className={`add-button-minimal ${hoveredProduct === product.id ? 'visible' : ''}`}
+              className={`add_button_minimal ${hoveredProduct === product.id ? 'visible' : ''}`}
               disabled={!product.inStock}
             >
               {product.inStock ? 'Add' : 'Notify'}
             </button>
 
-            <div className="divider-line"></div>
+            <div className="divider_line"></div>
           </div>
         ))}
       </div>
 
-      <footer className="minimal-footer">
+      <footer className="minimal_footer">
         <p>Showing {products.length} items</p>
       </footer>
     </div>
