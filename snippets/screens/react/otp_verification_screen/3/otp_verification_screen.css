@@ -1,0 +1,182 @@
+.minimal-otp {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: #fafafa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.minimal-otp-content {
+  max-width: 480px;
+  width: 100%;
+}
+
+.minimal-back {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  margin-bottom: 2.5rem;
+  transition: color 0.2s;
+}
+
+.minimal-back:hover {
+  color: #000;
+}
+
+.minimal-header-otp {
+  margin-bottom: 3rem;
+}
+
+.minimal-header-otp h1 {
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: #000;
+  margin: 0 0 0.75rem 0;
+  letter-spacing: -0.03em;
+}
+
+.minimal-header-otp p {
+  color: #666;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.otp-boxes {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.otp-box {
+  width: 56px;
+  height: 72px;
+  position: relative;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.otp-box.active {
+  border-color: #000;
+  transform: translateY(-4px);
+}
+
+.otp-box.filled {
+  border-color: #000;
+  background: #f5f5f5;
+}
+
+.otp-box.error {
+  border-color: #ef4444;
+  animation: errorShake 0.4s;
+}
+
+@keyframes errorShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+
+.otp-input-minimal {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 300;
+  color: #000;
+  outline: none;
+  caret-color: #000;
+}
+
+.otp-input-minimal:disabled {
+  cursor: not-allowed;
+}
+
+.verifying-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  color: #666;
+  font-size: 0.9375rem;
+  margin-bottom: 1.5rem;
+}
+
+.minimal-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #e0e0e0;
+  border-top-color: #000;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.minimal-error {
+  text-align: center;
+  color: #ef4444;
+  font-size: 0.9375rem;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem;
+  background: #fef2f2;
+  border-radius: 6px;
+}
+
+.resend-area {
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.resend-timer-text {
+  color: #999;
+  font-size: 0.9375rem;
+  margin: 0;
+}
+
+.resend-link {
+  background: none;
+  border: none;
+  color: #000;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  text-decoration: underline;
+  transition: opacity 0.2s;
+}
+
+.resend-link:hover {
+  opacity: 0.7;
+}
+
+@media (max-width: 640px) {
+  .minimal-header-otp h1 {
+    font-size: 2rem;
+  }
+
+  .otp-boxes {
+    gap: 0.5rem;
+  }
+
+  .otp-box {
+    width: 48px;
+    height: 64px;
+  }
+
+  .otp-input-minimal {
+    font-size: 1.75rem;
+  }
+}

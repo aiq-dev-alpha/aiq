@@ -1,0 +1,138 @@
+.minimal-profile {
+  min-height: 100vh;
+  padding: 3rem 2rem;
+  background: #fafafa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.minimal-profile-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.minimal-profile-header {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  margin-bottom: 4rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.profile-avatar-minimal {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #000;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.profile-details-minimal {
+  flex: 1;
+}
+
+.profile-name-minimal {
+  font-size: 1.75rem;
+  font-weight: 400;
+  margin: 0 0 0.5rem 0;
+  color: #000;
+  letter-spacing: -0.01em;
+}
+
+.profile-email-minimal {
+  color: #666;
+  font-size: 0.9375rem;
+  margin: 0 0 0.25rem 0;
+}
+
+.profile-joined-minimal {
+  color: #999;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.profile-section-minimal {
+  margin-bottom: 3rem;
+}
+
+.section-heading-minimal {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #999;
+  margin: 0 0 1rem 0;
+}
+
+.section-items-minimal {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.profile-link-minimal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 0;
+  color: #000;
+  text-decoration: none;
+  font-size: 0.9375rem;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.profile-link-minimal:hover {
+  padding-left: 0.5rem;
+  color: #666;
+}
+
+.profile-link-minimal:hover .arrow-minimal {
+  transform: translateX(4px);
+}
+
+.arrow-minimal {
+  color: #ccc;
+  transition: all 0.2s;
+}
+
+.profile-link-minimal.danger {
+  color: #ef4444;
+  border-bottom: none;
+  margin-top: 0.5rem;
+}
+
+.profile-link-minimal.danger:hover {
+  background: #fef2f2;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-left: -1rem;
+  margin-right: -1rem;
+  border-radius: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  .minimal-profile {
+    padding: 2rem 1.5rem;
+  }
+
+  .minimal-profile-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .profile-name-minimal {
+    font-size: 1.5rem;
+  }
+}

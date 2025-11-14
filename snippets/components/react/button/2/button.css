@@ -1,0 +1,153 @@
+.btn-v2 {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  border: 2px solid;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  outline: none;
+  overflow: hidden;
+  background: transparent;
+}
+
+.btn-v2-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.btn-v2-gradient {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.btn-v2:hover:not(:disabled) .btn-v2-gradient {
+  opacity: 1;
+}
+
+.btn-v2:hover:not(:disabled) .btn-v2-content {
+  color: white;
+}
+
+.btn-v2:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.btn-v2:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Sizes */
+.btn-v2-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.btn-v2-md {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+.btn-v2-lg {
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+}
+
+/* Full width */
+.btn-v2-full {
+  width: 100%;
+}
+
+/* Variants */
+.btn-v2-primary {
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.btn-v2-primary .btn-v2-gradient {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.btn-v2-secondary {
+  border-color: #6b7280;
+  color: #6b7280;
+}
+
+.btn-v2-secondary .btn-v2-gradient {
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+}
+
+.btn-v2-success {
+  border-color: #10b981;
+  color: #10b981;
+}
+
+.btn-v2-success .btn-v2-gradient {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.btn-v2-danger {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.btn-v2-danger .btn-v2-gradient {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.btn-v2-warning {
+  border-color: #f59e0b;
+  color: #f59e0b;
+}
+
+.btn-v2-warning .btn-v2-gradient {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.btn-v2-info {
+  border-color: #06b6d4;
+  color: #06b6d4;
+}
+
+.btn-v2-info .btn-v2-gradient {
+  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+}
+
+/* Loading state */
+.btn-v2-loading .btn-v2-content {
+  color: transparent;
+}
+
+.btn-v2-spinner {
+  position: absolute;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.btn-v2-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

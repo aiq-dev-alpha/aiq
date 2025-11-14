@@ -1,0 +1,180 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Articles</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="showSortOptions()" fill="clear">
+        <ion-icon name="funnel-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-button (click)="goToBookmarks()" fill="clear">
+        <ion-icon name="bookmark-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Header with search and filters -->
+  <div class="header-section">
+    <!-- Search Bar -->
+    <ion-searchbar
+      [(ngModel)]="searchText"
+      (ionInput)="onSearchChange($event)"
+      placeholder="Search articles..."
+      show-clear-button="focus"
+      debounce="300">
+    </ion-searchbar>
+
+    <!-- Category Filters -->
+    <ion-segment
+      [(ngModel)]="selectedCategory"
+      (ionChange)="selectCategory($event.detail.value)"
+      scrollable="true"
+      class="category-segment">
+      <ion-segment-button
+        *ngFor="let category of categories"
+        [value]="category">
+        <ion-label>{{ category }}</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <!-- Refresher -->
+  <ion-refresher
+    #refresher
+    slot="fixed"
+    (ionRefresh)="refreshArticles($event)">
+    <ion-refresher-content
+      pulling-icon="chevron-down-circle-outline"
+      pulling-text="Pull to refresh"
+      refreshing-spinner="circles"
+      refreshing-text="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Articles List -->
+  <div *ngIf="!loading" class="articles-container">
+    <!-- No Articles State -->
+    <div *ngIf="filteredArticles.length === 0" class="empty-state">
+      <ion-icon name="document-text-outline" size="large"></ion-icon>
+      <h2>No articles found</h2>
+      <p>Try adjusting your search or filters</p>
+      <ion-button (click)="clearSearch(); selectCategory('All')" fill="outline">
+        <ion-icon name="refresh-outline" slot="start"></ion-icon>
+        Clear Filters
+      </ion-button>
+    </div>
+
+    <!-- Articles Grid -->
+    <ion-grid *ngIf="filteredArticles.length > 0">
+      <ion-row>
+        <ion-col size="12" size-md="6" size-lg="4" *ngFor="let article of filteredArticles">
+          <ion-card
+            class="article-card"
+            button="true"
+            (click)="openArticle(article)">
+
+            <!-- Article Image -->
+            <div class="image-container">
+              <img
+                [src]="article.imageUrl"
+                [alt]="article.title"
+                loading="lazy" />
+
+              <!-- Bookmark Button Overlay -->
+              <ion-button
+                fill="clear"
+                class="bookmark-button"
+                (click)="$event.stopPropagation(); toggleBookmark(article)">
+                <ion-icon
+                  [name]="article.isBookmarked ? 'bookmark' : 'bookmark-outline'"
+                  [color]="article.isBookmarked ? 'primary' : 'medium'">
+                </ion-icon>
+              </ion-button>
+            </div>
+
+            <ion-card-content>
+              <!-- Tags -->
+              <div class="tags-container">
+                <ion-chip
+                  *ngFor="let tag of article.tags.slice(0, 2)"
+                  color="primary"
+                  outline="true">
+                  <ion-label>{{ tag }}</ion-label>
+                </ion-chip>
+              </div>
+
+              <!-- Title -->
+              <ion-card-title class="article-title">
+                {{ article.title }}
+              </ion-card-title>
+
+              <!-- Summary -->
+              <ion-card-subtitle class="article-summary">
+                {{ article.summary }}
+              </ion-card-subtitle>
+
+              <!-- Author and Metadata -->
+              <div class="metadata-container">
+                <div class="author-info">
+                  <div class="author-avatar">
+                    {{ getAuthorInitials(article.author) }}
+                  </div>
+                  <div class="author-details">
+                    <div class="author-name">{{ article.author }}</div>
+                    <div class="article-meta">
+                      <ion-icon name="time-outline"></ion-icon>
+                      <span>{{ article.readTime }} min read</span>
+                      <span class="separator">•</span>
+                      <span>{{ formatDate(article.publishDate) }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <ion-button
+                  fill="clear"
+                  size="small"
+                  (click)="$event.stopPropagation(); showArticleOptions(article)">
+                  <ion-icon name="ellipsis-vertical" slot="icon-only"></ion-icon>
+                </ion-button>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <ion-spinner name="circles"></ion-spinner>
+    <p>Loading articles...</p>
+  </div>
+
+  <!-- Infinite Scroll -->
+  <ion-infinite-scroll
+    *ngIf="hasMore && !loading"
+    #infiniteScroll
+    threshold="10%"
+    (ionInfinite)="loadMoreArticles($event)">
+    <ion-infinite-scroll-content
+      loading-spinner="bubbles"
+      loading-text="Loading more articles...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+  <!-- Floating Action Button -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="primary">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button color="light" (click)="showSortOptions()">
+        <ion-icon name="funnel-outline"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button color="light" (click)="goToBookmarks()">
+        <ion-icon name="bookmark-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+</ion-content>

@@ -1,0 +1,258 @@
+.minimal-signup {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.minimal-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem;
+  max-width: 28rem;
+  margin: 0 auto;
+}
+
+.minimal-header {
+  margin-bottom: 3rem;
+}
+
+.minimal-header h1 {
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: #000;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.02em;
+}
+
+.minimal-header p {
+  color: #666;
+  font-size: 1rem;
+  margin: 0;
+  font-weight: 400;
+}
+
+.minimal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.minimal-field {
+  position: relative;
+}
+
+.minimal-field input {
+  width: 100%;
+  padding: 1rem 0;
+  border: none;
+  background: transparent;
+  font-size: 1.125rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.minimal-field label {
+  position: absolute;
+  left: 0;
+  top: 1rem;
+  color: #999;
+  font-size: 1.125rem;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  font-weight: 300;
+}
+
+.minimal-field.focused label,
+.minimal-field.filled label {
+  top: -1.25rem;
+  font-size: 0.875rem;
+  color: #000;
+}
+
+.field-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: #e0e0e0;
+  transition: all 0.3s ease;
+}
+
+.field-line::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: #000;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.minimal-field.focused .field-line::after {
+  width: 100%;
+}
+
+.minimal-submit {
+  margin-top: 1rem;
+  padding: 1.125rem;
+  background: #000;
+  color: white;
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.02em;
+}
+
+.minimal-submit:hover:not(:disabled) {
+  background: #333;
+  transform: translateY(-1px);
+}
+
+.minimal-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.loading-dots {
+  display: inline-flex;
+  gap: 0.25rem;
+}
+
+.loading-dots span {
+  animation: bounce 1.4s infinite ease-in-out;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loading-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-0.5rem);
+  }
+}
+
+.minimal-terms {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #999;
+  margin-top: -0.5rem;
+}
+
+.minimal-terms a {
+  color: #000;
+  text-decoration: none;
+  border-bottom: 1px solid #000;
+}
+
+.minimal-footer {
+  margin-top: 2.5rem;
+  text-align: center;
+  font-size: 0.9375rem;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.minimal-footer a {
+  color: #000;
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.minimal-footer a:hover {
+  border-bottom-color: #000;
+}
+
+.minimal-aside {
+  background: #000;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  position: relative;
+}
+
+.quote-mark {
+  position: absolute;
+  top: 3rem;
+  left: 3rem;
+  font-size: 8rem;
+  font-family: Georgia, serif;
+  opacity: 0.1;
+  line-height: 1;
+}
+
+.minimal-aside blockquote {
+  max-width: 28rem;
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.minimal-aside blockquote p {
+  font-size: 1.5rem;
+  line-height: 1.6;
+  margin: 0 0 2rem 0;
+  font-weight: 300;
+}
+
+.minimal-aside footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.minimal-aside footer strong {
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.minimal-aside footer span {
+  font-size: 0.875rem;
+  opacity: 0.7;
+  font-weight: 300;
+}
+
+@media (max-width: 1024px) {
+  .minimal-signup {
+    grid-template-columns: 1fr;
+  }
+
+  .minimal-aside {
+    display: none;
+  }
+
+  .minimal-container {
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .minimal-header h1 {
+    font-size: 2rem;
+  }
+
+  .minimal-container {
+    padding: 1.5rem;
+  }
+}

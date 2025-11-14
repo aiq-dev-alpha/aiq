@@ -1,0 +1,1 @@
+- dont create scripts in my scripts folder to do tasks, do the task i am asking and dont create any files not necessary
