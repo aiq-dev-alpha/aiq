@@ -47,7 +47,7 @@ interface CardTheme {
   `,
   styles: [`
     .card {
-      border-radius: 26px;
+      border-radius: 24px;
       overflow: hidden;
       transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
       position: relative;
@@ -56,7 +56,7 @@ interface CardTheme {
       outline: none;
     }
     .card.hoverable:hover {
-      transform: scale(1.06);
+      transform: translateY(-8px) rotateZ(2deg);
     }
     .card.clickable {
       cursor: pointer;
@@ -64,7 +64,7 @@ interface CardTheme {
     .card-image {
       position: relative;
       overflow: hidden;
-      height: 260px;
+      height: 215px;
     }
     .card-image img {
       width: 100%;
@@ -73,7 +73,7 @@ interface CardTheme {
       transition: transform 0.5s ease;
     }
     .card.hoverable:hover .card-image img {
-      transform: scale(1.11);
+      transform: scale(1.12);
     }
     .image-overlay {
       position: absolute;
@@ -88,12 +88,12 @@ interface CardTheme {
       padding: 8px 14px;
       font-size: 12px;
       font-weight: 700;
-      border-radius: 4px;
+      border-radius: 12px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.15);
       z-index: 5;
     }
     .badge {
-      top: 14px; right: 14px;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
     }
     .card-content {
       padding: 24px;
@@ -110,24 +110,24 @@ interface CardTheme {
       margin-bottom: 12px;
     }
     .card-title {
-      font-size: 22px;
+      font-size: 26px;
       font-weight: 800;
       margin-bottom: 10px;
       line-height: 1.3;
     }
     .card-subtitle {
-      font-size: 20px;
+      font-size: 23px;
       opacity: 0.7;
       margin-bottom: 14px;
       font-weight: 500;
     }
     .card-body {
-      font-size: 14px;
+      font-size: 17px;
       line-height: 1.7;
     }
     .card-footer {
       padding: 18px 24px;
-      border-top: 2px outset rgba(0,0,0,0.08);
+      border-top: 2px double rgba(0,0,0,0.08);
       display: flex;
       gap: 12px;
       align-items: center;
@@ -153,13 +153,13 @@ export class CardComponent {
   @Output() cardHover = new EventEmitter<boolean>();
 
   private defaultTheme: CardTheme = {
-    primaryColor: '#14b8a6',
-    secondaryColor: '#2dd4bf',
+    primaryColor: '#059669',
+    secondaryColor: '#10b981',
     backgroundColor: '#ffffff',
-    textColor: '#134e4a',
-    borderColor: '#99f6e4',
-    shadowColor: 'rgba(20, 184, 166, 0.2)',
-    accentColor: '#0f766e'
+    textColor: '#064e3b',
+    borderColor: '#d1fae5',
+    shadowColor: 'rgba(5, 150, 105, 0.25)',
+    accentColor: '#047857'
   };
 
   get appliedTheme(): CardTheme {

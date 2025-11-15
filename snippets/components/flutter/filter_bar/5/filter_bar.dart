@@ -30,14 +30,14 @@ class _BarComponentState extends State<BarComponent> with TickerProviderStateMix
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 940),
       vsync: this,
     );
     _hoverController = AnimationController(
-      duration: const Duration(milliseconds: 205),
+      duration: const Duration(milliseconds: 226),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 0.97, end: 1.0).animate(
+    _scaleAnimation = Tween<double>(begin: 0.94, end: 1.0).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
     );
     _controller.forward();
@@ -66,24 +66,24 @@ class _BarComponentState extends State<BarComponent> with TickerProviderStateMix
         child: ScaleTransition(
           scale: _scaleAnimation,
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 205),
+            duration: const Duration(milliseconds: 226),
             transform: Matrix4.identity()
-              ..translate(0.0, _isHovered ? -3.0 : 0.0),
-            padding: widget.padding ?? const EdgeInsets.all(29),
+              ..translate(0.0, _isHovered ? -4.0 : 0.0),
+            padding: widget.padding ?? const EdgeInsets.all(32),
             decoration: BoxDecoration(
               color: widget.backgroundColor ?? Colors.white,
-              borderRadius: BorderRadius.circular(19),
+              borderRadius: BorderRadius.circular(22),
               border: Border.all(
                 color: (widget.accentColor ?? Theme.of(context).primaryColor).withOpacity(
-                  _isHovered ? 0.7 : 0.3
+                  _isHovered ? 0.8 : 0.3
                 ),
-                width: _isHovered ? 3.0 : 1.0,
+                width: _isHovered ? 2.0 : 1.0,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(_isHovered ? 0.17 : 0.9),
-                  blurRadius: _isHovered ? 20.0 : 13.0,
-                  offset: Offset(0, _isHovered ? 5.0 : 4.0),
+                  color: Colors.black.withOpacity(_isHovered ? 0.14 : 0.6),
+                  blurRadius: _isHovered ? 21.0 : 10.0,
+                  offset: Offset(0, _isHovered ? 6.0 : 4.0),
                 ),
               ],
             ),

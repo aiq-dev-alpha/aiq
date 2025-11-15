@@ -1,64 +1,50 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, KeyboardEvent } from 'react';
 
-export interface InputProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
-  className?: string;
-  onHover?: (isHovered: boolean) => void;
+interface OTPInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  length?: number;
 }
 
-export const Input: React.FC<InputProps> = ({ 
-  theme = {}, 
-  className = '',
-  onHover
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+export default function OTPInput({
+  value,
+  onChange,
+  length = 6
+}: OTPInputProps) {
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
+  const handleChange = (index: number, val: string) => {
+    if (!/^\d*$/.test(val)) return;
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
+    const newValue = value.split('');
+    newValue[index] = val.slice(-1);
+    onChange(newValue.join(''));
+
+    if (val && index < length - 1) {
+      inputRefs.current[index + 1]?.focus();
+    }
   };
 
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-9px) scale(1.2)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(17px) scale(0.95)',
-    transition: `all 340ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '27px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '19px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 13px 31px rgba(0,0,0,0.19)' 
-      : '0 6px 19px rgba(0,0,0,0.11)',
-    cursor: 'pointer',
+  const handleKeyDown = (index: number, e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && !value[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
   };
 
   return (
-    <div 
-      className={className} 
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      Component
+    <div className="flex gap-2 justify-center">
+      {Array.from({ length }).map((_, index) => (
+        <input
+          key={index}
+          ref={(el) => (inputRefs.current[index] = el)}
+          type="text"
+          maxLength={1}
+          value={value[index] || ''}
+          onChange={(e) => handleChange(index, e.target.value)}
+          onKeyDown={(e) => handleKeyDown(index, e)}
+          className="w-12 h-12 text-center text-xl font-semibold border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+        />
+      ))}
     </div>
   );
-};
+}

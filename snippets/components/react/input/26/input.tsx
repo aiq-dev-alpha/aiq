@@ -1,64 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-export interface InputProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
-  className?: string;
-  onHover?: (isHovered: boolean) => void;
+interface DateInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  label?: string;
 }
 
-export const Input: React.FC<InputProps> = ({ 
-  theme = {}, 
-  className = '',
-  onHover
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-6px) scale(1.1)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(20px) scale(0.95)',
-    transition: `all 430ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '30px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '22px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 8px 22px rgba(0,0,0,0.14)' 
-      : '0 4px 14px rgba(0,0,0,0.8)',
-    cursor: 'pointer',
-  };
-
+export default function DateInput({
+  value,
+  onChange,
+  label = 'Date'
+}: DateInputProps) {
   return (
-    <div 
-      className={className} 
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      Component
+    <div className="w-full">
+      <label className="block text-sm font-medium text-gray-700 mb-1">
+        {label}
+      </label>
+      <div className="relative">
+        <input
+          type="date"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full pl-4 pr-10 py-2.5 text-base border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+        />
+        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
+      </div>
     </div>
   );
-};
+}

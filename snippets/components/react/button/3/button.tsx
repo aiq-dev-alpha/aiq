@@ -10,8 +10,8 @@ export interface ButtonProps {
   onHover?: (isHovered: boolean) => void;
 }
 
-export const Button: React.FC<ButtonProps> = ({ 
-  theme = {}, 
+export const Button: React.FC<ButtonProps> = ({
+  theme = {},
   className = '',
   onHover
 }) => {
@@ -32,33 +32,40 @@ export const Button: React.FC<ButtonProps> = ({
     onHover?.(false);
   };
 
-  const styles: React.CSSProperties = {
+  const buttonStyles: React.CSSProperties = {
     opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-7px) scale(1.2)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(15px) scale(0.95)',
-    transition: `all 340ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '21px',
-    backgroundColor: theme.background || '#ffffff',
+    transition: 'all 300ms ease',
+    padding: '12px 24px',
+    backgroundColor: 'transparent',
     color: theme.text || '#111827',
-    borderRadius: '13px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 9px 23px rgba(0,0,0,0.15)' 
-      : '0 6px 15px rgba(0,0,0,0.9)',
+    border: 'none',
     cursor: 'pointer',
+    fontWeight: 500,
+    position: 'relative',
+    overflow: 'hidden',
+  };
+
+  const underlineStyles: React.CSSProperties = {
+    position: 'absolute',
+    bottom: '8px',
+    left: '24px',
+    right: '24px',
+    height: '2px',
+    backgroundColor: theme.primary || '#3b82f6',
+    transform: isHovered ? 'scaleX(1)' : 'scaleX(0)',
+    transformOrigin: 'left',
+    transition: 'transform 300ms cubic-bezier(0.4, 0, 0.2, 1)',
   };
 
   return (
-    <div 
-      className={className} 
-      style={styles}
+    <div
+      className={className}
+      style={buttonStyles}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      Component
+      Ghost Button
+      <div style={underlineStyles} />
     </div>
   );
 };

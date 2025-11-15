@@ -1,64 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
-export interface InputProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
-  className?: string;
-  onHover?: (isHovered: boolean) => void;
+interface AutogrowInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  minHeight?: number;
 }
 
-export const Input: React.FC<InputProps> = ({ 
-  theme = {}, 
-  className = '',
-  onHover
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+export default function AutogrowInput({
+  value,
+  onChange,
+  placeholder = 'Enter text...',
+  minHeight = 42
+}: AutogrowInputProps) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-5px) scale(1.2)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(13px) scale(0.95)',
-    transition: `all 820ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '23px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '15px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 9px 27px rgba(0,0,0,0.15)' 
-      : '0 7px 15px rgba(0,0,0,0.7)',
-    cursor: 'pointer',
-  };
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${Math.max(
+        textareaRef.current.scrollHeight,
+        minHeight
+      )}px`;
+    }
+  }, [value, minHeight]);
 
   return (
-    <div 
-      className={className} 
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      Component
-    </div>
+    <textarea
+      ref={textareaRef}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder={placeholder}
+      rows={1}
+      style={{ minHeight: `${minHeight}px` }}
+      className="w-full px-4 py-2.5 text-base border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all resize-none overflow-hidden"
+    />
   );
-};
+}

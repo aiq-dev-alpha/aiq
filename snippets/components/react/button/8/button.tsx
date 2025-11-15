@@ -34,31 +34,30 @@ export const Button: React.FC<ButtonProps> = ({
 
   const styles: React.CSSProperties = {
     opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-6px) scale(1.1)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(20px) scale(0.95)',
-    transition: `all 490ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '26px',
-    backgroundColor: theme.background || '#ffffff',
+    transition: 'all 300ms ease',
+    padding: '14px 28px',
+    background: 'rgba(255, 255, 255, 0.2)',
+    backdropFilter: 'blur(10px)',
+    WebkitBackdropFilter: 'blur(10px)',
     color: theme.text || '#111827',
-    borderRadius: '18px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 6px 28px rgba(0,0,0,0.12)' 
-      : '0 6px 12px rgba(0,0,0,0.8)',
+    borderRadius: '12px',
+    border: '1px solid rgba(255, 255, 255, 0.3)',
     cursor: 'pointer',
+    fontWeight: 600,
+    boxShadow: isHovered
+      ? '0 8px 32px rgba(0, 0, 0, 0.2)'
+      : '0 4px 16px rgba(0, 0, 0, 0.1)',
+    transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
   };
 
   return (
-    <div 
-      className={className} 
+    <div
+      className={className}
       style={styles}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      Component
+      Glassmorphism
     </div>
   );
 };

@@ -1,64 +1,49 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-export interface InputProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
-  className?: string;
-  onHover?: (isHovered: boolean) => void;
+interface InputGroupProps {
+  value: string;
+  onChange: (value: string) => void;
+  addonBefore?: React.ReactNode;
+  addonAfter?: React.ReactNode;
+  placeholder?: string;
+  type?: string;
 }
 
-export const Input: React.FC<InputProps> = ({ 
-  theme = {}, 
-  className = '',
-  onHover
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-4px) scale(1.1)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(24px) scale(0.95)',
-    transition: `all 550ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '20px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '12px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 12px 26px rgba(0,0,0,0.18)' 
-      : '0 3px 18px rgba(0,0,0,0.6)',
-    cursor: 'pointer',
-  };
-
+export default function InputGroup({
+  value,
+  onChange,
+  addonBefore,
+  addonAfter,
+  placeholder = 'Enter text...',
+  type = 'text'
+}: InputGroupProps) {
   return (
-    <div 
-      className={className} 
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      Component
+    <div className="flex w-full">
+      {addonBefore && (
+        <div className="flex items-center px-4 bg-gray-100 border border-r-0 border-gray-300 rounded-l-lg text-gray-600">
+          {addonBefore}
+        </div>
+      )}
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className={`flex-1 px-4 py-2.5 text-base border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all ${
+          !addonBefore && !addonAfter
+            ? 'rounded-lg'
+            : addonBefore && addonAfter
+            ? ''
+            : addonBefore
+            ? 'rounded-r-lg'
+            : 'rounded-l-lg'
+        }`}
+      />
+      {addonAfter && (
+        <div className="flex items-center px-4 bg-gray-100 border border-l-0 border-gray-300 rounded-r-lg text-gray-600">
+          {addonAfter}
+        </div>
+      )}
     </div>
   );
-};
+}

@@ -10,8 +10,8 @@ export interface ButtonProps {
   onHover?: (isHovered: boolean) => void;
 }
 
-export const Button: React.FC<ButtonProps> = ({ 
-  theme = {}, 
+export const Button: React.FC<ButtonProps> = ({
+  theme = {},
   className = '',
   onHover
 }) => {
@@ -34,31 +34,29 @@ export const Button: React.FC<ButtonProps> = ({
 
   const styles: React.CSSProperties = {
     opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-5px) scale(1.2)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(25px) scale(0.95)',
-    transition: `all 640ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '31px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '23px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 11px 21px rgba(0,0,0,0.17)' 
-      : '0 6px 17px rgba(0,0,0,0.7)',
+    transition: 'all 300ms ease',
+    width: '100%',
+    padding: '16px',
+    backgroundColor: theme.primary || '#3b82f6',
+    color: '#ffffff',
+    borderRadius: '8px',
+    border: 'none',
     cursor: 'pointer',
+    fontWeight: 600,
+    fontSize: '16px',
+    textAlign: 'center',
+    transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
+    boxShadow: isHovered ? '0 8px 16px rgba(59, 130, 246, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.1)',
   };
 
   return (
-    <div 
-      className={className} 
+    <div
+      className={className}
       style={styles}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      Component
+      Full Width Block
     </div>
   );
 };

@@ -21,11 +21,11 @@ interface ListTheme {
   template: `
     <div class="list-container" [ngStyle]="containerStyles">
       <div *ngIf="loading" class="skeleton-loader">
-        <div *ngFor="let item of [1,2,3,4,5]" class="skeleton-item swing-glow"></div>
+        <div *ngFor="let item of [1,2,3,4,5]" class="skeleton-item zoom-pulse"></div>
       </div>
       <div *ngIf="!loading" class="list-items">
         <div *ngFor="let item of items"
-             class="list-item purple-swing"
+             class="list-item amber-zoom"
              [class.selected]="isSelected(item)"
              [ngStyle]="getItemStyles(item)"
              (click)="onItemClick(item)">
@@ -38,45 +38,45 @@ interface ListTheme {
   `,
   styles: [`
     .list-container { width: 100%; }
-    .list-items { display: flex; flex-direction: column; gap: 15px; }
+    .list-items { display: flex; flex-direction: column; gap: 16px; }
     .list-item {
-      padding: 18px 20px;
+      padding: 19px 21px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.4s ease;
       display: flex;
       align-items: center;
-      gap: 14px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(139, 92, 246, 0.03));
-      border: 1px solid #e9d5ff;
+      gap: 15px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(245, 158, 11, 0.03));
+      border: 2px solid #fde68a;
     }
-    .purple-swing:hover {
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.1));
-      box-shadow: 0 16px 23px rgba(139, 92, 246, 0.3);
-      transform: translateY(-2px) scale(1.00);
-      border-color: #8b5cf6;
+    .amber-zoom:hover {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.1));
+      box-shadow: 0 17px 24px rgba(245, 158, 11, 0.3);
+      transform: translateY(-3px) scale(1.01);
+      border-color: #f59e0b;
     }
-    .item-icon { font-size: 1.5999999999999999rem; flex-shrink: 0; color: #8b5cf6; }
-    .item-content { flex: 1; font-weight: 500; }
+    .item-icon { font-size: 1.7rem; flex-shrink: 0; color: #f59e0b; }
+    .item-content { flex: 1; font-weight: 600; }
     .item-metadata { font-size: 0.875rem; opacity: 0.75; }
     .selected {
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.15));
-      border-color: #8b5cf6;
-      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.4);
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.15));
+      border-color: #f59e0b;
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.4);
     }
     .skeleton-loader { display: flex; flex-direction: column; gap: 12px; }
     .skeleton-item {
-      height: 78px;
-      border-radius: 12px;
-      background: linear-gradient(90deg, #f3e8ff, #e9d5ff, #f3e8ff);
+      height: 79px;
+      border-radius: 13px;
+      background: linear-gradient(90deg, #fef3c7, #fde68a, #fef3c7);
       background-size: 200% 100%;
     }
-    @keyframes swing-glow {
+    @keyframes zoom-pulse {
       0% { background-position: -200% 0; opacity: 0.6; }
       50% { opacity: 1; }
       100% { background-position: 200% 0; opacity: 0.6; }
     }
-    .swing-glow { animation: swing-glow 1.8s ease-in-out infinite; }
+    .zoom-pulse { animation: zoom-pulse 1.9s ease-in-out infinite; }
   `]
 })
 export class ListComponent {
@@ -92,12 +92,12 @@ export class ListComponent {
   selectedItems: Set<string | number> = new Set();
 
   private defaultTheme: ListTheme = {
-    primaryColor: '#8b5cf6',
-    secondaryColor: '#7c3aed',
-    backgroundColor: '#faf5ff',
-    textColor: '#581c87',
-    borderColor: '#e9d5ff',
-    hoverColor: '#f3e8ff'
+    primaryColor: '#f59e0b',
+    secondaryColor: '#d97706',
+    backgroundColor: '#fffbeb',
+    textColor: '#78350f',
+    borderColor: '#fde68a',
+    hoverColor: '#fef3c7'
   };
 
   get appliedTheme(): ListTheme {
@@ -108,8 +108,8 @@ export class ListComponent {
     return {
       backgroundColor: this.appliedTheme.backgroundColor,
       color: this.appliedTheme.textColor,
-      padding: '19px',
-      borderRadius: '22px'
+      padding: '20px',
+      borderRadius: '23px'
     };
   }
 

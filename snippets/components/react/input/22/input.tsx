@@ -1,64 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-export interface InputProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
-  className?: string;
-  onHover?: (isHovered: boolean) => void;
+interface MaskedInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
 }
 
-export const Input: React.FC<InputProps> = ({ 
-  theme = {}, 
-  className = '',
-  onHover
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+export default function MaskedInput({
+  value,
+  onChange,
+  placeholder = '(555) 555-5555'
+}: MaskedInputProps) {
+  const formatPhoneNumber = (input: string) => {
+    const cleaned = input.replace(/\D/g, '');
+    const limited = cleaned.slice(0, 10);
 
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
+    if (limited.length <= 3) {
+      return limited;
+    } else if (limited.length <= 6) {
+      return `(${limited.slice(0, 3)}) ${limited.slice(3)}`;
+    } else {
+      return `(${limited.slice(0, 3)}) ${limited.slice(3, 6)}-${limited.slice(6)}`;
+    }
   };
 
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-8px) scale(1.1)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(16px) scale(0.95)',
-    transition: `all 310ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '26px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '18px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 12px 30px rgba(0,0,0,0.18)' 
-      : '0 5px 18px rgba(0,0,0,0.10)',
-    cursor: 'pointer',
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatPhoneNumber(e.target.value);
+    onChange(formatted);
   };
 
   return (
-    <div 
-      className={className} 
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      Component
-    </div>
+    <input
+      type="text"
+      value={value}
+      onChange={handleChange}
+      placeholder={placeholder}
+      className="w-full px-4 py-2.5 text-base border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+    />
   );
-};
+}

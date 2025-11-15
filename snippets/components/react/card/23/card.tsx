@@ -1,64 +1,51 @@
+// Variant 23: Minimal card (clean, simple)
 import React, { useState, useEffect } from 'react';
 
 export interface CardProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
   onHover?: (isHovered: boolean) => void;
 }
 
-export const Card: React.FC<CardProps> = ({ 
-  theme = {}, 
-  className = '',
-  onHover
-}) => {
+export const Card: React.FC<CardProps> = ({ theme = {}, className = '', onHover }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-9px) scale(1.2)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(17px) scale(0.95)',
-    transition: `all 340ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '27px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '19px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 13px 31px rgba(0,0,0,0.19)' 
-      : '0 6px 19px rgba(0,0,0,0.11)',
-    cursor: 'pointer',
-  };
+  useEffect(() => { setIsVisible(true); }, []);
 
   return (
-    <div 
-      className={className} 
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+    <div
+      className={className}
+      style={{
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? 'translateY(0)' : 'translateY(10px)',
+        transition: 'all 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+        padding: '40px',
+        backgroundColor: theme.background || '#ffffff',
+        borderRadius: '8px',
+        border: `1px solid ${isHovered ? (theme.text || '#111827') : '#f3f4f6'}`,
+        cursor: 'pointer',
+        width: '300px',
+      }}
+      onMouseEnter={() => { setIsHovered(true); onHover?.(true); }}
+      onMouseLeave={() => { setIsHovered(false); onHover?.(false); }}
     >
-      Component
+      <h3 style={{
+        fontSize: '14px',
+        fontWeight: '500',
+        color: theme.primary || '#3b82f6',
+        marginBottom: '8px',
+        textTransform: 'uppercase' as const,
+        letterSpacing: '2px',
+      }}>
+        Minimalist
+      </h3>
+      <h2 style={{ fontSize: '24px', fontWeight: 'normal', color: theme.text || '#111827', marginBottom: '16px', lineHeight: '1.4' }}>
+        Less is More
+      </h2>
+      <p style={{ fontSize: '15px', color: '#6b7280', lineHeight: '1.7' }}>
+        Clean, simple design that focuses on content and clarity.
+      </p>
     </div>
   );
 };

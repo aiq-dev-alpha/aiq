@@ -10,8 +10,8 @@ export interface ButtonProps {
   onHover?: (isHovered: boolean) => void;
 }
 
-export const Button: React.FC<ButtonProps> = ({ 
-  theme = {}, 
+export const Button: React.FC<ButtonProps> = ({
+  theme = {},
   className = '',
   onHover
 }) => {
@@ -34,31 +34,31 @@ export const Button: React.FC<ButtonProps> = ({
 
   const styles: React.CSSProperties = {
     opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-6px) scale(1.1)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(14px) scale(0.95)',
-    transition: `all 310ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '20px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '12px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 8px 22px rgba(0,0,0,0.14)' 
-      : '0 5px 14px rgba(0,0,0,0.8)',
+    transform: isVisible ? 'translateY(0)' : 'translateY(10px)',
+    transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+    padding: '12px 24px',
+    backgroundColor: 'transparent',
+    color: theme.primary || '#3b82f6',
+    borderRadius: '8px',
+    border: '2px solid transparent',
+    backgroundImage: isHovered
+      ? `linear-gradient(${theme.background || '#ffffff'}, ${theme.background || '#ffffff'}), linear-gradient(135deg, #667eea 0%, #764ba2 100%)`
+      : `linear-gradient(${theme.background || '#ffffff'}, ${theme.background || '#ffffff'}), linear-gradient(135deg, ${theme.primary || '#3b82f6'} 0%, #8b5cf6 100%)`,
+    backgroundOrigin: 'border-box',
+    backgroundClip: 'padding-box, border-box',
     cursor: 'pointer',
+    fontWeight: 600,
+    position: 'relative',
   };
 
   return (
-    <div 
-      className={className} 
+    <div
+      className={className}
       style={styles}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      Component
+      Outlined Gradient
     </div>
   );
 };

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class AnalyticsScreen extends StatefulWidget {
+class Screen extends StatefulWidget {
   final Color? backgroundColor;
   final Color? textColor;
   final Color? accentColor;
   final EdgeInsetsGeometry? padding;
 
-  const AnalyticsScreen({
+  const Screen({
     Key? key,
     this.backgroundColor,
     this.textColor,
@@ -15,10 +15,10 @@ class AnalyticsScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<AnalyticsScreen> createState() => _AnalyticsScreenState();
+  State<Screen> createState() => _ScreenState();
 }
 
-class _AnalyticsScreenState extends State<AnalyticsScreen> with TickerProviderStateMixin {
+class _ScreenState extends State<Screen> with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   bool _isHovered = false;
@@ -27,7 +27,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> with TickerProviderSt
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 680),
+      duration: const Duration(milliseconds: 760),
       vsync: this,
     );
     _scaleAnimation = Tween<double>(begin: 0.95, end: 1.0).animate(
@@ -52,10 +52,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> with TickerProviderSt
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 250),
           transform: Matrix4.identity()..translate(0.0, _isHovered ? -3.0 : 0.0),
-          padding: widget.padding ?? const EdgeInsets.all(24),
+          padding: widget.padding ?? const EdgeInsets.all(26),
           decoration: BoxDecoration(
             color: widget.backgroundColor ?? Colors.white,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: (widget.accentColor ?? Colors.blue).withOpacity(_isHovered ? 0.6 : 0.2),
               width: _isHovered ? 2.0 : 1.0,

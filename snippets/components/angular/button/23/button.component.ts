@@ -19,8 +19,8 @@ interface ButtonTheme {
       [attr.aria-label]="ariaLabel"
       [attr.aria-busy]="loading"
       (click)="handleClick($event)"
-      class="tilt-button">
-      <span *ngIf="loading" class="spinner pentagon-spinner"></span>
+      class="float-button">
+      <span *ngIf="loading" class="spinner infinity-spinner"></span>
       <span *ngIf="!loading && iconLeft" class="icon-left">{{ iconLeft }}</span>
       <span class="btn-content">
         <ng-content></ng-content>
@@ -29,7 +29,7 @@ interface ButtonTheme {
     </button>
   `,
   styles: [`
-    .tilt-button {
+    .float-button {
       position: relative;
       overflow: hidden;
       cursor: pointer;
@@ -40,30 +40,30 @@ interface ButtonTheme {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      box-shadow: 0 5px 20px #0369a166;
+      box-shadow: 0 5px 20px #ea580c66;
     }
 
-    .tilt-button:hover:not(:disabled) {
-      box-shadow: 0 8px 35px #0369a199;
+    .float-button:hover:not(:disabled) {
+      box-shadow: 0 8px 35px #ea580c99;
       transform: translateY(-2px) scale(1.02);
-      animation: tiltAnim 0.5s ease;
+      animation: floatAnim 0.5s ease;
     }
 
-    .tilt-button:active:not(:disabled) {
+    .float-button:active:not(:disabled) {
       transform: translateY(0) scale(0.98);
     }
 
-    .tilt-button:disabled {
+    .float-button:disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
 
-    @keyframes tiltAnim {
+    @keyframes floatAnim {
       0%, 100% { transform: translateY(-2px) scale(1.02); }
       50% { transform: translateY(-4px) scale(1.04) rotate(1deg); }
     }
 
-    .pentagon-spinner {
+    .infinity-spinner {
       width: 1em;
       height: 1em;
       border: 2px solid rgba(255, 255, 255, 0.3);
@@ -102,7 +102,7 @@ interface ButtonTheme {
 })
 export class ButtonComponent {
   @Input() theme: Partial<ButtonTheme> = {};
-  @Input() variant: 'default' | 'outlined' | 'filled' | 'tilt' = 'default';
+  @Input() variant: 'default' | 'outlined' | 'filled' | 'float' = 'default';
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
   @Input() disabled: boolean = false;
   @Input() loading: boolean = false;
@@ -112,12 +112,12 @@ export class ButtonComponent {
   @Output() clicked = new EventEmitter<MouseEvent>();
 
   private defaultTheme: ButtonTheme = {
-    primaryColor: '#0369a1',
-    secondaryColor: '#075985',
-    backgroundColor: '#f0f9ff',
+    primaryColor: '#ea580c',
+    secondaryColor: '#c2410c',
+    backgroundColor: '#fff7ed',
     textColor: '#ffffff',
-    borderColor: '#0369a1',
-    accentColor: '#38bdf8'
+    borderColor: '#ea580c',
+    accentColor: '#fb923c'
   };
 
   get appliedTheme(): ButtonTheme {
@@ -141,7 +141,7 @@ export class ButtonComponent {
         color: this.appliedTheme.textColor,
         border: 'none'
       },
-      tilt: {
+      float: {
         background: `linear-gradient(90deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.accentColor})`,
         color: this.appliedTheme.textColor,
         border: 'none'

@@ -1,64 +1,62 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, KeyboardEvent } from 'react';
 
-export interface InputProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
-  className?: string;
-  onHover?: (isHovered: boolean) => void;
+interface TagInputProps {
+  tags: string[];
+  onTagsChange: (tags: string[]) => void;
+  placeholder?: string;
 }
 
-export const Input: React.FC<InputProps> = ({ 
-  theme = {}, 
-  className = '',
-  onHover
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+export default function TagInput({
+  tags,
+  onTagsChange,
+  placeholder = 'Add tags...'
+}: TagInputProps) {
+  const [input, setInput] = useState('');
 
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && input.trim()) {
+      e.preventDefault();
+      if (!tags.includes(input.trim())) {
+        onTagsChange([...tags, input.trim()]);
+      }
+      setInput('');
+    } else if (e.key === 'Backspace' && !input && tags.length > 0) {
+      onTagsChange(tags.slice(0, -1));
+    }
   };
 
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-6px) scale(1.1)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(14px) scale(0.95)',
-    transition: `all 250ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '24px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '16px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 10px 28px rgba(0,0,0,0.16)' 
-      : '0 3px 16px rgba(0,0,0,0.8)',
-    cursor: 'pointer',
+  const removeTag = (index: number) => {
+    onTagsChange(tags.filter((_, i) => i !== index));
   };
 
   return (
-    <div 
-      className={className} 
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      Component
+    <div className="w-full min-h-[42px] px-2 py-1.5 border border-gray-300 rounded-lg focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-200 transition-all">
+      <div className="flex flex-wrap gap-2">
+        {tags.map((tag, index) => (
+          <span
+            key={index}
+            className="inline-flex items-center gap-1 px-2 py-1 bg-blue-500 text-white text-sm rounded-md"
+          >
+            {tag}
+            <button
+              onClick={() => removeTag(index)}
+              className="hover:text-red-200 transition-colors"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </span>
+        ))}
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder={tags.length === 0 ? placeholder : ''}
+          className="flex-1 min-w-[120px] px-2 py-1 text-base outline-none"
+        />
+      </div>
     </div>
   );
-};
+}

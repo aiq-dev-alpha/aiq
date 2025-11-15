@@ -21,11 +21,11 @@ interface ListTheme {
   template: `
     <div class="list-container" [ngStyle]="containerStyles">
       <div *ngIf="loading" class="skeleton-loader">
-        <div *ngFor="let item of [1,2,3,4,5]" class="skeleton-item zoom-pulse"></div>
+        <div *ngFor="let item of [1,2,3,4,5]" class="skeleton-item wave-pulse"></div>
       </div>
       <div *ngIf="!loading" class="list-items">
         <div *ngFor="let item of items"
-             class="list-item amber-zoom"
+             class="list-item emerald-wave"
              [class.selected]="isSelected(item)"
              [ngStyle]="getItemStyles(item)"
              (click)="onItemClick(item)">
@@ -38,45 +38,45 @@ interface ListTheme {
   `,
   styles: [`
     .list-container { width: 100%; }
-    .list-items { display: flex; flex-direction: column; gap: 16px; }
+    .list-items { display: flex; flex-direction: column; gap: 12px; }
     .list-item {
-      padding: 19px 21px;
+      padding: 16px 22px;
       cursor: pointer;
-      transition: all 0.4s ease;
+      transition: all 0.5s ease;
       display: flex;
       align-items: center;
-      gap: 15px;
-      border-radius: 13px;
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(245, 158, 11, 0.03));
-      border: 2px solid #fde68a;
+      gap: 12px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.03));
+      border: 1px solid #d1fae5;
     }
-    .amber-zoom:hover {
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.1));
-      box-shadow: 0 17px 24px rgba(245, 158, 11, 0.3);
-      transform: translateY(-3px) scale(1.01);
-      border-color: #f59e0b;
+    .emerald-wave:hover {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.1));
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+      transform: translateY(-4px) scale(1.02);
+      border-color: #10b981;
     }
-    .item-icon { font-size: 1.7rem; flex-shrink: 0; color: #f59e0b; }
-    .item-content { flex: 1; font-weight: 600; }
+    .item-icon { font-size: 1.4rem; flex-shrink: 0; color: #10b981; }
+    .item-content { flex: 1; font-weight: 700; }
     .item-metadata { font-size: 0.875rem; opacity: 0.75; }
     .selected {
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.15));
-      border-color: #f59e0b;
-      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.4);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.15));
+      border-color: #10b981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.4);
     }
     .skeleton-loader { display: flex; flex-direction: column; gap: 12px; }
     .skeleton-item {
-      height: 79px;
-      border-radius: 13px;
-      background: linear-gradient(90deg, #fef3c7, #fde68a, #fef3c7);
+      height: 60px;
+      border-radius: 14px;
+      background: linear-gradient(90deg, #a7f3d0, #d1fae5, #a7f3d0);
       background-size: 200% 100%;
     }
-    @keyframes zoom-pulse {
+    @keyframes wave-pulse {
       0% { background-position: -200% 0; opacity: 0.6; }
       50% { opacity: 1; }
       100% { background-position: 200% 0; opacity: 0.6; }
     }
-    .zoom-pulse { animation: zoom-pulse 1.9s ease-in-out infinite; }
+    .wave-pulse { animation: wave-pulse 1.5s ease-in-out infinite; }
   `]
 })
 export class ListComponent {
@@ -92,12 +92,12 @@ export class ListComponent {
   selectedItems: Set<string | number> = new Set();
 
   private defaultTheme: ListTheme = {
-    primaryColor: '#f59e0b',
-    secondaryColor: '#d97706',
-    backgroundColor: '#fffbeb',
-    textColor: '#78350f',
-    borderColor: '#fde68a',
-    hoverColor: '#fef3c7'
+    primaryColor: '#10b981',
+    secondaryColor: '#059669',
+    backgroundColor: '#f0fdf4',
+    textColor: '#064e3b',
+    borderColor: '#d1fae5',
+    hoverColor: '#a7f3d0'
   };
 
   get appliedTheme(): ListTheme {
@@ -108,8 +108,8 @@ export class ListComponent {
     return {
       backgroundColor: this.appliedTheme.backgroundColor,
       color: this.appliedTheme.textColor,
-      padding: '20px',
-      borderRadius: '23px'
+      padding: '16px',
+      borderRadius: '14px'
     };
   }
 

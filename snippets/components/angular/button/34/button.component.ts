@@ -1,159 +1,71 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
-interface ButtonTheme {
-  primaryColor: string;
-  secondaryColor: string;
-  backgroundColor: string;
-  textColor: string;
-  borderColor: string;
-  accentColor: string;
+interface ColorPalette {
+  primary: string;
+  secondary: string;
+  tertiary: string;
+  surface: string;
+  onSurface: string;
 }
 
 @Component({
   selector: 'app-button',
   template: `
-    <button
-      [ngClass]="['btn', 'btn-' + variant, 'btn-' + size]"
-      [ngStyle]="buttonStyles"
-      [disabled]="disabled || loading"
-      [attr.aria-label]="ariaLabel"
-      [attr.aria-busy]="loading"
-      (click)="handleClick($event)"
-      class="rubber-button">
-      <span *ngIf="loading" class="spinner arrows-spinner"></span>
-      <span *ngIf="!loading && iconLeft" class="icon-left">{{ iconLeft }}</span>
-      <span class="btn-content">
-        <ng-content></ng-content>
-      </span>
-      <span *ngIf="!loading && iconRight" class="icon-right">{{ iconRight }}</span>
+    <button [ngStyle]="styles" [disabled]="disabled || busy" [ngClass]="classes" (click)="emit($event)" class="btn">
+      <span *ngIf="busy" class="spin"></span>
+      <ng-container *ngIf="!busy">
+        <i *ngIf="icon && iconPos === 'left'" class="icon-left">{{ icon }}</i>
+        <span><ng-content></ng-content></span>
+        <i *ngIf="icon && iconPos === 'right'" class="icon-right">{{ icon }}</i>
+      </ng-container>
     </button>
   `,
   styles: [`
-    .rubber-button {
-      position: relative;
-      overflow: hidden;
-      cursor: pointer;
-      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      font-weight: 600;
-      border: none;
-      outline: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      box-shadow: 0 5px 20px #0d948866;
-    }
-
-    .rubber-button:hover:not(:disabled) {
-      box-shadow: 0 8px 35px #0d948899;
-      transform: translateY(-2px) scale(1.02);
-      animation: rubberAnim 0.5s ease;
-    }
-
-    .rubber-button:active:not(:disabled) {
-      transform: translateY(0) scale(0.98);
-    }
-
-    .rubber-button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    @keyframes rubberAnim {
-      0%, 100% { transform: translateY(-2px) scale(1.02); }
-      50% { transform: translateY(-4px) scale(1.04) rotate(1deg); }
-    }
-
-    .arrows-spinner {
-      width: 1em;
-      height: 1em;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-top-color: currentColor;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .btn-content {
-      display: flex;
-      align-items: center;
-    }
-
-    .btn-sm {
-      padding: 0.5rem 1.5rem;
-      font-size: 0.875rem;
-      border-radius: 0.625rem;
-    }
-
-    .btn-md {
-      padding: 0.75rem 2rem;
-      font-size: 1rem;
-      border-radius: 0.875rem;
-    }
-
-    .btn-lg {
-      padding: 1rem 2.5rem;
-      font-size: 1.125rem;
-      border-radius: 1.125rem;
-    }
+    .btn { border: none; cursor: pointer; font: inherit; outline: none; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); display: inline-flex; align-items: center; justify-content: center; gap: 8px; position: relative; overflow: hidden; }
+    .btn:disabled { cursor: not-allowed; opacity: 0.55; filter: grayscale(0.3); }
+    .btn:not(:disabled):hover { transform: translateY(-2px); filter: brightness(1.12); }
+    .btn:not(:disabled):active { transform: translateY(0) scale(0.98); }
+    .btn.look-outline:hover { box-shadow: inset 0 0 0 2px currentColor !important; }
+    .spin { width: 16px; height: 16px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%; animation: rotate 0.7s linear infinite; }
+    @keyframes rotate { to { transform: rotate(360deg); } }
   `]
 })
 export class ButtonComponent {
-  @Input() theme: Partial<ButtonTheme> = {};
-  @Input() variant: 'default' | 'outlined' | 'filled' | 'rubber' = 'default';
+  @Input() palette: Partial<ColorPalette> = {};
+  @Input() look: 'filled' | 'outline' | 'ghost' | 'soft' = 'filled';
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
-  @Input() disabled: boolean = false;
-  @Input() loading: boolean = false;
-  @Input() iconLeft: string = '';
-  @Input() iconRight: string = '';
-  @Input() ariaLabel: string = '';
-  @Output() clicked = new EventEmitter<MouseEvent>();
+  @Input() disabled = false;
+  @Input() busy = false;
+  @Input() icon?: string;
+  @Input() iconPos: 'left' | 'right' = 'left';
+  @Input() wide = false;
+  @Input() rounded = true;
+  @Input() ripple = true;
+  @Output() click = new EventEmitter<MouseEvent>();
 
-  private defaultTheme: ButtonTheme = {
-    primaryColor: '#0d9488',
-    secondaryColor: '#0f766e',
-    backgroundColor: '#f0fdfa',
-    textColor: '#ffffff',
-    borderColor: '#0d9488',
-    accentColor: '#2dd4bf'
-  };
+  private base: ColorPalette = { primary: '#10b981', secondary: '#059669', tertiary: '#047857', surface: '#ffffff', onSurface: '#111827' };
 
-  get appliedTheme(): ButtonTheme {
-    return { ...this.defaultTheme, ...this.theme };
+  get colors(): ColorPalette {
+    return { ...this.base, ...this.palette };
   }
 
-  get buttonStyles() {
-    const variantStyles = {
-      default: {
-        background: `linear-gradient(135deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})`,
-        color: this.appliedTheme.textColor,
-        border: 'none'
-      },
-      outlined: {
-        background: 'transparent',
-        color: this.appliedTheme.primaryColor,
-        border: `2px solid ${this.appliedTheme.primaryColor}`
-      },
-      filled: {
-        background: this.appliedTheme.primaryColor,
-        color: this.appliedTheme.textColor,
-        border: 'none'
-      },
-      rubber: {
-        background: `linear-gradient(90deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.accentColor})`,
-        color: this.appliedTheme.textColor,
-        border: 'none'
-      }
+  get styles(): Record<string, string> {
+    const c = this.colors;
+    const sizes = { sm: { padding: '7px 16px', fontSize: '13px', minHeight: '34px' }, md: { padding: '11px 22px', fontSize: '14px', minHeight: '42px' }, lg: { padding: '14px 28px', fontSize: '16px', minHeight: '50px' } };
+    const looks = {
+      filled: { background: `linear-gradient(135deg, ${c.primary}, ${c.secondary})`, color: '#fff', border: 'none', boxShadow: `0 3px 8px ${c.primary}40` },
+      outline: { background: 'transparent', color: c.primary, border: `2px solid ${c.primary}`, boxShadow: `inset 0 0 0 0 ${c.primary}` },
+      ghost: { background: 'transparent', color: c.primary, border: 'none', boxShadow: 'none' },
+      soft: { background: `${c.primary}18`, color: c.secondary, border: `1px solid ${c.primary}30`, boxShadow: '0 2px 4px rgba(0,0,0,0.04)' }
     };
-
-    return variantStyles[this.variant];
+    return { ...sizes[this.size], ...looks[this.look], borderRadius: this.rounded ? '12px' : '5px', width: this.wide ? '100%' : 'auto', fontWeight: '600', letterSpacing: '0.3px' };
   }
 
-  handleClick(event: MouseEvent): void {
-    if (!this.disabled && !this.loading) {
-      this.clicked.emit(event);
-    }
+  get classes(): string[] {
+    return [`look-${this.look}`, `size-${this.size}`];
+  }
+
+  emit(e: MouseEvent): void {
+    if (!this.disabled && !this.busy) this.click.emit(e);
   }
 }

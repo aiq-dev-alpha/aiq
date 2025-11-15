@@ -62,28 +62,30 @@ interface FormTheme {
 })
 export class FormComponent {
   @Input() theme: Partial<FormTheme> = {};
-  @Input() title: string = 'Quick Survey';
-  @Input() description: string = 'Help us improve';
+  @Input() title: string = 'Shipping Address';
+  @Input() description: string = 'Enter delivery details';
   @Input() fields: any[] = [
-    { name: 'satisfaction', label: 'Satisfaction', type: 'number', required: true },
-    { name: 'recommend', label: 'Would Recommend?', required: true }
+    { name: 'firstName', label: 'First Name', required: true },
+    { name: 'lastName', label: 'Last Name', required: true },
+    { name: 'address', label: 'Street Address', required: true },
+    { name: 'city', label: 'City', required: true }
   ];
-  @Input() submitButtonText: string = 'Submit Survey';
-  @Input() resetButtonText: string = 'Reset';
-  @Input() successMessage: string = 'Thank you for your feedback!';
+  @Input() submitButtonText: string = 'Save Address';
+  @Input() resetButtonText: string = 'Clear';
+  @Input() successMessage: string = 'Address saved!';
 
   formGroup: FormGroup;
   isSubmitting: boolean = false;
   showSuccess: boolean = false;
 
   private defaultTheme: FormTheme = {
-    primaryColor: '#14b8a6',
-    secondaryColor: '#0d9488',
-    backgroundColor: '#f0fdfa',
-    textColor: '#134e4a',
-    borderColor: '#99f6e4',
-    errorColor: '#ea580c',
-    successColor: '#16a34a'
+    primaryColor: '#f97316',
+    secondaryColor: '#ea580c',
+    backgroundColor: '#fff7ed',
+    textColor: '#7c2d12',
+    borderColor: '#fed7aa',
+    errorColor: '#be123c',
+    successColor: '#15803d'
   };
 
   constructor(private fb: FormBuilder) {
@@ -141,7 +143,7 @@ export class FormComponent {
     return {
       backgroundColor: this.appliedTheme.backgroundColor,
       padding: '2rem',
-      borderRadius: '9999px',
+      borderRadius: '0.5rem',
       border: `2px solid ${this.appliedTheme.borderColor}`,
       maxWidth: '500px',
       margin: '0 auto',
@@ -176,8 +178,8 @@ export class FormComponent {
 
   get fieldsContainerStyles() {
     return {
-      display: 'flex',
-      flexDirection: 'column',
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
       gap: '1rem'
     };
   }
@@ -210,7 +212,7 @@ export class FormComponent {
     return {
       padding: '0.75rem',
       border: `2px solid ${isInvalid ? this.appliedTheme.errorColor : this.appliedTheme.borderColor}`,
-      borderRadius: '9999px',
+      borderRadius: '0.5rem',
       fontSize: '1rem',
       color: this.appliedTheme.textColor,
       backgroundColor: '#ffffff',
@@ -232,7 +234,7 @@ export class FormComponent {
       backgroundColor: `${this.appliedTheme.successColor}20`,
       color: this.appliedTheme.successColor,
       padding: '0.875rem',
-      borderRadius: '9999px',
+      borderRadius: '0.5rem',
       marginTop: '1rem',
       textAlign: 'center',
       fontSize: '0.875rem',
@@ -256,7 +258,7 @@ export class FormComponent {
       backgroundColor: this.appliedTheme.primaryColor,
       color: '#ffffff',
       border: 'none',
-      borderRadius: '9999px',
+      borderRadius: '0.5rem',
       fontSize: '1rem',
       fontWeight: '600',
       cursor: this.isSubmitting || this.formGroup.invalid ? 'not-allowed' : 'pointer',
@@ -272,7 +274,7 @@ export class FormComponent {
       backgroundColor: 'transparent',
       color: this.appliedTheme.textColor,
       border: `2px solid ${this.appliedTheme.borderColor}`,
-      borderRadius: '9999px',
+      borderRadius: '0.5rem',
       fontSize: '1rem',
       fontWeight: '600',
       cursor: 'pointer',

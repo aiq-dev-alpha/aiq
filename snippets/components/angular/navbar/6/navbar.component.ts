@@ -25,8 +25,8 @@ interface MenuItem {
     <nav [ngStyle]="navbarStyles" [class.scrolled]="isScrolled" role="navigation">
       <div class="container" [ngStyle]="containerStyles">
         <div class="brand" [ngStyle]="brandStyles">
-          <div class="icon" [ngStyle]="iconStyles">🌊</div>
-          <span class="name">Aqua</span>
+          <div class="icon" [ngStyle]="iconStyles">☁️</div>
+          <span class="name">Sky</span>
         </div>
         
         <div class="menu" [ngStyle]="menuStyles" [class.active]="isMobileMenuOpen">
@@ -61,18 +61,18 @@ interface MenuItem {
   `,
   styles: [`
     nav { transition: all 0.3s; }
-    nav.scrolled { box-shadow: 0 4px 20px rgba(0,0,0,0.12); }
-    .container { display: flex; align-items: center; justify-content: space-between; max-width: 1400px; margin: 0 auto; padding: 1rem 2rem; }
+    nav.scrolled { box-shadow: 0 4px 20px rgba(0,0,0,0.10); }
+    .container { display: flex; align-items: center; justify-content: space-between; max-width: 1450px; margin: 0 auto; padding: 1rem 2rem; }
     .brand { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; }
-    .icon { font-size: 1.5rem; transition: transform 0.3s; }
-    .icon:hover { transform: scale(1.2); }
+    .icon { font-size: 1.625rem; transition: transform 0.3s; }
+    .icon:hover { transform: translateY(-3px); }
     .name { font-size: 1.5rem; font-weight: 800; }
     .menu { display: flex; gap: 0.5rem; flex: 1; justify-content: center; }
-    .menu a { padding: 0.75rem 1.25rem; border-radius: 0.75rem; text-decoration: none; transition: all 0.3s; }
+    .menu a { padding: 0.75rem 1.25rem; border-radius: 0.5rem; text-decoration: none; transition: all 0.28s; }
     .menu a:hover { transform: translateY(-2px); }
     .menu a.active { font-weight: 600; }
     .actions { display: flex; gap: 1rem; align-items: center; }
-    .search input { padding: 0.5rem 1rem; border-radius: 0.75rem; border: 1px solid; }
+    .search input { padding: 0.5rem 1rem; border-radius: 0.5rem; border: 1px solid; }
     button { position: relative; background: none; border: none; cursor: pointer; padding: 0.5rem; }
     .badge { position: absolute; top: 0; right: 0; font-size: 0.7rem; min-width: 18px; height: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; }
     .avatar { width: 36px; height: 36px; border-radius: 50%; }
@@ -83,25 +83,25 @@ interface MenuItem {
 })
 export class NavbarComponent {
   @Input() theme: Partial<NavbarTheme> = {};
-  @Input() variant: 'solid' | 'transparent' | 'blur' | 'gradient' = 'blur';
+  @Input() variant: 'solid' | 'transparent' | 'blur' | 'gradient' = 'transparent';
   @Input() position: 'static' | 'sticky' | 'fixed' = 'fixed';
-  @Input() brandName = 'Aqua';
-  @Input() menuItems: MenuItem[] = [{ label: 'Waves', route: '/', icon: '🌊' }, { label: 'Surf', route: '/surf', icon: '🏄' }];
+  @Input() brandName = 'Sky';
+  @Input() menuItems: MenuItem[] = [{ label: 'Clouds', route: '/', icon: '☁️' }, { label: 'Weather', route: '/weather', icon: '🌤️' }];
   @Input() activeRoute = '/';
   @Input() showSearch = true;
   @Input() showNotifications = true;
   @Input() showUserProfile = true;
-  @Input() notificationCount = 15;
-  @Input() userName = 'Ocean';
-  @Input() userAvatar = 'https://i.pravatar.cc/150?img=6';
+  @Input() notificationCount = 6;
+  @Input() userName = 'Skyler';
+  @Input() userAvatar = 'https://i.pravatar.cc/150?img=8';
 
   private defaultTheme: NavbarTheme = {
-    primaryColor: '#14b8a6',
-    secondaryColor: '#06b6d4',
-    backgroundColor: '#f0fdfa',
-    textColor: '#134e4a',
-    borderColor: '#5eead4',
-    accentColor: '#f97316'
+    primaryColor: '#0ea5e9',
+    secondaryColor: '#3b82f6',
+    backgroundColor: '#f0f9ff',
+    textColor: '#0c4a6e',
+    borderColor: '#7dd3fc',
+    accentColor: '#ef4444'
   };
 
   isMobileMenuOpen = false;
@@ -114,7 +114,7 @@ export class NavbarComponent {
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
-    this.isScrolled = window.scrollY > 20;
+    this.isScrolled = window.scrollY > 18;
   }
 
   toggleMobileMenu() {

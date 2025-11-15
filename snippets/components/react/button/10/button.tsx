@@ -10,55 +10,53 @@ export interface ButtonProps {
   onHover?: (isHovered: boolean) => void;
 }
 
-export const Button: React.FC<ButtonProps> = ({ 
-  theme = {}, 
+export const Button: React.FC<ButtonProps> = ({
+  theme = {},
   className = '',
   onHover
 }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
 
   const handleMouseEnter = () => {
-    setIsHovered(true);
     onHover?.(true);
   };
 
   const handleMouseLeave = () => {
-    setIsHovered(false);
     onHover?.(false);
+    setIsPressed(false);
   };
 
   const styles: React.CSSProperties = {
     opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-8px) scale(1.1)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(22px) scale(0.95)',
-    transition: `all 550ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '28px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '20px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 8px 30px rgba(0,0,0,0.14)' 
-      : '0 3px 14px rgba(0,0,0,0.10)',
+    transition: 'all 100ms ease',
+    padding: '14px 28px',
+    backgroundColor: theme.primary || '#3b82f6',
+    color: '#ffffff',
+    borderRadius: '8px',
+    border: 'none',
     cursor: 'pointer',
+    fontWeight: 600,
+    boxShadow: isPressed
+      ? '0 2px 4px rgba(0, 0, 0, 0.2)'
+      : '0 6px 0 #1d4ed8, 0 8px 12px rgba(0, 0, 0, 0.3)',
+    transform: isPressed ? 'translateY(4px)' : 'translateY(0)',
   };
 
   return (
-    <div 
-      className={className} 
+    <div
+      className={className}
       style={styles}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onMouseDown={() => setIsPressed(true)}
+      onMouseUp={() => setIsPressed(false)}
     >
-      Component
+      3D Elevated
     </div>
   );
 };

@@ -19,8 +19,8 @@ interface ButtonTheme {
       [attr.aria-label]="ariaLabel"
       [attr.aria-busy]="loading"
       (click)="handleClick($event)"
-      class="jello-button">
-      <span *ngIf="loading" class="spinner octagon-spinner"></span>
+      class="rubber-button">
+      <span *ngIf="loading" class="spinner arrows-spinner"></span>
       <span *ngIf="!loading && iconLeft" class="icon-left">{{ iconLeft }}</span>
       <span class="btn-content">
         <ng-content></ng-content>
@@ -29,7 +29,7 @@ interface ButtonTheme {
     </button>
   `,
   styles: [`
-    .jello-button {
+    .rubber-button {
       position: relative;
       overflow: hidden;
       cursor: pointer;
@@ -40,30 +40,30 @@ interface ButtonTheme {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      box-shadow: 0 5px 20px #7c2d1266;
+      box-shadow: 0 5px 20px #0d948866;
     }
 
-    .jello-button:hover:not(:disabled) {
-      box-shadow: 0 8px 35px #7c2d1299;
+    .rubber-button:hover:not(:disabled) {
+      box-shadow: 0 8px 35px #0d948899;
       transform: translateY(-2px) scale(1.02);
-      animation: jelloAnim 0.5s ease;
+      animation: rubberAnim 0.5s ease;
     }
 
-    .jello-button:active:not(:disabled) {
+    .rubber-button:active:not(:disabled) {
       transform: translateY(0) scale(0.98);
     }
 
-    .jello-button:disabled {
+    .rubber-button:disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
 
-    @keyframes jelloAnim {
+    @keyframes rubberAnim {
       0%, 100% { transform: translateY(-2px) scale(1.02); }
       50% { transform: translateY(-4px) scale(1.04) rotate(1deg); }
     }
 
-    .octagon-spinner {
+    .arrows-spinner {
       width: 1em;
       height: 1em;
       border: 2px solid rgba(255, 255, 255, 0.3);
@@ -102,7 +102,7 @@ interface ButtonTheme {
 })
 export class ButtonComponent {
   @Input() theme: Partial<ButtonTheme> = {};
-  @Input() variant: 'default' | 'outlined' | 'filled' | 'jello' = 'default';
+  @Input() variant: 'default' | 'outlined' | 'filled' | 'rubber' = 'default';
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
   @Input() disabled: boolean = false;
   @Input() loading: boolean = false;
@@ -112,12 +112,12 @@ export class ButtonComponent {
   @Output() clicked = new EventEmitter<MouseEvent>();
 
   private defaultTheme: ButtonTheme = {
-    primaryColor: '#7c2d12',
-    secondaryColor: '#78350f',
-    backgroundColor: '#fef7ee',
+    primaryColor: '#0d9488',
+    secondaryColor: '#0f766e',
+    backgroundColor: '#f0fdfa',
     textColor: '#ffffff',
-    borderColor: '#7c2d12',
-    accentColor: '#fb923c'
+    borderColor: '#0d9488',
+    accentColor: '#2dd4bf'
   };
 
   get appliedTheme(): ButtonTheme {
@@ -141,7 +141,7 @@ export class ButtonComponent {
         color: this.appliedTheme.textColor,
         border: 'none'
       },
-      jello: {
+      rubber: {
         background: `linear-gradient(90deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.accentColor})`,
         color: this.appliedTheme.textColor,
         border: 'none'

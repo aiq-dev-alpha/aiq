@@ -1,64 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-export interface InputProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
-  className?: string;
-  onHover?: (isHovered: boolean) => void;
+interface CharacterCounterInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  maxLength: number;
+  placeholder?: string;
+  type?: string;
 }
 
-export const Input: React.FC<InputProps> = ({ 
-  theme = {}, 
-  className = '',
-  onHover
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-9px) scale(1.2)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(23px) scale(0.95)',
-    transition: `all 580ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '29px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '21px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 9px 31px rgba(0,0,0,0.15)' 
-      : '0 4px 15px rgba(0,0,0,0.11)',
-    cursor: 'pointer',
-  };
+export default function CharacterCounterInput({
+  value,
+  onChange,
+  maxLength,
+  placeholder = 'Enter text...',
+  type = 'text'
+}: CharacterCounterInputProps) {
+  const remaining = maxLength - value.length;
+  const isNearLimit = remaining <= maxLength * 0.2;
 
   return (
-    <div 
-      className={className} 
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      Component
+    <div className="w-full">
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value.slice(0, maxLength))}
+        placeholder={placeholder}
+        maxLength={maxLength}
+        className="w-full px-4 py-2.5 text-base border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+      />
+      <div className="flex justify-end mt-1 px-1">
+        <span className={`text-sm ${isNearLimit ? 'text-orange-500' : 'text-gray-500'}`}>
+          {value.length} / {maxLength}
+        </span>
+      </div>
     </div>
   );
-};
+}

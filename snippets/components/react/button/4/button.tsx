@@ -10,8 +10,8 @@ export interface ButtonProps {
   onHover?: (isHovered: boolean) => void;
 }
 
-export const Button: React.FC<ButtonProps> = ({ 
-  theme = {}, 
+export const Button: React.FC<ButtonProps> = ({
+  theme = {},
   className = '',
   onHover
 }) => {
@@ -32,33 +32,37 @@ export const Button: React.FC<ButtonProps> = ({
     onHover?.(false);
   };
 
-  const styles: React.CSSProperties = {
+  const buttonStyles: React.CSSProperties = {
     opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-8px) scale(1.1)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(16px) scale(0.95)',
-    transition: `all 370ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '22px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '14px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 10px 24px rgba(0,0,0,0.16)' 
-      : '0 7px 16px rgba(0,0,0,0.10)',
+    transition: 'all 300ms ease',
+    padding: '12px 24px',
+    backgroundColor: theme.primary || '#3b82f6',
+    color: '#ffffff',
+    borderRadius: '8px',
+    border: 'none',
     cursor: 'pointer',
+    fontWeight: 600,
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+  };
+
+  const iconStyles: React.CSSProperties = {
+    fontSize: '18px',
+    transform: isHovered ? 'translateX(0)' : 'translateX(-10px)',
+    opacity: isHovered ? 1 : 0,
+    transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
   };
 
   return (
-    <div 
-      className={className} 
-      style={styles}
+    <div
+      className={className}
+      style={buttonStyles}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      Component
+      <span style={iconStyles}>→</span>
+      Icon Slide-In
     </div>
   );
 };

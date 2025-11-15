@@ -30,14 +30,14 @@ class _CustomPickerState extends State<CustomPicker> with TickerProviderStateMix
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 960),
+      duration: const Duration(milliseconds: 1120),
       vsync: this,
     );
     _hoverController = AnimationController(
-      duration: const Duration(milliseconds: 204),
+      duration: const Duration(milliseconds: 208),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 0.96, end: 1.0).animate(
+    _scaleAnimation = Tween<double>(begin: 0.92, end: 1.0).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
     );
     _controller.forward();
@@ -66,24 +66,24 @@ class _CustomPickerState extends State<CustomPicker> with TickerProviderStateMix
         child: ScaleTransition(
           scale: _scaleAnimation,
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 204),
+            duration: const Duration(milliseconds: 208),
             transform: Matrix4.identity()
               ..translate(0.0, _isHovered ? -2.0 : 0.0),
-            padding: widget.padding ?? const EdgeInsets.all(28),
+            padding: widget.padding ?? const EdgeInsets.all(32),
             decoration: BoxDecoration(
               color: widget.backgroundColor ?? Colors.white,
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(22),
               border: Border.all(
                 color: (widget.accentColor ?? Theme.of(context).primaryColor).withOpacity(
-                  _isHovered ? 0.6 : 0.2
+                  _isHovered ? 0.6 : 0.3
                 ),
                 width: _isHovered ? 2.0 : 1.0,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(_isHovered ? 0.16 : 0.8),
-                  blurRadius: _isHovered ? 19.0 : 12.0,
-                  offset: Offset(0, _isHovered ? 4.0 : 3.0),
+                  color: Colors.black.withOpacity(_isHovered ? 0.12 : 0.6),
+                  blurRadius: _isHovered ? 23.0 : 8.0,
+                  offset: Offset(0, _isHovered ? 4.0 : 4.0),
                 ),
               ],
             ),

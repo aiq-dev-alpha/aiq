@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class ArticleListScreen extends StatefulWidget {
+class Screen extends StatefulWidget {
   final Color? backgroundColor;
   final Color? textColor;
   final Color? accentColor;
   final EdgeInsetsGeometry? padding;
 
-  const ArticleListScreen({
+  const Screen({
     Key? key,
     this.backgroundColor,
     this.textColor,
@@ -15,10 +15,10 @@ class ArticleListScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<ArticleListScreen> createState() => _ArticleListScreenState();
+  State<Screen> createState() => _ScreenState();
 }
 
-class _ArticleListScreenState extends State<ArticleListScreen> with TickerProviderStateMixin {
+class _ScreenState extends State<Screen> with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   bool _isHovered = false;
@@ -27,7 +27,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> with TickerProvid
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 680),
+      duration: const Duration(milliseconds: 760),
       vsync: this,
     );
     _scaleAnimation = Tween<double>(begin: 0.95, end: 1.0).animate(
@@ -52,10 +52,10 @@ class _ArticleListScreenState extends State<ArticleListScreen> with TickerProvid
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 250),
           transform: Matrix4.identity()..translate(0.0, _isHovered ? -3.0 : 0.0),
-          padding: widget.padding ?? const EdgeInsets.all(24),
+          padding: widget.padding ?? const EdgeInsets.all(26),
           decoration: BoxDecoration(
             color: widget.backgroundColor ?? Colors.white,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: (widget.accentColor ?? Colors.blue).withOpacity(_isHovered ? 0.6 : 0.2),
               width: _isHovered ? 2.0 : 1.0,

@@ -70,8 +70,8 @@ interface InputTheme {
       position: relative;
     }
     .label {
-      font-weight: 500;
-      font-size: 14px;
+      font-weight: 600;
+      font-size: 13px;
       letter-spacing: 0.5px;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       transform-origin: left top;
@@ -81,13 +81,13 @@ interface InputTheme {
       font-weight: 600;
     }
     .required {
-      color: #f07178;
+      color: #e74c3c;
       margin-left: 3px;
     }
     .input-container {
       position: relative;
       overflow: visible;
-      border-radius: 20px;
+      border-radius: 16px;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .animated-border {
@@ -95,22 +95,22 @@ interface InputTheme {
       bottom: 0;
       left: 0;
       right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #be91e3, #9c6ade);
+      height: 2px;
+      background: linear-gradient(90deg, #f39c12, #e67e22);
       transform: scaleX(0);
       transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      border-radius: 20px;
+      border-radius: 16px;
     }
     .input-container.focused .animated-border {
       transform: scaleX(1);
-      animation: bounce 1.5s ease-in-out infinite;
+      animation: slide 1.5s ease-in-out infinite;
     }
     .input-container.error .animated-border {
-      background: linear-gradient(90deg, #f07178, #f07178dd);
+      background: linear-gradient(90deg, #e74c3c, #e74c3cdd);
       transform: scaleX(1);
     }
     .input-container.success .animated-border {
-      background: linear-gradient(90deg, #c3e88d, #c3e88ddd);
+      background: linear-gradient(90deg, #27ae60, #27ae60dd);
       transform: scaleX(1);
     }
     .input-field {
@@ -144,7 +144,7 @@ interface InputTheme {
       opacity: 0.6;
       transition: all 0.3s;
       flex-shrink: 0;
-      font-size: 18px;
+      font-size: 20px;
     }
     .input-container.focused .left-icon,
     .input-container.focused .right-icon {
@@ -190,7 +190,7 @@ interface InputTheme {
     .success-text {
       animation: slideIn 0.3s;
     }
-    @keyframes bounce {
+    @keyframes slide {
       0%, 100% { opacity: 1; transform: scaleX(1); }
       50% { opacity: 0.8; transform: scaleX(1.02); }
     }
@@ -247,14 +247,14 @@ export class InputComponent implements ControlValueAccessor {
   private onTouched: () => void = () => {};
 
   private defaultTheme: InputTheme = {
-    primaryColor: '#be91e3',
-    secondaryColor: '#9c6ade',
-    backgroundColor: '#f9f5ff',
-    textColor: '#4a148c',
-    borderColor: '#e3d0f7',
-    accentColor: '#c792ea',
-    errorColor: '#f07178',
-    successColor: '#c3e88d'
+    primaryColor: '#f39c12',
+    secondaryColor: '#e67e22',
+    backgroundColor: '#fffbf0',
+    textColor: '#744210',
+    borderColor: '#ffd89b',
+    accentColor: '#fdcb6e',
+    errorColor: '#e74c3c',
+    successColor: '#27ae60'
   };
 
   get appliedTheme(): InputTheme {
@@ -285,9 +285,9 @@ export class InputComponent implements ControlValueAccessor {
   get containerStyles() {
     const t = this.appliedTheme;
     const sizeMap = {
-      sm: { padding: '5px 10px', gap: '6px' },
-      md: { padding: '10px 16px', gap: '10px' },
-      lg: { padding: '14px 20px', gap: '14px' }
+      sm: { padding: '8px 12px', gap: '6px' },
+      md: { padding: '12px 16px', gap: '10px' },
+      lg: { padding: '16px 20px', gap: '14px' }
     };
 
     const variantStyles = {
@@ -298,12 +298,12 @@ export class InputComponent implements ControlValueAccessor {
       filled: {
         backgroundColor: t.backgroundColor,
         border: `1px solid ${this.hasError ? t.errorColor : this.showSuccess ? t.successColor : t.borderColor}`,
-        borderRadius: '20px'
+        borderRadius: '16px'
       },
       outlined: {
         backgroundColor: 'transparent',
         border: `2px solid ${this.hasError ? t.errorColor : this.showSuccess ? t.successColor : t.borderColor}`,
-        borderRadius: '20px'
+        borderRadius: '16px'
       },
       underlined: {
         backgroundColor: 'transparent',
@@ -318,16 +318,16 @@ export class InputComponent implements ControlValueAccessor {
       display: 'flex',
       alignItems: 'center',
       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-      boxShadow: this.isFocused ? '0 4px 12px #be91e340' : '0 1px 3px rgba(0,0,0,0.1)'
+      transform: this.isFocused ? 'translateY(-2px)' : 'translateY(0)'
     };
   }
 
   get inputStyles() {
     const t = this.appliedTheme;
     const sizeMap = {
-      sm: { fontSize: '14px' },
-      md: { fontSize: '16px' },
-      lg: { fontSize: '18px' }
+      sm: { fontSize: '13px' },
+      md: { fontSize: '15px' },
+      lg: { fontSize: '17px' }
     };
 
     return {

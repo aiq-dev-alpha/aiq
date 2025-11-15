@@ -1,64 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-export interface InputProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
-  className?: string;
-  onHover?: (isHovered: boolean) => void;
+interface NeumorphismInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  type?: string;
 }
 
-export const Input: React.FC<InputProps> = ({ 
-  theme = {}, 
-  className = '',
-  onHover
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-8px) scale(1.1)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(22px) scale(0.95)',
-    transition: `all 550ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '28px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '20px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 8px 30px rgba(0,0,0,0.14)' 
-      : '0 3px 14px rgba(0,0,0,0.10)',
-    cursor: 'pointer',
-  };
-
+export default function NeumorphismInput({
+  value,
+  onChange,
+  placeholder = 'Enter text...',
+  type = 'text'
+}: NeumorphismInputProps) {
   return (
-    <div 
-      className={className} 
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      Component
+    <div className="w-full bg-gray-100 rounded-lg shadow-[inset_5px_5px_10px_rgba(0,0,0,0.1),inset_-5px_-5px_10px_rgba(255,255,255,0.9)]">
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="w-full px-4 py-2.5 text-base bg-transparent outline-none placeholder-gray-400 text-gray-800"
+      />
     </div>
   );
-};
+}

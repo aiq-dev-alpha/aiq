@@ -24,12 +24,12 @@ interface PanelTheme {
           <ng-content select="[header-actions]"></ng-content>
           <button *ngIf="collapsible" class="collapse-btn" [ngStyle]="buttonStyles">
             <span [style.transform]="collapsed ? 'rotate(0deg)' : 'rotate(180deg)'" style="display: inline-block; transition: transform 0.3s ease;">
-              &#8963;
+              &#9660;
             </span>
           </button>
         </div>
       </div>
-      <div class="panel-body" [@rotateSlide]="collapsed ? 'collapsed' : 'expanded'" [ngStyle]="bodyStyles">
+      <div class="panel-body" [@flipExpand]="collapsed ? 'collapsed' : 'expanded'" [ngStyle]="bodyStyles">
         <div *ngIf="loading" class="loading-overlay" [ngStyle]="loadingStyles">
           <div class="spinner"></div>
         </div>
@@ -39,7 +39,7 @@ interface PanelTheme {
   `,
   styles: [`
     .panel-container {
-      border-radius: 16px;
+      border-radius: 24px;
       overflow: hidden;
       transition: all 0.3s ease;
       position: relative;
@@ -48,7 +48,7 @@ interface PanelTheme {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 2.0rem 2.25rem;
+      padding: 1.75rem 2.0rem;
       cursor: pointer;
       transition: all 0.3s ease;
       position: relative;
@@ -61,14 +61,14 @@ interface PanelTheme {
     }
     .panel-title {
       margin: 0;
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: #1f2937;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #ffffff;
     }
     .panel-subtitle {
       margin: 0.5rem 0 0 0;
       font-size: 0.875rem;
-      color: #6b7280;
+      color: rgba(255,255,255,0.85);
     }
     .header-actions {
       display: flex;
@@ -77,12 +77,12 @@ interface PanelTheme {
       
     }
     .collapse-btn {
-      background: rgba(0, 0, 0, 0.08);
-      border: none;
-      color: currentColor;
-      width: 44px;
-      height: 44px;
-      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #ffffff;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -90,11 +90,11 @@ interface PanelTheme {
       transition: all 0.3s ease;
     }
     .collapse-btn:hover {
-      background: rgba(0, 0, 0, 0.12);
+      background: rgba(255, 255, 255, 0.35);
       transform: scale(1.05);
     }
     .panel-body {
-      padding: 3.0rem;
+      padding: 2.5rem;
       position: relative;
       
     }
@@ -114,7 +114,7 @@ interface PanelTheme {
       width: 48px;
       height: 48px;
       border: 4px solid #f3f4f6;
-      border-top-color: '#06b6d4';
+      border-top-color: '#f59e0b';
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
@@ -124,22 +124,22 @@ interface PanelTheme {
     
   `],
   animations: [
-    trigger('rotateSlide', [
+    trigger('flipExpand', [
       state('collapsed', style({
         height: '0',
         padding: '0 2rem',
         overflow: 'hidden',
         opacity: 0,
-        transform: 'rotateX(-90deg)'
+        transform: 'perspective(500px) rotateX(-15deg)'
       })),
       state('expanded', style({
         height: '*',
         padding: '*',
         overflow: 'visible',
         opacity: 1,
-        transform: 'rotateX(0deg)'
+        transform: 'perspective(500px) rotateX(0deg)'
       })),
-      transition('collapsed <=> expanded', animate('400ms cubic-bezier(0.4, 0, 0.2, 1)'))
+      transition('collapsed <=> expanded', animate('450ms cubic-bezier(0.4, 0, 0.2, 1)'))
     ])
   ]
 })
@@ -149,17 +149,17 @@ export class PanelComponent {
   @Input() subtitle: string = '';
   @Input() collapsible: boolean = true;
   @Input() collapsed: boolean = false;
-  @Input() variant: 'default' | 'bordered' | 'elevated' | 'flat' | 'gradient' = 'bordered';
+  @Input() variant: 'default' | 'bordered' | 'elevated' | 'flat' | 'gradient' = 'flat';
   @Input() headerActions: boolean = false;
   @Input() loading: boolean = false;
   @Output() toggled = new EventEmitter<boolean>();
 
   private defaultTheme: PanelTheme = {
-    primaryColor: '#06b6d4',
-    backgroundColor: '#ecfeff',
-    borderColor: '#a5f3fc',
-    headerColor: '#0891b2',
-    shadowColor: 'rgba(6, 182, 212, 0.25)'
+    primaryColor: '#f59e0b',
+    backgroundColor: '#fffbeb',
+    borderColor: '#fde68a',
+    headerColor: '#d97706',
+    shadowColor: 'rgba(245, 158, 11, 0.25)'
   };
 
   get appliedTheme(): PanelTheme {
@@ -175,16 +175,16 @@ export class PanelComponent {
 
   get panelStyles() {
     return {
-      background: this.appliedTheme.backgroundColor,
-      border: `3px solid ${this.appliedTheme.borderColor}`,
-      boxShadow: 'none'
+      background: `linear-gradient(135deg, ${this.appliedTheme.backgroundColor} 0%, ${this.appliedTheme.headerColor}15 100%)`,
+      border: 'none',
+      boxShadow: `0 8px 32px ${this.appliedTheme.shadowColor}`
     };
   }
 
   get headerStyles() {
     return {
-      background: this.appliedTheme.backgroundColor,
-      borderBottom: `1px solid ${this.appliedTheme.borderColor}`
+      background: 'rgba(255, 255, 255, 0.1)',
+      borderBottom: `1px solid rgba(255, 255, 255, 0.2)`
     };
   }
 

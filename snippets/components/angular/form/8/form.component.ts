@@ -62,29 +62,28 @@ interface FormTheme {
 })
 export class FormComponent {
   @Input() theme: Partial<FormTheme> = {};
-  @Input() title: string = 'Support Ticket';
-  @Input() description: string = 'Get help from our team';
+  @Input() title: string = 'Quick Survey';
+  @Input() description: string = 'Help us improve';
   @Input() fields: any[] = [
-    { name: 'subject', label: 'Subject', required: true },
-    { name: 'email', label: 'Email', type: 'email', required: true },
-    { name: 'priority', label: 'Priority', required: true }
+    { name: 'satisfaction', label: 'Satisfaction', type: 'number', required: true },
+    { name: 'recommend', label: 'Would Recommend?', required: true }
   ];
-  @Input() submitButtonText: string = 'Submit Ticket';
-  @Input() resetButtonText: string = 'Clear';
-  @Input() successMessage: string = 'Ticket submitted successfully!';
+  @Input() submitButtonText: string = 'Submit Survey';
+  @Input() resetButtonText: string = 'Reset';
+  @Input() successMessage: string = 'Thank you for your feedback!';
 
   formGroup: FormGroup;
   isSubmitting: boolean = false;
   showSuccess: boolean = false;
 
   private defaultTheme: FormTheme = {
-    primaryColor: '#6366f1',
-    secondaryColor: '#4f46e5',
-    backgroundColor: '#eef2ff',
-    textColor: '#312e81',
-    borderColor: '#c7d2fe',
-    errorColor: '#dc2626',
-    successColor: '#059669'
+    primaryColor: '#14b8a6',
+    secondaryColor: '#0d9488',
+    backgroundColor: '#f0fdfa',
+    textColor: '#134e4a',
+    borderColor: '#99f6e4',
+    errorColor: '#ea580c',
+    successColor: '#16a34a'
   };
 
   constructor(private fb: FormBuilder) {
@@ -142,7 +141,7 @@ export class FormComponent {
     return {
       backgroundColor: this.appliedTheme.backgroundColor,
       padding: '2rem',
-      borderRadius: '0',
+      borderRadius: '9999px',
       border: `2px solid ${this.appliedTheme.borderColor}`,
       maxWidth: '500px',
       margin: '0 auto',
@@ -210,8 +209,8 @@ export class FormComponent {
     const isInvalid = this.isFieldInvalid(fieldName);
     return {
       padding: '0.75rem',
-      border: `1px solid ${isInvalid ? this.appliedTheme.errorColor : this.appliedTheme.borderColor}`,
-      borderRadius: '0',
+      border: `2px solid ${isInvalid ? this.appliedTheme.errorColor : this.appliedTheme.borderColor}`,
+      borderRadius: '9999px',
       fontSize: '1rem',
       color: this.appliedTheme.textColor,
       backgroundColor: '#ffffff',
@@ -233,7 +232,7 @@ export class FormComponent {
       backgroundColor: `${this.appliedTheme.successColor}20`,
       color: this.appliedTheme.successColor,
       padding: '0.875rem',
-      borderRadius: '0',
+      borderRadius: '9999px',
       marginTop: '1rem',
       textAlign: 'center',
       fontSize: '0.875rem',
@@ -257,7 +256,7 @@ export class FormComponent {
       backgroundColor: this.appliedTheme.primaryColor,
       color: '#ffffff',
       border: 'none',
-      borderRadius: '0',
+      borderRadius: '9999px',
       fontSize: '1rem',
       fontWeight: '600',
       cursor: this.isSubmitting || this.formGroup.invalid ? 'not-allowed' : 'pointer',
@@ -273,7 +272,7 @@ export class FormComponent {
       backgroundColor: 'transparent',
       color: this.appliedTheme.textColor,
       border: `2px solid ${this.appliedTheme.borderColor}`,
-      borderRadius: '0',
+      borderRadius: '9999px',
       fontSize: '1rem',
       fontWeight: '600',
       cursor: 'pointer',

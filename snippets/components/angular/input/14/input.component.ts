@@ -71,7 +71,7 @@ interface InputTheme {
     }
     .label {
       font-weight: 600;
-      font-size: 14px;
+      font-size: 12px;
       letter-spacing: 0.5px;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       transform-origin: left top;
@@ -81,13 +81,13 @@ interface InputTheme {
       font-weight: 600;
     }
     .required {
-      color: #e84393;
+      color: #e55039;
       margin-left: 3px;
     }
     .input-container {
       position: relative;
       overflow: visible;
-      border-radius: 8px;
+      border-radius: 0px;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .animated-border {
@@ -96,21 +96,21 @@ interface InputTheme {
       left: 0;
       right: 0;
       height: 2px;
-      background: linear-gradient(90deg, #9b59b6, #8e44ad);
+      background: linear-gradient(90deg, #e84393, #d63031);
       transform: scaleX(0);
       transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      border-radius: 8px;
+      border-radius: 0px;
     }
     .input-container.focused .animated-border {
       transform: scaleX(1);
       animation: ripple 1.5s ease-in-out infinite;
     }
     .input-container.error .animated-border {
-      background: linear-gradient(90deg, #e84393, #e84393dd);
+      background: linear-gradient(90deg, #e55039, #e55039dd);
       transform: scaleX(1);
     }
     .input-container.success .animated-border {
-      background: linear-gradient(90deg, #00b894, #00b894dd);
+      background: linear-gradient(90deg, #78e08f, #78e08fdd);
       transform: scaleX(1);
     }
     .input-field {
@@ -247,14 +247,14 @@ export class InputComponent implements ControlValueAccessor {
   private onTouched: () => void = () => {};
 
   private defaultTheme: InputTheme = {
-    primaryColor: '#9b59b6',
-    secondaryColor: '#8e44ad',
-    backgroundColor: '#f8f3ff',
-    textColor: '#4a148c',
-    borderColor: '#d1a3ff',
-    accentColor: '#a29bfe',
-    errorColor: '#e84393',
-    successColor: '#00b894'
+    primaryColor: '#e84393',
+    secondaryColor: '#d63031',
+    backgroundColor: '#fff0f6',
+    textColor: '#6c2136',
+    borderColor: '#ffc2d4',
+    accentColor: '#fd79a8',
+    errorColor: '#e55039',
+    successColor: '#78e08f'
   };
 
   get appliedTheme(): InputTheme {
@@ -285,9 +285,9 @@ export class InputComponent implements ControlValueAccessor {
   get containerStyles() {
     const t = this.appliedTheme;
     const sizeMap = {
-      sm: { padding: '5px 10px', gap: '6px' },
-      md: { padding: '10px 16px', gap: '10px' },
-      lg: { padding: '14px 20px', gap: '14px' }
+      sm: { padding: '6px 10px', gap: '6px' },
+      md: { padding: '10px 14px', gap: '10px' },
+      lg: { padding: '14px 18px', gap: '14px' }
     };
 
     const variantStyles = {
@@ -298,12 +298,12 @@ export class InputComponent implements ControlValueAccessor {
       filled: {
         backgroundColor: t.backgroundColor,
         border: `1px solid ${this.hasError ? t.errorColor : this.showSuccess ? t.successColor : t.borderColor}`,
-        borderRadius: '8px'
+        borderRadius: '0px'
       },
       outlined: {
         backgroundColor: 'transparent',
         border: `2px solid ${this.hasError ? t.errorColor : this.showSuccess ? t.successColor : t.borderColor}`,
-        borderRadius: '8px'
+        borderRadius: '0px'
       },
       underlined: {
         backgroundColor: 'transparent',
@@ -325,9 +325,9 @@ export class InputComponent implements ControlValueAccessor {
   get inputStyles() {
     const t = this.appliedTheme;
     const sizeMap = {
-      sm: { fontSize: '14px' },
-      md: { fontSize: '16px' },
-      lg: { fontSize: '18px' }
+      sm: { fontSize: '12px' },
+      md: { fontSize: '14px' },
+      lg: { fontSize: '16px' }
     };
 
     return {

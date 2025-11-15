@@ -34,31 +34,28 @@ export const Button: React.FC<ButtonProps> = ({
 
   const styles: React.CSSProperties = {
     opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-5px) scale(1.2)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(19px) scale(0.95)',
-    transition: `all 460ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '25px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '17px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 13px 27px rgba(0,0,0,0.19)' 
-      : '0 5px 19px rgba(0,0,0,0.7)',
+    transition: 'all 300ms ease',
+    padding: '14px 28px',
+    background: isHovered
+      ? 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)'
+      : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    backgroundSize: isHovered ? '200% 100%' : '100% 100%',
+    color: '#ffffff',
+    borderRadius: '10px',
+    border: 'none',
     cursor: 'pointer',
+    fontWeight: 600,
+    boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
   };
 
   return (
-    <div 
-      className={className} 
+    <div
+      className={className}
       style={styles}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      Component
+      Gradient Animate
     </div>
   );
 };

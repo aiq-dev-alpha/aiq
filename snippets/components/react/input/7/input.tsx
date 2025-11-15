@@ -1,64 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-export interface InputProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
-  className?: string;
-  onHover?: (isHovered: boolean) => void;
+interface AnimatedBorderInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  type?: string;
 }
 
-export const Input: React.FC<InputProps> = ({ 
-  theme = {}, 
-  className = '',
-  onHover
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-5px) scale(1.2)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(19px) scale(0.95)',
-    transition: `all 460ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '25px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '17px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 13px 27px rgba(0,0,0,0.19)' 
-      : '0 5px 19px rgba(0,0,0,0.7)',
-    cursor: 'pointer',
-  };
+export default function AnimatedBorderInput({
+  value,
+  onChange,
+  placeholder = 'Enter text...',
+  type = 'text'
+}: AnimatedBorderInputProps) {
+  const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <div 
-      className={className} 
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      Component
+    <div className="relative w-full">
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        placeholder={placeholder}
+        className="w-full px-4 py-2.5 text-base border-2 border-gray-300 rounded-lg outline-none transition-all duration-300"
+      />
+      <div
+        className={`absolute inset-0 border-2 border-blue-500 rounded-lg pointer-events-none transition-all duration-300 ${
+          isFocused ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+        }`}
+      />
+      <div
+        className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-blue-500 transition-all duration-300 ${
+          isFocused ? 'w-full' : 'w-0'
+        }`}
+      />
     </div>
   );
-};
+}

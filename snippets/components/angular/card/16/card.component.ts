@@ -1,286 +1,198 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
-interface CardTheme {
-  primaryColor: string;
-  secondaryColor: string;
+interface CardAppearance {
   backgroundColor: string;
-  textColor: string;
   borderColor: string;
-  shadowColor: string;
+  textColor: string;
   accentColor: string;
+  shadowIntensity: 'none' | 'light' | 'medium' | 'heavy';
 }
+
+type CardPattern = 'default' | 'image-top' | 'image-left' | 'overlay' | 'minimal';
 
 @Component({
   selector: 'app-card',
   template: `
-    <div
-      class="card"
-      [ngStyle]="cardStyles"
-      [class.hoverable]="hoverable"
-      [class.clickable]="clickable"
-      (click)="handleClick()"
-      (mouseenter)="handleHover(true)"
-      (mouseleave)="handleHover(false)"
-      role="article"
-      [attr.aria-label]="title || 'Card'"
-      tabindex="0"
-    >
-      <div *ngIf="image" class="card-image" [ngStyle]="imageStyles">
-        <img [src]="image" [alt]="imageAlt || 'Card image'" />
-        <div *ngIf="imageOverlay" class="image-overlay" [ngStyle]="overlayStyles"></div>
-        <div *ngIf="badge" class="badge" [ngStyle]="badgeStyles">{{ badge }}</div>
+    <div [ngStyle]="containerStyles" [ngClass]="patternClass" class="card-root" (click)="onCardClick($event)">
+      <div *ngIf="coverImage && (pattern === 'image-top' || pattern === 'overlay')" class="cover-image-container">
+        <img [src]="coverImage" [alt]="coverImageAlt" class="cover-image">
+        <div *ngIf="pattern === 'overlay'" class="overlay-gradient"></div>
       </div>
 
-      <div class="card-content" [ngStyle]="contentStyles">
-        <div *ngIf="label" class="card-label" [ngStyle]="labelStyles">{{ label }}</div>
-        <div *ngIf="title" class="card-title" [ngStyle]="titleStyles">{{ title }}</div>
-        <div *ngIf="subtitle" class="card-subtitle" [ngStyle]="subtitleStyles">{{ subtitle }}</div>
-        <div class="card-body" [ngStyle]="bodyStyles">
-          <ng-content></ng-content>
+      <div class="card-content-wrapper" [ngClass]="{'overlay-content': pattern === 'overlay'}">
+        <div *ngIf="coverImage && pattern === 'image-left'" class="side-image">
+          <img [src]="coverImage" [alt]="coverImageAlt">
         </div>
-      </div>
 
-      <div *ngIf="hasFooter" class="card-footer" [ngStyle]="footerStyles">
-        <ng-content select="[footer]"></ng-content>
+        <div class="text-content">
+          <div *ngIf="label" class="label-tag">{{ label }}</div>
+
+          <div *ngIf="cardTitle" class="title-section">
+            <h3 class="title">{{ cardTitle }}</h3>
+            <p *ngIf="tagline" class="tagline">{{ tagline }}</p>
+          </div>
+
+          <div class="body-section">
+            <ng-content></ng-content>
+          </div>
+
+          <div *ngIf="showFooter" class="footer-section">
+            <ng-content select="[cardFooter]"></ng-content>
+          </div>
+        </div>
       </div>
     </div>
   `,
   styles: [`
-    .card {
-      border-radius: 16px;
-      overflow: hidden;
-      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    .card-root {
       position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .card-root:hover {
+      transform: scale(1.02);
+    }
+    .cover-image-container {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+    }
+    .cover-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+    .overlay-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.7));
+    }
+    .card-content-wrapper {
+      position: relative;
+    }
+    .card-content-wrapper.overlay-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      color: white;
+      padding: 1.5rem;
+    }
+    .image-left .card-content-wrapper {
       display: flex;
-      flex-direction: column;
-      outline: none;
+      gap: 1rem;
     }
-    .card.hoverable:hover {
-      transform: scale(1.08);
-    }
-    .card.clickable {
-      cursor: pointer;
-    }
-    .card-image {
-      position: relative;
+    .side-image {
+      flex-shrink: 0;
+      width: 120px;
+      height: 120px;
+      border-radius: 8px;
       overflow: hidden;
-      height: 225px;
     }
-    .card-image img {
+    .side-image img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.5s ease;
     }
-    .card.hoverable:hover .card-image img {
-      transform: scale(1.1) rotateZ(-1deg);
-    }
-    .image-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      transition: opacity 0.35s ease;
-    }
-    .badge {
-      position: absolute;
-      padding: 8px 14px;
-      font-size: 12px;
-      font-weight: 700;
-      border-radius: 50%
-20px
-4px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-      z-index: 5;
-    }
-    .badge {
-      top: 14px; left: 50%; transform: translateX(-50%);
-    }
-    .card-content {
-      padding: 24px;
+    .text-content {
       flex: 1;
     }
-    .card-label {
+    .label-tag {
       display: inline-block;
-      padding: 6px 12px;
-      border-radius: 8px;
+      padding: 4px 10px;
+      background: currentColor;
+      opacity: 0.15;
+      border-radius: 6px;
       font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.75rem;
     }
-    .card-title {
-      font-size: 28px;
-      font-weight: 800;
-      margin-bottom: 10px;
+    .title-section {
+      margin-bottom: 1rem;
+    }
+    .title {
+      margin: 0;
+      font-size: 1.375rem;
+      font-weight: 700;
       line-height: 1.3;
     }
-    .card-subtitle {
-      font-size: 24px;
+    .tagline {
+      margin: 0.5rem 0 0;
+      font-size: 0.875rem;
       opacity: 0.7;
-      margin-bottom: 14px;
-      font-weight: 500;
     }
-    .card-body {
-      font-size: 16px;
-      line-height: 1.7;
+    .body-section {
+      margin: 1rem 0;
+      line-height: 1.6;
     }
-    .card-footer {
-      padding: 18px 24px;
-      border-top: 2px dotted rgba(0,0,0,0.08);
-      display: flex;
-      gap: 12px;
-      align-items: center;
+    .footer-section {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid currentColor;
+      opacity: 0.1;
     }
   `]
 })
 export class CardComponent {
-  @Input() theme: Partial<CardTheme> = {};
-  @Input() variant: 'flat' | 'elevated' | 'outlined' | 'glass' | 'neumorphic' | 'gradient' = 'elevated';
-  @Input() size: 'sm' | 'md' | 'lg' = 'md';
-  @Input() title?: string;
-  @Input() subtitle?: string;
+  @Input() pattern: CardPattern = 'default';
+  @Input() appearance: Partial<CardAppearance> = {};
+  @Input() cardTitle?: string;
+  @Input() tagline?: string;
   @Input() label?: string;
-  @Input() image?: string;
-  @Input() imageAlt?: string;
-  @Input() imageOverlay = false;
-  @Input() badge?: string;
-  @Input() hoverable = true;
-  @Input() clickable = false;
-  @Input() hasFooter = false;
+  @Input() coverImage?: string;
+  @Input() coverImageAlt = '';
+  @Input() showFooter = false;
+  @Input() selectable = false;
+  @Output() cardClicked = new EventEmitter<MouseEvent>();
 
-  @Output() cardClick = new EventEmitter<MouseEvent>();
-  @Output() cardHover = new EventEmitter<boolean>();
-
-  private defaultTheme: CardTheme = {
-    primaryColor: '#dc2626',
-    secondaryColor: '#ef4444',
+  private defaultAppearance: CardAppearance = {
     backgroundColor: '#ffffff',
-    textColor: '#7f1d1d',
-    borderColor: '#fee2e2',
-    shadowColor: 'rgba(220, 38, 38, 0.2)',
-    accentColor: '#b91c1c'
+    borderColor: '#e5e7eb',
+    textColor: '#0f172a',
+    accentColor: '#3b82f6',
+    shadowIntensity: 'medium'
   };
 
-  get appliedTheme(): CardTheme {
-    return { ...this.defaultTheme, ...this.theme };
+  get cardAppearance(): CardAppearance {
+    return { ...this.defaultAppearance, ...this.appearance };
   }
 
-  get cardStyles() {
-    const t = this.appliedTheme;
-    const sizeMap = {
-      sm: { maxWidth: '280px' },
-      md: { maxWidth: '360px' },
-      lg: { maxWidth: '480px' }
+  get patternClass(): string {
+    return `pattern-${this.pattern}`;
+  }
+
+  get containerStyles(): Record<string, string> {
+    const a = this.cardAppearance;
+    const shadowMap = {
+      none: 'none',
+      light: '0 1px 3px rgba(0, 0, 0, 0.05)',
+      medium: '0 4px 6px rgba(0, 0, 0, 0.1)',
+      heavy: '0 20px 25px rgba(0, 0, 0, 0.15)'
     };
 
-    const variants = {
-      flat: {
-        backgroundColor: t.backgroundColor,
-        boxShadow: 'none',
-        border: `2px solid ${t.borderColor}`
-      },
-      elevated: {
-        backgroundColor: t.backgroundColor,
-        boxShadow: `0 12px 28px ${t.shadowColor}, 0 4px 12px ${t.shadowColor}`,
-        border: 'none'
-      },
-      outlined: {
-        backgroundColor: t.backgroundColor,
-        border: `3px solid ${t.primaryColor}`,
-        boxShadow: 'none'
-      },
-      glass: {
-        backgroundColor: `${t.backgroundColor}e8`,
-        backdropFilter: 'blur(14px) saturate(160%)',
-        border: `1px solid ${t.borderColor}`,
-        boxShadow: `0 8px 32px 0 ${t.shadowColor}`
-      },
-      neumorphic: {
-        backgroundColor: t.backgroundColor,
-        boxShadow: `10px 10px 20px ${t.shadowColor}, -10px -10px 20px rgba(255,255,255,0.75)`,
-        border: 'none'
-      },
-      gradient: {
-        background: `linear-gradient(135deg, ${t.primaryColor} 0%, ${t.secondaryColor} 100%)`,
-        border: 'none',
-        boxShadow: `0 10px 28px ${t.shadowColor}`
-      }
+    const baseStyles = {
+      backgroundColor: a.backgroundColor,
+      color: a.textColor,
+      borderRadius: '14px',
+      boxShadow: shadowMap[a.shadowIntensity],
+      cursor: this.selectable ? 'pointer' : 'default'
     };
 
-    return {
-      ...sizeMap[this.size],
-      ...variants[this.variant],
-      color: this.variant === 'gradient' ? '#ffffff' : t.textColor
-    };
-  }
-
-  get imageStyles() {
-    return {};
-  }
-
-  get overlayStyles() {
-    const t = this.appliedTheme;
-    return {
-      background: `linear-gradient(180deg, transparent 0%, ${t.primaryColor}50 100%)`,
-      opacity: this.imageOverlay ? 1 : 0
-    };
-  }
-
-  get badgeStyles() {
-    const t = this.appliedTheme;
-    return {
-      backgroundColor: t.accentColor,
-      color: '#ffffff'
-    };
-  }
-
-  get labelStyles() {
-    const t = this.appliedTheme;
-    return {
-      backgroundColor: t.borderColor,
-      color: t.primaryColor
-    };
-  }
-
-  get contentStyles() {
-    return {};
-  }
-
-  get titleStyles() {
-    const t = this.appliedTheme;
-    return {
-      color: this.variant === 'gradient' ? '#ffffff' : t.textColor
-    };
-  }
-
-  get subtitleStyles() {
-    const t = this.appliedTheme;
-    return {
-      color: this.variant === 'gradient' ? '#ffffff' : t.textColor
-    };
-  }
-
-  get bodyStyles() {
-    const t = this.appliedTheme;
-    return {
-      color: this.variant === 'gradient' ? '#ffffff' : t.textColor
-    };
-  }
-
-  get footerStyles() {
-    return {};
-  }
-
-  handleClick(event?: MouseEvent): void {
-    if (this.clickable && event) {
-      this.cardClick.emit(event);
+    if (this.pattern === 'overlay') {
+      return { ...baseStyles, padding: '0' };
+    } else if (this.pattern === 'minimal') {
+      return { ...baseStyles, padding: '1rem', border: `1px solid ${a.borderColor}` };
     }
+
+    return { ...baseStyles, padding: '1.5rem' };
   }
 
-  handleHover(isHovering: boolean): void {
-    this.cardHover.emit(isHovering);
+  onCardClick(event: MouseEvent): void {
+    if (this.selectable) {
+      this.cardClicked.emit(event);
+    }
   }
 }

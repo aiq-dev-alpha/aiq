@@ -1,64 +1,60 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-export interface InputProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
-  className?: string;
-  onHover?: (isHovered: boolean) => void;
+interface AutocompleteInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  suggestions: string[];
+  placeholder?: string;
 }
 
-export const Input: React.FC<InputProps> = ({ 
-  theme = {}, 
-  className = '',
-  onHover
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+export default function AutocompleteInput({
+  value,
+  onChange,
+  suggestions,
+  placeholder = 'Search...'
+}: AutocompleteInputProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [highlightedIndex, setHighlightedIndex] = useState(0);
 
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
+  const filteredSuggestions = suggestions.filter((suggestion) =>
+    suggestion.toLowerCase().includes(value.toLowerCase())
+  );
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-7px) scale(1.2)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(15px) scale(0.95)',
-    transition: `all 280ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '25px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '17px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 11px 29px rgba(0,0,0,0.17)' 
-      : '0 4px 17px rgba(0,0,0,0.9)',
-    cursor: 'pointer',
+  const handleSelect = (suggestion: string) => {
+    onChange(suggestion);
+    setIsOpen(false);
   };
 
   return (
-    <div 
-      className={className} 
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      Component
+    <div className="relative w-full">
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => {
+          onChange(e.target.value);
+          setIsOpen(true);
+        }}
+        onFocus={() => setIsOpen(true)}
+        onBlur={() => setTimeout(() => setIsOpen(false), 200)}
+        placeholder={placeholder}
+        className="w-full px-4 py-2.5 text-base border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+      />
+      {isOpen && filteredSuggestions.length > 0 && (
+        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
+          {filteredSuggestions.map((suggestion, index) => (
+            <div
+              key={index}
+              onMouseDown={() => handleSelect(suggestion)}
+              onMouseEnter={() => setHighlightedIndex(index)}
+              className={`px-4 py-2 cursor-pointer ${
+                index === highlightedIndex ? 'bg-blue-50' : 'hover:bg-gray-50'
+              }`}
+            >
+              {suggestion}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
-};
+}

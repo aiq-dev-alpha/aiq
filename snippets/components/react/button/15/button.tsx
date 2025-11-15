@@ -10,8 +10,8 @@ export interface ButtonProps {
   onHover?: (isHovered: boolean) => void;
 }
 
-export const Button: React.FC<ButtonProps> = ({ 
-  theme = {}, 
+export const Button: React.FC<ButtonProps> = ({
+  theme = {},
   className = '',
   onHover
 }) => {
@@ -34,31 +34,32 @@ export const Button: React.FC<ButtonProps> = ({
 
   const styles: React.CSSProperties = {
     opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-7px) scale(1.2)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(27px) scale(0.95)',
-    transition: `all 700ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '19px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '11px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 13px 23px rgba(0,0,0,0.19)' 
-      : '0 3px 19px rgba(0,0,0,0.9)',
+    transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+    width: '56px',
+    height: '56px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: theme.primary || '#3b82f6',
+    color: '#ffffff',
+    borderRadius: '50%',
+    border: 'none',
     cursor: 'pointer',
+    fontSize: '24px',
+    boxShadow: isHovered
+      ? '0 8px 24px rgba(59, 130, 246, 0.5)'
+      : '0 4px 12px rgba(0, 0, 0, 0.3)',
+    transform: isHovered ? 'scale(1.1) rotate(90deg)' : 'scale(1) rotate(0deg)',
   };
 
   return (
-    <div 
-      className={className} 
+    <div
+      className={className}
       style={styles}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      Component
+      +
     </div>
   );
 };

@@ -25,8 +25,8 @@ interface MenuItem {
     <nav [ngStyle]="navbarStyles" [class.scrolled]="isScrolled" role="navigation">
       <div class="container" [ngStyle]="containerStyles">
         <div class="brand" [ngStyle]="brandStyles">
-          <div class="icon" [ngStyle]="iconStyles">🔥</div>
-          <span class="name">Ember</span>
+          <div class="icon" [ngStyle]="iconStyles">🟠</div>
+          <span class="name">Amber</span>
         </div>
         
         <div class="menu" [ngStyle]="menuStyles" [class.active]="isMobileMenuOpen">
@@ -62,52 +62,52 @@ interface MenuItem {
     </nav>
   `,
   styles: [`
-    nav { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-    nav.scrolled { box-shadow: 0 10px 40px rgba(0,0,0,0.20); backdrop-filter: blur(12px); }
-    .container { display: flex; align-items: center; justify-content: space-between; max-width: 1380px; margin: 0 auto; padding: 1.125rem 2.25rem; gap: 2rem; }
-    .brand { display: flex; align-items: center; gap: 1.125rem; cursor: pointer; font-weight: 900; }
-    .icon { font-size: 1.875rem; transition: transform 0.3s ease; }
-    .icon:hover { transform: scale(1.3) rotate(-10deg); }
-    .name { font-size: 1.75rem; font-weight: 900; letter-spacing: -0.75px; }
-    .menu { display: flex; gap: 0.75rem; flex: 1; justify-content: flex-start; }
-    .menu a { padding: 1rem 1.75rem; border-radius: 0.875rem; text-decoration: none; transition: all 0.2s; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
-    .menu a:hover { transform: scale(1.05); background-color: rgba(0,0,0,0.05); }
-    .menu a.active { font-weight: 700; }
-    .menu a.active::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 35px; height: 4px; background: currentColor; border-radius: 2px; }
-    .actions { display: flex; gap: 1.5rem; align-items: center; }
-    .search input { padding: 0.75rem 1.5rem; border-radius: 0.875rem; border: 1px solid; outline: none; transition: all 0.3s; }
+    nav { transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+    nav.scrolled { box-shadow: 0 6px 22px rgba(0,0,0,0.13); backdrop-filter: blur(9px); }
+    .container { display: flex; align-items: center; justify-content: space-between; max-width: 1400px; margin: 0 auto; padding: 1rem 2.125rem; gap: 2rem; }
+    .brand { display: flex; align-items: center; gap: 0.95rem; cursor: pointer; font-weight: 750; }
+    .icon { font-size: 1.625rem; transition: transform 0.3s ease; }
+    .icon:hover { transform: rotate(180deg) scale(1.15); }
+    .name { font-size: 1.5rem; font-weight: 750; letter-spacing: -0.35px; }
+    .menu { display: flex; gap: 0.55rem; flex: 1; justify-content: center; }
+    .menu a { padding: 0.8rem 1.3rem; border-radius: 0.7rem; text-decoration: none; transition: all 0.3s; font-weight: 525; display: flex; align-items: center; gap: 0.5rem; }
+    .menu a:hover { transform: scale(1.04) translateY(-2px); background-color: rgba(0,0,0,0.05); }
+    .menu a.active { font-weight: 650; }
+    .menu a.active::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 27px; height: 2.75px; background: currentColor; border-radius: 2px; }
+    .actions { display: flex; gap: 1.05rem; align-items: center; }
+    .search input { padding: 0.6rem 1.1rem; border-radius: 0.7rem; border: 1px solid; outline: none; transition: all 0.3s; }
     .search input:focus { transform: scale(1.02); }
-    button { position: relative; background: none; border: none; cursor: pointer; padding: 0.75rem; font-size: 1.375rem; transition: transform 0.2s; }
-    button:hover { transform: scale(1.15); }
-    .badge { position: absolute; top: -2px; right: -2px; font-size: 0.7rem; min-width: 18px; height: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-weight: 700; animation: pulse 1s infinite; }
-    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.25); } }
-    .avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 3px solid; }
-    .toggle { display: none; flex-direction: column; gap: 0.35rem; }
-    .toggle span { width: 28px; height: 3.5px; background: currentColor; border-radius: 2px; transition: all 0.3s; }
+    button { position: relative; background: none; border: none; cursor: pointer; padding: 0.575rem; font-size: 1.2rem; transition: transform 0.2s; }
+    button:hover { transform: scale(1.09); }
+    .badge { position: absolute; top: -2px; right: -2px; font-size: 0.7rem; min-width: 18px; height: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-weight: 700; animation: pulse 1.9s infinite; }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.16); } }
+    .avatar { width: 37px; height: 37px; border-radius: 50%; object-fit: cover; border: 2.25px solid; }
+    .toggle { display: none; flex-direction: column; gap: 0.275rem; }
+    .toggle span { width: 25px; height: 2.75px; background: currentColor; border-radius: 2px; transition: all 0.3s; }
     @media (max-width: 768px) { .menu, .search { display: none; } .toggle { display: flex; } .menu.active { display: flex; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; padding: 1rem; animation: slideDown 0.3s; } @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } } }
   `]
 })
 export class NavbarComponent {
   @Input() theme: Partial<NavbarTheme> = {};
-  @Input() variant: 'solid' | 'transparent' | 'blur' | 'gradient' = 'gradient';
+  @Input() variant: 'solid' | 'transparent' | 'blur' | 'gradient' = 'solid';
   @Input() position: 'static' | 'sticky' | 'fixed' = 'sticky';
-  @Input() brandName = 'Ember';
-  @Input() menuItems: MenuItem[] = [{ label: 'Flame', route: '/', icon: '🔥' }, { label: 'Heat', route: '/heat', icon: '🌡️' }, { label: 'Burn', route: '/burn', icon: '💥' }];
+  @Input() brandName = 'Amber';
+  @Input() menuItems: MenuItem[] = [{ label: 'Glow', route: '/', icon: '✨' }, { label: 'Shine', route: '/shine', icon: '💫' }, { label: 'Bright', route: '/bright', icon: '🌟' }];
   @Input() activeRoute = '/';
   @Input() showSearch = true;
   @Input() showNotifications = true;
   @Input() showUserProfile = true;
-  @Input() notificationCount = 27;
-  @Input() userName = 'Blaze';
-  @Input() userAvatar = 'https://i.pravatar.cc/150?img=13';
+  @Input() notificationCount = 45;
+  @Input() userName = 'Amber';
+  @Input() userAvatar = 'https://i.pravatar.cc/150?img=17';
 
   private defaultTheme: NavbarTheme = {
-    primaryColor: '#f97316',
-    secondaryColor: '#dc2626',
-    backgroundColor: '#fff7ed',
+    primaryColor: '#fb923c',
+    secondaryColor: '#f97316',
+    backgroundColor: '#ffedd5',
     textColor: '#7c2d12',
-    borderColor: '#fdba74',
-    accentColor: '#ea580c'
+    borderColor: '#fed7aa',
+    accentColor: '#0284c7'
   };
 
   isMobileMenuOpen = false;
@@ -120,7 +120,7 @@ export class NavbarComponent {
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
-    this.isScrolled = window.scrollY > 35;
+    this.isScrolled = window.scrollY > 18;
   }
 
   toggleMobileMenu() {
@@ -132,7 +132,7 @@ export class NavbarComponent {
       solid: { backgroundColor: this.appliedTheme.backgroundColor, borderBottom: `1px solid ${this.appliedTheme.borderColor}` },
       transparent: { backgroundColor: `${this.appliedTheme.backgroundColor}CC`, backdropFilter: 'blur(10px)' },
       blur: { backgroundColor: `${this.appliedTheme.backgroundColor}AA`, backdropFilter: 'blur(20px) saturate(180%)' },
-      gradient: { background: `linear-gradient(120deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})` }
+      gradient: { background: `linear-gradient(75deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})` }
     };
     return {
       position: this.position,

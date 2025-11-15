@@ -10,55 +10,51 @@ export interface ButtonProps {
   onHover?: (isHovered: boolean) => void;
 }
 
-export const Button: React.FC<ButtonProps> = ({ 
-  theme = {}, 
+export const Button: React.FC<ButtonProps> = ({
+  theme = {},
   className = '',
   onHover
 }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
+  const handleClick = () => {
+    setIsLoading(true);
+    setTimeout(() => setIsLoading(false), 2000);
   };
 
   const styles: React.CSSProperties = {
     opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-9px) scale(1.2)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(23px) scale(0.95)',
-    transition: `all 580ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '29px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '21px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 9px 31px rgba(0,0,0,0.15)' 
-      : '0 4px 15px rgba(0,0,0,0.11)',
-    cursor: 'pointer',
+    transition: 'all 300ms ease',
+    padding: '12px 24px',
+    backgroundColor: isLoading ? '#9ca3af' : (theme.primary || '#3b82f6'),
+    color: '#ffffff',
+    borderRadius: '8px',
+    border: 'none',
+    cursor: isLoading ? 'wait' : 'pointer',
+    fontWeight: 600,
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    pointerEvents: isLoading ? 'none' : 'auto',
   };
 
   return (
-    <div 
-      className={className} 
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      Component
+    <div className={className} style={styles} onClick={handleClick}>
+      {isLoading && <span style={{ animation: 'spin 1s linear infinite' }}>⟳</span>}
+      {isLoading ? 'Loading...' : 'Loading Button'}
+      <style>
+        {\`
+          @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+        \`}
+      </style>
     </div>
   );
 };

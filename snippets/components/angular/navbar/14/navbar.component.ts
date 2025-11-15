@@ -25,8 +25,8 @@ interface MenuItem {
     <nav [ngStyle]="navbarStyles" [class.scrolled]="isScrolled" role="navigation">
       <div class="container" [ngStyle]="containerStyles">
         <div class="brand" [ngStyle]="brandStyles">
-          <div class="icon" [ngStyle]="iconStyles">🌙</div>
-          <span class="name">Midnight</span>
+          <div class="icon" [ngStyle]="iconStyles">💜</div>
+          <span class="name">Violet</span>
         </div>
         
         <div class="menu" [ngStyle]="menuStyles" [class.active]="isMobileMenuOpen">
@@ -62,52 +62,52 @@ interface MenuItem {
     </nav>
   `,
   styles: [`
-    nav { transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1); }
-    nav.scrolled { box-shadow: 0 5px 20px rgba(0,0,0,0.25); backdrop-filter: blur(6px); }
-    .container { display: flex; align-items: center; justify-content: space-between; max-width: 1320px; margin: 0 auto; padding: 1rem 1.75rem; gap: 2rem; }
-    .brand { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-weight: 700; }
-    .icon { font-size: 1.625rem; transition: transform 0.3s ease; }
-    .icon:hover { transform: rotate(-20deg); }
-    .name { font-size: 1.375rem; font-weight: 700; letter-spacing: 0px; }
-    .menu { display: flex; gap: 0.375rem; flex: 1; justify-content: center; }
-    .menu a { padding: 0.625rem 1rem; border-radius: 0.5rem; text-decoration: none; transition: all 0.3s; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
-    .menu a:hover { transform: translateX(2px); background-color: rgba(0,0,0,0.05); }
-    .menu a.active { font-weight: 600; }
-    .menu a.active::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 20px; height: 2px; background: currentColor; border-radius: 2px; }
-    .actions { display: flex; gap: 0.875rem; align-items: center; }
-    .search input { padding: 0.5rem 0.875rem; border-radius: 0.5rem; border: 1px solid; outline: none; transition: all 0.3s; }
+    nav { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+    nav.scrolled { box-shadow: 0 9px 36px rgba(0,0,0,0.18); backdrop-filter: blur(15px); }
+    .container { display: flex; align-items: center; justify-content: space-between; max-width: 1350px; margin: 0 auto; padding: 1.175rem 2.175rem; gap: 2rem; }
+    .brand { display: flex; align-items: center; gap: 1.05rem; cursor: pointer; font-weight: 825; }
+    .icon { font-size: 1.85rem; transition: transform 0.3s ease; }
+    .icon:hover { transform: scale(1.25) rotate(-15deg); }
+    .name { font-size: 1.675rem; font-weight: 825; letter-spacing: -0.6px; }
+    .menu { display: flex; gap: 0.7rem; flex: 1; justify-content: center; }
+    .menu a { padding: 0.95rem 1.55rem; border-radius: 0.85rem; text-decoration: none; transition: all 0.26s; font-weight: 550; display: flex; align-items: center; gap: 0.5rem; }
+    .menu a:hover { transform: translateY(-3.5px); background-color: rgba(0,0,0,0.05); }
+    .menu a.active { font-weight: 725; }
+    .menu a.active::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 33px; height: 3.5px; background: currentColor; border-radius: 2px; }
+    .actions { display: flex; gap: 1.35rem; align-items: center; }
+    .search input { padding: 0.7rem 1.35rem; border-radius: 0.85rem; border: 1px solid; outline: none; transition: all 0.3s; }
     .search input:focus { transform: scale(1.02); }
-    button { position: relative; background: none; border: none; cursor: pointer; padding: 0.5rem; font-size: 1.125rem; transition: transform 0.2s; }
-    button:hover { transform: scale(1.05); }
-    .badge { position: absolute; top: -2px; right: -2px; font-size: 0.7rem; min-width: 18px; height: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-weight: 700; animation: pulse 2.5s infinite; }
-    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-    .avatar { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 2px solid; }
-    .toggle { display: none; flex-direction: column; gap: 0.2rem; }
-    .toggle span { width: 22px; height: 2px; background: currentColor; border-radius: 2px; transition: all 0.3s; }
+    button { position: relative; background: none; border: none; cursor: pointer; padding: 0.7rem; font-size: 1.325rem; transition: transform 0.2s; }
+    button:hover { transform: scale(1.13); }
+    .badge { position: absolute; top: -2px; right: -2px; font-size: 0.7rem; min-width: 18px; height: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-weight: 700; animation: pulse 1.7s infinite; }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.22); } }
+    .avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2.75px solid; }
+    .toggle { display: none; flex-direction: column; gap: 0.325rem; }
+    .toggle span { width: 27px; height: 3.25px; background: currentColor; border-radius: 2px; transition: all 0.3s; }
     @media (max-width: 768px) { .menu, .search { display: none; } .toggle { display: flex; } .menu.active { display: flex; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; padding: 1rem; animation: slideDown 0.3s; } @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } } }
   `]
 })
 export class NavbarComponent {
   @Input() theme: Partial<NavbarTheme> = {};
-  @Input() variant: 'solid' | 'transparent' | 'blur' | 'gradient' = 'solid';
+  @Input() variant: 'solid' | 'transparent' | 'blur' | 'gradient' = 'gradient';
   @Input() position: 'static' | 'sticky' | 'fixed' = 'fixed';
-  @Input() brandName = 'Midnight';
-  @Input() menuItems: MenuItem[] = [{ label: 'Moon', route: '/', icon: '🌙' }, { label: 'Stars', route: '/stars', icon: '⭐' }, { label: 'Night', route: '/night', icon: '🌃' }];
+  @Input() brandName = 'Violet';
+  @Input() menuItems: MenuItem[] = [{ label: 'Magic', route: '/', icon: '✨' }, { label: 'Dream', route: '/dream', icon: '💭' }, { label: 'Wonder', route: '/wonder', icon: '🌈' }];
   @Input() activeRoute = '/';
   @Input() showSearch = true;
   @Input() showNotifications = true;
   @Input() showUserProfile = true;
-  @Input() notificationCount = 99;
-  @Input() userName = 'Luna';
-  @Input() userAvatar = 'https://i.pravatar.cc/150?img=14';
+  @Input() notificationCount = 37;
+  @Input() userName = 'Violet';
+  @Input() userAvatar = 'https://i.pravatar.cc/150?img=18';
 
   private defaultTheme: NavbarTheme = {
-    primaryColor: '#6366f1',
-    secondaryColor: '#4f46e5',
-    backgroundColor: '#1e1b4b',
-    textColor: '#e0e7ff',
-    borderColor: '#4c1d95',
-    accentColor: '#c026d3'
+    primaryColor: '#a78bfa',
+    secondaryColor: '#8b5cf6',
+    backgroundColor: '#f5f3ff',
+    textColor: '#5b21b6',
+    borderColor: '#c4b5fd',
+    accentColor: '#ec4899'
   };
 
   isMobileMenuOpen = false;
@@ -120,7 +120,7 @@ export class NavbarComponent {
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
-    this.isScrolled = window.scrollY > 10;
+    this.isScrolled = window.scrollY > 27;
   }
 
   toggleMobileMenu() {
@@ -132,7 +132,7 @@ export class NavbarComponent {
       solid: { backgroundColor: this.appliedTheme.backgroundColor, borderBottom: `1px solid ${this.appliedTheme.borderColor}` },
       transparent: { backgroundColor: `${this.appliedTheme.backgroundColor}CC`, backdropFilter: 'blur(10px)' },
       blur: { backgroundColor: `${this.appliedTheme.backgroundColor}AA`, backdropFilter: 'blur(20px) saturate(180%)' },
-      gradient: { background: `linear-gradient(45deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})` }
+      gradient: { background: `linear-gradient(110deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})` }
     };
     return {
       position: this.position,

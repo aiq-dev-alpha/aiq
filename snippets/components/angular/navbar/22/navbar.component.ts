@@ -24,8 +24,8 @@ interface MenuItem {
     <nav [ngStyle]="navbarStyles" [class.scrolled]="isScrolled" role="navigation">
       <div class="container" [ngStyle]="containerStyles">
         <div class="brand" [ngStyle]="brandStyles">
-          <div class="icon" [ngStyle]="iconStyles">🌀</div>
-          <span class="name">Indigo</span>
+          <div class="icon" [ngStyle]="iconStyles">🍑</div>
+          <span class="name">Peach</span>
         </div>
         
         <div class="menu" [ngStyle]="menuStyles" [class.active]="isMobileMenuOpen">
@@ -43,7 +43,7 @@ interface MenuItem {
         
         <div class="actions" [ngStyle]="actionsStyles">
           <div *ngIf="showSearch" class="search">
-            <input type="search" placeholder="Search..." aria-label="Search" [ngStyle]="searchStyles">
+            <input type="search" placeholder="Discover..." aria-label="Search" [ngStyle]="searchStyles">
           </div>
           <button *ngIf="showNotifications" [ngStyle]="notifStyles" aria-label="Notifications">
             🔔<span *ngIf="notificationCount > 0" class="badge" [ngStyle]="badgeStyles">{{notificationCount}}</span>
@@ -61,52 +61,52 @@ interface MenuItem {
     </nav>
   `,
   styles: [`
-    nav { transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-    nav.scrolled { box-shadow: 0 8px 28px rgba(99, 102, 241,0.15); backdrop-filter: blur(18px); }
-    .container { display: flex; align-items: center; justify-content: space-between; max-width: 1360px; margin: 0 auto; padding: 1.2rem 2.2rem; gap: 2rem; }
-    .brand { display: flex; align-items: center; gap: 1rem; cursor: pointer; font-weight: 800; }
-    .icon { font-size: 1.8rem; transition: transform 0.3s ease-out; }
-    .icon:hover { transform: rotate(360deg); }
-    .name { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; }
-    .menu { display: flex; gap: 0.65rem; flex: 1; justify-content: center; }
-    .menu a { padding: 0.85rem 1.4rem; border-radius: 0.75rem; text-decoration: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-weight: 530; display: flex; align-items: center; gap: 0.5rem; position: relative; }
-    .menu a:hover { transform: scale(1.03) translateY(-2px); background-color: rgba(0,0,0,0.05); }
-    .menu a.active { font-weight: 680; }
-    .menu a.active::after { content: ''; position: absolute; bottom: 1px; left: 50%; transform: translateX(-50%); width: 30px; height: 3px; background: currentColor; border-radius: 2px; }
-    .actions { display: flex; gap: 1.2rem; align-items: center; }
-    .search input { padding: 0.65rem 1.2rem; border-radius: 1.75rem; border: 1.75px solid; outline: none; transition: all 0.32s; width: 220px; }
-    .search input:focus { transform: scale(1.03); box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    button { position: relative; background: none; border: none; cursor: pointer; padding: 0.65rem; font-size: 1.25rem; transition: transform 0.22s; border-radius: 0.65rem; }
-    button:hover { transform: scale(1.1); }
-    .badge { position: absolute; top: -2px; right: -2px; font-size: 0.72rem; min-width: 19px; height: 19px; border-radius: 9.5px; display: flex; align-items: center; justify-content: center; font-weight: 750; animation: pulse 1.7s infinite; }
-    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
-    .avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2.5px solid; }
-    .toggle { display: none; flex-direction: column; gap: 0.3rem; }
-    .toggle span { width: 26px; height: 2.8px; background: currentColor; border-radius: 2px; transition: all 0.3s; }
-    @media (max-width: 768px) { .menu, .search { display: none; } .toggle { display: flex; } .menu.active { display: flex; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; padding: 1.5rem; animation: slideDown 0.32s; } @keyframes slideDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } } }
+    nav { transition: all 0.34s cubic-bezier(0.25, 1, 0.5, 1); }
+    nav.scrolled { box-shadow: 0 5px 18px rgba(253, 164, 175,0.11); backdrop-filter: blur(9px); }
+    .container { display: flex; align-items: center; justify-content: space-between; max-width: 1380px; margin: 0 auto; padding: 1.08rem 2.08rem; gap: 1.82rem; }
+    .brand { display: flex; align-items: center; gap: 0.88rem; cursor: pointer; font-weight: 680; }
+    .icon { font-size: 1.68rem; transition: transform 0.3s ease-out; }
+    .icon:hover { transform: scale(1.12) rotate(-8deg); }
+    .name { font-size: 1.52rem; font-weight: 680; letter-spacing: -0.32px; }
+    .menu { display: flex; gap: 0.52rem; flex: 1; justify-content: center; }
+    .menu a { padding: 0.78rem 1.24rem; border-radius: 0.64rem; text-decoration: none; transition: all 0.29s cubic-bezier(0.25, 1, 0.5, 1); font-weight: 510; display: flex; align-items: center; gap: 0.5rem; position: relative; }
+    .menu a:hover { transform: translateY(-1.8px); background-color: rgba(0,0,0,0.038); }
+    .menu a.active { font-weight: 630; }
+    .menu a.active::after { content: ''; position: absolute; bottom: 2.2px; left: 50%; transform: translateX(-50%); width: 24px; height: 2.5px; background: currentColor; border-radius: 1.45px; }
+    .actions { display: flex; gap: 1.04rem; align-items: center; }
+    .search input { padding: 0.54rem 1.08rem; border-radius: 1.45rem; border: 1.45px solid; outline: none; transition: all 0.32s; width: 198px; }
+    .search input:focus { transform: scale(1.015); box-shadow: 0 0 7.5px rgba(0,0,0,0.1); }
+    button { position: relative; background: none; border: none; cursor: pointer; padding: 0.54rem; font-size: 1.14rem; transition: transform 0.2s; border-radius: 0.54rem; }
+    button:hover { transform: scale(1.065); }
+    .badge { position: absolute; top: -0.8px; right: -0.8px; font-size: 0.68rem; min-width: 17.8px; height: 17.8px; border-radius: 8.9px; display: flex; align-items: center; justify-content: center; font-weight: 705; animation: pulse 2.15s infinite; }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.145); } }
+    .avatar { width: 35.5px; height: 35.5px; border-radius: 50%; object-fit: cover; border: 2.05px solid; }
+    .toggle { display: none; flex-direction: column; gap: 0.24rem; }
+    .toggle span { width: 24.2px; height: 2.52px; background: currentColor; border-radius: 1.45px; transition: all 0.3s; }
+    @media (max-width: 768px) { .menu, .search { display: none; } .toggle { display: flex; } .menu.active { display: flex; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; padding: 1.22rem; animation: slideDown 0.32s; } @keyframes slideDown { from { opacity: 0; transform: translateY(-9.5px); } to { opacity: 1; transform: translateY(0); } } }
   `]
 })
 export class NavbarComponent {
   @Input() theme: Partial<NavbarTheme> = {};
-  @Input() variant: 'solid' | 'transparent' | 'blur' | 'gradient' = 'blur';
+  @Input() variant: 'solid' | 'transparent' | 'blur' | 'gradient' = 'transparent';
   @Input() position: 'static' | 'sticky' | 'fixed' = 'fixed';
-  @Input() brandName = 'Indigo';
-  @Input() menuItems: MenuItem[] = [{ label: 'Spiral', route: '/', icon: '🌀' }, { label: 'Vortex', route: '/vortex', icon: '🌊' }, { label: 'Flow', route: '/flow', icon: '💫' }];
+  @Input() brandName = 'Peach';
+  @Input() menuItems: MenuItem[] = [{ label: 'Sweet', route: '/', icon: '🍑' }, { label: 'Soft', route: '/soft', icon: '🌸' }, { label: 'Gentle', route: '/gentle', icon: '🌺' }];
   @Input() activeRoute = '/';
   @Input() showSearch = true;
   @Input() showNotifications = true;
   @Input() showUserProfile = true;
-  @Input() notificationCount = 29;
-  @Input() userName = 'Indigo';
-  @Input() userAvatar = 'https://i.pravatar.cc/150?img=22';
+  @Input() notificationCount = 23;
+  @Input() userName = 'Peach';
+  @Input() userAvatar = 'https://i.pravatar.cc/150?img=26';
 
   private defaultTheme: NavbarTheme = {
-    primaryColor: '#6366f1',
-    secondaryColor: '#818cf8',
-    backgroundColor: '#eef2ff',
-    textColor: '#3730a3',
-    borderColor: '#c7d2fe',
-    accentColor: '#ec4899'
+    primaryColor: '#fda4af',
+    secondaryColor: '#fb7185',
+    backgroundColor: '#fff1f2',
+    textColor: '#881337',
+    borderColor: '#fecdd3',
+    accentColor: '#06b6d4'
   };
 
   isMobileMenuOpen = false;
@@ -119,7 +119,7 @@ export class NavbarComponent {
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
-    this.isScrolled = window.scrollY > 20;
+    this.isScrolled = window.scrollY > 15;
   }
 
   toggleMobileMenu() {
@@ -128,10 +128,10 @@ export class NavbarComponent {
 
   get navbarStyles() {
     const variants = {
-      solid: { backgroundColor: this.appliedTheme.backgroundColor, borderBottom: `1px solid ${this.appliedTheme.borderColor}`, boxShadow: '0 2px 4px rgba(0,0,0,0.08)' },
-      transparent: { backgroundColor: `${this.appliedTheme.backgroundColor}E0`, backdropFilter: 'blur(12px)' },
-      blur: { backgroundColor: `${this.appliedTheme.backgroundColor}B0`, backdropFilter: 'blur(18px) saturate(180%)' },
-      gradient: { background: `linear-gradient(120deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})` }
+      solid: { backgroundColor: this.appliedTheme.backgroundColor, borderBottom: `1px solid ${this.appliedTheme.borderColor}`, boxShadow: '0 1.2px 3.2px rgba(0,0,0,0.088)' },
+      transparent: { backgroundColor: `${this.appliedTheme.backgroundColor}E8`, backdropFilter: 'blur(9.5px)' },
+      blur: { backgroundColor: `${this.appliedTheme.backgroundColor}B4`, backdropFilter: 'blur(15.5px) saturate(168%)' },
+      gradient: { background: `linear-gradient(140deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})` }
     };
     return {
       position: this.position,
@@ -149,19 +149,19 @@ export class NavbarComponent {
   get iconStyles() { return { color: this.appliedTheme.primaryColor }; }
   get menuStyles() { return {}; }
   get actionsStyles() { return {}; }
-  get searchStyles() { return { borderColor: this.appliedTheme.borderColor, color: this.appliedTheme.textColor, backgroundColor: `${this.appliedTheme.backgroundColor}90` }; }
-  get notifStyles() { return { color: this.appliedTheme.textColor, backgroundColor: `${this.appliedTheme.primaryColor}20` }; }
+  get searchStyles() { return { borderColor: this.appliedTheme.borderColor, color: this.appliedTheme.textColor, backgroundColor: `${this.appliedTheme.backgroundColor}78` }; }
+  get notifStyles() { return { color: this.appliedTheme.textColor, backgroundColor: `${this.appliedTheme.primaryColor}19` }; }
   get badgeStyles() { return { backgroundColor: this.appliedTheme.accentColor, color: '#ffffff' }; }
-  get profileStyles() { return { color: this.appliedTheme.textColor, backgroundColor: `${this.appliedTheme.primaryColor}18`, padding: '0.55rem 1.05rem', borderRadius: '2.25rem' }; }
-  get avatarStyles() { return { borderColor: this.appliedTheme.primaryColor }; }
+  get profileStyles() { return { color: this.appliedTheme.textColor, backgroundColor: `${this.appliedTheme.primaryColor}14`, padding: '0.485rem 0.985rem', borderRadius: '1.95rem' }; }
+  get avatarStyles() { return { borderColor: this.appliedTheme.secondaryColor }; }
 
   getItemStyles(index: number) {
     const isActive = this.menuItems[index].route === this.activeRoute;
     const isHovered = this.hoveredIndex === index;
     return {
       color: this.appliedTheme.textColor,
-      backgroundColor: isActive ? `${this.appliedTheme.primaryColor}28` : isHovered ? `${this.appliedTheme.primaryColor}15` : 'transparent',
-      boxShadow: isActive ? `0 4px 12px rgba(0,0,0,0.1)` : 'none'
+      backgroundColor: isActive ? `${this.appliedTheme.primaryColor}23` : isHovered ? `${this.appliedTheme.primaryColor}115` : 'transparent',
+      boxShadow: isActive ? `0 2.8px 9.5px rgba(0,0,0,0.078)` : 'none'
     };
   }
 }

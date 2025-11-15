@@ -70,7 +70,7 @@ interface InputTheme {
       position: relative;
     }
     .label {
-      font-weight: 400;
+      font-weight: 700;
       font-size: 14px;
       letter-spacing: 0.5px;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -81,13 +81,13 @@ interface InputTheme {
       font-weight: 600;
     }
     .required {
-      color: #f87171;
+      color: #e63946;
       margin-left: 3px;
     }
     .input-container {
       position: relative;
       overflow: visible;
-      border-radius: 8px;
+      border-radius: 20px;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .animated-border {
@@ -95,22 +95,22 @@ interface InputTheme {
       bottom: 0;
       left: 0;
       right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, #60a5fa, #3b82f6);
+      height: 3px;
+      background: linear-gradient(90deg, #006994, #00a8cc);
       transform: scaleX(0);
       transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      border-radius: 8px;
+      border-radius: 20px;
     }
     .input-container.focused .animated-border {
       transform: scaleX(1);
-      animation: pulse 1.5s ease-in-out infinite;
+      animation: fade 1.5s ease-in-out infinite;
     }
     .input-container.error .animated-border {
-      background: linear-gradient(90deg, #f87171, #f87171dd);
+      background: linear-gradient(90deg, #e63946, #e63946dd);
       transform: scaleX(1);
     }
     .input-container.success .animated-border {
-      background: linear-gradient(90deg, #34d399, #34d399dd);
+      background: linear-gradient(90deg, #06ffa5, #06ffa5dd);
       transform: scaleX(1);
     }
     .input-field {
@@ -144,7 +144,7 @@ interface InputTheme {
       opacity: 0.6;
       transition: all 0.3s;
       flex-shrink: 0;
-      font-size: 16px;
+      font-size: 22px;
     }
     .input-container.focused .left-icon,
     .input-container.focused .right-icon {
@@ -190,7 +190,7 @@ interface InputTheme {
     .success-text {
       animation: slideIn 0.3s;
     }
-    @keyframes pulse {
+    @keyframes fade {
       0%, 100% { opacity: 1; transform: scaleX(1); }
       50% { opacity: 0.8; transform: scaleX(1.02); }
     }
@@ -247,14 +247,14 @@ export class InputComponent implements ControlValueAccessor {
   private onTouched: () => void = () => {};
 
   private defaultTheme: InputTheme = {
-    primaryColor: '#60a5fa',
-    secondaryColor: '#3b82f6',
-    backgroundColor: '#1e293b',
-    textColor: '#f1f5f9',
-    borderColor: '#334155',
-    accentColor: '#f472b6',
-    errorColor: '#f87171',
-    successColor: '#34d399'
+    primaryColor: '#006994',
+    secondaryColor: '#00a8cc',
+    backgroundColor: '#e8f4f8',
+    textColor: '#003d5b',
+    borderColor: '#80d0c7',
+    accentColor: '#0abfbc',
+    errorColor: '#e63946',
+    successColor: '#06ffa5'
   };
 
   get appliedTheme(): InputTheme {
@@ -298,12 +298,12 @@ export class InputComponent implements ControlValueAccessor {
       filled: {
         backgroundColor: t.backgroundColor,
         border: `1px solid ${this.hasError ? t.errorColor : this.showSuccess ? t.successColor : t.borderColor}`,
-        borderRadius: '8px'
+        borderRadius: '20px'
       },
       outlined: {
         backgroundColor: 'transparent',
         border: `2px solid ${this.hasError ? t.errorColor : this.showSuccess ? t.successColor : t.borderColor}`,
-        borderRadius: '8px'
+        borderRadius: '20px'
       },
       underlined: {
         backgroundColor: 'transparent',
@@ -318,7 +318,7 @@ export class InputComponent implements ControlValueAccessor {
       display: 'flex',
       alignItems: 'center',
       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-      boxShadow: this.isFocused ? '0 0 0 3px #60a5fa20' : 'none'
+      filter: this.isFocused ? 'brightness(1.05)' : 'brightness(1)'
     };
   }
 

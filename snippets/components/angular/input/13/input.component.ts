@@ -71,7 +71,7 @@ interface InputTheme {
     }
     .label {
       font-weight: 500;
-      font-size: 13px;
+      font-size: 12px;
       letter-spacing: 0.5px;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       transform-origin: left top;
@@ -81,13 +81,13 @@ interface InputTheme {
       font-weight: 600;
     }
     .required {
-      color: #e74c3c;
+      color: #e63946;
       margin-left: 3px;
     }
     .input-container {
       position: relative;
       overflow: visible;
-      border-radius: 4px;
+      border-radius: 12px;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .animated-border {
@@ -96,21 +96,21 @@ interface InputTheme {
       left: 0;
       right: 0;
       height: 3px;
-      background: linear-gradient(90deg, #27ae60, #2ecc71);
+      background: linear-gradient(90deg, #006994, #00a8cc);
       transform: scaleX(0);
       transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      border-radius: 4px;
+      border-radius: 12px;
     }
     .input-container.focused .animated-border {
       transform: scaleX(1);
       animation: shimmer 1.5s ease-in-out infinite;
     }
     .input-container.error .animated-border {
-      background: linear-gradient(90deg, #e74c3c, #e74c3cdd);
+      background: linear-gradient(90deg, #e63946, #e63946dd);
       transform: scaleX(1);
     }
     .input-container.success .animated-border {
-      background: linear-gradient(90deg, #00b894, #00b894dd);
+      background: linear-gradient(90deg, #06ffa5, #06ffa5dd);
       transform: scaleX(1);
     }
     .input-field {
@@ -247,14 +247,14 @@ export class InputComponent implements ControlValueAccessor {
   private onTouched: () => void = () => {};
 
   private defaultTheme: InputTheme = {
-    primaryColor: '#27ae60',
-    secondaryColor: '#2ecc71',
-    backgroundColor: '#f0fff4',
-    textColor: '#1e4d2b',
-    borderColor: '#a8e6cf',
-    accentColor: '#55efc4',
-    errorColor: '#e74c3c',
-    successColor: '#00b894'
+    primaryColor: '#006994',
+    secondaryColor: '#00a8cc',
+    backgroundColor: '#e8f4f8',
+    textColor: '#003d5b',
+    borderColor: '#80d0c7',
+    accentColor: '#0abfbc',
+    errorColor: '#e63946',
+    successColor: '#06ffa5'
   };
 
   get appliedTheme(): InputTheme {
@@ -285,9 +285,9 @@ export class InputComponent implements ControlValueAccessor {
   get containerStyles() {
     const t = this.appliedTheme;
     const sizeMap = {
-      sm: { padding: '8px 12px', gap: '6px' },
-      md: { padding: '12px 16px', gap: '10px' },
-      lg: { padding: '16px 20px', gap: '14px' }
+      sm: { padding: '6px 10px', gap: '6px' },
+      md: { padding: '10px 14px', gap: '10px' },
+      lg: { padding: '14px 18px', gap: '14px' }
     };
 
     const variantStyles = {
@@ -298,12 +298,12 @@ export class InputComponent implements ControlValueAccessor {
       filled: {
         backgroundColor: t.backgroundColor,
         border: `1px solid ${this.hasError ? t.errorColor : this.showSuccess ? t.successColor : t.borderColor}`,
-        borderRadius: '4px'
+        borderRadius: '12px'
       },
       outlined: {
         backgroundColor: 'transparent',
         border: `2px solid ${this.hasError ? t.errorColor : this.showSuccess ? t.successColor : t.borderColor}`,
-        borderRadius: '4px'
+        borderRadius: '12px'
       },
       underlined: {
         backgroundColor: 'transparent',
@@ -318,16 +318,16 @@ export class InputComponent implements ControlValueAccessor {
       display: 'flex',
       alignItems: 'center',
       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-      boxShadow: this.isFocused ? '0 4px 12px #27ae6040' : '0 1px 3px rgba(0,0,0,0.1)'
+      boxShadow: this.isFocused ? '0 4px 12px #00699440' : '0 1px 3px rgba(0,0,0,0.1)'
     };
   }
 
   get inputStyles() {
     const t = this.appliedTheme;
     const sizeMap = {
-      sm: { fontSize: '13px' },
-      md: { fontSize: '15px' },
-      lg: { fontSize: '17px' }
+      sm: { fontSize: '12px' },
+      md: { fontSize: '14px' },
+      lg: { fontSize: '16px' }
     };
 
     return {
