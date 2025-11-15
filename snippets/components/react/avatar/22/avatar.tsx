@@ -1,61 +1,44 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  progress?: number;
-  showLabel?: boolean;
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (progress: number) => void;
+interface AvatarProps {
+  src?: string;
+  alt?: string;
+  size?: 'sm' | 'md' | 'lg';
+  status?: 'online' | 'offline' | 'away';
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  progress: initialProgress = 0,
-  showLabel = true,
-  theme = {},
-  className = '',
-  onInteract
+export const Avatar: React.FC<AvatarProps> = ({
+  src,
+  alt = 'User',
+  size = 'md',
+  status
 }) => {
-  const [progress, setProgress] = useState(initialProgress);
-  const [animating, setAnimating] = useState(false);
-  const primary = theme.primary || '#10b981';
-
-  useEffect(() => {
-    if (progress !== initialProgress) {
-      setAnimating(true);
-      setTimeout(() => setAnimating(false), 500);
-    }
-    setProgress(initialProgress);
-  }, [initialProgress]);
-
+  const sizes = {
+    sm: 'w-8 h-8',
+    md: 'w-12 h-12',
+    lg: 'w-16 h-16'
+  };
+  
+  const statusColors = {
+    online: 'bg-green-500',
+    offline: 'bg-gray-400',
+    away: 'bg-yellow-500'
+  };
+  
   return (
-    <div className={className} style={{ width: '100%' }}>
-      {showLabel && <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: primary }}>{progress}%</div>}
-      <div style={{ width: '100%', height: '12px', background: '#e5e7eb', borderRadius: '6px', overflow: 'hidden', position: 'relative' }}>
-        <div
-          style={{
-            width: \`\${progress}%\`,
-            height: '100%',
-            background: \`linear-gradient(90deg, \${primary}, \${primary}dd)\`,
-            borderRadius: '6px',
-            transition: 'width 500ms ease',
-            position: 'relative',
-            overflow: 'hidden'
-          }}
-        >
-          {animating && (
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
-              animation: 'shimmer 1s infinite'
-            }} />
-          )}
-        </div>
+    <div className="relative inline-block">
+      <div className={`${sizes[size]} rounded-md overflow-hidden bg-gradient-to-br from-green-400 to-green-600 shadow-sm ring-2 ring-white`}>
+        {src ? (
+          <img src={src} alt={alt} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-white font-bold">
+            {alt[0].toUpperCase()}
+          </div>
+        )}
       </div>
-      <style>{`@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }`}</style>
+      {status && (
+        <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${statusColors[status]} ring-2 ring-white`} />
+      )}
     </div>
   );
 };

@@ -1,51 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  tabs?: Array<{ id: string; label: string; content: React.ReactNode }>;
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (tabId: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  tabs = [
-    { id: '1', label: 'Tab 1', content: 'Content 1' },
-    { id: '2', label: 'Tab 2', content: 'Content 2' },
-    { id: '3', label: 'Tab 3', content: 'Content 3' }
-  ],
-  theme = {},
-  className = '',
-  onInteract
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [activeTab, setActiveTab] = useState(tabs[0]?.id || '');
-  const primary = theme.primary || '#6366f1';
-
+  const baseClasses = 'rounded font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500';
+  
+  const variantClasses = {
+    solid: 'bg-blue-500 text-white hover:opacity-90 active:scale-95 shadow',
+    outline: 'border-2 border-blue-500 text-blue-600 hover:bg-blue-50',
+    ghost: 'text-blue-600 hover:bg-blue-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-3 py-1 text-xs',
+    md: 'px-5 py-2.5 text-sm',
+    lg: 'px-7 py-3.5 text-base'
+  };
+  
   return (
-    <div className={className} style={{ maxWidth: '600px' }}>
-      <div style={{ display: 'flex', gap: '4px', borderBottom: \`2px solid \${primary}20\` }}>
-        {tabs.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => { setActiveTab(tab.id); onInteract?.(tab.id); }}
-            style={{
-              padding: '12px 24px',
-              background: 'transparent',
-              border: 'none',
-              borderBottom: \`3px solid \${activeTab === tab.id ? primary : 'transparent'}\`,
-              color: activeTab === tab.id ? primary : '#6b7280',
-              fontWeight: activeTab === tab.id ? 700 : 500,
-              cursor: 'pointer',
-              transition: 'all 200ms ease',
-              marginBottom: '-2px'
-            }}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-      <div style={{ padding: '24px 0' }}>
-        {tabs.find(t => t.id === activeTab)?.content}
-      </div>
-    </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

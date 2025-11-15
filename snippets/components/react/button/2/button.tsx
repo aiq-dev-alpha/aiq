@@ -1,90 +1,44 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  theme = {},
-  className = '',
-  onInteract
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
-  const [pressed, setPressed] = useState(false);
-
-  const primary = theme.primary || '#3b82f6';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
-  useEffect(() => {
-  if (ripples.length > 0) {
-  const timer = setTimeout(() => setRipples([]), 600);
-  return () => clearTimeout(timer);
-  }
-  }, [ripples]);
-
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-  const rect = e.currentTarget.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-  setRipples([...ripples, { x, y, id: Date.now() }]);
-  setPressed(true);
-  setTimeout(() => setPressed(false), 150);
-  onInteract?.('click');
+  const baseClasses = 'rounded font-medium transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500';
+  
+  const variantClasses = {
+    solid: 'bg-blue-500 text-white hover:brightness-110 hover:-translate-y-0.5 shadow-sm',
+    outline: 'border-2 border-blue-500 text-blue-600 hover:bg-blue-50',
+    ghost: 'text-blue-600 hover:bg-blue-100'
   };
-
+  
+  const sizeClasses = {
+    sm: 'px-2 py-1 text-xs',
+    md: 'px-3.5 py-2 text-sm',
+    lg: 'px-5 py-3 text-md'
+  };
+  
   return (
-  <button
-  className={className}
-  onClick={handleClick}
-  style={{
-  position: 'relative',
-  padding: '12px 28px',
-  backgroundColor: background,
-  color: text,
-  border: `2px solid ${primary}`,
-  borderRadius: '8px',
-  fontSize: '16px',
-  fontWeight: 600,
-  cursor: 'pointer',
-  overflow: 'hidden',
-  transform: pressed ? 'scale(0.96)' : 'scale(1)',
-  transition: 'transform 150ms cubic-bezier(0.4, 0, 0.2, 1)',
-  outline: 'none'
-  }}
-  >
-  <span style={{ position: 'relative', zIndex: 1 }}>Ripple Button</span>
-  {ripples.map(ripple => (
-  <span
-  key={ripple.id}
-  style={{
-  position: 'absolute',
-  left: ripple.x,
-  top: ripple.y,
-  width: '10px',
-  height: '10px',
-  borderRadius: '50%',
-  backgroundColor: `${primary}40`,
-  transform: 'translate(-50%, -50%)',
-  animation: 'ripple 600ms ease-out',
-  pointerEvents: 'none'
-  }}
-  />
-  ))}
-  <style>{`
-  @keyframes ripple {
-  to {
-  transform: translate(-50%, -50%) scale(30);
-  opacity: 0;
-  }
-  }
-  `}</style>
-  </button>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

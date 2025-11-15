@@ -1,39 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [active, setActive] = useState(false);
-  const primary = theme.primary || '#6366f1';
-  const background = theme.background || 'rgba(255, 255, 255, 0.1)';
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded font-medium transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500';
+  
+  const variantClasses = {
+    solid: 'bg-amber-500 text-white hover:opacity-90 active:scale-95 shadow-lg',
+    outline: 'border-2 border-amber-500 text-amber-600 hover:bg-amber-50',
+    ghost: 'text-amber-600 hover:bg-amber-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2 py-1 text-xs',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
+  };
   
   return (
-  <div
-  className={className}
-  onClick={() => { setActive(!active); onInteract?.('glassmorphism'); }}
-  style={{
-  width: '320px',
-  padding: '24px',
-  background: background,
-  backdropFilter: 'blur(10px)',
-  border: active ? `3px solid ${primary}` : `2px solid ${primary}40`,
-  borderRadius: '16px',
-  cursor: 'pointer',
-  transition: 'all 350ms cubic-bezier(0.34, 1.56, 0.64, 1)',
-  boxShadow: active ? `0 20px 40px ${primary}40` : `0 8px 24px ${primary}20`,
-  transform: active ? 'translateY(-8px)' : 'translateY(0)'
-  }}
-  >
-  <h3 style={{ margin: '0 0 12px 0', color: primary, fontSize: '20px', fontWeight: 700 }}>
-  Glassmorphism Card
-  </h3>
-  <p style={{ margin: 0, color: '#64748b', fontSize: '14px', lineHeight: 1.6 }}>
-  Click to {active ? 'deactivate' : 'activate'} this glassmorphism card variant.
-  </p>
-  </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

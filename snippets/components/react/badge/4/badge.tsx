@@ -1,55 +1,28 @@
 import React from 'react';
 
-export interface ComponentProps {
-  label?: string;
-  variant?: 'primary' | 'success' | 'warning' | 'error';
-  theme?: { primary?: string };
-  className?: string;
+interface BadgeProps {
+  content?: string | number;
+  max?: number;
   dot?: boolean;
+  children?: React.ReactNode;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  label = 'Badge',
-  variant = 'primary',
-  theme = {},
-  className = '',
-  dot = false
+export const Badge: React.FC<BadgeProps> = ({
+  content,
+  max = 99,
+  dot = false,
+  children
 }) => {
-  const variants = {
-    primary: { bg: '#3b82f6', color: '#fff' },
-    success: { bg: '#10b981', color: '#fff' },
-    warning: { bg: '#f59e0b', color: '#fff' },
-    error: { bg: '#ef4444', color: '#fff' }
-  };
-
-  const style = variants[variant];
-  const primary = theme.primary || style.bg;
-
+  const displayContent = typeof content === 'number' && content > max ? `${max}+` : content;
+  
   return (
-    <span
-      className={className}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '4px',
-        padding: '8px 12px',
-        backgroundColor: primary,
-        color: style.color,
-        borderRadius: '6px',
-        fontSize: '12px',
-        fontWeight: '600',
-        lineHeight: '1'
-      }}
-    >
-      {dot && (
-        <span style={{
-          width: '6px',
-          height: '6px',
-          borderRadius: '50%',
-          backgroundColor: 'currentColor'
-        }} />
+    <div className="relative inline-flex">
+      {children}
+      {(content || dot) && (
+        <span className={`absolute -top-1 -right-1 flex items-center justify-center ${dot ? 'w-2 h-2' : 'min-w-5 h-5 px-1'} text-xs font-bold text-white bg-red-500 rounded-full shadow-sm ring-2 ring-white`}>
+          {!dot && displayContent}
+        </span>
       )}
-      {label}
-    </span>
+    </div>
   );
 };

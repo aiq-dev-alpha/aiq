@@ -1,34 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface AvatarProps {
+  src?: string;
+  alt?: string;
+  size?: 'sm' | 'md' | 'lg';
+  status?: 'online' | 'offline' | 'away';
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [active, setActive] = useState(false);
-  const primary = theme.primary || '#8b5cf6';
+export const Avatar: React.FC<AvatarProps> = ({
+  src,
+  alt = 'User',
+  size = 'md',
+  status
+}) => {
+  const sizes = {
+    sm: 'w-8 h-8',
+    md: 'w-12 h-12',
+    lg: 'w-16 h-16'
+  };
+  
+  const statusColors = {
+    online: 'bg-green-500',
+    offline: 'bg-gray-400',
+    away: 'bg-yellow-500'
+  };
   
   return (
-  <div
-  className={className}
-  onClick={() => { setActive(!active); onInteract?.('avatar'); }}
-  style={{
-  padding: '12px 20px',
-  background: active ? primary : `${primary}20`,
-  color: active ? '#ffffff' : primary,
-  border: `2px solid ${active ? primary : primary + '40'}`,
-  borderRadius: '10px',
-  fontSize: '14px',
-  fontWeight: 600,
-  cursor: 'pointer',
-  transition: 'all 280ms cubic-bezier(0.34, 1.56, 0.64, 1)',
-  display: 'inline-block',
-  userSelect: 'none'
-  }}
-  >
-  Avatar 2
-  </div>
+    <div className="relative inline-block">
+      <div className={`${sizes[size]} rounded overflow-hidden bg-gradient-to-br from-blue-400 to-blue-600 shadow-sm ring-2 ring-white`}>
+        {src ? (
+          <img src={src} alt={alt} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-white font-bold">
+            {alt[0].toUpperCase()}
+          </div>
+        )}
+      </div>
+      {status && (
+        <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${statusColors[status]} ring-2 ring-white`} />
+      )}
+    </div>
   );
 };

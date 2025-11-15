@@ -1,42 +1,35 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  items?: Array<{ id: string; label: string }>;
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (id: string) => void;
+interface ChipProps {
+  label: string;
+  onDelete?: () => void;
+  clickable?: boolean;
+  onClick?: () => void;
+  icon?: React.ReactNode;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
-  theme = {},
-  className = '',
-  onInteract
+export const Chip: React.FC<ChipProps> = ({
+  label,
+  onDelete,
+  clickable = false,
+  onClick,
+  icon
 }) => {
-  const [selected, setSelected] = useState<string | null>(null);
-  const primary = theme.primary || '#8b5cf6';
-
   return (
-    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-      {items.map(item => (
+    <span
+      onClick={clickable ? onClick : undefined}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm rounded-xl bg-pink-100 text-pink-800 transition-transform ${clickable ? 'cursor-pointer hover:bg-pink-200' : ''} ${shadow}`}
+    >
+      {icon}
+      <span className="font-medium">{label}</span>
+      {onDelete && (
         <button
-          key={item.id}
-          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
-          style={{
-            padding: '10px 20px',
-            background: selected === item.id ? primary : 'transparent',
-            color: selected === item.id ? '#fff' : primary,
-            border: `2px solid ${primary}`,
-            borderRadius: '20px',
-            cursor: 'pointer',
-            fontWeight: 600,
-            transition: 'all 200ms ease',
-            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
-          }}
+          onClick={onDelete}
+          className="ml-0.5 hover:bg-pink-200 rounded-full p-0.5"
         >
-          {item.label}
+          ✕
         </button>
-      ))}
-    </div>
+      )}
+    </span>
   );
 };

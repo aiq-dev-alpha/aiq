@@ -1,20 +1,44 @@
-import React from 'react';;
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface AvatarProps {
+  src?: string;
+  alt?: string;
+  size?: 'sm' | 'md' | 'lg';
+  status?: 'online' | 'offline' | 'away';
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const primary = theme.primary || '#f43f5e';
-  const bg = theme.background || '#ffffff';
+export const Avatar: React.FC<AvatarProps> = ({
+  src,
+  alt = 'User',
+  size = 'md',
+  status
+}) => {
+  const sizes = {
+    sm: 'w-8 h-8',
+    md: 'w-12 h-12',
+    lg: 'w-16 h-16'
+  };
+  
+  const statusColors = {
+    online: 'bg-green-500',
+    offline: 'bg-gray-400',
+    away: 'bg-yellow-500'
+  };
+  
   return (
-  <div className={className} onClick={() => onInteract?.('click')} style={{ padding: '20px', backgroundColor: bg, border: `1px solid ${primary}20`, borderLeft: `4px solid ${primary}`, borderRadius: '32px', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-  <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: primary }} />
-  <span style={{ fontSize: '15px', fontWeight: 500 }}>Item {idx}</span>
-  </div>
-  </div>
+    <div className="relative inline-block">
+      <div className={`${sizes[size]} rounded-2xl overflow-hidden bg-gradient-to-br from-teal-400 to-teal-600 shadow-md ring-2 ring-white`}>
+        {src ? (
+          <img src={src} alt={alt} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-white font-bold">
+            {alt[0].toUpperCase()}
+          </div>
+        )}
+      </div>
+      {status && (
+        <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${statusColors[status]} ring-2 ring-white`} />
+      )}
+    </div>
   );
 };

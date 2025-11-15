@@ -1,80 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  name?: string;
-  email?: string;
-  role?: string;
-  theme?: { primary?: string; background?: string; text?: string };
-  className?: string;
+interface AvatarProps {
+  src?: string;
+  alt?: string;
+  size?: 'sm' | 'md' | 'lg';
+  status?: 'online' | 'offline' | 'away';
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  name = 'John Doe',
-  email = 'john@example.com',
-  role = 'Developer',
-  theme = {},
-  className = ''
+export const Avatar: React.FC<AvatarProps> = ({
+  src,
+  alt = 'User',
+  size = 'md',
+  status
 }) => {
-  const [showCard, setShowCard] = useState(false);
-  const primary = theme.primary || '#06b6d4';
-
+  const sizes = {
+    sm: 'w-8 h-8',
+    md: 'w-12 h-12',
+    lg: 'w-16 h-16'
+  };
+  
+  const statusColors = {
+    online: 'bg-green-500',
+    offline: 'bg-gray-400',
+    away: 'bg-yellow-500'
+  };
+  
   return (
-  <div
-  className={className}
-  style={{ position: 'relative', display: 'inline-block' }}
-  onMouseEnter={() => setShowCard(true)}
-  onMouseLeave={() => setShowCard(false)}
-  >
-  <div
-  style={{
-  width: '52px',
-  height: '52px',
-  borderRadius: '50%',
-  backgroundColor: primary,
-  color: '#fff',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: '18px',
-  fontWeight: '600',
-  cursor: 'pointer',
-  transition: 'transform 0.2s',
-  transform: showCard ? 'scale(1.1)' : 'scale(1)'
-  }}
-  >
-  {name.charAt(0).toUpperCase()}
-  </div>
-  {showCard && (
-  <div
-  style={{
-  position: 'absolute',
-  top: '60px',
-  left: '50%',
-  transform: 'translateX(-50%)',
-  backgroundColor: '#fff',
-  borderRadius: '12px',
-  padding: '16px',
-  boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
-  minWidth: '200px',
-  zIndex: 10
-  }}
-  >
-  <div style={{ fontWeight: '600', fontSize: '16px', marginBottom: '4px' }}>{name}</div>
-  <div style={{ fontSize: '14px', color: '#6b7280', marginBottom: '8px' }}>{email}</div>
-  <div
-  style={{
-  fontSize: '12px',
-  color: primary,
-  backgroundColor: `${primary}20`,
-  padding: '4px 8px',
-  borderRadius: '6px',
-  display: 'inline-block'
-  }}
-  >
-  {role}
-  </div>
-  </div>
-  )}
-  </div>
+    <div className="relative inline-block">
+      <div className={`${sizes[size]} rounded-lg overflow-hidden bg-gradient-to-br from-cyan-400 to-cyan-600 shadow-xl ring-2 ring-white`}>
+        {src ? (
+          <img src={src} alt={alt} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-white font-bold">
+            {alt[0].toUpperCase()}
+          </div>
+        )}
+      </div>
+      {status && (
+        <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${statusColors[status]} ring-2 ring-white`} />
+      )}
+    </div>
   );
 };

@@ -1,55 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  label?: string;
-  gradient?: boolean;
-  theme?: { primary?: string; secondary?: string; text?: string };
-  className?: string;
+interface ButtonProps {
+  children: React.ReactNode;
   onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  label = 'Button',
-  gradient = true,
-  theme = {},
-  className = '',
-  onClick
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [isActive, setIsActive] = useState(false);
-
-  const primary = theme.primary || '#8b5cf6';
-  const secondary = theme.secondary || '#ec4899';
-  const text = theme.text || '#ffffff';
-
+  const baseClasses = 'rounded font-medium transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500';
+  
+  const variantClasses = {
+    solid: 'bg-indigo-500 text-white hover:brightness-110 hover:-translate-y-0.5 shadow-sm',
+    outline: 'border-2 border-indigo-500 text-indigo-600 hover:bg-indigo-50',
+    ghost: 'text-indigo-600 hover:bg-indigo-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-5 py-2.5 text-sm',
+    lg: 'px-5 py-3 text-md'
+  };
+  
   return (
-  <button
-  className={className}
-  onClick={() => {
-  setIsActive(!isActive);
-  onClick?.();
-  }}
-  style={{
-  padding: '14px 36px',
-  background: gradient 
-  ? `linear-gradient(135deg, ${primary}, ${secondary})`
-  : primary,
-  color: text,
-  border: 'none',
-  borderRadius: '50px',
-  fontSize: '16px',
-  fontWeight: 700,
-  cursor: 'pointer',
-  boxShadow: isActive 
-  ? `0 0 0 4px ${primary}40, 0 8px 16px rgba(0,0,0,0.2)`
-  : '0 4px 12px rgba(0,0,0,0.15)',
-  transform: isActive ? 'translateY(0)' : 'translateY(-1px)',
-  transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
-  outline: 'none',
-  letterSpacing: '0.5px',
-  textTransform: 'uppercase' as const
-  }}
-  >
-  {label}
-  </button>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

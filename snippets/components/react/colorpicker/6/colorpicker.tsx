@@ -1,62 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  value?: string;
-  onChange?: (color: string) => void;
-  theme?: { primary?: string };
-  className?: string;
-  presetColors?: string[];
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  value: controlledValue,
-  onChange,
-  theme = {},
-  className = '',
-  presetColors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [internalValue, setInternalValue] = useState('#3b82f6');
-  const value = controlledValue || internalValue;
-  const primary = theme.primary || '#3b82f6';
+  const baseClasses = 'rounded font-medium transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500';
   
-  const handleChange = (color: string) => {
-    if (!controlledValue) setInternalValue(color);
-    onChange?.(color);
+  const variantClasses = {
+    solid: 'bg-amber-500 text-white hover:opacity-90 active:scale-95 shadow-lg',
+    outline: 'border-2 border-amber-500 text-amber-600 hover:bg-amber-50',
+    ghost: 'text-amber-600 hover:bg-amber-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2 py-1 text-xs',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
   };
   
   return (
-    <div className={className} style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '300px' }}>
-      <input
-        type="color"
-        value={value}
-        onChange={(e) => handleChange(e.target.value)}
-        style={{
-          width: '100%',
-          height: '50px',
-          border: `2px solid ${primary}`,
-          borderRadius: '6px',
-          cursor: 'pointer'
-        }}
-      />
-      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-        {presetColors.map((color, idx) => (
-          <button
-            key={idx}
-            onClick={() => handleChange(color)}
-            style={{
-              width: '32px',
-              height: '32px',
-              backgroundColor: color,
-              border: value === color ? `3px solid ${primary}` : 'none',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              transition: 'transform 0.2s'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
-            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-          />
-        ))}
-      </div>
-    </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

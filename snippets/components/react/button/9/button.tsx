@@ -1,39 +1,44 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [hue, setHue] = useState(0);
-  const primary = theme.primary || '#3b82f6';
-
-  useEffect(() => {
-  const interval = setInterval(() => setHue(h => (h + 1) % 360), 50);
-  return () => clearInterval(interval);
-  }, []);
-
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded-2xl font-medium transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500';
+  
+  const variantClasses = {
+    solid: 'bg-teal-500 text-white hover:bg-teal-700 hover:scale-105 shadow-md',
+    outline: 'border-2 border-teal-500 text-teal-600 hover:bg-teal-50',
+    ghost: 'text-teal-600 hover:bg-teal-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2 py-1 text-xs',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-5 py-3 text-md'
+  };
+  
   return (
-  <button
-  className={className}
-  onClick={() => onInteract?.('rainbow')}
-  style={{
-  padding: '16px 32px',
-  background: `linear-gradient(135deg, hsl(${hue}, 70%, 60%), hsl(${(hue + 60) % 360}, 70%, 60%))`,
-  color: '#fff',
-  border: 'none',
-  borderRadius: '16px',
-  fontSize: '16px',
-  fontWeight: 700,
-  cursor: 'pointer',
-  boxShadow: `0 4px 12px hsl(${hue}, 70%, 60%, 0.4)`,
-  transition: 'box-shadow 200ms',
-  outline: 'none'
-  }}
-  >
-  Rainbow Button
-  </button>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

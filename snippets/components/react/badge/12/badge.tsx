@@ -1,17 +1,28 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface BadgeProps {
+  content?: string | number;
+  max?: number;
+  dot?: boolean;
+  children?: React.ReactNode;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [hover, setHover] = useState(false);
-  const primary = theme.primary || '#0ea5e9';
+export const Badge: React.FC<BadgeProps> = ({
+  content,
+  max = 99,
+  dot = false,
+  children
+}) => {
+  const displayContent = typeof content === 'number' && content > max ? `${max}+` : content;
+  
   return (
-  <div className={className} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onClick={() => onInteract?.('click')} style={{ padding: '14px 28px', backgroundColor: 'transparent', color: primary, border: `2px solid ${primary}`, borderRadius: '6px', cursor: 'pointer', fontSize: '14px', fontWeight: 500, transform: hover ? 'translateY(-2px)' : 'translateY(0)', boxShadow: hover ? `0 8px 16px ${primary}30` : 'none', transition: 'all 250ms cubic-bezier(0.4, 0, 0.2, 1)' }}>
-  Hover Effect
-  </div>
+    <div className="relative inline-flex">
+      {children}
+      {(content || dot) && (
+        <span className={`absolute -top-1 -right-1 flex items-center justify-center ${dot ? 'w-2 h-2' : 'min-w-5 h-5 px-1'} text-xs font-bold text-white bg-teal-500 rounded-full shadow-2xl ring-2 ring-white`}>
+          {!dot && displayContent}
+        </span>
+      )}
+    </div>
   );
 };

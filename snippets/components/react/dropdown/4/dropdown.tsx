@@ -1,86 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  options?: string[];
-  placeholder?: string;
-  theme?: { primary?: string };
-  className?: string;
-  onSelect?: (value: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  options = ['Option 1', 'Option 2', 'Option 3'],
-  placeholder = 'Select an option',
-  theme = {},
-  className = '',
-  onSelect
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState<string | null>(null);
-  const primary = theme.primary || '#3b82f6';
+  const baseClasses = 'rounded-lg font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
   
-  const handleSelect = (option: string) => {
-    setSelected(option);
-    setIsOpen(false);
-    onSelect?.(option);
+  const variantClasses = {
+    solid: 'bg-red-500 text-white hover:bg-red-700 hover:scale-105 shadow-sm',
+    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
+    ghost: 'text-red-600 hover:bg-red-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
   };
   
   return (
-    <div className={className} style={{ position: 'relative', width: '100%', maxWidth: '300px' }}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        style={{
-          width: '100%',
-          padding: '8px 12px',
-          backgroundColor: '#fff',
-          border: `2px solid ${primary}`,
-          borderRadius: '6px',
-          cursor: 'pointer',
-          textAlign: 'left',
-          fontSize: '14px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}
-      >
-        <span style={{ color: selected ? '#111' : '#9ca3af' }}>
-          {selected || placeholder}
-        </span>
-        <span style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s' }}>
-          ▼
-        </span>
-      </button>
-      {isOpen && (
-        <div style={{
-          position: 'absolute',
-          top: '100%',
-          left: 0,
-          right: 0,
-          marginTop: '4px',
-          backgroundColor: '#fff',
-          border: `1px solid ${primary}`,
-          borderRadius: '6px',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-          zIndex: 1000
-        }}>
-          {options.map((option, idx) => (
-            <div
-              key={idx}
-              onClick={() => handleSelect(option)}
-              style={{
-                padding: '8px 12px',
-                cursor: 'pointer',
-                borderBottom: idx < options.length - 1 ? '1px solid #e5e7eb' : 'none',
-                transition: 'background-color 0.2s'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#eff6ff'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}
-            >
-              {option}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

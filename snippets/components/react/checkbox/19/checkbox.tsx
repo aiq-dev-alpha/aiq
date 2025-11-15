@@ -1,20 +1,44 @@
-import React from 'react';;
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const primary = theme.primary || '#8b5cf6';
-  const bg = theme.background || '#ffffff';
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded-2xl font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500';
+  
+  const variantClasses = {
+    solid: 'bg-blue-500 text-white hover:brightness-110 hover:-translate-y-0.5 shadow-sm',
+    outline: 'border-2 border-blue-500 text-blue-600 hover:bg-blue-50',
+    ghost: 'text-blue-600 hover:bg-blue-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-5 py-2.5 text-sm',
+    lg: 'px-5 py-3 text-md'
+  };
+  
   return (
-  <div className={className} onClick={() => onInteract?.('click')} style={{ padding: '20px', backgroundColor: bg, border: `1px solid ${primary}20`, borderLeft: `4px solid ${primary}`, borderRadius: '2px', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-  <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: primary }} />
-  <span style={{ fontSize: '15px', fontWeight: 500 }}>Item {idx}</span>
-  </div>
-  </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

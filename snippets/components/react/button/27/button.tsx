@@ -1,36 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [rotation, setRotation] = useState(0);
-  const primary = theme.primary || '#10b981';
-
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded-full font-medium transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500';
+  
+  const variantClasses = {
+    solid: 'bg-teal-500 text-white hover:brightness-110 hover:-translate-y-0.5 shadow-md',
+    outline: 'border-2 border-teal-500 text-teal-600 hover:bg-teal-50',
+    ghost: 'text-teal-600 hover:bg-teal-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2 py-1 text-xs',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
+  };
+  
   return (
-  <button
-  className={className}
-  onClick={() => { setRotation(r => r + 90); onInteract?.('click'); }}
-  style={{
-  width: '48px',
-  height: '48px',
-  backgroundColor: primary,
-  color: '#ffffff',
-  border: 'none',
-  borderRadius: '16px',
-  fontSize: '20px',
-  cursor: 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  transform: `rotate(${rotation}deg)`,
-  transition: 'transform 300ms ease'
-  }}
-  >
-  ↻
-  </button>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

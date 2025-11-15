@@ -1,35 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [count, setCount] = useState(0);
-  const primary = theme.primary || '#10b981';
-
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded font-medium transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500';
+  
+  const variantClasses = {
+    solid: 'bg-amber-500 text-white hover:opacity-90 active:scale-95 shadow-lg',
+    outline: 'border-2 border-amber-500 text-amber-600 hover:bg-amber-50',
+    ghost: 'text-amber-600 hover:bg-amber-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2 py-1 text-xs',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
+  };
+  
   return (
-  <button
-  className={className}
-  onClick={() => { setCount(c => c + 1); onInteract?.('increment'); }}
-  style={{
-  padding: '12px 24px',
-  background: `conic-gradient(from ${count * 36}deg, ${primary}, #34d399, ${primary})`,
-  color: '#fff',
-  border: 'none',
-  borderRadius: '12px',
-  fontSize: '16px',
-  fontWeight: 700,
-  cursor: 'pointer',
-  transition: 'transform 200ms',
-  outline: 'none'
-  }}
-  onMouseDown={(e) => (e.currentTarget.style.transform = 'scale(0.95)')}
-  onMouseUp={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-  >
-  Clicks: {count}
-  </button>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

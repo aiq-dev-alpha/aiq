@@ -1,169 +1,66 @@
 <template>
-  <div
-    :class="['card', `card--${variant}`, { 'card--hoverable': hoverable, 'card--clickable': clickable }]"
-    :style="cardStyles"
-    @click="handleClick"
-  >
-    <div v-if="image" class="card__media">
-      <img :src="image" :alt="imageAlt || title" class="card__image" />
-      <div v-if="$slots.overlay" class="card__overlay">
-        <slot name="overlay" />
-      </div>
+  <div class="custom-card" :class="{ elevated, bordered }">
+    <div v-if="$slots.header || title" class="card-header">
+      <h3 v-if="title" class="card-title">{{ title }}</h3>
+      <slot name="header" />
     </div>
-
-    <div class="card__header" v-if="title || subtitle || $slots.actions">
-      <div class="card__header-content">
-        <h3 v-if="title" class="card__title">{{ title }}</h3>
-        <p v-if="subtitle" class="card__subtitle">{{ subtitle }}</p>
-      </div>
-      <div v-if="$slots.actions" class="card__actions">
-        <slot name="actions" />
-      </div>
-    </div>
-
-    <div class="card__body">
-      <p v-if="description" class="card__description">{{ description }}</p>
+    <div class="card-body">
       <slot />
     </div>
-
-    <div v-if="$slots.footer || actions?.length" class="card__footer">
-      <slot name="footer">
-        <button
-          v-for="(action, index) in actions"
-          :key="index"
-          @click.stop="action.onClick"
-          class="card__button"
-        >
-          {{ action.label }}
-        </button>
-      </slot>
+    <div v-if="$slots.footer" class="card-footer">
+      <slot name="footer" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from 'vue';
-
-interface CardTheme {
-  background: string;
-  foreground: string;
-  border: string;
-  accent: string;
-  shadow: string;
-  muted: string;
-}
-
-interface CardAction {
-  label: string;
-  onClick: () => void;
-}
+import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'Card',
+  name: 'CustomCard',
   props: {
-    variant: {
-      type: String as PropType<'default' | 'elevated' | 'outlined' | 'gradient' | 'glass' | 'neumorphic'>,
-      default: 'default'
-    },
-    title: {
-      type: String,
-      default: ''
-    },
-    subtitle: {
-      type: String,
-      default: ''
-    },
-    description: {
-      type: String,
-      default: ''
-    },
-    image: {
-      type: String,
-      default: ''
-    },
-    imageAlt: {
-      type: String,
-      default: ''
-    },
-    hoverable: {
-      type: Boolean,
-      default: true
-    },
-    clickable: {
-      type: Boolean,
-      default: false
-    },
-    actions: {
-      type: Array as PropType<CardAction[]>,
-      default: () => []
-    },
-    theme: {
-      type: Object as PropType<Partial<CardTheme>>,
-      default: () => ({})
-    }
-  },
-  emits: ['click'],
-  setup(props, { emit }) {
-    // Violet Theme
-    const defaultTheme: CardTheme = {
-      background: 'linear-gradient(135deg, #4c1d95 0%, #5b21b6 50%, #6d28d9 100%)',
-      foreground: '#ede9fe',
-      border: '#8b5cf6',
-      accent: '#a78bfa',
-      shadow: 'rgba(139, 92, 246, 0.3)',
-      muted: '#c4b5fd'
-    };
-
-    const appliedTheme = { ...defaultTheme, ...props.theme };
-
-    const cardStyles = computed(() => ({
-      '--card-background': appliedTheme.background,
-      '--card-foreground': appliedTheme.foreground,
-      '--card-border': appliedTheme.border,
-      '--card-accent': appliedTheme.accent,
-      '--card-shadow': appliedTheme.shadow,
-      '--card-muted': appliedTheme.muted,
-    }));
-
-    const handleClick = () => {
-      if (props.clickable) {
-        emit('click');
-      }
-    };
-
-    return { cardStyles, handleClick };
+    title: { type: String, default: '' },
+    elevated: { type: Boolean, default: true },
+    bordered: { type: Boolean, default: false }
   }
 });
 </script>
 
 <style scoped>
-.card {
-  background: var(--card-background);
-  color: var(--card-foreground);
-  border-radius: 16px;
+.custom-card {
+  background: white;
+  border-radius: 0.75rem;
   overflow: hidden;
-  transition: 'all 0.35s ease'all 0.3s ease;
 }
 
-.card__button:hover {
-  background: var(--card-border);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px var(--card-shadow);
+.custom-card.elevated {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-
-@keyframes enter {
-  from { opacity: 0.9; transform: scale(1.05); }
-  to { opacity: 0.9; transform: scale(1.05); }
+.custom-card.bordered {
+  border: 2px solid #e5e7eb;
 }
 
-@keyframes slideDown {
-  from { transform: translateY(-12px); opacity: 0.9; }
-  to { transform: translateY(0); opacity: 0.9; }
+.card-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #f3f4f6;
+  background: linear-gradient(to bottom, #fafafa, #ffffff);
 }
 
-@keyframes glow {
-  0%, 100% { box-shadow: 0 0 7px currentColor; }
-  50% { box-shadow: 0 0 22px currentColor; }
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.card-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #f3f4f6;
+  background: #f9fafb;
 }
 </style>

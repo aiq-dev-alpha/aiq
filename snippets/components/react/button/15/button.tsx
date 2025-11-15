@@ -1,60 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [progress, setProgress] = useState(0);
-  const primary = theme.primary || '#a855f7';
-
-  const handleClick = () => {
-  setProgress(0);
-  const interval = setInterval(() => {
-  setProgress(p => {
-  if (p >= 100) {
-  clearInterval(interval);
-  return 100;
-  }
-  return p + 5;
-  });
-  }, 30);
-  onInteract?.('progress');
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
+  
+  const variantClasses = {
+    solid: 'bg-red-500 text-white hover:bg-red-700 hover:scale-105 shadow-xl',
+    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
+    ghost: 'text-red-600 hover:bg-red-100'
   };
-
+  
+  const sizeClasses = {
+    sm: 'px-2 py-1 text-xs',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
+  };
+  
   return (
-  <button
-  className={className}
-  onClick={handleClick}
-  style={{
-  position: 'relative',
-  padding: '14px 32px',
-  background: '#fff',
-  color: primary,
-  border: `2px solid ${primary}`,
-  borderRadius: '10px',
-  fontSize: '16px',
-  fontWeight: 700,
-  cursor: 'pointer',
-  overflow: 'hidden',
-  outline: 'none'
-  }}
-  >
-  <div style={{
-  position: 'absolute',
-  left: 0,
-  top: 0,
-  height: '100%',
-  width: `${progress}%`,
-  background: `${primary}30`,
-  transition: 'width 100ms linear',
-  pointerEvents: 'none'
-  }} />
-  <span style={{ position: 'relative', zIndex: 1 }}>
-  {progress === 100 ? 'Complete!' : 'Progress Button'}
-  </span>
-  </button>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

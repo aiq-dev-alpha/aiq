@@ -1,61 +1,44 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  progress?: number;
-  showLabel?: boolean;
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (progress: number) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  progress: initialProgress = 0,
-  showLabel = true,
-  theme = {},
-  className = '',
-  onInteract
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [progress, setProgress] = useState(initialProgress);
-  const [animating, setAnimating] = useState(false);
-  const primary = theme.primary || '#10b981';
-
-  useEffect(() => {
-    if (progress !== initialProgress) {
-      setAnimating(true);
-      setTimeout(() => setAnimating(false), 500);
-    }
-    setProgress(initialProgress);
-  }, [initialProgress]);
-
+  const baseClasses = 'rounded font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-pink-500';
+  
+  const variantClasses = {
+    solid: 'bg-pink-500 text-white hover:opacity-90 active:scale-95 shadow-lg',
+    outline: 'border-2 border-pink-500 text-pink-600 hover:bg-pink-50',
+    ghost: 'text-pink-600 hover:bg-pink-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-3 py-1 text-xs',
+    md: 'px-5 py-2.5 text-sm',
+    lg: 'px-7 py-3.5 text-base'
+  };
+  
   return (
-    <div className={className} style={{ width: '100%' }}>
-      {showLabel && <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: primary }}>{progress}%</div>}
-      <div style={{ width: '100%', height: '12px', background: '#e5e7eb', borderRadius: '6px', overflow: 'hidden', position: 'relative' }}>
-        <div
-          style={{
-            width: \`\${progress}%\`,
-            height: '100%',
-            background: \`linear-gradient(90deg, \${primary}, \${primary}dd)\`,
-            borderRadius: '6px',
-            transition: 'width 500ms ease',
-            position: 'relative',
-            overflow: 'hidden'
-          }}
-        >
-          {animating && (
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
-              animation: 'shimmer 1s infinite'
-            }} />
-          )}
-        </div>
-      </div>
-      <style>{`@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }`}</style>
-    </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

@@ -1,17 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [hover, setHover] = useState(false);
-  const primary = theme.primary || '#f43f5e';
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500';
+  
+  const variantClasses = {
+    solid: 'bg-amber-500 text-white hover:opacity-90 active:scale-95 shadow-xl',
+    outline: 'border-2 border-amber-500 text-amber-600 hover:bg-amber-50',
+    ghost: 'text-amber-600 hover:bg-amber-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-3 py-1 text-xs',
+    md: 'px-5 py-2.5 text-sm',
+    lg: 'px-7 py-3.5 text-base'
+  };
+  
   return (
-  <div className={className} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onClick={() => onInteract?.('click')} style={{ padding: '14px 28px', backgroundColor: 'transparent', color: primary, border: `2px solid ${primary}`, borderRadius: '2px', cursor: 'pointer', fontSize: '14px', fontWeight: 500, transform: hover ? 'translateY(-2px)' : 'translateY(0)', boxShadow: hover ? `0 8px 16px ${primary}30` : 'none', transition: 'all 250ms cubic-bezier(0.4, 0, 0.2, 1)' }}>
-  Hover Effect
-  </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

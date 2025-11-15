@@ -1,30 +1,44 @@
-import React from 'react';;
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500';
+  
+  const variantClasses = {
+    solid: 'bg-amber-500 text-white hover:ring-2 hover:ring-amber-400 shadow-lg',
+    outline: 'border-2 border-amber-500 text-amber-600 hover:bg-amber-50',
+    ghost: 'text-amber-600 hover:bg-amber-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-3 py-1 text-xs',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
+  };
+  
   return (
-  <div
-  className={className}
-  onClick={() => onInteract?.('click')}
-  style={{
-  padding: '24px',
-  backgroundColor: background,
-  color: text,
-  border: '1px solid #e5e7eb',
-  borderRadius: '8px',
-  cursor: 'pointer'
-  }}
-  >
-  <h3 style={{ margin: '0 0 12px 0', fontSize: '18px', fontWeight: 600 }}>Card Title</h3>
-  <p style={{ margin: 0, fontSize: '14px', color: '#6b7280' }}>Card content</p>
-  </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

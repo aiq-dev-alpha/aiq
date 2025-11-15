@@ -1,54 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  value?: number;
-  max?: number;
-  onChange?: (value: number) => void;
-  theme?: { primary?: string };
-  className?: string;
-  readonly?: boolean;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  value: controlledValue,
-  max = 5,
-  onChange,
-  theme = {},
-  className = '',
-  readonly = false
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [internalValue, setInternalValue] = useState(0);
-  const [hoveredValue, setHoveredValue] = useState(0);
-  const value = controlledValue !== undefined ? controlledValue : internalValue;
-  const primary = theme.primary || '#3b82f6';
+  const baseClasses = 'rounded-lg font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
   
-  const handleClick = (newValue: number) => {
-    if (readonly) return;
-    if (controlledValue === undefined) setInternalValue(newValue);
-    onChange?.(newValue);
+  const variantClasses = {
+    solid: 'bg-red-500 text-white hover:bg-red-700 hover:scale-105 shadow-sm',
+    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
+    ghost: 'text-red-600 hover:bg-red-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
   };
   
   return (
-    <div
-      className={className}
-      style={{ display: 'flex', gap: '6px', fontSize: '24px' }}
-      onMouseLeave={() => !readonly && setHoveredValue(0)}
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
-      {Array.from({ length: max }, (_, i) => i + 1).map(star => (
-        <span
-          key={star}
-          onClick={() => handleClick(star)}
-          onMouseEnter={() => !readonly && setHoveredValue(star)}
-          style={{
-            cursor: readonly ? 'default' : 'pointer',
-            color: star <= (hoveredValue || value) ? primary : '#d1d5db',
-            transition: 'all 0.2s',
-            transform: star === hoveredValue ? 'scale(1.1)' : 'scale(1)'
-          }}
-        >
-          ★
-        </span>
-      ))}
-    </div>
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

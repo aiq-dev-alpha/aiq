@@ -1,43 +1,35 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ChipProps {
+  label: string;
+  onDelete?: () => void;
+  clickable?: boolean;
+  onClick?: () => void;
+  icon?: React.ReactNode;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [state, setState] = useState(false);
-  const [hovered, setHovered] = useState(false);
-  const primary = theme.primary || '#8b5cf6';
-  const bg = theme.background || '#ffffff';
-  
+export const Chip: React.FC<ChipProps> = ({
+  label,
+  onDelete,
+  clickable = false,
+  onClick,
+  icon
+}) => {
   return (
-  <div
-  className={className}
-  onClick={() => { setState(!state); onInteract?.('chip_click'); }}
-  onMouseEnter={() => setHovered(true)}
-  onMouseLeave={() => setHovered(false)}
-  style={{
-  padding: '16px 26px',
-  background: state ? primary : bg,
-  color: state ? '#ffffff' : primary,
-  border: `2px solid ${hovered ? primary : primary + '50'}`,
-  borderRadius: '10px',
-  fontSize: '16px',
-  fontWeight: 700,
-  cursor: 'pointer',
-  transition: 'all 270ms cubic-bezier(0.34, 1.56, 0.64, 1)',
-  transform: hovered ? 'translateY(-4px) scale(1.42)' : 'translateY(0) scale(1)',
-  boxShadow: hovered ? `0 10px 18px ${primary}32` : '0 2px 8px rgba(0,0,0,0.08)',
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '8px',
-  userSelect: 'none'
-  }}
-  >
-  <span>Chip 2</span>
-  {state && <span style={{ fontSize: '12px', opacity: 0.9 }}>✓</span>}
-  </div>
+    <span
+      onClick={clickable ? onClick : undefined}
+      className={`inline-flex items-center gap-1.5 px-2 py-1 text-xs rounded bg-blue-100 text-blue-800 transition-transform ${clickable ? 'cursor-pointer hover:bg-blue-200' : ''} ${shadow}`}
+    >
+      {icon}
+      <span className="font-medium">{label}</span>
+      {onDelete && (
+        <button
+          onClick={onDelete}
+          className="ml-0.5 hover:bg-blue-200 rounded-full p-0.5"
+        >
+          ✕
+        </button>
+      )}
+    </span>
   );
 };

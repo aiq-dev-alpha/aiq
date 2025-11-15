@@ -1,18 +1,35 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ChipProps {
+  label: string;
+  onDelete?: () => void;
+  clickable?: boolean;
+  onClick?: () => void;
+  icon?: React.ReactNode;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [loading, setLoading] = useState(false);
-  const primary = theme.primary || '#14b8a6';
-  const handleClick = () => { setLoading(true); onInteract?.('loading'); setTimeout(() => setLoading(false), 1500); };
+export const Chip: React.FC<ChipProps> = ({
+  label,
+  onDelete,
+  clickable = false,
+  onClick,
+  icon
+}) => {
   return (
-  <button className={className} onClick={handleClick} disabled={loading} style={{ padding: '12px 32px', backgroundColor: primary, color: '#fff', border: 'none', borderRadius: '2px', cursor: loading ? 'not-allowed' : 'pointer', fontSize: '14px', fontWeight: 600, opacity: loading ? 0.6 : 1, minWidth: '120px', transition: 'opacity 200ms' }}>
-  {loading ? 'Loading...' : 'Submit'}
-  </button>
+    <span
+      onClick={clickable ? onClick : undefined}
+      className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs rounded bg-amber-100 text-amber-800 transition-opacity ${clickable ? 'cursor-pointer hover:bg-amber-200' : ''} ${shadow}`}
+    >
+      {icon}
+      <span className="font-medium">{label}</span>
+      {onDelete && (
+        <button
+          onClick={onDelete}
+          className="ml-0.5 hover:bg-amber-200 rounded-full p-0.5"
+        >
+          ✕
+        </button>
+      )}
+    </span>
   );
 };

@@ -1,100 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  label?: string;
-  placeholder?: string;
-  type?: 'text' | 'email' | 'password' | 'number';
-  error?: string;
-  theme?: { primary?: string; background?: string; text?: string };
-  className?: string;
-  value?: string;
-  onChange?: (value: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  label,
-  placeholder = 'Enter text...',
-  type = 'text',
-  error,
-  theme = {},
-  className = '',
-  value,
-  onChange
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [focused, setFocused] = useState(false);
-  const [internalValue, setInternalValue] = useState('');
-
-  const primary = theme.primary || '#3b82f6';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
-  const currentValue = value !== undefined ? value : internalValue;
-
+  const baseClasses = 'rounded-lg font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
+  
+  const variantClasses = {
+    solid: 'bg-red-500 text-white hover:bg-red-700 hover:scale-105 shadow-sm',
+    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
+    ghost: 'text-red-600 hover:bg-red-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
+  };
+  
   return (
-  <div className={className} style={{ width: '100%', maxWidth: '400px' }}>
-  {label && (
-  <label style={{
-  display: 'block',
-  marginBottom: '8px',
-  color: text,
-  fontSize: '14px',
-  fontWeight: 600
-  }}>
-  {label}
-  </label>
-  )}
-  <div style={{ position: 'relative' }}>
-  <input
-  type={type}
-  placeholder={placeholder}
-  value={currentValue}
-  onChange={(e) => {
-  const val = e.target.value;
-  setInternalValue(val);
-  onChange?.(val);
-  }}
-  onFocus={() => setFocused(true)}
-  onBlur={() => setFocused(false)}
-  style={{
-  width: '100%',
-  padding: '12px 16px',
-  backgroundColor: background,
-  color: text,
-  border: `2px solid ${error ? '#ef4444' : focused ? primary : '#e5e7eb'}`,
-  borderRadius: '8px',
-  fontSize: '16px',
-  outline: 'none',
-  transition: 'all 200ms',
-  boxShadow: focused ? `0 0 0 3px ${error ? '#ef444420' : primary + '20'}` : 'none'
-  }}
-  />
-  {focused && (
-  <div style={{
-  position: 'absolute',
-  bottom: '-2px',
-  left: '0',
-  right: '0',
-  height: '2px',
-  backgroundColor: error ? '#ef4444' : primary,
-  animation: 'slideIn 200ms'
-  }} />
-  )}
-  </div>
-  {error && (
-  <p style={{
-  margin: '4px 0 0 0',
-  color: '#ef4444',
-  fontSize: '12px'
-  }}>
-  {error}
-  </p>
-  )}
-  <style>{`
-  @keyframes slideIn {
-  from { transform: scaleX(0); }
-  to { transform: scaleX(1); }
-  }
-  `}</style>
-  </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

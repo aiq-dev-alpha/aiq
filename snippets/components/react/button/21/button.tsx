@@ -1,34 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [state, setState] = useState({ x: 0, y: 0, dragging: false });
-  const primary = theme.primary || '#3b82f6';
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded-xl font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-green-500';
+  
+  const variantClasses = {
+    solid: 'bg-green-500 text-white hover:bg-green-600 hover:shadow-lg shadow-2xl',
+    outline: 'border-2 border-green-500 text-green-600 hover:bg-green-50',
+    ghost: 'text-green-600 hover:bg-green-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-3 py-1 text-xs',
+    md: 'px-5 py-2.5 text-sm',
+    lg: 'px-7 py-3.5 text-base'
+  };
   
   return (
-  <button
-  className={className}
-  onClick={() => { setState(!state); onInteract?.('drag'); }}
-  style={{
-  padding: '14px 32px',
-  background: primary,
-  color: '#fff',
-  border: 'none',
-  borderRadius: '10px',
-  fontSize: '16px',
-  fontWeight: 700,
-  cursor: 'pointer',
-  transition: 'all 300ms cubic-bezier(0.34, 1.56, 0.64, 1)',
-  transform: state ? 'scale(1.05)' : 'scale(1)',
-  outline: 'none'
-  }}
-  >
-  Drag
-  </button>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

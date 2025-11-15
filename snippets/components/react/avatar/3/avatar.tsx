@@ -1,51 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface AvatarProps {
+  src?: string;
+  alt?: string;
+  size?: 'sm' | 'md' | 'lg';
+  status?: 'online' | 'offline' | 'away';
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  theme = {},
-  className = '',
-  onInteract
+export const Avatar: React.FC<AvatarProps> = ({
+  src,
+  alt = 'User',
+  size = 'md',
+  status
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || '#ef4444';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
+  const sizes = {
+    sm: 'w-8 h-8',
+    md: 'w-12 h-12',
+    lg: 'w-16 h-16'
+  };
+  
+  const statusColors = {
+    online: 'bg-green-500',
+    offline: 'bg-gray-400',
+    away: 'bg-yellow-500'
+  };
+  
   return (
-  <div
-  className={className}
-  onClick={() => {
-  setState(s => ({ ...s, active: !s.active }));
-  onInteract?.('interact');
-  }}
-  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-  style={{
-  padding: '12px 24px',
-  backgroundColor: state.active ? primary : background,
-  color: state.active ? '#fff' : text,
-  borderRadius: '10px',
-  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-  boxShadow: state.hovered ? '0 12px 24px rgba(0,0,0,0.20)' : '0 6px 12px rgba(0,0,0,0.12)',
-  transform: state.hovered ? 'translateY(-4px)' : 'translateY(0) scale(1)',
-  transition: `all 250ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  cursor: 'pointer',
-  fontSize: '16px',
-  fontWeight: 700,
-  userSelect: 'none' as const
-  }}
-  >
-  avatar - variant 3
-  </div>
+    <div className="relative inline-block">
+      <div className={`${sizes[size]} rounded-2xl overflow-hidden bg-gradient-to-br from-red-400 to-red-600 shadow-xl ring-2 ring-white`}>
+        {src ? (
+          <img src={src} alt={alt} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-white font-bold">
+            {alt[0].toUpperCase()}
+          </div>
+        )}
+      </div>
+      {status && (
+        <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${statusColors[status]} ring-2 ring-white`} />
+      )}
+    </div>
   );
 };

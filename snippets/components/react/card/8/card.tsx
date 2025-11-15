@@ -1,91 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  title?: string;
-  description?: string;
-  imageUrl?: string;
-  theme?: { primary?: string; background?: string; text?: string };
-  className?: string;
-  onInteract?: () => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  title = 'Card Title',
-  description = 'Card description goes here',
-  imageUrl,
-  theme = {},
-  className = '',
-  onInteract
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [isHovered, setIsHovered] = useState(false);
-
-  const primary = theme.primary || '#3b82f6';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
+  const baseClasses = 'rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
+  
+  const variantClasses = {
+    solid: 'bg-red-500 text-white hover:bg-red-700 hover:scale-105 shadow-lg',
+    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
+    ghost: 'text-red-600 hover:bg-red-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2 py-1 text-xs',
+    md: 'px-3.5 py-2 text-sm',
+    lg: 'px-6 py-3 text-lg'
+  };
+  
   return (
-  <div
-  className={className}
-  onClick={onInteract}
-  onMouseEnter={() => setIsHovered(true)}
-  onMouseLeave={() => setIsHovered(false)}
-  style={{
-  backgroundColor: background,
-  borderRadius: '16px',
-  overflow: 'hidden',
-  boxShadow: isHovered 
-  ? '0 20px 40px rgba(0,0,0,0.15)'
-  : '0 4px 12px rgba(0,0,0,0.08)',
-  transform: isHovered ? 'translateY(-8px)' : 'translateY(0)',
-  transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
-  cursor: onInteract ? 'pointer' : 'default',
-  maxWidth: '400px'
-  }}
-  >
-  {imageUrl && (
-  <div style={{
-  width: '100%',
-  height: '200px',
-  backgroundImage: `url(${imageUrl})`,
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
-  transform: isHovered ? 'scale(1.05)' : 'scale(1)',
-  transition: 'transform 300ms'
-  }} />
-  )}
-  <div style={{ padding: '24px' }}>
-  <h3 style={{ 
-  margin: '0 0 12px 0',
-  color: text,
-  fontSize: '24px',
-  fontWeight: 700
-  }}>
-  {title}
-  </h3>
-  <p style={{ 
-  margin: 0,
-  color: `${text}99`,
-  fontSize: '16px',
-  lineHeight: '1.6'
-  }}>
-  {description}
-  </p>
-  {onInteract && (
-  <button style={{
-  marginTop: '16px',
-  padding: '8px 20px',
-  backgroundColor: primary,
-  color: '#ffffff',
-  border: 'none',
-  borderRadius: '8px',
-  fontSize: '14px',
-  fontWeight: 600,
-  cursor: 'pointer'
-  }}>
-  Learn More
-  </button>
-  )}
-  </div>
-  </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

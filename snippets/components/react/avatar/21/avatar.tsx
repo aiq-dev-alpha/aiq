@@ -1,42 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  items?: Array<{ id: string; label: string }>;
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (id: string) => void;
+interface AvatarProps {
+  src?: string;
+  alt?: string;
+  size?: 'sm' | 'md' | 'lg';
+  status?: 'online' | 'offline' | 'away';
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
-  theme = {},
-  className = '',
-  onInteract
+export const Avatar: React.FC<AvatarProps> = ({
+  src,
+  alt = 'User',
+  size = 'md',
+  status
 }) => {
-  const [selected, setSelected] = useState<string | null>(null);
-  const primary = theme.primary || '#8b5cf6';
-
+  const sizes = {
+    sm: 'w-8 h-8',
+    md: 'w-12 h-12',
+    lg: 'w-16 h-16'
+  };
+  
+  const statusColors = {
+    online: 'bg-green-500',
+    offline: 'bg-gray-400',
+    away: 'bg-yellow-500'
+  };
+  
   return (
-    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-      {items.map(item => (
-        <button
-          key={item.id}
-          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
-          style={{
-            padding: '10px 20px',
-            background: selected === item.id ? primary : 'transparent',
-            color: selected === item.id ? '#fff' : primary,
-            border: `2px solid ${primary}`,
-            borderRadius: '20px',
-            cursor: 'pointer',
-            fontWeight: 600,
-            transition: 'all 200ms ease',
-            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
-          }}
-        >
-          {item.label}
-        </button>
-      ))}
+    <div className="relative inline-block">
+      <div className={`${sizes[size]} rounded-xl overflow-hidden bg-gradient-to-br from-green-400 to-green-600 shadow-2xl ring-2 ring-white`}>
+        {src ? (
+          <img src={src} alt={alt} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-white font-bold">
+            {alt[0].toUpperCase()}
+          </div>
+        )}
+      </div>
+      {status && (
+        <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${statusColors[status]} ring-2 ring-white`} />
+      )}
     </div>
   );
 };

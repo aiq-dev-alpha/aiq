@@ -1,49 +1,44 @@
-import React from 'react';;
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface AvatarProps {
+  src?: string;
+  alt?: string;
+  size?: 'sm' | 'md' | 'lg';
+  status?: 'online' | 'offline' | 'away';
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const primary = theme.primary || '#06b6d4';
-  const bg = theme.background || '#ffffff';
-
+export const Avatar: React.FC<AvatarProps> = ({
+  src,
+  alt = 'User',
+  size = 'md',
+  status
+}) => {
+  const sizes = {
+    sm: 'w-8 h-8',
+    md: 'w-12 h-12',
+    lg: 'w-16 h-16'
+  };
+  
+  const statusColors = {
+    online: 'bg-green-500',
+    offline: 'bg-gray-400',
+    away: 'bg-yellow-500'
+  };
+  
   return (
-  <div
-  className={className}
-  onClick={() => onInteract?.('click')}
-  style={{
-  padding: '20px 24px',
-  backgroundColor: bg,
-  border: `1px solid ${primary}30`,
-  borderLeft: `6px solid ${primary}`,
-  borderRadius: '10px',
-  cursor: 'pointer',
-  boxShadow: '0 3px 10px rgba(0,0,0,0.08)',
-  transition: 'transform 200ms, box-shadow 200ms'
-  }}
-  onMouseEnter={e => { e.currentTarget.style.transform = 'translateX(4px)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.12)'; }}
-  onMouseLeave={e => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.boxShadow = '0 3px 10px rgba(0,0,0,0.08)'; }}
-  >
-  <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-  <div style={{
-  width: '16px',
-  height: '16px',
-  borderRadius: '50%',
-  backgroundColor: primary,
-  boxShadow: `0 0 0 4px ${primary}20`
-  }} />
-  <div>
-  <div style={{ fontSize: '16px', fontWeight: 600, color: '#1f2937', marginBottom: '4px' }}>
-  Item Title {idx}
-  </div>
-  <div style={{ fontSize: '13px', color: '#6b7280' }}>
-  Description text
-  </div>
-  </div>
-  </div>
-  </div>
+    <div className="relative inline-block">
+      <div className={`${sizes[size]} rounded-xl overflow-hidden bg-gradient-to-br from-cyan-400 to-cyan-600 shadow-md ring-2 ring-white`}>
+        {src ? (
+          <img src={src} alt={alt} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-white font-bold">
+            {alt[0].toUpperCase()}
+          </div>
+        )}
+      </div>
+      {status && (
+        <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${statusColors[status]} ring-2 ring-white`} />
+      )}
+    </div>
   );
 };

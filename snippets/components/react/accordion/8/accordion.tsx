@@ -1,78 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  items?: { id: string; title: string; content: string }[];
-  allowMultiple?: boolean;
-  theme?: { primary?: string; background?: string; text?: string };
-  className?: string;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  items = [
-    { id: '1', title: 'Item 1', content: 'Content 1' },
-    { id: '2', title: 'Item 2', content: 'Content 2' },
-    { id: '3', title: 'Item 3', content: 'Content 3' }
-  ],
-  allowMultiple = false,
-  theme = {},
-  className = ''
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [openItems, setOpenItems] = useState<Set<string>>(new Set());
-  const primary = theme.primary || '#10b981';
-
-  const toggleItem = (id: string) => {
-    const newOpenItems = new Set(openItems);
-    if (newOpenItems.has(id)) {
-      newOpenItems.delete(id);
-    } else {
-      if (!allowMultiple) {
-        newOpenItems.clear();
-      }
-      newOpenItems.add(id);
-    }
-    setOpenItems(newOpenItems);
+  const baseClasses = 'rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
+  
+  const variantClasses = {
+    solid: 'bg-red-500 text-white hover:bg-red-700 hover:scale-105 shadow-lg',
+    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
+    ghost: 'text-red-600 hover:bg-red-100'
   };
-
+  
+  const sizeClasses = {
+    sm: 'px-2 py-1 text-xs',
+    md: 'px-3.5 py-2 text-sm',
+    lg: 'px-6 py-3 text-lg'
+  };
+  
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '700px', margin: '0 auto' }}>
-      {items.map((item) => {
-        const isOpen = openItems.has(item.id);
-        return (
-          <div key={item.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
-            <button
-              onClick={() => toggleItem(item.id)}
-              style={{
-                width: '100%',
-                padding: '16px 24px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                textAlign: 'left',
-                border: 'none',
-                backgroundColor: isOpen ? '#f9fafb' : '#fff',
-                cursor: 'pointer',
-                transition: 'background-color 0.2s'
-              }}
-            >
-              <span style={{ fontWeight: '600', color: '#1f2937' }}>{item.title}</span>
-              <span style={{ transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s', color: primary }}>
-                ▼
-              </span>
-            </button>
-            <div
-              style={{
-                maxHeight: isOpen ? '300px' : '0',
-                overflow: 'hidden',
-                transition: 'max-height 0.3s ease'
-              }}
-            >
-              <div style={{ padding: '16px 24px', color: '#4b5563', backgroundColor: '#f9fafb' }}>
-                {item.content}
-              </div>
-            </div>
-          </div>
-        );
-      })}
-    </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

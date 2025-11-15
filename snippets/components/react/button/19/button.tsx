@@ -1,25 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [split, setSplit] = useState(false);
-  const primary = theme.primary || '#ec4899';
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded-2xl font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500';
+  
+  const variantClasses = {
+    solid: 'bg-blue-500 text-white hover:brightness-110 hover:-translate-y-0.5 shadow-sm',
+    outline: 'border-2 border-blue-500 text-blue-600 hover:bg-blue-50',
+    ghost: 'text-blue-600 hover:bg-blue-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-5 py-2.5 text-sm',
+    lg: 'px-5 py-3 text-md'
+  };
+  
   return (
-  <div style={{ display: 'flex', gap: split ? '12px' : '0px', transition: 'gap 400ms' }}>
-  <button className={className} onClick={() => { setSplit(!split); onInteract?.('split'); }}
-  style={{ padding: '14px 24px', background: primary, color: '#fff', border: 'none',
-  borderRadius: '8px 0 0 8px', fontSize: '16px', fontWeight: 700, cursor: 'pointer', outline: 'none' }}>
-  Split
-  </button>
-  <button style={{ padding: '14px 24px', background: `${primary}cc`, color: '#fff', border: 'none',
-  borderRadius: '0 8px 8px 0', fontSize: '16px', fontWeight: 700, cursor: 'pointer', outline: 'none' }}>
-  Button
-  </button>
-  </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

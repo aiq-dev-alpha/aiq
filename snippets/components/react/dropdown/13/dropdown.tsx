@@ -1,17 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [active, setActive] = useState(false);
-  const primary = theme.primary || '#a855f7';
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500';
+  
+  const variantClasses = {
+    solid: 'bg-indigo-500 text-white hover:bg-indigo-600 hover:shadow-lg shadow-2xl',
+    outline: 'border-2 border-indigo-500 text-indigo-600 hover:bg-indigo-50',
+    ghost: 'text-indigo-600 hover:bg-indigo-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-3 py-1 text-xs',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-5 py-3 text-md'
+  };
+  
   return (
-  <button className={className} onClick={() => { setActive(!active); onInteract?.('toggle'); }} style={{ padding: '12px 24px', backgroundColor: active ? primary : '#f3f4f6', color: active ? '#fff' : '#1f2937', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: 600, transition: 'all 200ms', boxShadow: active ? `0 0 0 3px ${primary}40` : 'none' }}>
-  {active ? 'Active' : 'Inactive'}
-  </button>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

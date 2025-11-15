@@ -1,66 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [flip, setFlip] = useState(false);
-  const primary = theme.primary || '#10b981';
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded-2xl font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
+  
+  const variantClasses = {
+    solid: 'bg-red-500 text-white hover:opacity-90 active:scale-95 shadow-xl',
+    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
+    ghost: 'text-red-600 hover:bg-red-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-3.5 py-2 text-sm',
+    lg: 'px-7 py-3.5 text-base'
+  };
   
   return (
-  <div style={{ perspective: '1000px', width: '300px', height: '200px' }} className={className}>
-  <div
-  onClick={() => { setFlip(!flip); onInteract?.('flip'); }}
-  style={{
-  width: '100%',
-  height: '100%',
-  position: 'relative',
-  transformStyle: 'preserve-3d',
-  transform: flip ? 'rotateY(180deg)' : 'rotateY(0)',
-  transition: 'transform 600ms',
-  cursor: 'pointer'
-  }}
-  >
-  <div style={{
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-  backfaceVisibility: 'hidden',
-  background: primary,
-  borderRadius: '16px',
-  padding: '24px',
-  color: '#fff',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: '20px',
-  fontWeight: 700
-  }}>
-  Front Side
-  </div>
-  <div style={{
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-  backfaceVisibility: 'hidden',
-  background: '#ffffff',
-  border: `2px solid ${primary}`,
-  borderRadius: '16px',
-  padding: '24px',
-  color: primary,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: '20px',
-  fontWeight: 700,
-  transform: 'rotateY(180deg)'
-  }}>
-  Back Side
-  </div>
-  </div>
-  </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

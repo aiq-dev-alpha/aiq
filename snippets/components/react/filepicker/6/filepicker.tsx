@@ -1,59 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  onChange?: (files: FileList | null) => void;
-  theme?: { primary?: string };
-  className?: string;
-  accept?: string;
-  multiple?: boolean;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  onChange,
-  theme = {},
-  className = '',
-  accept,
-  multiple = false
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [files, setFiles] = useState<FileList | null>(null);
-  const primary = theme.primary || '#3b82f6';
+  const baseClasses = 'rounded font-medium transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500';
   
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = e.target.files;
-    setFiles(selectedFiles);
-    onChange?.(selectedFiles);
+  const variantClasses = {
+    solid: 'bg-amber-500 text-white hover:opacity-90 active:scale-95 shadow-lg',
+    outline: 'border-2 border-amber-500 text-amber-600 hover:bg-amber-50',
+    ghost: 'text-amber-600 hover:bg-amber-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2 py-1 text-xs',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
   };
   
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '400px' }}>
-      <label
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '12px',
-          padding: '32px',
-          border: `2px dashed ${primary}`,
-          borderRadius: '6px',
-          cursor: 'pointer',
-          backgroundColor: '#eff6ff',
-          transition: 'all 0.2s'
-        }}
-        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#dbeafe'}
-        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#eff6ff'}
-      >
-        <span style={{ fontSize: '48px' }}>📁</span>
-        <span style={{ color: primary, fontWeight: '500', fontSize: '14px' }}>
-          {files ? `${files.length} file(s) selected` : 'Click to upload'}
-        </span>
-        <input
-          type="file"
-          accept={accept}
-          multiple={multiple}
-          onChange={handleChange}
-          style={{ display: 'none' }}
-        />
-      </label>
-    </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

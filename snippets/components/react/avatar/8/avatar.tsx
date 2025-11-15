@@ -1,17 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface AvatarProps {
+  src?: string;
+  alt?: string;
+  size?: 'sm' | 'md' | 'lg';
+  status?: 'online' | 'offline' | 'away';
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [active, setActive] = useState(false);
-  const primary = theme.primary || '#84cc16';
+export const Avatar: React.FC<AvatarProps> = ({
+  src,
+  alt = 'User',
+  size = 'md',
+  status
+}) => {
+  const sizes = {
+    sm: 'w-8 h-8',
+    md: 'w-12 h-12',
+    lg: 'w-16 h-16'
+  };
+  
+  const statusColors = {
+    online: 'bg-green-500',
+    offline: 'bg-gray-400',
+    away: 'bg-yellow-500'
+  };
+  
   return (
-  <button className={className} onClick={() => { setActive(!active); onInteract?.('toggle'); }} style={{ padding: '12px 24px', backgroundColor: active ? primary : '#f3f4f6', color: active ? '#fff' : '#1f2937', border: 'none', borderRadius: '24px', cursor: 'pointer', fontSize: '14px', fontWeight: 600, transition: 'all 200ms', boxShadow: active ? `0 0 0 3px ${primary}40` : 'none' }}>
-  {active ? 'Active' : 'Inactive'}
-  </button>
+    <div className="relative inline-block">
+      <div className={`${sizes[size]} rounded-lg overflow-hidden bg-gradient-to-br from-red-400 to-red-600 shadow-lg ring-2 ring-white`}>
+        {src ? (
+          <img src={src} alt={alt} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-white font-bold">
+            {alt[0].toUpperCase()}
+          </div>
+        )}
+      </div>
+      {status && (
+        <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${statusColors[status]} ring-2 ring-white`} />
+      )}
+    </div>
   );
 };

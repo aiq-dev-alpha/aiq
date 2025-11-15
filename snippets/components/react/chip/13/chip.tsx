@@ -1,47 +1,35 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ChipProps {
+  label: string;
+  onDelete?: () => void;
+  clickable?: boolean;
+  onClick?: () => void;
+  icon?: React.ReactNode;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [selected, setSelected] = useState(false);
-  const primary = theme.primary || '#d946ef';
-
+export const Chip: React.FC<ChipProps> = ({
+  label,
+  onDelete,
+  clickable = false,
+  onClick,
+  icon
+}) => {
   return (
-  <div
-  className={className}
-  onClick={() => { setSelected(!selected); onInteract?.('select'); }}
-  style={{
-  padding: '18px 24px',
-  backgroundColor: selected ? `${primary}15` : '#ffffff',
-  border: `2px solid ${selected ? primary : '#e5e7eb'}`,
-  borderRadius: '20px',
-  cursor: 'pointer',
-  transition: 'all 200ms ease',
-  position: 'relative'
-  }}
-  >
-  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-  <div style={{
-  width: '24px',
-  height: '24px',
-  borderRadius: '50%',
-  border: `2px solid ${selected ? primary : '#d1d5db'}`,
-  backgroundColor: selected ? primary : 'transparent',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  transition: 'all 200ms'
-  }}>
-  {selected && <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#fff' }} />}
-  </div>
-  <span style={{ fontSize: '15px', fontWeight: 500, color: selected ? primary : '#1f2937' }}>
-  Option {idx}
-  </span>
-  </div>
-  </div>
+    <span
+      onClick={clickable ? onClick : undefined}
+      className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs rounded-lg bg-indigo-100 text-indigo-800 transition-colors ${clickable ? 'cursor-pointer hover:bg-indigo-200' : ''} ${shadow}`}
+    >
+      {icon}
+      <span className="font-medium">{label}</span>
+      {onDelete && (
+        <button
+          onClick={onDelete}
+          className="ml-0.5 hover:bg-indigo-200 rounded-full p-0.5"
+        >
+          ✕
+        </button>
+      )}
+    </span>
   );
 };

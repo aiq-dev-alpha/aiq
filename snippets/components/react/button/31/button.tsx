@@ -1,42 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  items?: Array<{ id: string; label: string }>;
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (id: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
-  theme = {},
-  className = '',
-  onInteract
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [selected, setSelected] = useState<string | null>(null);
-  const primary = theme.primary || '#8b5cf6';
-
+  const baseClasses = 'rounded-xl font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500';
+  
+  const variantClasses = {
+    solid: 'bg-blue-500 text-white hover:bg-blue-600 hover:shadow-lg shadow-sm',
+    outline: 'border-2 border-blue-500 text-blue-600 hover:bg-blue-50',
+    ghost: 'text-blue-600 hover:bg-blue-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2 py-1 text-xs',
+    md: 'px-3.5 py-2 text-sm',
+    lg: 'px-6 py-3 text-lg'
+  };
+  
   return (
-    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-      {items.map(item => (
-        <button
-          key={item.id}
-          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
-          style={{
-            padding: '10px 20px',
-            background: selected === item.id ? primary : 'transparent',
-            color: selected === item.id ? '#fff' : primary,
-            border: `2px solid ${primary}`,
-            borderRadius: '20px',
-            cursor: 'pointer',
-            fontWeight: 600,
-            transition: 'all 200ms ease',
-            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
-          }}
-        >
-          {item.label}
-        </button>
-      ))}
-    </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

@@ -1,41 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [pressed, setPressed] = useState(false);
-  const primary = theme.primary || '#3b82f6';
-  const bg = theme.background || '#ffffff';
-
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded-2xl font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500';
+  
+  const variantClasses = {
+    solid: 'bg-purple-500 text-white hover:brightness-110 hover:-translate-y-0.5 shadow-2xl',
+    outline: 'border-2 border-purple-500 text-purple-600 hover:bg-purple-50',
+    ghost: 'text-purple-600 hover:bg-purple-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-3.5 py-2 text-sm',
+    lg: 'px-7 py-3.5 text-base'
+  };
+  
   return (
-  <button
-  className={className}
-  onMouseDown={() => setPressed(true)}
-  onMouseUp={() => setPressed(false)}
-  onMouseLeave={() => setPressed(false)}
-  onClick={() => onInteract?.('click')}
-  style={{
-  padding: '14px 32px',
-  backgroundColor: 'transparent',
-  color: primary,
-  border: `3px solid ${primary}`,
-  borderRadius: '16px',
-  cursor: 'pointer',
-  fontSize: '16px',
-  fontWeight: 700,
-  transform: pressed ? 'scale(0.94)' : 'scale(1)',
-  boxShadow: pressed ? 'inset 0 4px 8px rgba(0,0,0,0.2)' : 'none',
-  transition: 'all 120ms ease',
-  letterSpacing: '0.5px',
-  textTransform: 'uppercase',
-  outline: 'none'
-  }}
-  >
-  Press Me
-  </button>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

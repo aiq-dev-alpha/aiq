@@ -1,70 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  label?: string;
-  checked?: boolean;
-  onChange?: (checked: boolean) => void;
-  theme?: { primary?: string };
-  className?: string;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  label = 'Checkbox',
-  checked: controlledChecked,
-  onChange,
-  theme = {},
-  className = '',
-  disabled = false
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [internalChecked, setInternalChecked] = useState(false);
-  const isChecked = controlledChecked !== undefined ? controlledChecked : internalChecked;
-  const primary = theme.primary || '#3b82f6';
+  const baseClasses = 'rounded-lg font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
   
-  const handleChange = () => {
-    if (disabled) return;
-    const newChecked = !isChecked;
-    if (controlledChecked === undefined) {
-      setInternalChecked(newChecked);
-    }
-    onChange?.(newChecked);
+  const variantClasses = {
+    solid: 'bg-red-500 text-white hover:bg-red-700 hover:scale-105 shadow-sm',
+    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
+    ghost: 'text-red-600 hover:bg-red-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
   };
   
   return (
-    <label
-      className={className}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '8px',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        opacity: disabled ? 0.5 : 1
-      }}
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
-      <div
-        onClick={handleChange}
-        style={{
-          width: '20px',
-          height: '20px',
-          borderRadius: '6px',
-          border: `2px solid ${isChecked ? primary : '#d1d5db'}`,
-          backgroundColor: isChecked ? primary : '#fff',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'all 0.2s',
-          boxShadow: isChecked ? '0 0 0 3px rgba(59,130,246,0.2)' : 'none'
-        }}
-      >
-        {isChecked && (
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
-            <path d="M6 10L9 13L14 7" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        )}
-      </div>
-      <span style={{ fontSize: '14px', color: '#374151', userSelect: 'none' }}>
-        {label}
-      </span>
-    </label>
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

@@ -1,50 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [layers, setLayers] = useState(0);
-  const primary = theme.primary || '#06b6d4';
-
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500';
+  
+  const variantClasses = {
+    solid: 'bg-amber-500 text-white hover:ring-2 hover:ring-amber-400 shadow-lg',
+    outline: 'border-2 border-amber-500 text-amber-600 hover:bg-amber-50',
+    ghost: 'text-amber-600 hover:bg-amber-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-3 py-1 text-xs',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
+  };
+  
   return (
-  <div style={{ position: 'relative', display: 'inline-block' }}>
-  {Array.from({ length: layers }).map((_, i) => (
-  <div
-  key={i}
-  style={{
-  position: 'absolute',
-  inset: `-${(i + 1) * 3}px`,
-  background: primary,
-  borderRadius: '12px',
-  opacity: 0.2 - i * 0.05,
-  zIndex: -i - 1,
-  transition: 'all 300ms'
-  }}
-  />
-  ))}
-  <button
-  className={className}
-  onClick={() => { setLayers(l => (l + 1) % 5); onInteract?.('layer'); }}
-  style={{
-  position: 'relative',
-  padding: '14px 30px',
-  background: primary,
-  color: '#fff',
-  border: 'none',
-  borderRadius: '12px',
-  fontSize: '16px',
-  fontWeight: 600,
-  cursor: 'pointer',
-  zIndex: 1,
-  outline: 'none'
-  }}
-  >
-  Layered: {layers}
-  </button>
-  </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

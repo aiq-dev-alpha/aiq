@@ -1,54 +1,44 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [state, setState] = useState({ count: 0, hover: false });
-  const primary = theme.primary || '#8b5cf6';
-
-  useEffect(() => {
-  if (state.count > 0) {
-  const timer = setTimeout(() => onInteract?.('auto'), 500);
-  return () => clearTimeout(timer);
-  }
-  }, [state.count]);
-
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded font-medium transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500';
+  
+  const variantClasses = {
+    solid: 'bg-purple-500 text-white hover:bg-purple-700 hover:scale-105 shadow-2xl',
+    outline: 'border-2 border-purple-500 text-purple-600 hover:bg-purple-50',
+    ghost: 'text-purple-600 hover:bg-purple-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2 py-1 text-xs',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
+  };
+  
   return (
-  <div
-  className={className}
-  onClick={() => setState(s => ({ ...s, count: s.count + 1 }))}
-  onMouseEnter={() => setState(s => ({ ...s, hover: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hover: false }))}
-  style={{
-  padding: '16px 28px',
-  background: state.hover ? `linear-gradient(135deg, ${primary}, ${primary}dd)` : primary,
-  color: '#ffffff',
-  borderRadius: '2px',
-  cursor: 'pointer',
-  fontSize: '15px',
-  fontWeight: 600,
-  boxShadow: state.hover ? '0 8px 20px rgba(0,0,0,0.2)' : '0 4px 12px rgba(0,0,0,0.15)',
-  transform: state.hover ? 'translateY(-3px) scale(1.02)' : 'translateY(0) scale(1)',
-  transition: 'all 250ms cubic-bezier(0.34, 1.56, 0.64, 1)',
-  position: 'relative',
-  overflow: 'hidden'
-  }}
-  >
-  <span style={{ position: 'relative', zIndex: 1 }}>Count: {state.count}</span>
-  <div style={{
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  background: 'rgba(255,255,255,0.1)',
-  transform: state.count % 2 === 0 ? 'translateX(-100%)' : 'translateX(100%)',
-  transition: 'transform 300ms'
-  }} />
-  </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

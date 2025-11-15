@@ -1,17 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
-}
-
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [count, setCount] = useState(0);
-  const primary = theme.primary || '#ef4444';
+export const Badge: React.FC<{ status?: 'online' | 'offline' | 'busy'; children: React.ReactNode }> = ({ status, children }) => {
+  const colors = {
+    online: 'bg-green-500',
+    offline: 'bg-gray-400',
+    busy: 'bg-amber-500'
+  };
   return (
-  <div className={className} onClick={() => { setCount(c => c + 1); onInteract?.('click'); }} style={{ padding: '16px 24px', background: `linear-gradient(135deg, ${primary}, ${primary}cc)`, color: '#fff', borderRadius: '20px', cursor: 'pointer', fontSize: '15px', fontWeight: 600, boxShadow: '0 4px 12px rgba(0,0,0,0.15)', transition: 'transform 150ms', transform: count > 0 ? 'scale(0.98)' : 'scale(1)' }}>
-  Clicks: {count}
-  </div>
+    <div className="relative inline-block">
+      {children}
+      {status && <span className={`absolute bottom-0 right-0 h-4 w-4 rounded-full ${colors[status]} border-2 border-white`} />}
+    </div>
   );
 };

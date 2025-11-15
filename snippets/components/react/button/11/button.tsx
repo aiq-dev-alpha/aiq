@@ -1,34 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [expanded, setExpanded] = useState(false);
-  const primary = theme.primary || '#f97316';
-
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded-2xl font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500';
+  
+  const variantClasses = {
+    solid: 'bg-teal-500 text-white hover:bg-teal-600 hover:shadow-lg shadow-lg',
+    outline: 'border-2 border-teal-500 text-teal-600 hover:bg-teal-50',
+    ghost: 'text-teal-600 hover:bg-teal-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-3 py-1 text-xs',
+    md: 'px-3.5 py-2 text-sm',
+    lg: 'px-6 py-3 text-lg'
+  };
+  
   return (
-  <button
-  className={className}
-  onClick={() => { setExpanded(!expanded); onInteract?.('expand'); }}
-  style={{
-  padding: expanded ? '20px 80px' : '12px 24px',
-  background: primary,
-  color: '#fff',
-  border: 'none',
-  borderRadius: expanded ? '24px' : '8px',
-  fontSize: expanded ? '20px' : '14px',
-  fontWeight: 700,
-  cursor: 'pointer',
-  transition: 'all 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55)',
-  outline: 'none',
-  whiteSpace: 'nowrap'
-  }}
-  >
-  {expanded ? 'Expanded!' : 'Click to Expand'}
-  </button>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

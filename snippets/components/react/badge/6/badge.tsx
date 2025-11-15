@@ -1,42 +1,28 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  items?: Array<{ id: string; label: string }>;
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (id: string) => void;
+interface BadgeProps {
+  content?: string | number;
+  max?: number;
+  dot?: boolean;
+  children?: React.ReactNode;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
-  theme = {},
-  className = '',
-  onInteract
+export const Badge: React.FC<BadgeProps> = ({
+  content,
+  max = 99,
+  dot = false,
+  children
 }) => {
-  const [selected, setSelected] = useState<string | null>(null);
-  const primary = theme.primary || '#8b5cf6';
-
+  const displayContent = typeof content === 'number' && content > max ? `${max}+` : content;
+  
   return (
-    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-      {items.map(item => (
-        <button
-          key={item.id}
-          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
-          style={{
-            padding: '10px 20px',
-            background: selected === item.id ? primary : 'transparent',
-            color: selected === item.id ? '#fff' : primary,
-            border: `2px solid ${primary}`,
-            borderRadius: '20px',
-            cursor: 'pointer',
-            fontWeight: 600,
-            transition: 'all 200ms ease',
-            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
-          }}
-        >
-          {item.label}
-        </button>
-      ))}
+    <div className="relative inline-flex">
+      {children}
+      {(content || dot) && (
+        <span className={`absolute -top-1 -right-1 flex items-center justify-center ${dot ? 'w-2 h-2' : 'min-w-5 h-5 px-1'} text-xs font-bold text-white bg-amber-500 rounded-full shadow-lg ring-2 ring-white`}>
+          {!dot && displayContent}
+        </span>
+      )}
     </div>
   );
 };

@@ -1,305 +1,66 @@
 <template>
-  <div
-    :class="['card', `card--${variant}`, { 'card--hoverable': hoverable, 'card--clickable': clickable }]"
-    :style="cardStyles"
-    @click="handleClick"
-  >
-    <div v-if="image" class="card__media">
-      <img :src="image" :alt="imageAlt || title" class="card__image" />
-      <div v-if="$slots.overlay" class="card__overlay">
-        <slot name="overlay" />
-      </div>
+  <div class="custom-card" :class="{ elevated, bordered }">
+    <div v-if="$slots.header || title" class="card-header">
+      <h3 v-if="title" class="card-title">{{ title }}</h3>
+      <slot name="header" />
     </div>
-
-    <div class="card__header" v-if="title || subtitle || $slots.actions">
-      <div class="card__header-content">
-        <h3 v-if="title" class="card__title">{{ title }}</h3>
-        <p v-if="subtitle" class="card__subtitle">{{ subtitle }}</p>
-      </div>
-      <div v-if="$slots.actions" class="card__actions">
-        <slot name="actions" />
-      </div>
-    </div>
-
-    <div class="card__body">
-      <p v-if="description" class="card__description">{{ description }}</p>
+    <div class="card-body">
       <slot />
     </div>
-
-    <div v-if="$slots.footer || actions?.length" class="card__footer">
-      <slot name="footer">
-        <button
-          v-for="(action, index) in actions"
-          :key="index"
-          @click.stop="action.onClick"
-          class="card__button"
-        >
-          {{ action.label }}
-        </button>
-      </slot>
+    <div v-if="$slots.footer" class="card-footer">
+      <slot name="footer" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from 'vue';
-
-interface CardTheme {
-  background: string;
-  foreground: string;
-  border: string;
-  accent: string;
-  shadow: string;
-  muted: string;
-}
-
-interface CardAction {
-  label: string;
-  onClick: () => void;
-}
+import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'Card',
+  name: 'CustomCard',
   props: {
-    variant: {
-      type: String as PropType<'default' | 'elevated' | 'outlined' | 'gradient' | 'glass' | 'neumorphic'>,
-      default: 'default'
-    },
-    title: {
-      type: String,
-      default: ''
-    },
-    subtitle: {
-      type: String,
-      default: ''
-    },
-    description: {
-      type: String,
-      default: ''
-    },
-    image: {
-      type: String,
-      default: ''
-    },
-    imageAlt: {
-      type: String,
-      default: ''
-    },
-    hoverable: {
-      type: Boolean,
-      default: true
-    },
-    clickable: {
-      type: Boolean,
-      default: false
-    },
-    actions: {
-      type: Array as PropType<CardAction[]>,
-      default: () => []
-    },
-    theme: {
-      type: Object as PropType<Partial<CardTheme>>,
-      default: () => ({})
-    }
-  },
-  emits: ['click'],
-  setup(props, { emit }) {
-    // Sunset Theme
-    const defaultTheme: CardTheme = {
-      background: 'linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #fbb034 100%)',
-      foreground: '#ffffff',
-      border: '#ff8c42',
-      accent: '#ffb347',
-      shadow: 'rgba(255, 107, 53, 0.4)',
-      muted: '#ffe5cc'
-    };
-
-    const appliedTheme = { ...defaultTheme, ...props.theme };
-
-    const cardStyles = computed(() => ({
-      '--card-background': appliedTheme.background,
-      '--card-foreground': appliedTheme.foreground,
-      '--card-border': appliedTheme.border,
-      '--card-accent': appliedTheme.accent,
-      '--card-shadow': appliedTheme.shadow,
-      '--card-muted': appliedTheme.muted,
-    }));
-
-    const handleClick = () => {
-      if (props.clickable) {
-        emit('click');
-      }
-    };
-
-    return { cardStyles, handleClick };
+    title: { type: String, default: '' },
+    elevated: { type: Boolean, default: true },
+    bordered: { type: Boolean, default: false }
   }
 });
 </script>
 
 <style scoped>
-.card {
-  background: var(--card-background);
-  color: var(--card-foreground);
-  border-radius: 18px;
-  overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-}
-
-.card--default {
-  box-shadow: 0 4px 6px -1px var(--card-shadow);
-}
-
-.card--elevated {
-  box-shadow: 0 16px 30px -7px var(--card-shadow);
-  transform: translateY(0);
-}
-
-.card--outlined {
-  border: 2px solid var(--card-border);
-  box-shadow: none;
-}
-
-.card--gradient {
-  background: var(--card-background);
-  box-shadow: 0 8px 16px var(--card-shadow);
-}
-
-.card--glass {
-  background: rgba(130, 156, 178, 0.62);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(204, 222, 240, 0.17);
-  box-shadow: 0 8px 32px var(--card-shadow);
-}
-
-.card--neumorphic {
-  background: #ff8c42;
-  box-shadow:
-    12px 12px 24px rgba(255, 107, 53, 0.4),
-    -12px -12px 24px rgba(255, 255, 255, 0.4);
-}
-
-.card--hoverable:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 40px -10px var(--card-shadow);
-}
-
-.card--clickable {
-  cursor: pointer;
-}
-
-.card--clickable:active {
-  transform: translateY(-2px);
-}
-
-.card__media {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
+.custom-card {
+  background: white;
+  border-radius: 0.25rem;
   overflow: hidden;
 }
 
-.card__image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
+.custom-card.elevated {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-.card--hoverable:hover .card__image {
-  transform: scale(1.07);
+.custom-card.bordered {
+  border: 2px solid #e5e7eb;
 }
 
-.card__overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(255, 107, 53, 0.4, 0.8) 0%, transparent 100%);
-  display: flex;
-  align-items: flex-end;
+.card-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #f3f4f6;
+  background: linear-gradient(to bottom, #fafafa, #ffffff);
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.card-body {
   padding: 1.5rem;
 }
 
-.card__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 1.5rem 1.5rem 0;
-  gap: 1rem;
-}
-
-.card__header-content {
-  flex: 1;
-}
-
-.card__title {
-  margin: 0;
-  font-size: 1.75rem;
-  font-weight: 900;
-  color: var(--card-foreground);
-  letter-spacing: -0.035em;
-}
-
-.card__subtitle {
-  margin: 0.5rem 0 0;
-  font-size: 0.875rem;
-  color: var(--card-muted);
-  font-weight: 500;
-}
-
-.card__actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.card__body {
-  padding: 1.5rem;
-}
-
-.card__description {
-  margin: 0;
-  font-size: 1rem;
-  line-height: 1.6;
-  color: var(--card-muted);
-}
-
-.card__footer {
-  padding: 1rem 1.5rem 1.5rem;
-  display: flex;
-  gap: 0.75rem;
-  border-top: 1px solid rgba(200, 220, 240, 0.12);
-}
-
-.card__button {
-  padding: 0.625rem 1.25rem;
-  background: var(--card-accent);
-  color: #ffffff;
-  border: none;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.card__button:hover {
-  background: var(--card-border);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px var(--card-shadow);
-}
-
-
-@keyframes enter {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-@keyframes slideDown {
-  from { transform: translateY(-10px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-@keyframes glow {
-  0%, 100% { box-shadow: 0 0 5px currentColor; }
-  50% { box-shadow: 0 0 20px currentColor; }
+.card-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #f3f4f6;
+  background: #f9fafb;
 }
 </style>

@@ -1,67 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-interface AccordionItem {
-  id: string;
-  title: string;
-  content: string;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export interface ComponentProps {
-  items?: AccordionItem[];
-  theme?: { primary?: string; background?: string; text?: string };
-  className?: string;
-}
-
-export const Component: React.FC<ComponentProps> = ({
-  items = [
-  { id: '1', title: 'Section 1', content: 'Content 1' },
-  { id: '2', title: 'Section 2', content: 'Content 2' },
-  { id: '3', title: 'Section 3', content: 'Content 3' }
-  ],
-  theme = {},
-  className = ''
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [activeId, setActiveId] = useState<string | null>(null);
-  const primary = theme.primary || '#3b82f6';
-
+  const baseClasses = 'rounded-2xl font-medium transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-green-500';
+  
+  const variantClasses = {
+    solid: 'bg-green-500 text-white hover:ring-2 hover:ring-green-400 shadow-sm',
+    outline: 'border-2 border-green-500 text-green-600 hover:bg-green-50',
+    ghost: 'text-green-600 hover:bg-green-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2 py-1 text-xs',
+    md: 'px-5 py-2.5 text-sm',
+    lg: 'px-7 py-3.5 text-base'
+  };
+  
   return (
-  <div className={className} style={{ width: '100%', maxWidth: '600px' }}>
-  {items.map(item => {
-  const isActive = activeId === item.id;
-  return (
-  <div key={item.id} style={{ marginBottom: '8px' }}>
-  <button
-  onClick={() => setActiveId(isActive ? null : item.id)}
-  style={{
-  width: '100%',
-  padding: '16px',
-  backgroundColor: isActive ? primary : '#fff',
-  color: isActive ? '#fff' : '#111',
-  border: `1px solid ${primary}`,
-  borderRadius: '8px',
-  cursor: 'pointer',
-  textAlign: 'left',
-  fontWeight: '500',
-  transition: 'all 0.2s'
-  }}
-  >
-  {item.title}
-  </button>
-  <div style={{
-  maxHeight: isActive ? '500px' : '0',
-  overflow: 'hidden',
-  transition: 'max-height 0.3s ease',
-  backgroundColor: '#f9fafb',
-  borderLeft: `3px solid ${primary}`,
-  marginLeft: '8px'
-  }}>
-  <div style={{ padding: isActive ? '16px' : '0 16px' }}>
-  {item.content}
-  </div>
-  </div>
-  </div>
-  );
-  })}
-  </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

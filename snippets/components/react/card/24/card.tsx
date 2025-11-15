@@ -1,53 +1,44 @@
 import React from 'react';
 
-export interface ComponentProps {
-  title?: string;
-  content?: string;
-  footer?: string;
-  theme?: { primary?: string; background?: string };
-  className?: string;
-  hoverable?: boolean;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  title = 'Card Title',
-  content = 'Card content goes here',
-  footer,
-  theme = {},
-  className = '',
-  hoverable = true
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const primary = theme.primary || '#3b82f6';
-  const background = theme.background || '#fff';
+  const baseClasses = 'rounded-2xl font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-500';
+  
+  const variantClasses = {
+    solid: 'bg-yellow-500 text-white hover:bg-yellow-700 hover:scale-105 shadow',
+    outline: 'border-2 border-yellow-500 text-yellow-600 hover:bg-yellow-50',
+    ghost: 'text-yellow-600 hover:bg-yellow-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2 py-1 text-xs',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
+  };
   
   return (
-    <div
-      className={className}
-      style={{
-        backgroundColor: background,
-        borderRadius: '6px',
-        padding: '20px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-        maxWidth: '400px',
-        border: 'none',
-        transition: 'all 0.3s'
-      }}
-      onMouseEnter={(e) => hoverable && (e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.15)')}
-      onMouseLeave={(e) => hoverable && (e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)')}
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
-      {title && (
-        <h3 style={{ margin: '0 0 12px', color: primary, fontSize: '18px', fontWeight: '600' }}>
-          {title}
-        </h3>
-      )}
-      <div style={{ color: '#6b7280', fontSize: '14px', lineHeight: '1.6' }}>
-        {content}
-      </div>
-      {footer && (
-        <div style={{ marginTop: '16px', paddingTop: '12px', borderTop: '1px solid #e5e7eb', color: '#9ca3af', fontSize: '13px' }}>
-          {footer}
-        </div>
-      )}
-    </div>
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

@@ -1,18 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+interface Props {
+  children?: React.ReactNode;
   className?: string;
-  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [loading, setLoading] = useState(false);
-  const primary = theme.primary || '#f97316';
-  const handleClick = () => { setLoading(true); onInteract?.('loading'); setTimeout(() => setLoading(false), 1500); };
+export const Component25: React.FC<Props> = ({ children, className = '' }) => {
+  const baseStyles = 'inline-flex items-center justify-center px-3 py-2 rounded-md bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold transition-all duration-450';
+  
   return (
-  <button className={className} onClick={handleClick} disabled={loading} style={{ padding: '12px 32px', backgroundColor: primary, color: '#fff', border: 'none', borderRadius: '20px', cursor: loading ? 'not-allowed' : 'pointer', fontSize: '14px', fontWeight: 600, opacity: loading ? 0.6 : 1, minWidth: '120px', transition: 'opacity 200ms' }}>
-  {loading ? 'Loading...' : 'Submit'}
-  </button>
+    <div className={`${baseStyles} ${className}`}>
+      {children}
+    </div>
   );
 };

@@ -1,17 +1,35 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ChipProps {
+  label: string;
+  onDelete?: () => void;
+  clickable?: boolean;
+  onClick?: () => void;
+  icon?: React.ReactNode;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [hover, setHover] = useState(false);
-  const primary = theme.primary || '#06b6d4';
+export const Chip: React.FC<ChipProps> = ({
+  label,
+  onDelete,
+  clickable = false,
+  onClick,
+  icon
+}) => {
   return (
-  <div className={className} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onClick={() => onInteract?.('click')} style={{ padding: '14px 28px', backgroundColor: 'transparent', color: primary, border: `2px solid ${primary}`, borderRadius: '20px', cursor: 'pointer', fontSize: '14px', fontWeight: 500, transform: hover ? 'translateY(-2px)' : 'translateY(0)', boxShadow: hover ? `0 8px 16px ${primary}30` : 'none', transition: 'all 250ms cubic-bezier(0.4, 0, 0.2, 1)' }}>
-  Hover Effect
-  </div>
+    <span
+      onClick={clickable ? onClick : undefined}
+      className={`inline-flex items-center gap-1.5 px-2 py-1 text-xs rounded-md bg-pink-100 text-pink-800 transition-all ${clickable ? 'cursor-pointer hover:bg-pink-200' : ''} ${shadow}`}
+    >
+      {icon}
+      <span className="font-medium">{label}</span>
+      {onDelete && (
+        <button
+          onClick={onDelete}
+          className="ml-0.5 hover:bg-pink-200 rounded-full p-0.5"
+        >
+          ✕
+        </button>
+      )}
+    </span>
   );
 };

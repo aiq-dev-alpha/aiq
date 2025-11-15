@@ -1,94 +1,44 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  options?: string[];
-  placeholder?: string;
-  theme?: { primary?: string; background?: string };
-  className?: string;
-  onSelect?: (value: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  options = ['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry'],
-  placeholder = 'Type to search...',
-  theme = {},
-  className = '',
-  onSelect
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [value, setValue] = useState('');
-  const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const primary = theme.primary || '#3b82f6';
-
-  useEffect(() => {
-    if (value) {
-      const filtered = options.filter(opt =>
-        opt.toLowerCase().includes(value.toLowerCase())
-      );
-      setFilteredOptions(filtered);
-      setIsOpen(filtered.length > 0);
-    } else {
-      setFilteredOptions([]);
-      setIsOpen(false);
-    }
-  }, [value, options]);
-
-  const handleSelect = (option: string) => {
-    setValue(option);
-    setIsOpen(false);
-    onSelect?.(option);
+  const baseClasses = 'rounded font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
+  
+  const variantClasses = {
+    solid: 'bg-red-500 text-white hover:bg-red-700 hover:scale-105 shadow-xl',
+    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
+    ghost: 'text-red-600 hover:bg-red-100'
   };
-
+  
+  const sizeClasses = {
+    sm: 'px-2 py-1 text-xs',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
+  };
+  
   return (
-    <div className={className} style={{ position: 'relative', width: '100%', maxWidth: '400px' }}>
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        placeholder={placeholder}
-        style={{
-          width: '100%',
-          padding: '8px 12px',
-          border: `2px solid ${primary}`,
-          borderRadius: '6px',
-          fontSize: '14px',
-          outline: 'none',
-          transition: 'all 0.2s'
-        }}
-      />
-      {isOpen && (
-        <div style={{
-          position: 'absolute',
-          top: '100%',
-          left: 0,
-          right: 0,
-          marginTop: '4px',
-          backgroundColor: '#fff',
-          border: `1px solid ${primary}`,
-          borderRadius: '6px',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-          maxHeight: '200px',
-          overflowY: 'auto',
-          zIndex: 1000
-        }}>
-          {filteredOptions.map((option, idx) => (
-            <div
-              key={idx}
-              onClick={() => handleSelect(option)}
-              style={{
-                padding: '8px 12px',
-                cursor: 'pointer',
-                borderBottom: idx < filteredOptions.length - 1 ? '1px solid #e5e7eb' : 'none',
-                transition: 'background-color 0.2s'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#eff6ff'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}
-            >
-              {option}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

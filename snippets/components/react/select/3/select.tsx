@@ -1,112 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-interface SelectOption {
-  label: string;
-  value: string;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export interface ComponentProps {
-  options?: SelectOption[];
-  value?: string;
-  onChange?: (value: string) => void;
-  theme?: { primary?: string };
-  className?: string;
-  placeholder?: string;
-  label?: string;
-}
-
-export const Component: React.FC<ComponentProps> = ({
-  options = [
-    { label: 'Option 1', value: '1' },
-    { label: 'Option 2', value: '2' },
-    { label: 'Option 3', value: '3' }
-  ],
-  value: controlledValue,
-  onChange,
-  theme = {},
-  className = '',
-  placeholder = 'Select option',
-  label
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [internalValue, setInternalValue] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
-  const value = controlledValue || internalValue;
-  const primary = theme.primary || '#3b82f6';
+  const baseClasses = 'rounded-2xl font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
   
-  const selectedOption = options.find(opt => opt.value === value);
+  const variantClasses = {
+    solid: 'bg-red-500 text-white hover:opacity-90 active:scale-95 shadow-xl',
+    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
+    ghost: 'text-red-600 hover:bg-red-100'
+  };
   
-  const handleSelect = (optionValue: string) => {
-    if (!controlledValue) setInternalValue(optionValue);
-    onChange?.(optionValue);
-    setIsOpen(false);
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-3.5 py-2 text-sm',
+    lg: 'px-7 py-3.5 text-base'
   };
   
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '300px' }}>
-      {label && (
-        <label style={{ display: 'block', marginBottom: '8px', color: primary, fontSize: '14px', fontWeight: '500' }}>
-          {label}
-        </label>
-      )}
-      <div style={{ position: 'relative' }}>
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          style={{
-            width: '100%',
-            padding: '8px 12px',
-            backgroundColor: '#fff',
-            border: `2px solid ${primary}`,
-            borderRadius: '6px',
-            cursor: 'pointer',
-            textAlign: 'left',
-            fontSize: '14px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}
-        >
-          <span style={{ color: selectedOption ? '#111' : '#9ca3af' }}>
-            {selectedOption?.label || placeholder}
-          </span>
-          <span style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s' }}>
-            ▼
-          </span>
-        </button>
-        {isOpen && (
-          <div style={{
-            position: 'absolute',
-            top: 'calc(100% + 4px)',
-            left: 0,
-            right: 0,
-            backgroundColor: '#fff',
-            border: `1px solid ${primary}`,
-            borderRadius: '6px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-            zIndex: 1000,
-            maxHeight: '200px',
-            overflowY: 'auto'
-          }}>
-            {options.map((option) => (
-              <div
-                key={option.value}
-                onClick={() => handleSelect(option.value)}
-                style={{
-                  padding: '8px 12px',
-                  cursor: 'pointer',
-                  backgroundColor: option.value === value ? '#eff6ff' : '#fff',
-                  color: option.value === value ? primary : '#374151',
-                  borderBottom: '1px solid #e5e7eb',
-                  transition: 'background-color 0.2s'
-                }}
-                onMouseEnter={(e) => option.value !== value && (e.currentTarget.style.backgroundColor = '#f9fafb')}
-                onMouseLeave={(e) => option.value !== value && (e.currentTarget.style.backgroundColor = '#fff')}
-              >
-                {option.label}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

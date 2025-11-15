@@ -1,41 +1,28 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface BadgeProps {
+  content?: string | number;
+  max?: number;
+  dot?: boolean;
+  children?: React.ReactNode;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [pressed, setPressed] = useState(false);
-  const primary = theme.primary || '#f43f5e';
-  const bg = theme.background || '#ffffff';
-
+export const Badge: React.FC<BadgeProps> = ({
+  content,
+  max = 99,
+  dot = false,
+  children
+}) => {
+  const displayContent = typeof content === 'number' && content > max ? `${max}+` : content;
+  
   return (
-  <button
-  className={className}
-  onMouseDown={() => setPressed(true)}
-  onMouseUp={() => setPressed(false)}
-  onMouseLeave={() => setPressed(false)}
-  onClick={() => onInteract?.('click')}
-  style={{
-  padding: '14px 32px',
-  backgroundColor: 'transparent',
-  color: primary,
-  border: `3px solid ${primary}`,
-  borderRadius: '16px',
-  cursor: 'pointer',
-  fontSize: '16px',
-  fontWeight: 700,
-  transform: pressed ? 'scale(0.94)' : 'scale(1)',
-  boxShadow: pressed ? 'inset 0 4px 8px rgba(0,0,0,0.2)' : 'none',
-  transition: 'all 120ms ease',
-  letterSpacing: '0.5px',
-  textTransform: 'uppercase',
-  outline: 'none'
-  }}
-  >
-  Press Me
-  </button>
+    <div className="relative inline-flex">
+      {children}
+      {(content || dot) && (
+        <span className={`absolute -top-1 -right-1 flex items-center justify-center ${dot ? 'w-2 h-2' : 'min-w-5 h-5 px-1'} text-xs font-bold text-white bg-green-500 rounded-full shadow-2xl ring-2 ring-white`}>
+          {!dot && displayContent}
+        </span>
+      )}
+    </div>
   );
 };

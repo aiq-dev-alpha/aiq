@@ -1,38 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [expanded, setExpanded] = useState(false);
-  const primary = theme.primary || '#3b82f6';
-  const bg = theme.background || '#ffffff';
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded font-medium transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500';
+  
+  const variantClasses = {
+    solid: 'bg-blue-500 text-white hover:brightness-110 hover:-translate-y-0.5 shadow-sm',
+    outline: 'border-2 border-blue-500 text-blue-600 hover:bg-blue-50',
+    ghost: 'text-blue-600 hover:bg-blue-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2 py-1 text-xs',
+    md: 'px-3.5 py-2 text-sm',
+    lg: 'px-5 py-3 text-md'
+  };
   
   return (
-  <div
-  className={className}
-  onClick={() => { setExpanded(!expanded); onInteract?.('expand'); }}
-  style={{
-  padding: expanded ? '32px' : '20px',
-  background: bg,
-  border: `2px solid ${primary}20`,
-  borderRadius: '16px',
-  cursor: 'pointer',
-  transition: 'all 400ms cubic-bezier(0.34, 1.56, 0.64, 1)',
-  boxShadow: expanded ? `0 20px 60px ${primary}30` : `0 4px 12px ${primary}15`,
-  minHeight: expanded ? '300px' : '180px'
-  }}
-  >
-  <h3 style={{ margin: '0 0 12px 0', color: primary, fontSize: expanded ? '24px' : '20px', transition: 'font-size 400ms' }}>
-  Expandable Card
-  </h3>
-  <p style={{ margin: 0, color: '#64748b', fontSize: '14px', lineHeight: 1.6 }}>
-  Click to {expanded ? 'collapse' : 'expand'} this card
-  {expanded && '. This is additional content that appears when the card is expanded.'}
-  </p>
-  </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

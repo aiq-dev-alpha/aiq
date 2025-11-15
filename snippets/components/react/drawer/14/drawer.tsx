@@ -1,49 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [loading, setLoading] = useState(false);
-  const primary = theme.primary || '#ec4899';
-
-  const handleClick = () => {
-  setLoading(true);
-  onInteract?.('loading');
-  setTimeout(() => setLoading(false), 2000);
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded-2xl font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500';
+  
+  const variantClasses = {
+    solid: 'bg-purple-500 text-white hover:brightness-110 hover:-translate-y-0.5 shadow-2xl',
+    outline: 'border-2 border-purple-500 text-purple-600 hover:bg-purple-50',
+    ghost: 'text-purple-600 hover:bg-purple-100'
   };
-
+  
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-3.5 py-2 text-sm',
+    lg: 'px-7 py-3.5 text-base'
+  };
+  
   return (
-  <button
-  className={className}
-  onClick={handleClick}
-  disabled={loading}
-  style={{
-  padding: '16px 36px',
-  background: loading ? '#9ca3af' : `linear-gradient(to right, ${primary}, ${primary}cc)`,
-  color: '#ffffff',
-  border: 'none',
-  borderRadius: '8px',
-  cursor: loading ? 'not-allowed' : 'pointer',
-  fontSize: '15px',
-  fontWeight: 600,
-  minWidth: '140px',
-  position: 'relative',
-  overflow: 'hidden',
-  transition: 'background 300ms'
-  }}
-  >
-  {loading ? (
-  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-  <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#fff', animation: 'pulse 1.2s infinite' }} />
-  <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#fff', animation: 'pulse 1.2s infinite 0.2s' }} />
-  <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#fff', animation: 'pulse 1.2s infinite 0.4s' }} />
-  <style>{'@keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }'}</style>
-  </div>
-  ) : 'Submit'}
-  </button>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

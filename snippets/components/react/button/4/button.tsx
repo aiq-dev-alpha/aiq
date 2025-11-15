@@ -1,68 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  theme = {},
-  className = '',
-  onInteract
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [isHovered, setIsHovered] = useState(false);
-
-  const primary = theme.primary || '#f59e0b';
-  const background = theme.background || '#fffbeb';
-  const text = theme.text || '#92400e';
-
+  const baseClasses = 'rounded-lg font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
+  
+  const variantClasses = {
+    solid: 'bg-red-500 text-white hover:bg-red-700 hover:scale-105 shadow-sm',
+    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
+    ghost: 'text-red-600 hover:bg-red-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
+  };
+  
   return (
-  <button
-  className={className}
-  onClick={() => onInteract?.('click')}
-  onMouseEnter={() => setIsHovered(true)}
-  onMouseLeave={() => setIsHovered(false)}
-  style={{
-  position: 'relative',
-  padding: '16px 36px',
-  background: 'transparent',
-  color: primary,
-  border: `3px solid ${primary}`,
-  borderRadius: '50px',
-  fontSize: '16px',
-  fontWeight: 800,
-  cursor: 'pointer',
-  overflow: 'hidden',
-  transition: 'color 400ms ease',
-  textTransform: 'uppercase',
-  letterSpacing: '1.5px',
-  outline: 'none'
-  }}
-  >
-  <span style={{
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  width: '100%',
-  height: '100%',
-  backgroundColor: primary,
-  transform: isHovered ? 'translateY(0)' : 'translateY(100%)',
-  transition: 'transform 400ms cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-  zIndex: -1
-  }} />
-  <span style={{
-  position: 'relative',
-  zIndex: 1,
-  color: isHovered ? '#ffffff' : primary,
-  transition: 'color 400ms ease'
-  }}>
-  Slide Fill
-  </span>
-  </button>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

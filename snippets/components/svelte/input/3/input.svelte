@@ -1,324 +1,74 @@
 <script lang="ts">
-  import { slide, fade } from 'svelte/transition';
-  import { cubicOut } from 'svelte/easing';
-
-  export interface InputTheme {
-    primary: string;
-    background: string;
-    border: string;
-    text: string;
-    error: string;
-    success: string;
-  }
-
-  export let value = '';
-  export let type: string = 'text';
-  export let label = '';
-  export let placeholder = '';
-  export let error = '';
-  export let helperText = '';
-  export let disabled = false;
-  export let required = false;
-  export let icon = '';
-  export let iconPosition: 'left' | 'right' = 'left';
-  export let variant: 'default' | 'filled' | 'outlined' | 'underlined' | 'floating' = 'outlined';
-  export let size: 'sm' | 'md' | 'lg' = 'md';
-  export let theme: Partial<InputTheme> = {};
-  export let showCharCount = false;
-  export let maxLength: number | undefined = undefined;
-  export let showClear = false;
-
-  const defaultTheme: InputTheme = {
-    primary: '#0ea5e9',
-    background: '#f0f9ff',
-    border: '#bae6fd',
-    text: '#0c4a6e',
-    error: '#f87171',
-    success: '#34d399'
-  };
-
-  $: appliedTheme = { ...defaultTheme, ...theme };
-  $: hasError = !!error;
-  $: showSuccess = !hasError && value.length > 0 && !disabled;
-
+  export let value: string = '';
+  export let placeholder: string = '';
+  export let label: string = '';
+  export let error: string = '';
+  export let disabled: boolean = false;
+  
   let focused = false;
-  let inputElement: HTMLInputElement;
-
-  function handleClear() {
-    value = '';
-    inputElement?.focus();
-  }
-
-  $: sizeClasses = {
-    sm: 'text-sm py-1.5 px-3',
-    md: 'text-base py-2.5 px-4',
-    lg: 'text-lg py-3.5 px-5'
-  }[size];
 </script>
 
-<div class="input-wrapper" class:disabled>
-  {#if label && variant !== 'floating'}
-    <label class="label" class:required>
-      {label}
-    </label>
+<div class="field">
+  {#if label}
+    <label class="field-label">{label}</label>
   {/if}
-
-  <div class="input-container" class:focused class:error={hasError} class:success={showSuccess}>
-    {#if icon && iconPosition === 'left'}
-      <span class="icon icon-left">{icon}</span>
-    {/if}
-
-    <div class="input-inner">
-      {#if variant === 'floating'}
-        <label class="floating-label" class:floating={focused || value} class:required>
-          {label}
-        </label>
-      {/if}
-
-      <input
-        bind:this={inputElement}
-        bind:value
-        {type}
-        {placeholder}
-        {disabled}
-        {required}
-        maxlength={maxLength}
-        class="input {sizeClasses}"
-        class:with-icon-left={icon && iconPosition === 'left'}
-        class:with-icon-right={icon && iconPosition === 'right' || showClear}
-        on:focus={() => focused = true}
-        on:blur={() => focused = false}
-        on:input
-        on:change
-        on:keydown
-        on:keyup
-      />
-    </div>
-
-    {#if showClear && value && !disabled}
-      <button type="button" class="clear-btn" on:click={handleClear} transition:fade={{ duration: 150, easing: cubicOut }}>
-        ×
-      </button>
-    {/if}
-
-    {#if icon && iconPosition === 'right' && !showClear}
-      <span class="icon icon-right">{icon}</span>
-    {/if}
-  </div>
-
+  <input
+    type="text"
+    bind:value
+    {placeholder}
+    {disabled}
+    on:focus={() => focused = true}
+    on:blur={() => focused = false}
+    class="field-input"
+    class:focused
+    class:error
+  />
   {#if error}
-    <div class="message error-message" transition:slide={{ duration: 200, easing: cubicOut }}>
-      {error}
-    </div>
-  {:else if helperText}
-    <div class="message helper-message">
-      {helperText}
-    </div>
-  {/if}
-
-  {#if showCharCount && maxLength}
-    <div class="char-count">
-      {value.length}/{maxLength}
-    </div>
+    <p class="field-error">{error}</p>
   {/if}
 </div>
 
 <style>
-  .input-wrapper {
-    width: 100%;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  .field {
+    margin: 1.25rem 0;
   }
-
-  .label {
+  
+  .field-label {
     display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    color: v-bind('appliedTheme.primary');
+    margin-bottom: 0.625rem;
     font-size: 0.875rem;
+    font-weight: 600;
+    color: #1f2937;
   }
-
-  .label.required::after {
-    content: ' *';
-    color: v-bind('appliedTheme.error');
-  }
-
-  .input-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-    background: transparent;
-    border: 2px solid v-bind('appliedTheme.border');
-    border-radius: 0.75rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .input-container:hover:not(.disabled) {
-    border-color: v-bind('appliedTheme.primary');
-    background: v-bind('appliedTheme.background');
-  }
-
-  .input-container.focused {
-    border-color: v-bind('appliedTheme.primary');
-    background: v-bind('appliedTheme.background');
-    box-shadow:
-      0 0 0 4px rgba(14, 165, 233, 0.1),
-      0 10px 15px -3px rgba(14, 165, 233, 0.1);
-  }
-
-  .input-container.error {
-    border-color: v-bind('appliedTheme.error');
-    background: #fef2f2;
-  }
-
-  .input-container.error.focused {
-    box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.1);
-  }
-
-  .input-container.success {
-    border-color: v-bind('appliedTheme.success');
-    background: #f0fdf4;
-  }
-
-  .input-inner {
-    flex: 1;
-    position: relative;
-  }
-
-  .input {
+  
+  .field-input {
     width: 100%;
-    border: none;
+    padding: 0.75rem 1.125rem;
+    font-size: 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 16px;
     outline: none;
-    background: transparent;
-    color: v-bind('appliedTheme.text');
-    font-family: inherit;
-    font-weight: 500;
-  }
-
-  .input::placeholder {
-    color: v-bind('appliedTheme.text');
-    opacity: 0.4;
-  }
-
-  .input.with-icon-left {
-    padding-left: 2.5rem;
-  }
-
-  .input.with-icon-right {
-    padding-right: 2.5rem;
-  }
-
-  .icon {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    color: v-bind('appliedTheme.primary');
-    opacity: 0.6;
-    pointer-events: none;
-  }
-
-  .icon-left {
-    left: 1rem;
-  }
-
-  .icon-right {
-    right: 1rem;
-  }
-
-  .clear-btn {
-    position: absolute;
-    right: 0.75rem;
-    top: 50%;
-    transform: translateY(-50%);
-    background: v-bind('appliedTheme.border');
-    border: none;
-    border-radius: 0.375rem;
-    width: 1.5rem;
-    height: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 1.25rem;
-    line-height: 1;
-    color: v-bind('appliedTheme.text');
-    transition: all 0.2s;
-  }
-
-  .clear-btn:hover {
-    background: v-bind('appliedTheme.primary');
-    color: white;
-  }
-
-  .floating-label {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: v-bind('appliedTheme.text');
-    opacity: 0.6;
-    pointer-events: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     background: white;
-    padding: 0 0.25rem;
   }
-
-  .floating-label.floating {
-    top: 0;
-    font-size: 0.75rem;
-    opacity: 1;
-    color: v-bind('appliedTheme.primary');
+  
+  .field-input:hover:not(:disabled) {
+    border-color: #cbd5e1;
   }
-
-  .floating-label.required::after {
-    content: ' *';
-    color: v-bind('appliedTheme.error');
+  
+  .field-input.focused {
+    border-color: var(--red-500, #3b82f6);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   }
-
-  .message {
+  
+  .field-input.error {
+    border-color: #ef4444;
+  }
+  
+  .field-error {
     margin-top: 0.5rem;
     font-size: 0.875rem;
-  }
-
-  .error-message {
-    color: v-bind('appliedTheme.error');
+    color: #dc2626;
     font-weight: 500;
   }
-
-  .helper-message {
-    color: v-bind('appliedTheme.text');
-    opacity: 0.7;
-  }
-
-  .char-count {
-    margin-top: 0.25rem;
-    font-size: 0.75rem;
-    text-align: right;
-    color: v-bind('appliedTheme.primary');
-    opacity: 0.7;
-  }
-
-  .disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  .disabled .input-container {
-    background: #f3f4f6;
-    border-color: #d1d5db;
-  }
-
-  .disabled input {
-    cursor: not-allowed;
-  }
-
-
-@keyframes fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes expand {
-  from { transform: scale(0.9); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
 </style>

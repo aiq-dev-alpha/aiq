@@ -1,51 +1,35 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  label?: string;
-  selected?: boolean;
-  onToggle?: (selected: boolean) => void;
-  theme?: { primary?: string; background?: string; text?: string };
-  className?: string;
+interface ChipProps {
+  label: string;
+  onDelete?: () => void;
+  clickable?: boolean;
+  onClick?: () => void;
+  icon?: React.ReactNode;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  label = 'Choice',
-  selected: initialSelected = false,
-  onToggle,
-  theme = {},
-  className = ''
+export const Chip: React.FC<ChipProps> = ({
+  label,
+  onDelete,
+  clickable = false,
+  onClick,
+  icon
 }) => {
-  const [selected, setSelected] = useState(initialSelected);
-  const primary = theme.primary || '#8b5cf6';
-
-  const handleClick = () => {
-  const newSelected = !selected;
-  setSelected(newSelected);
-  onToggle?.(newSelected);
-  };
-
   return (
-  <button
-  className={className}
-  onClick={handleClick}
-  style={{
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '8px',
-  padding: '8px 16px',
-  backgroundColor: selected ? primary : '#fff',
-  color: selected ? '#fff' : '#374151',
-  border: selected ? 'none' : '1px solid #d1d5db',
-  borderRadius: '24px',
-  fontSize: '14px',
-  fontWeight: '500',
-  cursor: 'pointer',
-  transition: 'all 0.2s',
-  boxShadow: selected ? '0 2px 8px rgba(0,0,0,0.15)' : 'none'
-  }}
-  >
-  {selected && <span style={{ fontSize: '16px' }}>✓</span>}
-  <span>{label}</span>
-  </button>
+    <span
+      onClick={clickable ? onClick : undefined}
+      className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs rounded-xl bg-green-100 text-green-800 transition-opacity ${clickable ? 'cursor-pointer hover:bg-green-200' : ''} ${shadow}`}
+    >
+      {icon}
+      <span className="font-medium">{label}</span>
+      {onDelete && (
+        <button
+          onClick={onDelete}
+          className="ml-0.5 hover:bg-green-200 rounded-full p-0.5"
+        >
+          ✕
+        </button>
+      )}
+    </span>
   );
 };

@@ -1,88 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  theme = {},
-  className = '',
-  onInteract
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [loading, setLoading] = useState(false);
-
-  const primary = theme.primary || '#8b5cf6';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
-  const handleClick = () => {
-  setLoading(true);
-  onInteract?.('loading');
-  setTimeout(() => setLoading(false), 2000);
+  const baseClasses = 'rounded-2xl font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
+  
+  const variantClasses = {
+    solid: 'bg-red-500 text-white hover:opacity-90 active:scale-95 shadow-xl',
+    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
+    ghost: 'text-red-600 hover:bg-red-100'
   };
-
+  
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-3.5 py-2 text-sm',
+    lg: 'px-7 py-3.5 text-base'
+  };
+  
   return (
-  <button
-  className={className}
-  onClick={handleClick}
-  disabled={loading}
-  style={{
-  position: 'relative',
-  padding: '14px 32px',
-  background: `linear-gradient(135deg, ${primary}, ${primary}dd)`,
-  color: '#ffffff',
-  border: 'none',
-  borderRadius: '12px',
-  fontSize: '15px',
-  fontWeight: 700,
-  cursor: loading ? 'not-allowed' : 'pointer',
-  opacity: loading ? 0.7 : 1,
-  transition: 'all 300ms ease',
-  minWidth: '140px',
-  outline: 'none'
-  }}
-  >
-  {loading ? (
-  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-  <div style={{
-  width: '6px',
-  height: '6px',
-  borderRadius: '50%',
-  backgroundColor: '#fff',
-  animation: 'bounce 1.4s infinite ease-in-out both',
-  animationDelay: '-0.32s'
-  }} />
-  <div style={{
-  width: '6px',
-  height: '6px',
-  borderRadius: '50%',
-  backgroundColor: '#fff',
-  animation: 'bounce 1.4s infinite ease-in-out both',
-  animationDelay: '-0.16s'
-  }} />
-  <div style={{
-  width: '6px',
-  height: '6px',
-  borderRadius: '50%',
-  backgroundColor: '#fff',
-  animation: 'bounce 1.4s infinite ease-in-out both'
-  }} />
-  <style>{`
-  @keyframes bounce {
-  0%, 80%, 100% { transform: scale(0); }
-  40% { transform: scale(1); }
-  }
-  `}</style>
-  </div>
-  ) : (
-  'Loading Button'
-  )}
-  </button>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

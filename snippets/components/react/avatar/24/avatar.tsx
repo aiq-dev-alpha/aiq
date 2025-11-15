@@ -1,51 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  tabs?: Array<{ id: string; label: string; content: React.ReactNode }>;
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (tabId: string) => void;
+interface AvatarProps {
+  src?: string;
+  alt?: string;
+  size?: 'sm' | 'md' | 'lg';
+  status?: 'online' | 'offline' | 'away';
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  tabs = [
-    { id: '1', label: 'Tab 1', content: 'Content 1' },
-    { id: '2', label: 'Tab 2', content: 'Content 2' },
-    { id: '3', label: 'Tab 3', content: 'Content 3' }
-  ],
-  theme = {},
-  className = '',
-  onInteract
+export const Avatar: React.FC<AvatarProps> = ({
+  src,
+  alt = 'User',
+  size = 'md',
+  status
 }) => {
-  const [activeTab, setActiveTab] = useState(tabs[0]?.id || '');
-  const primary = theme.primary || '#6366f1';
-
+  const sizes = {
+    sm: 'w-8 h-8',
+    md: 'w-12 h-12',
+    lg: 'w-16 h-16'
+  };
+  
+  const statusColors = {
+    online: 'bg-green-500',
+    offline: 'bg-gray-400',
+    away: 'bg-yellow-500'
+  };
+  
   return (
-    <div className={className} style={{ maxWidth: '600px' }}>
-      <div style={{ display: 'flex', gap: '4px', borderBottom: \`2px solid \${primary}20\` }}>
-        {tabs.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => { setActiveTab(tab.id); onInteract?.(tab.id); }}
-            style={{
-              padding: '12px 24px',
-              background: 'transparent',
-              border: 'none',
-              borderBottom: \`3px solid \${activeTab === tab.id ? primary : 'transparent'}\`,
-              color: activeTab === tab.id ? primary : '#6b7280',
-              fontWeight: activeTab === tab.id ? 700 : 500,
-              cursor: 'pointer',
-              transition: 'all 200ms ease',
-              marginBottom: '-2px'
-            }}
-          >
-            {tab.label}
-          </button>
-        ))}
+    <div className="relative inline-block">
+      <div className={`${sizes[size]} rounded-2xl overflow-hidden bg-gradient-to-br from-yellow-400 to-yellow-600 shadow ring-2 ring-white`}>
+        {src ? (
+          <img src={src} alt={alt} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-white font-bold">
+            {alt[0].toUpperCase()}
+          </div>
+        )}
       </div>
-      <div style={{ padding: '24px 0' }}>
-        {tabs.find(t => t.id === activeTab)?.content}
-      </div>
+      {status && (
+        <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${statusColors[status]} ring-2 ring-white`} />
+      )}
     </div>
   );
 };

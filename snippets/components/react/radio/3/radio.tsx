@@ -1,87 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-interface RadioOption {
-  label: string;
-  value: string;
-}
-
-export interface ComponentProps {
-  options?: RadioOption[];
-  value?: string;
-  onChange?: (value: string) => void;
-  theme?: { primary?: string };
-  className?: string;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  options = [
-    { label: 'Option 1', value: '1' },
-    { label: 'Option 2', value: '2' },
-    { label: 'Option 3', value: '3' }
-  ],
-  value: controlledValue,
-  onChange,
-  theme = {},
-  className = '',
-  disabled = false
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [internalValue, setInternalValue] = useState('');
-  const value = controlledValue || internalValue;
-  const primary = theme.primary || '#3b82f6';
+  const baseClasses = 'rounded-2xl font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
   
-  const handleChange = (newValue: string) => {
-    if (disabled) return;
-    if (!controlledValue) setInternalValue(newValue);
-    onChange?.(newValue);
+  const variantClasses = {
+    solid: 'bg-red-500 text-white hover:opacity-90 active:scale-95 shadow-xl',
+    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
+    ghost: 'text-red-600 hover:bg-red-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-3.5 py-2 text-sm',
+    lg: 'px-7 py-3.5 text-base'
   };
   
   return (
-    <div className={className} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      {options.map((option) => {
-        const isSelected = value === option.value;
-        return (
-          <label
-            key={option.value}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              cursor: disabled ? 'not-allowed' : 'pointer',
-              opacity: disabled ? 0.5 : 1
-            }}
-          >
-            <div
-              onClick={() => handleChange(option.value)}
-              style={{
-                width: '20px',
-                height: '20px',
-                borderRadius: '50%',
-                border: `2px solid ${isSelected ? primary : '#d1d5db'}`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.2s',
-                boxShadow: isSelected ? '0 0 0 3px rgba(59,130,246,0.2)' : 'none'
-              }}
-            >
-              {isSelected && (
-                <div
-                  style={{
-                    width: '10px',
-                    height: '10px',
-                    borderRadius: '50%',
-                    backgroundColor: primary
-                  }}
-                />
-              )}
-            </div>
-            <span style={{ fontSize: '14px', color: '#374151', fontWeight: '500' }}>
-              {option.label}
-            </span>
-          </label>
-        );
-      })}
-    </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

@@ -1,20 +1,16 @@
-import React from 'react';;
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+interface Props {
+  children?: React.ReactNode;
   className?: string;
-  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const primary = theme.primary || '#8b5cf6';
-  const bg = theme.background || '#ffffff';
+export const Component19: React.FC<Props> = ({ children, className = '' }) => {
+  const baseStyles = 'inline-flex items-center justify-center px-7 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-fuchsia-600 text-white font-semibold transition-all duration-390';
+  
   return (
-  <div className={className} onClick={() => onInteract?.('click')} style={{ padding: '20px', backgroundColor: bg, border: `1px solid ${primary}20`, borderLeft: `4px solid ${primary}`, borderRadius: '2px', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-  <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: primary }} />
-  <span style={{ fontSize: '15px', fontWeight: 500 }}>Item {idx}</span>
-  </div>
-  </div>
+    <div className={`${baseStyles} ${className}`}>
+      {children}
+    </div>
   );
 };

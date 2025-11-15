@@ -1,21 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [skewed, setSkewed] = useState(false);
-  const primary = theme.primary || '#f59e0b';
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-green-500';
+  
+  const variantClasses = {
+    solid: 'bg-green-500 text-white hover:ring-2 hover:ring-green-400 shadow-2xl',
+    outline: 'border-2 border-green-500 text-green-600 hover:bg-green-50',
+    ghost: 'text-green-600 hover:bg-green-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
+  };
+  
   return (
-  <button className={className} onClick={() => { setSkewed(!skewed); onInteract?.('skew'); }}
-  style={{ padding: '14px 32px', background: primary, color: '#fff', border: 'none',
-  borderRadius: '8px', fontSize: '16px', fontWeight: 700, cursor: 'pointer',
-  transform: skewed ? 'skewX(-10deg) scale(1.1)' : 'skewX(0) scale(1)',
-  transition: 'transform 300ms', outline: 'none' }}>
-  Skew Effect
-  </button>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

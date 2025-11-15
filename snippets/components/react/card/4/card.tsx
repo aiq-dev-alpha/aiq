@@ -1,37 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [hovered, setHovered] = useState(false);
-  const primary = theme.primary || '#8b5cf6';
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded-lg font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
+  
+  const variantClasses = {
+    solid: 'bg-red-500 text-white hover:bg-red-700 hover:scale-105 shadow-sm',
+    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
+    ghost: 'text-red-600 hover:bg-red-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
+  };
   
   return (
-  <div
-  className={className}
-  onMouseEnter={() => setHovered(true)}
-  onMouseLeave={() => setHovered(false)}
-  onClick={() => onInteract?.('tilt')}
-  style={{
-  width: '320px',
-  padding: '24px',
-  background: `linear-gradient(135deg, ${primary}, ${primary}dd)`,
-  borderRadius: '20px',
-  color: '#fff',
-  cursor: 'pointer',
-  transform: hovered ? 'perspective(1000px) rotateX(10deg) rotateY(-10deg)' : 'perspective(1000px) rotateX(0) rotateY(0)',
-  transition: 'transform 300ms',
-  boxShadow: hovered ? `0 25px 50px ${primary}40` : `0 10px 30px ${primary}25`
-  }}
-  >
-  <h3 style={{ margin: '0 0 12px 0', fontSize: '22px' }}>3D Tilt Card</h3>
-  <p style={{ margin: 0, opacity: 0.9, fontSize: '15px', lineHeight: 1.5 }}>
-  Hover over this card to see the 3D tilt effect in action.
-  </p>
-  </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

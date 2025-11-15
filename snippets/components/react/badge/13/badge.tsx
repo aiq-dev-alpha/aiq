@@ -1,17 +1,28 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface BadgeProps {
+  content?: string | number;
+  max?: number;
+  dot?: boolean;
+  children?: React.ReactNode;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [active, setActive] = useState(false);
-  const primary = theme.primary || '#a855f7';
+export const Badge: React.FC<BadgeProps> = ({
+  content,
+  max = 99,
+  dot = false,
+  children
+}) => {
+  const displayContent = typeof content === 'number' && content > max ? `${max}+` : content;
+  
   return (
-  <button className={className} onClick={() => { setActive(!active); onInteract?.('toggle'); }} style={{ padding: '12px 24px', backgroundColor: active ? primary : '#f3f4f6', color: active ? '#fff' : '#1f2937', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: 600, transition: 'all 200ms', boxShadow: active ? `0 0 0 3px ${primary}40` : 'none' }}>
-  {active ? 'Active' : 'Inactive'}
-  </button>
+    <div className="relative inline-flex">
+      {children}
+      {(content || dot) && (
+        <span className={`absolute -top-1 -right-1 flex items-center justify-center ${dot ? 'w-2 h-2' : 'min-w-5 h-5 px-1'} text-xs font-bold text-white bg-indigo-500 rounded-full shadow-2xl ring-2 ring-white`}>
+          {!dot && displayContent}
+        </span>
+      )}
+    </div>
   );
 };

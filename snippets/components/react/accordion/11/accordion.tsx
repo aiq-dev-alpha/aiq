@@ -1,22 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [expanded, setExpanded] = useState(false);
-  const primary = theme.primary || '#3b82f6';
-  const background = theme.background || '#ffffff';
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded-2xl font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500';
+  
+  const variantClasses = {
+    solid: 'bg-teal-500 text-white hover:bg-teal-600 hover:shadow-lg shadow-lg',
+    outline: 'border-2 border-teal-500 text-teal-600 hover:bg-teal-50',
+    ghost: 'text-teal-600 hover:bg-teal-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-3 py-1 text-xs',
+    md: 'px-3.5 py-2 text-sm',
+    lg: 'px-6 py-3 text-lg'
+  };
+  
   return (
-  <div className={className} style={{ border: '1px solid #e5e7eb', borderRadius: '8px', overflow: 'hidden' }}>
-  <button onClick={() => { setExpanded(!expanded); onInteract?.('toggle'); }} style={{ width: '100%', padding: '16px', backgroundColor: background, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', fontSize: '15px', fontWeight: 600 }}>
-  <span>Accordion Item</span>
-  <span style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 200ms' }}>▼</span>
-  </button>
-  {expanded && <div style={{ padding: '16px', backgroundColor: '#f9fafb', borderTop: `1px solid ${primary}20`, fontSize: '14px', color: '#6b7280' }}>Accordion content</div>}
-  </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

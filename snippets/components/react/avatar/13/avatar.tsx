@@ -1,72 +1,44 @@
-import React from 'react';;
+import React from 'react';
 
-export interface ComponentProps {
-  avatars?: { src: string; name: string }[];
-  maxVisible?: number;
-  theme?: { primary?: string; background?: string; text?: string };
-  className?: string;
+interface AvatarProps {
+  src?: string;
+  alt?: string;
+  size?: 'sm' | 'md' | 'lg';
+  status?: 'online' | 'offline' | 'away';
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  avatars = [
-  { src: '', name: 'User 1' },
-  { src: '', name: 'User 2' },
-  { src: '', name: 'User 3' },
-  { src: '', name: 'User 4' }
-  ],
-  maxVisible = 3,
-  theme = {},
-  className = ''
+export const Avatar: React.FC<AvatarProps> = ({
+  src,
+  alt = 'User',
+  size = 'md',
+  status
 }) => {
-  const primary = theme.primary || '#6366f1';
-  const extra = avatars.length - maxVisible;
-  const visible = avatars.slice(0, maxVisible);
-
+  const sizes = {
+    sm: 'w-8 h-8',
+    md: 'w-12 h-12',
+    lg: 'w-16 h-16'
+  };
+  
+  const statusColors = {
+    online: 'bg-green-500',
+    offline: 'bg-gray-400',
+    away: 'bg-yellow-500'
+  };
+  
   return (
-  <div className={className} style={{ display: 'flex', alignItems: 'center' }}>
-  {visible.map((avatar, i) => (
-  <div
-  key={i}
-  style={{
-  width: '48px',
-  height: '48px',
-  borderRadius: '50%',
-  backgroundColor: primary,
-  color: '#fff',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: '14px',
-  fontWeight: '600',
-  marginLeft: i > 0 ? '-12px' : '0',
-  border: '3px solid #fff',
-  position: 'relative',
-  zIndex: visible.length - i
-  }}
-  >
-  {avatar.name.charAt(0)}
-  </div>
-  ))}
-  {extra > 0 && (
-  <div
-  style={{
-  width: '48px',
-  height: '48px',
-  borderRadius: '50%',
-  backgroundColor: '#e5e7eb',
-  color: '#374151',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: '14px',
-  fontWeight: '600',
-  marginLeft: '-12px',
-  border: '3px solid #fff'
-  }}
-  >
-  +{extra}
-  </div>
-  )}
-  </div>
+    <div className="relative inline-block">
+      <div className={`${sizes[size]} rounded-lg overflow-hidden bg-gradient-to-br from-indigo-400 to-indigo-600 shadow-2xl ring-2 ring-white`}>
+        {src ? (
+          <img src={src} alt={alt} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-white font-bold">
+            {alt[0].toUpperCase()}
+          </div>
+        )}
+      </div>
+      {status && (
+        <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${statusColors[status]} ring-2 ring-white`} />
+      )}
+    </div>
   );
 };

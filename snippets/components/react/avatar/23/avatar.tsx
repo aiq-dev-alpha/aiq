@@ -1,44 +1,44 @@
-import React from 'react';;
+import React from 'react';
 
-export interface ComponentProps {
-  name?: string;
+interface AvatarProps {
   src?: string;
-  size?: number;
-  theme?: { primary?: string; background?: string; text?: string };
-  className?: string;
+  alt?: string;
+  size?: 'sm' | 'md' | 'lg';
+  status?: 'online' | 'offline' | 'away';
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  name = 'User',
-  src = '',
-  size = 80,
-  theme = {},
-  className = ''
+export const Avatar: React.FC<AvatarProps> = ({
+  src,
+  alt = 'User',
+  size = 'md',
+  status
 }) => {
-  const primary = theme.primary || '#8b5cf6';
-
+  const sizes = {
+    sm: 'w-8 h-8',
+    md: 'w-12 h-12',
+    lg: 'w-16 h-16'
+  };
+  
+  const statusColors = {
+    online: 'bg-green-500',
+    offline: 'bg-gray-400',
+    away: 'bg-yellow-500'
+  };
+  
   return (
-  <div className={className}>
-  <div
-  style={{
-  width: `${size}px`,
-  height: `${size}px`,
-  clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-  backgroundColor: primary,
-  color: '#fff',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: `${size * 0.35}px`,
-  fontWeight: '700',
-  position: 'relative',
-  transition: 'transform 0.3s ease'
-  }}
-  onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1) rotate(15deg)'}
-  onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1) rotate(0deg)'}
-  >
-  {name.charAt(0).toUpperCase()}
-  </div>
-  </div>
+    <div className="relative inline-block">
+      <div className={`${sizes[size]} rounded overflow-hidden bg-gradient-to-br from-indigo-400 to-indigo-600 shadow-sm ring-2 ring-white`}>
+        {src ? (
+          <img src={src} alt={alt} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-white font-bold">
+            {alt[0].toUpperCase()}
+          </div>
+        )}
+      </div>
+      {status && (
+        <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${statusColors[status]} ring-2 ring-white`} />
+      )}
+    </div>
   );
 };

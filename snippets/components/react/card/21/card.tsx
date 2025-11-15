@@ -1,56 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [hovered, setHovered] = useState(false);
-  const primary = theme.primary || '#4f46e5';
-  const text = theme.text || '#1f2937';
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded-xl font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-green-500';
+  
+  const variantClasses = {
+    solid: 'bg-green-500 text-white hover:bg-green-600 hover:shadow-lg shadow-2xl',
+    outline: 'border-2 border-green-500 text-green-600 hover:bg-green-50',
+    ghost: 'text-green-600 hover:bg-green-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-3 py-1 text-xs',
+    md: 'px-5 py-2.5 text-sm',
+    lg: 'px-7 py-3.5 text-base'
+  };
   
   return (
-  <div
-  className={className}
-  onMouseEnter={() => setHovered(true)}
-  onMouseLeave={() => setHovered(false)}
-  onClick={() => onInteract?.('hover_scale')}
-  style={{
-  width: '340px',
-  padding: '28px',
-  background: '#ffffff',
-  border: `2px solid ${hovered ? primary : '#e5e7eb'}`,
-  borderRadius: '14px',
-  cursor: 'pointer',
-  transition: 'all 300ms ease',
-  boxShadow: hovered ? `0 12px 32px ${primary}30` : '0 4px 16px rgba(0,0,0,0.08)',
-  transform: hovered ? 'translateY(-6px)' : 'translateY(0)'
-  }}
-  >
-  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-  <div style={{
-  width: '48px',
-  height: '48px',
-  borderRadius: '12px',
-  background: `${primary}20`,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: '24px',
-  fontWeight: 700,
-  color: primary
-  }}>
-  H
-  </div>
-  <h3 style={{ margin: 0, color: text, fontSize: '20px', fontWeight: 700 }}>
-  Hover Scale
-  </h3>
-  </div>
-  <p style={{ margin: 0, color: '#64748b', fontSize: '15px', lineHeight: 1.7 }}>
-  This is a hover scale component with custom styling and hover effects.
-  </p>
-  </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

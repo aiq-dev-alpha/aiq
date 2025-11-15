@@ -1,64 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-interface MenuItem {
-  label: string;
+interface ButtonProps {
+  children: React.ReactNode;
   onClick?: () => void;
-  icon?: string;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export interface ComponentProps {
-  items?: MenuItem[];
-  theme?: { primary?: string };
-  className?: string;
-}
-
-export const Component: React.FC<ComponentProps> = ({
-  items = [
-    { label: 'Profile', icon: '👤' },
-    { label: 'Settings', icon: '⚙️' },
-    { label: 'Logout', icon: '🚪' }
-  ],
-  theme = {},
-  className = ''
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
-  const primary = theme.primary || '#3b82f6';
+  const baseClasses = 'rounded font-medium transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500';
+  
+  const variantClasses = {
+    solid: 'bg-amber-500 text-white hover:opacity-90 active:scale-95 shadow-lg',
+    outline: 'border-2 border-amber-500 text-amber-600 hover:bg-amber-50',
+    ghost: 'text-amber-600 hover:bg-amber-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2 py-1 text-xs',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
+  };
   
   return (
-    <div
-      className={className}
-      style={{
-        backgroundColor: '#fff',
-        border: '1px solid #e5e7eb',
-        borderRadius: '6px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-        padding: '8px',
-        minWidth: '200px'
-      }}
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
-      {items.map((item, idx) => (
-        <div
-          key={idx}
-          onClick={item.onClick}
-          onMouseEnter={() => setHoveredIdx(idx)}
-          onMouseLeave={() => setHoveredIdx(null)}
-          style={{
-            padding: '8px 12px',
-            borderRadius: '6px',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            backgroundColor: hoveredIdx === idx ? '#eff6ff' : 'transparent',
-            color: hoveredIdx === idx ? primary : '#374151',
-            transition: 'all 0.2s',
-            marginBottom: idx < items.length - 1 ? '4px' : '0'
-          }}
-        >
-          {item.icon && <span style={{ fontSize: '18px' }}> {item.icon}</span>}
-          <span style={{ fontSize: '14px', fontWeight: '500' }}>{item.label}</span>
-        </div>
-      ))}
-    </div>
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

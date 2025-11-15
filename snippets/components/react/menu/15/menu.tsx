@@ -1,49 +1,44 @@
-import React from 'react';;
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const primary = theme.primary || '#8b5cf6';
-  const bg = theme.background || '#ffffff';
-
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
+  
+  const variantClasses = {
+    solid: 'bg-red-500 text-white hover:bg-red-700 hover:scale-105 shadow-xl',
+    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
+    ghost: 'text-red-600 hover:bg-red-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2 py-1 text-xs',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
+  };
+  
   return (
-  <div
-  className={className}
-  onClick={() => onInteract?.('click')}
-  style={{
-  padding: '20px 24px',
-  backgroundColor: bg,
-  border: `1px solid ${primary}30`,
-  borderLeft: `6px solid ${primary}`,
-  borderRadius: '10px',
-  cursor: 'pointer',
-  boxShadow: '0 3px 10px rgba(0,0,0,0.08)',
-  transition: 'transform 200ms, box-shadow 200ms'
-  }}
-  onMouseEnter={e => { e.currentTarget.style.transform = 'translateX(4px)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.12)'; }}
-  onMouseLeave={e => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.boxShadow = '0 3px 10px rgba(0,0,0,0.08)'; }}
-  >
-  <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-  <div style={{
-  width: '16px',
-  height: '16px',
-  borderRadius: '50%',
-  backgroundColor: primary,
-  boxShadow: `0 0 0 4px ${primary}20`
-  }} />
-  <div>
-  <div style={{ fontSize: '16px', fontWeight: 600, color: '#1f2937', marginBottom: '4px' }}>
-  Item Title {idx}
-  </div>
-  <div style={{ fontSize: '13px', color: '#6b7280' }}>
-  Description text
-  </div>
-  </div>
-  </div>
-  </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

@@ -1,75 +1,44 @@
 import React from 'react';
 
-export interface ComponentProps {
-  message?: string;
-  type?: 'info' | 'success' | 'warning' | 'error';
-  theme?: { primary?: string };
-  className?: string;
-  onClose?: () => void;
-  icon?: string;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  message = 'Notification message',
-  type = 'info',
-  theme = {},
-  className = '',
-  onClose,
-  icon
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const colors = {
-    info: '#3b82f6',
-    success: '#10b981',
-    warning: '#f59e0b',
-    error: '#ef4444'
+  const baseClasses = 'rounded font-medium transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500';
+  
+  const variantClasses = {
+    solid: 'bg-amber-500 text-white hover:opacity-90 active:scale-95 shadow-lg',
+    outline: 'border-2 border-amber-500 text-amber-600 hover:bg-amber-50',
+    ghost: 'text-amber-600 hover:bg-amber-100'
   };
   
-  const backgrounds = {
-    info: '#eff6ff',
-    success: '#ecfdf5',
-    warning: '#fffbeb',
-    error: '#fef2f2'
+  const sizeClasses = {
+    sm: 'px-2 py-1 text-xs',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
   };
-  
-  const primary = theme.primary || colors[type];
-  const bg = backgrounds[type];
   
   return (
-    <div
-      className={className}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        padding: '8px 12px',
-        backgroundColor: bg,
-        borderLeft: `4px solid ${primary}`,
-        borderRadius: '6px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-        maxWidth: '400px',
-        position: 'relative'
-      }}
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
-      {icon && <span style={{ fontSize: '20px', flexShrink: 0 }}> {icon}</span>}
-      <div style={{ flex: 1, color: '#374151', fontSize: '14px', lineHeight: '1.5' }}>
-        {message}
-      </div>
-      {onClose && (
-        <button
-          onClick={onClose}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: primary,
-            cursor: 'pointer',
-            fontSize: '20px',
-            lineHeight: '1',
-            flexShrink: 0
-          }}
-        >
-          ×
-        </button>
-      )}
-    </div>
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

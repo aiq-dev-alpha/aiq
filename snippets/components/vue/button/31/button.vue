@@ -1,219 +1,71 @@
 <template>
   <button
-    :style="buttonStyles"
+    :class="['custom-btn', variant, size, { disabled, loading }]"
     :disabled="disabled || loading"
-    :class="buttonClasses"
-    @click="handleClick">
-    <span v-if="loading" class="spinner"></span>
-    <span v-if="iconLeft && !loading" class="icon-left">
-      <slot name="iconLeft">{{ iconLeft }}</slot>
-    </span>
-    <span class="button-content">
-      <slot></slot>
-    </span>
-    <span v-if="iconRight && !loading" class="icon-right">
-      <slot name="iconRight">{{ iconRight }}</slot>
-    </span>
+    @click="$emit('click')"
+  >
+    <span v-if="loading" class="loader"></span>
+    <slot />
   </button>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from 'vue';
-
-interface ThemeConfig {
-  primary: string;
-  secondary: string;
-  surface: string;
-  onSurface: string;
-  shadow: string;
-}
-
-type ButtonVariant = 'solid' | 'outline' | 'ghost' | 'soft' | 'link';
-type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'Button',
+  name: 'CustomButton',
   props: {
-    variant: {
-      type: String as PropType<ButtonVariant>,
-      default: 'solid'
-    },
-    size: {
-      type: String as PropType<ButtonSize>,
-      default: 'md'
-    },
-    theme: {
-      type: Object as PropType<Partial<ThemeConfig>>,
-      default: () => ({})
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    loading: {
-      type: Boolean,
-      default: false
-    },
-    iconLeft: {
-      type: String,
-      default: ''
-    },
-    iconRight: {
-      type: String,
-      default: ''
-    },
-    fullWidth: {
-      type: Boolean,
-      default: false
-    },
-    rounded: {
-      type: Boolean,
-      default: true
-    }
+    variant: { type: String, default: 'primary' },
+    size: { type: String, default: 'md' },
+    disabled: { type: Boolean, default: false },
+    loading: { type: Boolean, default: false }
   },
-  emits: ['click'],
-  setup(props, { emit }) {
-    const defaultTheme: ThemeConfig = {
-      primary: '#3b82f6',
-      secondary: '#8b5cf6',
-      surface: '#ffffff',
-      onSurface: '#111827',
-      shadow: 'rgba(59, 130, 246, 0.2)'
-    };
-
-    const appliedTheme = computed(() => ({
-      ...defaultTheme,
-      ...props.theme
-    }));
-
-    const sizeMap = {
-      xs: { padding: '4px 10px', fontSize: '12px', minHeight: '24px' },
-      sm: { padding: '8px 16px', fontSize: '13px', minHeight: '32px' },
-      md: { padding: '12px 24px', fontSize: '14px', minHeight: '40px' },
-      lg: { padding: '14px 28px', fontSize: '16px', minHeight: '48px' },
-      xl: { padding: '16px 32px', fontSize: '18px', minHeight: '56px' }
-    };
-
-    const variantStyles = computed(() => {
-      const t = appliedTheme.value;
-      return {
-        solid: {
-          background: `linear-gradient(180deg, ${t.primary}, ${t.secondary})`,
-          color: '#ffffff',
-          border: 'none',
-          boxShadow: `0 4px 12px ${t.shadow}`
-        },
-        outline: {
-          background: 'transparent',
-          color: t.primary,
-          border: `2px solid ${t.primary}`,
-          boxShadow: 'none',
-          position: 'relative'
-        },
-        ghost: {
-          background: 'transparent',
-          color: t.primary,
-          border: 'none',
-          boxShadow: 'none'
-        },
-        soft: {
-          background: `linear-gradient(135deg, ${t.primary}22, ${t.primary}18)`,
-          color: t.primary,
-          border: `1px solid ${t.primary}30`,
-          boxShadow: 'none'
-        },
-        link: {
-          background: 'transparent',
-          color: t.primary,
-          border: 'none',
-          boxShadow: 'none',
-          textDecoration: 'underline',
-          textUnderlineOffset: '3px'
-        }
-      };
-    });
-
-    const buttonStyles = computed(() => ({
-      ...sizeMap[props.size],
-      ...variantStyles.value[props.variant],
-      borderRadius: props.rounded ? '10px' : '4px',
-      width: props.fullWidth ? '100%' : 'auto',
-      cursor: props.disabled || props.loading ? 'not-allowed' : 'pointer',
-      opacity: props.disabled || props.loading ? '0.6' : '1',
-      fontWeight: '600',
-      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-      outline: 'none',
-      fontFamily: 'inherit',
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: '8px'
-    }));
-
-    const buttonClasses = computed(() => ({
-      [`variant-${props.variant}`]: true,
-      [`size-${props.size}`]: true,
-      'is-loading': props.loading,
-      'is-disabled': props.disabled
-    }));
-
-    const handleClick = (event: MouseEvent) => {
-      if (!props.disabled && !props.loading) {
-        emit('click', event);
-      }
-    };
-
-    return {
-      buttonStyles,
-      buttonClasses,
-      handleClick
-    };
-  }
+  emits: ['click']
 });
 </script>
 
 <style scoped>
-button {
-  position: relative;
+.custom-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
-button::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.2);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+
+.custom-btn.primary {
+  background: linear-gradient(135deg, #blue400 0%, #blue600 100%);
+  color: white;
 }
-button:hover:not(:disabled)::before {
-  opacity: 1;
-}
-button:hover:not(:disabled) {
-  filter: brightness(1.08);
+
+.custom-btn.primary:hover:not(:disabled) {
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
-button:active:not(:disabled) {
-  transform: translateY(-1px);
-  filter: brightness(0.95);
+
+.custom-btn.md {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
 }
-.spinner {
-  width: 14px;
-  height: 14px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #fff;
+
+.custom-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.loader {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: spin 0.6s linear infinite;
 }
+
 @keyframes spin {
   to { transform: rotate(360deg); }
-}
-.button-content {
-  display: inline-flex;
-  align-items: center;
-}
-.icon-left,
-.icon-right {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 }
 </style>

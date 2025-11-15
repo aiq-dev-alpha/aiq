@@ -1,35 +1,35 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ChipProps {
+  label: string;
+  onDelete?: () => void;
+  clickable?: boolean;
+  onClick?: () => void;
+  icon?: React.ReactNode;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [active, setActive] = useState(false);
-  const primary = theme.primary || '#f59e0b';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
+export const Chip: React.FC<ChipProps> = ({
+  label,
+  onDelete,
+  clickable = false,
+  onClick,
+  icon
+}) => {
   return (
-  <div
-  className={className}
-  onClick={() => { setActive(!active); onInteract?.('interact'); }}
-  style={{
-  padding: '16px 24px',
-  backgroundColor: active ? primary : background,
-  color: active ? '#ffffff' : text,
-  border: `2px solid ${primary}`,
-  borderRadius: '16px',
-  cursor: 'pointer',
-  fontSize: '15px',
-  fontWeight: 500,
-  transition: 'all 200ms ease',
-  boxShadow: active ? '0 4px 12px rgba(0,0,0,0.15)' : '0 2px 6px rgba(0,0,0,0.08)'
-  }}
-  >
-  Chip Variant 4
-  </div>
+    <span
+      onClick={clickable ? onClick : undefined}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm rounded-lg bg-red-100 text-red-800 transition-opacity ${clickable ? 'cursor-pointer hover:bg-red-200' : ''} ${shadow}`}
+    >
+      {icon}
+      <span className="font-medium">{label}</span>
+      {onDelete && (
+        <button
+          onClick={onDelete}
+          className="ml-0.5 hover:bg-red-200 rounded-full p-0.5"
+        >
+          ✕
+        </button>
+      )}
+    </span>
   );
 };

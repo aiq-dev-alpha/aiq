@@ -1,96 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  totalPages?: number;
-  currentPage?: number;
-  onPageChange?: (page: number) => void;
-  theme?: { primary?: string };
-  className?: string;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  totalPages = 10,
-  currentPage: controlledPage,
-  onPageChange,
-  theme = {},
-  className = ''
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [internalPage, setInternalPage] = useState(1);
-  const currentPage = controlledPage || internalPage;
-  const primary = theme.primary || '#3b82f6';
+  const baseClasses = 'rounded-lg font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
   
-  const handlePageChange = (page: number) => {
-    if (page < 1 || page > totalPages) return;
-    if (!controlledPage) setInternalPage(page);
-    onPageChange?.(page);
+  const variantClasses = {
+    solid: 'bg-red-500 text-white hover:bg-red-700 hover:scale-105 shadow-sm',
+    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
+    ghost: 'text-red-600 hover:bg-red-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
   };
   
   return (
-    <div
-      className={className}
-      style={{
-        display: 'flex',
-        gap: '8px',
-        alignItems: 'center',
-        flexWrap: 'wrap'
-      }}
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
-      <button
-        onClick={() => handlePageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        style={{
-          padding: '8px 12px',
-          backgroundColor: '#fff',
-          border: `2px solid ${primary}`,
-          borderRadius: '6px',
-          cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-          opacity: currentPage === 1 ? 0.5 : 1,
-          fontWeight: '500'
-        }}
-      >
-        ←
-      </button>
-      
-      {Array.from({ length: totalPages }, (_, i) => i + 1)
-        .filter(page => 
-          page === 1 || 
-          page === totalPages || 
-          Math.abs(page - currentPage) <= 1
-        )
-        .map(page => (
-          <button
-            key={page}
-            onClick={() => handlePageChange(page)}
-            style={{
-              padding: '8px 12px',
-              backgroundColor: page === currentPage ? primary : '#fff',
-              color: page === currentPage ? '#fff' : '#374151',
-              border: `2px solid ${primary}`,
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontWeight: '500',
-              minWidth: '36px'
-            }}
-          >
-            {page}
-          </button>
-        ))}
-      
-      <button
-        onClick={() => handlePageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        style={{
-          padding: '8px 12px',
-          backgroundColor: '#fff',
-          border: `2px solid ${primary}`,
-          borderRadius: '6px',
-          cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-          opacity: currentPage === totalPages ? 0.5 : 1,
-          fontWeight: '500'
-        }}
-      >
-        →
-      </button>
-    </div>
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

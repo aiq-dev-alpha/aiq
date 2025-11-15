@@ -1,67 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [showMenu, setShowMenu] = useState(false);
-  const primary = theme.primary || '#f59e0b';
-
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded-full font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500';
+  
+  const variantClasses = {
+    solid: 'bg-purple-500 text-white hover:ring-2 hover:ring-purple-400 shadow',
+    outline: 'border-2 border-purple-500 text-purple-600 hover:bg-purple-50',
+    ghost: 'text-purple-600 hover:bg-purple-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2 py-1 text-xs',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-5 py-3 text-md'
+  };
+  
   return (
-  <div className={className} style={{ display: 'inline-flex', position: 'relative' }}>
-  <button
-  onClick={() => onInteract?.('main')}
-  style={{
-  padding: '12px 20px',
-  backgroundColor: primary,
-  color: '#ffffff',
-  border: 'none',
-  borderTopLeftRadius: '16px',
-  borderBottomLeftRadius: '16px',
-  fontSize: '14px',
-  fontWeight: 500,
-  cursor: 'pointer'
-  }}
-  >
-  Action
-  </button>
-  <button
-  onClick={() => setShowMenu(!showMenu)}
-  style={{
-  padding: '12px',
-  backgroundColor: primary,
-  color: '#ffffff',
-  border: 'none',
-  borderLeft: '1px solid rgba(255,255,255,0.3)',
-  borderTopRightRadius: '16px',
-  borderBottomRightRadius: '16px',
-  fontSize: '12px',
-  cursor: 'pointer'
-  }}
-  >
-  ▼
-  </button>
-  {showMenu && (
-  <div style={{
-  position: 'absolute',
-  top: '100%',
-  right: 0,
-  marginTop: '4px',
-  backgroundColor: '#ffffff',
-  border: '1px solid #e5e7eb',
-  borderRadius: '16px',
-  boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-  padding: '8px 0',
-  minWidth: '120px',
-  zIndex: 10
-  }}>
-  <div style={{ padding: '8px 16px', cursor: 'pointer' }}>Option 1</div>
-  <div style={{ padding: '8px 16px', cursor: 'pointer' }}>Option 2</div>
-  </div>
-  )}
-  </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

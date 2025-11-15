@@ -1,54 +1,44 @@
 import React from 'react';
 
-export interface ComponentProps {
-  value?: number;
-  max?: number;
-  theme?: { primary?: string };
-  className?: string;
-  label?: string;
-  showPercentage?: boolean;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  value = 50,
-  max = 100,
-  theme = {},
-  className = '',
-  label,
-  showPercentage = true
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const primary = theme.primary || '#3b82f6';
-  const percentage = (value / max) * 100;
+  const baseClasses = 'rounded-2xl font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
+  
+  const variantClasses = {
+    solid: 'bg-red-500 text-white hover:opacity-90 active:scale-95 shadow-xl',
+    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
+    ghost: 'text-red-600 hover:bg-red-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-3.5 py-2 text-sm',
+    lg: 'px-7 py-3.5 text-base'
+  };
   
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '400px' }}>
-      {(label || showPercentage) && (
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '14px', color: '#374151' }}>
-          {label && <span style={{ fontWeight: '500' }}> {label}</span>}
-          {showPercentage && <span>{Math.round(percentage)}%</span>}
-        </div>
-      )}
-      <div
-        style={{
-          width: '100%',
-          height: '8px',
-          backgroundColor: '#e5e7eb',
-          borderRadius: '6px',
-          overflow: 'hidden',
-          boxShadow: 'none'
-        }}
-      >
-        <div
-          style={{
-            width: `${percentage}%`,
-            height: '100%',
-            backgroundColor: primary,
-            borderRadius: '6px',
-            transition: 'width 0.3s ease',
-            background: 'none'
-          }}
-        />
-      </div>
-    </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

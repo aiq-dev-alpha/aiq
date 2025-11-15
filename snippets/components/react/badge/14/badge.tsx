@@ -1,51 +1,28 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  tabs?: Array<{ id: string; label: string; content: React.ReactNode }>;
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (tabId: string) => void;
+interface BadgeProps {
+  content?: string | number;
+  max?: number;
+  dot?: boolean;
+  children?: React.ReactNode;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  tabs = [
-    { id: '1', label: 'Tab 1', content: 'Content 1' },
-    { id: '2', label: 'Tab 2', content: 'Content 2' },
-    { id: '3', label: 'Tab 3', content: 'Content 3' }
-  ],
-  theme = {},
-  className = '',
-  onInteract
+export const Badge: React.FC<BadgeProps> = ({
+  content,
+  max = 99,
+  dot = false,
+  children
 }) => {
-  const [activeTab, setActiveTab] = useState(tabs[0]?.id || '');
-  const primary = theme.primary || '#6366f1';
-
+  const displayContent = typeof content === 'number' && content > max ? `${max}+` : content;
+  
   return (
-    <div className={className} style={{ maxWidth: '600px' }}>
-      <div style={{ display: 'flex', gap: '4px', borderBottom: \`2px solid \${primary}20\` }}>
-        {tabs.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => { setActiveTab(tab.id); onInteract?.(tab.id); }}
-            style={{
-              padding: '12px 24px',
-              background: 'transparent',
-              border: 'none',
-              borderBottom: \`3px solid \${activeTab === tab.id ? primary : 'transparent'}\`,
-              color: activeTab === tab.id ? primary : '#6b7280',
-              fontWeight: activeTab === tab.id ? 700 : 500,
-              cursor: 'pointer',
-              transition: 'all 200ms ease',
-              marginBottom: '-2px'
-            }}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-      <div style={{ padding: '24px 0' }}>
-        {tabs.find(t => t.id === activeTab)?.content}
-      </div>
+    <div className="relative inline-flex">
+      {children}
+      {(content || dot) && (
+        <span className={`absolute -top-1 -right-1 flex items-center justify-center ${dot ? 'w-2 h-2' : 'min-w-5 h-5 px-1'} text-xs font-bold text-white bg-purple-500 rounded-full shadow-2xl ring-2 ring-white`}>
+          {!dot && displayContent}
+        </span>
+      )}
     </div>
   );
 };

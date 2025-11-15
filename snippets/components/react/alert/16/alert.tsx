@@ -1,68 +1,44 @@
 import React from 'react';
 
-export interface ComponentProps {
-  message?: string;
-  type?: 'info' | 'success' | 'warning' | 'error';
-  theme?: { primary?: string; background?: string };
-  className?: string;
-  dismissible?: boolean;
-  onDismiss?: () => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  message = 'This is an alert message',
-  type = 'info',
-  theme = {},
-  className = '',
-  dismissible = false,
-  onDismiss
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const colors = {
-    info: { bg: '#eff6ff', color: '#3b82f6', border: '#3b82f6' },
-    success: { bg: '#ecfdf5', color: '#10b981', border: '#10b981' },
-    warning: { bg: '#fffbeb', color: '#f59e0b', border: '#f59e0b' },
-    error: { bg: '#fef2f2', color: '#ef4444', border: '#ef4444' }
+  const baseClasses = 'rounded-xl font-medium transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-pink-500';
+  
+  const variantClasses = {
+    solid: 'bg-pink-500 text-white hover:bg-pink-700 hover:scale-105 shadow-lg',
+    outline: 'border-2 border-pink-500 text-pink-600 hover:bg-pink-50',
+    ghost: 'text-pink-600 hover:bg-pink-100'
   };
-
-  const currentColor = colors[type];
-  const primary = theme.primary || currentColor.color;
-  const background = theme.background || currentColor.bg;
-
+  
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-7 py-3.5 text-base'
+  };
+  
   return (
-    <div
-      className={className}
-      style={{
-        padding: '8px 12px',
-        backgroundColor: background,
-        border: `2px solid ${primary}`,
-        borderRadius: '6px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: '12px',
-        maxWidth: '600px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-      }}
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
-      <div style={{ color: primary, fontWeight: '500', flex: 1 }}>
-        {message}
-      </div>
-      {dismissible && (
-        <button
-          onClick={onDismiss}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: primary,
-            cursor: 'pointer',
-            fontSize: '20px',
-            padding: '0',
-            lineHeight: '1'
-          }}
-        >
-          ×
-        </button>
-      )}
-    </div>
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

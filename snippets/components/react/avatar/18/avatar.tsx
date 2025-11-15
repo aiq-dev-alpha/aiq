@@ -1,47 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface AvatarProps {
+  src?: string;
+  alt?: string;
+  size?: 'sm' | 'md' | 'lg';
+  status?: 'online' | 'offline' | 'away';
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [selected, setSelected] = useState(false);
-  const primary = theme.primary || '#f43f5e';
-
+export const Avatar: React.FC<AvatarProps> = ({
+  src,
+  alt = 'User',
+  size = 'md',
+  status
+}) => {
+  const sizes = {
+    sm: 'w-8 h-8',
+    md: 'w-12 h-12',
+    lg: 'w-16 h-16'
+  };
+  
+  const statusColors = {
+    online: 'bg-green-500',
+    offline: 'bg-gray-400',
+    away: 'bg-yellow-500'
+  };
+  
   return (
-  <div
-  className={className}
-  onClick={() => { setSelected(!selected); onInteract?.('select'); }}
-  style={{
-  padding: '18px 24px',
-  backgroundColor: selected ? `${primary}15` : '#ffffff',
-  border: `2px solid ${selected ? primary : '#e5e7eb'}`,
-  borderRadius: '6px',
-  cursor: 'pointer',
-  transition: 'all 200ms ease',
-  position: 'relative'
-  }}
-  >
-  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-  <div style={{
-  width: '24px',
-  height: '24px',
-  borderRadius: '50%',
-  border: `2px solid ${selected ? primary : '#d1d5db'}`,
-  backgroundColor: selected ? primary : 'transparent',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  transition: 'all 200ms'
-  }}>
-  {selected && <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#fff' }} />}
-  </div>
-  <span style={{ fontSize: '15px', fontWeight: 500, color: selected ? primary : '#1f2937' }}>
-  Option {idx}
-  </span>
-  </div>
-  </div>
+    <div className="relative inline-block">
+      <div className={`${sizes[size]} rounded overflow-hidden bg-gradient-to-br from-green-400 to-green-600 shadow-2xl ring-2 ring-white`}>
+        {src ? (
+          <img src={src} alt={alt} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-white font-bold">
+            {alt[0].toUpperCase()}
+          </div>
+        )}
+      </div>
+      {status && (
+        <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${statusColors[status]} ring-2 ring-white`} />
+      )}
+    </div>
   );
 };

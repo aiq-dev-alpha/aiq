@@ -1,17 +1,35 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ChipProps {
+  label: string;
+  onDelete?: () => void;
+  clickable?: boolean;
+  onClick?: () => void;
+  icon?: React.ReactNode;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [count, setCount] = useState(0);
-  const primary = theme.primary || '#f97316';
+export const Chip: React.FC<ChipProps> = ({
+  label,
+  onDelete,
+  clickable = false,
+  onClick,
+  icon
+}) => {
   return (
-  <div className={className} onClick={() => { setCount(c => c + 1); onInteract?.('click'); }} style={{ padding: '16px 24px', background: `linear-gradient(135deg, ${primary}, ${primary}cc)`, color: '#fff', borderRadius: '4px', cursor: 'pointer', fontSize: '15px', fontWeight: 600, boxShadow: '0 4px 12px rgba(0,0,0,0.15)', transition: 'transform 150ms', transform: count > 0 ? 'scale(0.98)' : 'scale(1)' }}>
-  Clicks: {count}
-  </div>
+    <span
+      onClick={clickable ? onClick : undefined}
+      className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs rounded-2xl bg-teal-100 text-teal-800 transition-opacity ${clickable ? 'cursor-pointer hover:bg-teal-200' : ''} ${shadow}`}
+    >
+      {icon}
+      <span className="font-medium">{label}</span>
+      {onDelete && (
+        <button
+          onClick={onDelete}
+          className="ml-0.5 hover:bg-teal-200 rounded-full p-0.5"
+        >
+          ✕
+        </button>
+      )}
+    </span>
   );
 };

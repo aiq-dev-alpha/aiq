@@ -1,53 +1,44 @@
 import React from 'react';
 
-export interface ComponentProps {
-  variant?: 'text' | 'circular' | 'rectangular';
-  width?: string;
-  height?: string;
-  theme?: { primary?: string };
-  className?: string;
-  count?: number;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  variant = 'text',
-  width = '100%',
-  height,
-  theme = {},
-  className = '',
-  count = 1
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const baseColor = '#e5e7eb';
-  const highlightColor = '#f3f4f6';
+  const baseClasses = 'rounded-lg font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
   
-  const variants = {
-    text: { height: height || '14px', borderRadius: '6px' },
-    circular: { height: height || '48px', width: height || '48px', borderRadius: '50%' },
-    rectangular: { height: height || '100px', borderRadius: '6px' }
+  const variantClasses = {
+    solid: 'bg-red-500 text-white hover:bg-red-700 hover:scale-105 shadow-sm',
+    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
+    ghost: 'text-red-600 hover:bg-red-100'
   };
   
-  const variantStyle = variants[variant];
-  
-  const skeletonStyle = {
-    width,
-    ...variantStyle,
-    backgroundColor: baseColor,
-    backgroundImage: `linear-gradient(90deg, ${baseColor} 0px, ${highlightColor} 40px, ${baseColor} 80px)`,
-    backgroundSize: '600px',
-    animation: '1.5s ease-in-out infinite',
-    backgroundPosition: '-600px'
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
   };
   
   return (
-    <div className={className} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-      {Array.from({ length: count }, (_, i) => (
-        <div key={i} style={skeletonStyle} />
-      ))}
-      <style>{`
-        @keyframes skeletonAnimation {
-          to { background-position: calc(600px + 100%); }
-        }
-      `}</style>
-    </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

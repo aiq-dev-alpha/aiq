@@ -1,21 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [value, setValue] = useState('');
-  const [focused, setFocused] = useState(false);
-  const primary = theme.primary || '#f59e0b';
-  const options = ['Apple', 'Banana', 'Cherry', 'Date'];
-  const filtered = options.filter(o => o.toLowerCase().includes(value.toLowerCase()));
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded-lg font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
+  
+  const variantClasses = {
+    solid: 'bg-red-500 text-white hover:bg-red-700 hover:scale-105 shadow-sm',
+    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
+    ghost: 'text-red-600 hover:bg-red-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
+  };
+  
   return (
-  <div className={className} style={{ position: 'relative', width: '240px' }}>
-  <input type="text" value={value} onChange={e => { setValue(e.target.value); onInteract?.('input'); }} onFocus={() => setFocused(true)} onBlur={() => setTimeout(() => setFocused(false), 200)} placeholder="Search..." style={{ width: '100%', padding: '12px 16px', border: `2px solid ${focused ? primary : '#e5e7eb'}`, borderRadius: '12px', fontSize: '14px', outline: 'none', transition: 'border-color 200ms' }} />
-  {focused && filtered.length > 0 && <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, marginTop: '4px', backgroundColor: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '12px', boxShadow: '0 20px 25px rgba(0,0,0,0.15)', maxHeight: '200px', overflowY: 'auto', zIndex: 10 }}> {filtered.map((option, i) => <div key={i} onClick={() => { setValue(option); onInteract?.('select'); }} style={{ padding: '10px 16px', cursor: 'pointer', fontSize: '14px', borderBottom: i < filtered.length - 1 ? '1px solid #f3f4f6' : 'none' }}> {option} </div> )} </div>}
-  </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

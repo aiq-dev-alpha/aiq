@@ -1,109 +1,70 @@
 <template>
-  <button :style="btnStyle" :disabled="disabled || loading" :class="btnClass" @click="handleClick">
+  <button
+    :class="['custom-btn', variant, size, { disabled, loading }]"
+    :disabled="disabled || loading"
+    @click="$emit('click')"
+  >
     <span v-if="loading" class="loader"></span>
-    <template v-else>
-      <span v-if="prefixIcon" class="prefix">{{ prefixIcon }}</span>
-      <span><slot></slot></span>
-      <span v-if="suffixIcon" class="suffix">{{ suffixIcon }}</span>
-    </template>
+    <slot />
   </button>
 </template>
 
-<script setup lang="ts">
-import { computed } from 'vue';
+<script lang="ts">
+import { defineComponent } from 'vue';
 
-interface Props {
-  variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning';
-  appearance?: 'filled' | 'outline' | 'text' | 'soft';
-  size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
-  loading?: boolean;
-  prefixIcon?: string;
-  suffixIcon?: string;
-  block?: boolean;
-  rounded?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  variant: 'primary',
-  appearance: 'filled',
-  size: 'md',
-  disabled: false,
-  loading: false,
-  block: false,
-  rounded: true
+export default defineComponent({
+  name: 'CustomButton',
+  props: {
+    variant: { type: String, default: 'primary' },
+    size: { type: String, default: 'md' },
+    disabled: { type: Boolean, default: false },
+    loading: { type: Boolean, default: false }
+  },
+  emits: ['click']
 });
-
-const emit = defineEmits<{
-  click: [event: MouseEvent];
-}>();
-
-const colors = {
-  primary: { base: '#3b82f6', light: '#60a5fa', dark: '#1d4ed8' },
-  secondary: { base: '#8b5cf6', light: '#a78bfa', dark: '#6d28d9' },
-  success: { base: '#10b981', light: '#34d399', dark: '#047857' },
-  danger: { base: '#ef4444', light: '#f87171', dark: '#b91c1c' },
-  warning: { base: '#f59e0b', light: '#fbbf24', dark: '#b45309' }
-};
-
-const btnStyle = computed(() => {
-  const c = colors[props.variant];
-  const sizes = {
-    sm: { padding: '6px 12px', fontSize: '13px', minHeight: '32px' },
-    md: { padding: '10px 20px', fontSize: '14px', minHeight: '40px' },
-    lg: { padding: '12px 24px', fontSize: '16px', minHeight: '48px' }
-  };
-
-  const appearances = {
-    filled: { background: c.base, color: '#fff', border: 'none' },
-    outline: { background: 'transparent', color: c.base, border: `2px solid ${c.base}` },
-    text: { background: 'transparent', color: c.base, border: 'none' },
-    soft: { background: `${c.base}20`, color: c.dark, border: 'none' }
-  };
-
-  return {
-    ...sizes[props.size],
-    ...appearances[props.appearance],
-    borderRadius: props.rounded ? '8px' : '4px',
-    width: props.block ? '100%' : 'auto',
-    cursor: props.disabled || props.loading ? 'not-allowed' : 'pointer',
-    opacity: props.disabled || props.loading ? '0.6' : '1',
-    fontWeight: '600',
-    transition: 'all 0.2s ease',
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '8px',
-    fontFamily: 'inherit',
-    outline: 'none'
-  };
-});
-
-const btnClass = computed(() => [`variant-${props.variant}`, `appearance-${props.appearance}`, `size-${props.size}`]);
-
-const handleClick = (e: MouseEvent) => {
-  if (!props.disabled && !props.loading) {
-    emit('click', e);
-  }
-};
 </script>
 
 <style scoped>
-button:hover:not(:disabled) {
-  filter: brightness(1.05);
-  transform: translateY(-1px);
+.custom-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
-button:active:not(:disabled) {
-  transform: translateY(0);
+
+.custom-btn.primary {
+  background: linear-gradient(135deg, #amber400 0%, #amber600 100%);
+  color: white;
 }
+
+.custom-btn.primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.custom-btn.md {
+  padding: 0.625rem 1.25rem;
+  font-size: 1rem;
+}
+
+.custom-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .loader {
-  width: 14px;
-  height: 14px;
+  width: 1rem;
+  height: 1rem;
   border: 2px solid currentColor;
   border-top-color: transparent;
   border-radius: 50%;
-  animation: spin 0.7s linear infinite;
+  animation: spin 0.6s linear infinite;
 }
+
 @keyframes spin {
   to { transform: rotate(360deg); }
 }

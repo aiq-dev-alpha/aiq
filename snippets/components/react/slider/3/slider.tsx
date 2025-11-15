@@ -1,100 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  min?: number;
-  max?: number;
-  value?: number;
-  onChange?: (value: number) => void;
-  theme?: { primary?: string };
-  className?: string;
-  label?: string;
-  showValue?: boolean;
-  step?: number;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  min = 0,
-  max = 100,
-  value: controlledValue,
-  onChange,
-  theme = {},
-  className = '',
-  label,
-  showValue = true,
-  step = 1
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [internalValue, setInternalValue] = useState(50);
-  const value = controlledValue !== undefined ? controlledValue : internalValue;
-  const primary = theme.primary || '#3b82f6';
+  const baseClasses = 'rounded-2xl font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
   
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = Number(e.target.value);
-    if (controlledValue === undefined) setInternalValue(newValue);
-    onChange?.(newValue);
+  const variantClasses = {
+    solid: 'bg-red-500 text-white hover:opacity-90 active:scale-95 shadow-xl',
+    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
+    ghost: 'text-red-600 hover:bg-red-100'
   };
   
-  const percentage = ((value - min) / (max - min)) * 100;
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-3.5 py-2 text-sm',
+    lg: 'px-7 py-3.5 text-base'
+  };
   
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '400px' }}>
-      {(label || showValue) && (
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '14px' }}>
-          {label && <span style={{ color: '#374151', fontWeight: '500' }}> {label}</span>}
-          {showValue && (
-            <span style={{ color: primary, fontWeight: '600', fontSize: '14px' }}>
-              {value}
-            </span>
-          )}
-        </div>
-      )}
-      <div style={{ position: 'relative', height: '6px' }}>
-        <div style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-          backgroundColor: '#e5e7eb',
-          borderRadius: '6px',
-          overflow: 'hidden'
-        }}>
-          <div style={{
-            width: `${percentage}%`,
-            height: '100%',
-            backgroundColor: primary,
-            borderRadius: '6px',
-            transition: 'width 0.2s ease'
-          }} />
-        </div>
-        <input
-          type="range"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          onChange={handleChange}
-          style={{
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            opacity: 0,
-            cursor: 'pointer',
-            top: 0,
-            left: 0
-          }}
-        />
-        <div style={{
-          position: 'absolute',
-          left: `${percentage}%`,
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '18px',
-          height: '18px',
-          backgroundColor: primary,
-          borderRadius: '50%',
-          border: '2px solid #fff',
-          boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
-          pointerEvents: 'none'
-        }} />
-      </div>
-    </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

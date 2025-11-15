@@ -1,22 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [bouncing, setBouncing] = useState(false);
-  const primary = theme.primary || '#22c55e';
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded-xl font-medium transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-500';
+  
+  const variantClasses = {
+    solid: 'bg-cyan-500 text-white hover:opacity-90 active:scale-95 shadow-md',
+    outline: 'border-2 border-cyan-500 text-cyan-600 hover:bg-cyan-50',
+    ghost: 'text-cyan-600 hover:bg-cyan-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-5 py-3 text-md'
+  };
+  
   return (
-  <button className={className} onClick={() => { setBouncing(true); setTimeout(() => setBouncing(false), 600); onInteract?.('bounce'); }}
-  style={{ padding: '14px 28px', background: primary, color: '#fff', border: 'none',
-  borderRadius: '10px', fontSize: '16px', fontWeight: 700, cursor: 'pointer',
-  animation: bouncing ? 'bounce 600ms' : 'none', outline: 'none' }}>
-  Bounce
-  <style>{\`@keyframes bounce { 0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); } }\`}</style>
-  </button>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

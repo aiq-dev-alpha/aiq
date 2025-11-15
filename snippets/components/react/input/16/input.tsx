@@ -1,66 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  type?: string;
-  placeholder?: string;
-  value?: string;
-  onChange?: (value: string) => void;
-  theme?: { primary?: string };
-  className?: string;
-  label?: string;
-  error?: string;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  type = 'text',
-  placeholder = 'Enter text',
-  value: controlledValue,
-  onChange,
-  theme = {},
-  className = '',
-  label,
-  error
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [internalValue, setInternalValue] = useState('');
-  const value = controlledValue !== undefined ? controlledValue : internalValue;
-  const primary = theme.primary || '#3b82f6';
+  const baseClasses = 'rounded-xl font-medium transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-pink-500';
   
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    if (controlledValue === undefined) {
-      setInternalValue(newValue);
-    }
-    onChange?.(newValue);
+  const variantClasses = {
+    solid: 'bg-pink-500 text-white hover:bg-pink-700 hover:scale-105 shadow-lg',
+    outline: 'border-2 border-pink-500 text-pink-600 hover:bg-pink-50',
+    ghost: 'text-pink-600 hover:bg-pink-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-7 py-3.5 text-base'
   };
   
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '400px' }}>
-      {label && (
-        <label style={{ display: 'block', marginBottom: '6px', color: '#374151', fontSize: '14px', fontWeight: '500' }}>
-          {label}
-        </label>
-      )}
-      <input
-        type={type}
-        value={value}
-        onChange={handleChange}
-        placeholder={placeholder}
-        style={{
-          width: '100%',
-          padding: '8px 12px',
-          border: `2px solid ${error ? '#ef4444' : primary}`,
-          borderRadius: '6px',
-          fontSize: '14px',
-          outline: 'none',
-          transition: 'all 0.2s',
-          boxShadow: 'none'
-        }}
-      />
-      {error && (
-        <span style={{ display: 'block', marginTop: '4px', color: '#ef4444', fontSize: '12px' }}>
-          {error}
-        </span>
-      )}
-    </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

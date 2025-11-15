@@ -1,57 +1,43 @@
 import React from 'react';
 
-export interface ComponentProps {
+interface AvatarProps {
   src?: string;
   alt?: string;
-  name?: string;
-  size?: 'small' | 'medium' | 'large';
-  theme?: { primary?: string };
-  className?: string;
-  shape?: 'circle' | 'square';
+  size?: 'sm' | 'md' | 'lg';
+  status?: 'online' | 'offline' | 'away';
 }
 
-export const Component: React.FC<ComponentProps> = ({
+export const Avatar: React.FC<AvatarProps> = ({
   src,
-  alt = 'Avatar',
-  name = 'JD',
-  size = 'medium',
-  theme = {},
-  className = '',
-  shape = 'circle'
+  alt = 'User',
+  size = 'md',
+  status
 }) => {
-  const primary = theme.primary || '#3b82f6';
   const sizes = {
-    small: { width: '32px', height: '32px', fontSize: '14px' },
-    medium: { width: '48px', height: '48px', fontSize: '18px' },
-    large: { width: '64px', height: '64px', fontSize: '24px' }
+    sm: 'w-8 h-8',
+    md: 'w-12 h-12',
+    lg: 'w-16 h-16'
   };
-
-  const sizeStyle = sizes[size];
-  const borderRadius = shape === 'circle' ? '50%' : '8px';
-
+  
+  const statusColors = {
+    online: 'bg-green-500',
+    offline: 'bg-gray-400',
+    away: 'bg-yellow-500'
+  };
+  
   return (
-    <div
-      className={className}
-      style={{
-        width: sizeStyle.width,
-        height: sizeStyle.height,
-        borderRadius,
-        backgroundColor: src ? 'transparent' : primary,
-        color: '#fff',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontWeight: '600',
-        fontSize: sizeStyle.fontSize,
-        overflow: 'hidden',
-        border: '2px solid ${primary}',
-        boxShadow: '0 2px 8px rgba(59,130,246,0.3)'
-      }}
-    >
-      {src ? (
-        <img src={src} alt={alt} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-      ) : (
-        <span>{name}</span>
+    <div className="relative inline-block">
+      <div className={`${sizes[size]} rounded-xl overflow-hidden bg-gradient-to-br from-pink-400 to-pink-600 shadow-lg ring-2 ring-white`}>
+        {src ? (
+          <img src={src} alt={alt} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-white font-bold">
+            {alt[0].toUpperCase()}
+          </div>
+        )}
+      </div>
+      {status && (
+        <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${statusColors[status]} ring-2 ring-white`} />
       )}
     </div>
   );

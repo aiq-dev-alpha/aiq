@@ -1,79 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  min?: number;
-  max?: number;
-  value?: [number, number];
-  onChange?: (value: [number, number]) => void;
-  theme?: { primary?: string };
-  className?: string;
-  label?: string;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  min = 0,
-  max = 100,
-  value: controlledValue,
-  onChange,
-  theme = {},
-  className = '',
-  label
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [internalValue, setInternalValue] = useState<[number, number]>([25, 75]);
-  const value = controlledValue || internalValue;
-  const primary = theme.primary || '#3b82f6';
+  const baseClasses = 'rounded-lg font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
   
-  const handleMinChange = (newMin: number) => {
-    const newValue: [number, number] = [Math.min(newMin, value[1]), value[1]];
-    if (!controlledValue) setInternalValue(newValue);
-    onChange?.(newValue);
+  const variantClasses = {
+    solid: 'bg-red-500 text-white hover:bg-red-700 hover:scale-105 shadow-sm',
+    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
+    ghost: 'text-red-600 hover:bg-red-100'
   };
   
-  const handleMaxChange = (newMax: number) => {
-    const newValue: [number, number] = [value[0], Math.max(newMax, value[0])];
-    if (!controlledValue) setInternalValue(newValue);
-    onChange?.(newValue);
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
   };
   
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '400px' }}>
-      {label && (
-        <label style={{ display: 'block', marginBottom: '8px', color: primary, fontSize: '14px', fontWeight: '500' }}>
-          {label}
-        </label>
-      )}
-      <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '12px' }}>
-        <span style={{ fontSize: '14px', color: '#6b7280', minWidth: '40px' }}> {value[0]}</span>
-        <div style={{ flex: 1, height: '6px', backgroundColor: '#e5e7eb', borderRadius: '6px', position: 'relative' }}>
-          <div style={{
-            position: 'absolute',
-            left: `${(value[0] - min) / (max - min) * 100}%`,
-            right: `${100 - (value[1] - min) / (max - min) * 100}%`,
-            height: '100%',
-            backgroundColor: primary,
-            borderRadius: '6px'
-          }} />
-        </div>
-        <span style={{ fontSize: '14px', color: '#6b7280', minWidth: '40px' }}> {value[1]}</span>
-      </div>
-      <div style={{ display: 'flex', gap: '12px' }}>
-        <input
-          type="range"
-          min={min}
-          max={max}
-          value={value[0]}
-          onChange={(e) => handleMinChange(Number(e.target.value))}
-          style={{ flex: 1, accentColor: primary }}
-        />
-        <input
-          type="range"
-          min={min}
-          max={max}
-          value={value[1]}
-          onChange={(e) => handleMaxChange(Number(e.target.value))}
-          style={{ flex: 1, accentColor: primary }}
-        />
-      </div>
-    </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

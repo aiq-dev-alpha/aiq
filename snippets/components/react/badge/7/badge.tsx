@@ -1,16 +1,28 @@
-import React from 'react';;
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface BadgeProps {
+  content?: string | number;
+  max?: number;
+  dot?: boolean;
+  children?: React.ReactNode;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const primary = theme.primary || '#06b6d4';
+export const Badge: React.FC<BadgeProps> = ({
+  content,
+  max = 99,
+  dot = false,
+  children
+}) => {
+  const displayContent = typeof content === 'number' && content > max ? `${max}+` : content;
+  
   return (
-  <span className={className} onClick={() => onInteract?.('click')} style={{ display: 'inline-block', padding: '2px 8px', backgroundColor: primary, color: '#ffffff', borderRadius: '24px', fontSize: '11px', fontWeight: 500, letterSpacing: '0.3px', cursor: 'pointer' }}>
-  Badge
-  </span>
+    <div className="relative inline-flex">
+      {children}
+      {(content || dot) && (
+        <span className={`absolute -top-1 -right-1 flex items-center justify-center ${dot ? 'w-2 h-2' : 'min-w-5 h-5 px-1'} text-xs font-bold text-white bg-pink-500 rounded-full shadow-lg ring-2 ring-white`}>
+          {!dot && displayContent}
+        </span>
+      )}
+    </div>
   );
 };

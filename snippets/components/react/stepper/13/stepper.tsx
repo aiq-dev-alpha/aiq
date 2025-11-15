@@ -1,52 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [state, setState] = useState({{ active: false, count: 0 }});
-  const primary = theme.primary || '#10b981';
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
+}) => {
+  const baseClasses = 'rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500';
   
-  const handleClick = () => {
-  setState(prev => ({ active: !prev.active, count: prev.count + 1 }));
-  onInteract?.('click');
+  const variantClasses = {
+    solid: 'bg-indigo-500 text-white hover:bg-indigo-600 hover:shadow-lg shadow-2xl',
+    outline: 'border-2 border-indigo-500 text-indigo-600 hover:bg-indigo-50',
+    ghost: 'text-indigo-600 hover:bg-indigo-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-3 py-1 text-xs',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-5 py-3 text-md'
   };
   
   return (
-  <div
-  className={className}
-  onClick={handleClick}
-  style={{
-  padding: '13px 22px',
-  background: state.active ? `linear-gradient(150deg, ${primary}, ${primary}dd)` : '#ffffff',
-  color: state.active ? '#ffffff' : primary,
-  border: `2px solid ${state.active ? primary : primary + '40'}`,
-  borderRadius: '9px',
-  fontSize: '15px',
-  fontWeight: 600,
-  cursor: 'pointer',
-  transition: 'all 260ms cubic-bezier(0.4, 1.2, 0.64, 1)',
-  boxShadow: state.active ? `0 10px 23px ${primary}40` : `0 3px 8px rgba(0,0,0,0.9)`,
-  transform: state.active ? 'translateY(-5px) scale(1.03)' : 'translateY(0) scale(1)',
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '9px'
-  }}
-  >
-  <span>Component V11</span>
-  {state.count > 0 && (
-  <span style={{ 
-  fontSize: '12px', 
-  background: 'rgba(255,255,255,0.20)', 
-  padding: '2px 8px', 
-  borderRadius: '12px' 
-  }}>
-  {state.count}
-  </span>
-  )}
-  </div>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

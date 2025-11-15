@@ -1,59 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  name?: string;
+interface AvatarProps {
   src?: string;
-  status?: 'online' | 'offline' | 'away' | 'busy';
-  theme?: { primary?: string; background?: string; text?: string };
-  className?: string;
+  alt?: string;
+  size?: 'sm' | 'md' | 'lg';
+  status?: 'online' | 'offline' | 'away';
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  name = 'User',
-  src = '',
-  status = 'online',
-  theme = {},
-  className = ''
+export const Avatar: React.FC<AvatarProps> = ({
+  src,
+  alt = 'User',
+  size = 'md',
+  status
 }) => {
-  const primary = theme.primary || '#10b981';
-  const statusColors = {
-  online: '#10b981',
-  offline: '#6b7280',
-  away: '#f59e0b',
-  busy: '#ef4444'
+  const sizes = {
+    sm: 'w-8 h-8',
+    md: 'w-12 h-12',
+    lg: 'w-16 h-16'
   };
-
+  
+  const statusColors = {
+    online: 'bg-green-500',
+    offline: 'bg-gray-400',
+    away: 'bg-yellow-500'
+  };
+  
   return (
-  <div className={className} style={{ position: 'relative', display: 'inline-block' }}>
-  <div
-  style={{
-  width: '64px',
-  height: '64px',
-  borderRadius: '50%',
-  backgroundColor: primary,
-  color: '#fff',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: '24px',
-  fontWeight: '600',
-  boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-  }}
-  >
-  {name.charAt(0).toUpperCase()}
-  </div>
-  <div
-  style={{
-  position: 'absolute',
-  bottom: '2px',
-  right: '2px',
-  width: '18px',
-  height: '18px',
-  borderRadius: '50%',
-  backgroundColor: statusColors[status],
-  border: '3px solid #fff'
-  }}
-  />
-  </div>
+    <div className="relative inline-block">
+      <div className={`${sizes[size]} rounded-2xl overflow-hidden bg-gradient-to-br from-purple-400 to-purple-600 shadow-2xl ring-2 ring-white`}>
+        {src ? (
+          <img src={src} alt={alt} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-white font-bold">
+            {alt[0].toUpperCase()}
+          </div>
+        )}
+      </div>
+      {status && (
+        <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${statusColors[status]} ring-2 ring-white`} />
+      )}
+    </div>
   );
 };

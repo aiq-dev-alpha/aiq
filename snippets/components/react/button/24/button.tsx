@@ -1,78 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  label?: string;
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
   variant?: 'solid' | 'outline' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
-  theme?: { primary?: string; background?: string; text?: string };
-  className?: string;
-  onClick?: () => void;
   disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  label = 'Button',
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
   variant = 'solid',
   size = 'md',
-  theme = {},
-  className = '',
-  onClick,
-  disabled = false
+  disabled = false,
+  loading = false
 }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [isPressed, setIsPressed] = useState(false);
-
-  const primary = theme.primary || '#3b82f6';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
-  const sizeStyles = {
-  sm: { padding: '6px 16px', fontSize: '14px' },
-  md: { padding: '10px 24px', fontSize: '16px' },
-  lg: { padding: '14px 32px', fontSize: '18px' }
+  const baseClasses = 'rounded-2xl font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-500';
+  
+  const variantClasses = {
+    solid: 'bg-yellow-500 text-white hover:bg-yellow-700 hover:scale-105 shadow',
+    outline: 'border-2 border-yellow-500 text-yellow-600 hover:bg-yellow-50',
+    ghost: 'text-yellow-600 hover:bg-yellow-100'
   };
-
-  const variantStyles = {
-  solid: {
-  backgroundColor: disabled ? '#d1d5db' : primary,
-  color: '#ffffff',
-  border: 'none'
-  },
-  outline: {
-  backgroundColor: 'transparent',
-  color: primary,
-  border: `2px solid ${primary}`
-  },
-  ghost: {
-  backgroundColor: isHovered ? `${primary}15` : 'transparent',
-  color: primary,
-  border: 'none'
-  }
+  
+  const sizeClasses = {
+    sm: 'px-2 py-1 text-xs',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
   };
-
+  
   return (
-  <button
-  className={className}
-  onClick={onClick}
-  disabled={disabled}
-  onMouseEnter={() => setIsHovered(true)}
-  onMouseLeave={() => { setIsHovered(false); setIsPressed(false); }}
-  onMouseDown={() => setIsPressed(true)}
-  onMouseUp={() => setIsPressed(false)}
-  style={{
-  ...sizeStyles[size],
-  ...variantStyles[variant],
-  borderRadius: '8px',
-  fontWeight: 600,
-  cursor: disabled ? 'not-allowed' : 'pointer',
-  opacity: disabled ? 0.6 : 1,
-  transform: isPressed && !disabled ? 'scale(0.95)' : isHovered && !disabled ? 'scale(1.02)' : 'scale(1)',
-  boxShadow: isHovered && !disabled ? '0 4px 12px rgba(0,0,0,0.15)' : '0 2px 4px rgba(0,0,0,0.1)',
-  transition: 'all 150ms cubic-bezier(0.4, 0, 0.2, 1)',
-  outline: 'none'
-  }}
-  >
-  {label}
-  </button>
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };

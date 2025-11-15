@@ -1,59 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export interface ComponentProps {
-  trigger?: React.ReactNode;
-  content?: React.ReactNode;
-  theme?: { primary?: string };
-  className?: string;
-  position?: 'top' | 'bottom' | 'left' | 'right';
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  trigger = <button>Hover me</button>,
-  content = 'Popover content',
-  theme = {},
-  className = '',
-  position = 'bottom'
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  loading = false
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const primary = theme.primary || '#3b82f6';
+  const baseClasses = 'rounded-lg font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
   
-  const positions = {
-    top: { bottom: '100%', left: '50%', transform: 'translateX(-50%)', marginBottom: '8px' },
-    bottom: { top: '100%', left: '50%', transform: 'translateX(-50%)', marginTop: '8px' },
-    left: { right: '100%', top: '50%', transform: 'translateY(-50%)', marginRight: '8px' },
-    right: { left: '100%', top: '50%', transform: 'translateY(-50%)', marginLeft: '8px' }
+  const variantClasses = {
+    solid: 'bg-red-500 text-white hover:bg-red-700 hover:scale-105 shadow-sm',
+    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
+    ghost: 'text-red-600 hover:bg-red-100'
+  };
+  
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-sm',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg'
   };
   
   return (
-    <div
-      className={className}
-      style={{ position: 'relative', display: 'inline-block' }}
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
-      {trigger}
-      {isOpen && (
-        <div
-          style={{
-            position: 'absolute',
-            ...positions[position],
-            backgroundColor: '#fff',
-            border: `1px solid #e5e7eb`,
-            borderRadius: '6px',
-            padding: '8px 12px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-            zIndex: 1000,
-            minWidth: '150px',
-            maxWidth: '300px',
-            fontSize: '14px',
-            color: '#374151',
-            lineHeight: '1.5'
-          }}
-        >
-          {content}
-        </div>
-      )}
-    </div>
+      {loading && <span className="animate-spin mr-2">⏳</span>}
+      {children}
+    </button>
   );
 };
