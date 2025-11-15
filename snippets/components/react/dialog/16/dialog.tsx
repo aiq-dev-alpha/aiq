@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState } from "react";
 
 interface DialogProps {
   variant?: 'default' | 'default';
@@ -12,7 +13,7 @@ export const Dialog: React.FC<DialogProps> = ({
   children,
 }) => {
   return (
-    <div className={`rounded-md p-4 bg-white border border-gray-300 ${className}`}>
+    <div className={`rounded-lg p-4 bg-white border border-gray-300 ${className}`}>
       {children}
     </div>
   );

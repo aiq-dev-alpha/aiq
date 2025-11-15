@@ -1,31 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  icon: React.ReactNode;
-  label?: string;
-  rounded?: boolean;
-  size?: number;
+interface NeonButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+  neonColor?: 'cyan' | 'pink' | 'green' | 'yellow';
 }
 
-export const Button: React.FC<ButtonProps> = ({
-  icon,
-  label,
-  rounded = false,
-  size = 40,
-  className = '',
+export const NeonButton: React.FC<NeonButtonProps> = ({
+  children,
+  neonColor = 'cyan',
+  disabled = false,
   ...props
 }) => {
+  const [isGlowing, setIsGlowing] = useState(false);
+  
+  const colors = {
+    cyan: 'border-cyan-400 text-cyan-400 hover:shadow-[0_0_20px_rgba(34,211,238,0.5)]',
+    pink: 'border-pink-400 text-pink-400 hover:shadow-[0_0_20px_rgba(244,114,182,0.5)]',
+    green: 'border-green-400 text-green-400 hover:shadow-[0_0_20px_rgba(74,222,128,0.5)]',
+    yellow: 'border-yellow-400 text-yellow-400 hover:shadow-[0_0_20px_rgba(250,204,21,0.5)]'
+  };
+  
   return (
     <button
-      onClick={(e) => { const ripple = document.createElement("span"); ripple.className = "absolute inset-0 bg-white opacity-25 animate-ping"; e.currentTarget.appendChild(ripple); setTimeout(() => ripple.remove(), 600); onClick?.(e); }}
-      className={`inline-flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${rounded ? 'rounded-full' : 'rounded-md'} ${className}`}
-      style={{ width: size, height: size }}
-      aria-label={label}
+      onMouseEnter={() => setIsGlowing(true)}
+      onMouseLeave={() => setIsGlowing(false)}
+      disabled={disabled}
+      className={`
+        px-8 py-3 bg-gray-900 border-2
+        ${colors[neonColor]}
+        font-bold uppercase tracking-wider
+        transition-all duration-300
+        $${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+        ${isGlowing ? 'scale-105' : ''}
+      `}
       {...props}
     >
-      {icon}
+      {children}
     </button>
   );
 };
 
-export default Button;
+export default NeonButton;

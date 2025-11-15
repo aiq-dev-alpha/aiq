@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState } from "react";
 
 export const Modal: React.FC<any> = (props) => {
   return (

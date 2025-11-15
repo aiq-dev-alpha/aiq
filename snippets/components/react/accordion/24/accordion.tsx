@@ -12,7 +12,7 @@ export const Accordion: React.FC<AccordionProps> = ({
   children,
 }) => {
   return (
-    <div className={`rounded-md p-4 bg-transparent hover:bg-gray-100 ${className}`}>
+    <div className={`rounded-full p-4 bg-transparent hover:bg-gray-100 ${className}`}>
       {children}
     </div>
   );

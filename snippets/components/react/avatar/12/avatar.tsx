@@ -41,7 +41,7 @@ export const Avatar: React.FC<AvatarProps> = ({
   return (
     <div className={`relative inline-block ${className}`}>
       <div
-        className={`rounded-full ring-4 ring-green-500 bg-gray-200 overflow-hidden ${editable ? 'cursor-pointer' : ''}`}
+        className={`rounded-xl ring-4 ring-orange-500 bg-gray-200 overflow-hidden ${editable ? 'cursor-pointer' : ''}`}
         style={{ width: size, height: size }}
         onClick={handleClick}
       >
@@ -73,7 +73,7 @@ export const Avatar: React.FC<AvatarProps> = ({
         <>
           <button
             type="button"
-            className="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full ring-4 ring-green-500 p-2 hover:bg-blue-600 transition-colors shadow-lg"
+            className="absolute bottom-0 right-0 bg-orange-500 text-white rounded-xl ring-4 ring-orange-500 p-2 hover:bg-orange-600 transition-colors shadow-sm"
             onClick={handleClick}
             aria-label="Upload avatar"
           >

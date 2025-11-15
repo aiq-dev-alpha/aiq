@@ -27,7 +27,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
       {displayUsers.map((user, index) => (
         <div
           key={user.id}
-          className="relative inline-block rounded-full border-2 border-white bg-gray-200 overflow-hidden"
+          className="relative inline-block rounded-xl border-2 border-white bg-gray-200 overflow-hidden"
           style={{
             width: size,
             height: size,
@@ -42,7 +42,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-400 to-cyan-400 text-white font-semibold">
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-400 to-red-400 text-white font-semibold">
               {user.name.charAt(0).toUpperCase()}
             </div>
           )}
@@ -50,7 +50,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
       ))}
       {remaining > 0 && (
         <div
-          className="relative inline-flex items-center justify-center rounded-full border-2 border-white bg-gray-600 text-white font-semibold"
+          className="relative inline-flex items-center justify-center rounded-xl border-2 border-white bg-gray-600 text-white font-semibold"
           style={{ width: size, height: size, fontSize: size / 3 }}
         >
           +{remaining}

@@ -1,91 +1,32 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  className?: string;
+interface RippleButton2Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
-  onClick?: () => Promise<void> | void;
-  variant?: 'primary' | 'secondary';
-  disabled?: boolean;
 }
 
-export const Button: React.FC<ButtonProps> = ({
+export const RippleButton2: React.FC<RippleButton2Props> = ({
   children,
-  onClick,
-  variant = 'primary',
-  disabled = false
+  disabled = false,
+  ...props
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleClick = async () => {
-    if (isLoading || disabled) return;
-
-    setIsLoading(true);
-    try {
-      await onClick?.();
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const variants = {
-    primary: { bg: '#4f46e5', hover: '#4338ca' },
-    secondary: { bg: '#10b981', hover: '#059669' }
-  };
-
   return (
     <button
-      onClick={handleClick}
-      disabled={disabled || isLoading}
-      style={{
-        padding: '12px 24px',
-        background: variants[variant].bg,
-        border: 'none',
-        borderRadius: '8px',
-        color: '#fff',
-        fontSize: '16px',
-        fontWeight: 600,
-        cursor: (disabled || isLoading) ? 'not-allowed' : 'pointer',
-        opacity: (disabled || isLoading) ? 0.7 : 1,
-        transition: 'all 0.2s ease',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        minWidth: '120px',
-        justifyContent: 'center'
-      }}
-      onMouseEnter={(e) = {...props}> {
-        if (!disabled && !isLoading) {
-          e.currentTarget.style.background = variants[variant].hover;
-        }
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.background = variants[variant].bg;
-      }}
+      disabled={disabled}
+      className={`
+        px-6 py-3 rounded-lg
+        bg-purple-600 hover:bg-purple-700
+        text-white font-medium
+        transition-all duration-300
+        hover:scale-107
+        active:scale-97
+        shadow-lg
+        ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+      `}
+      {...props}
     >
-      {isLoading ? (
-        <>
-          <div
-            style={{
-              width: '16px',
-              height: '16px',
-              border: '2px solid rgba(255,255,255,0.3)',
-              borderTopColor: '#fff',
-              borderRadius: '50%',
-              animation: 'spin 0.6s linear infinite'
-            }}
-          />
-          <span>Loading...</span>
-          <style>{`
-            @keyframes spin {
-              to { transform: rotate(360deg); }
-            }
-          `}</style>
-        </>
-      ) : (
-        children
-      )}
+      {children}
     </button>
   );
 };
 
-export default Button;
+export default RippleButton2;

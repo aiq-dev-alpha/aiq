@@ -18,7 +18,7 @@
     <label class="block text-sm font-medium text-gray-700 mb-1">
       {label}
       {#if required}
-        <span class="text-red-500">*</span>
+        <span class="text-pink-500">*</span>
       {/if}
     </label>
   {/if}
@@ -34,12 +34,12 @@
       {placeholder}
       {disabled}
       {required}
-      class="w-full px-4 py-2.5 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 {
+      class="w-full px-4 py-2.5 border rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 {
         $$slots.prefix ? 'pl-10' : ''
       } {
         $$slots.suffix ? 'pr-10' : ''
       } {
-        error ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
+        error ? 'border-pink-300 focus:ring-pink-500' : 'border-gray-300 focus:ring-pink-500'
       } {
         disabled ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'
       }"
@@ -54,7 +54,7 @@
     {/if}
   </div>
   {#if error}
-    <p class="mt-1 text-sm text-red-600">{error}</p>
+    <p class="mt-1 text-sm text-pink-600">{error}</p>
   {:else if hint}
     <p class="mt-1 text-sm text-gray-500">{hint}</p>
   {/if}

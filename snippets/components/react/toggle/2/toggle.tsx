@@ -31,7 +31,7 @@ export const Button: React.FC<ButtonProps> = ({
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} $${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
      {...props}>
       {loading && <span className="animate-spin mr-2">⏳</span>}
       {children}

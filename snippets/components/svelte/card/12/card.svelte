@@ -6,7 +6,7 @@
     outlined: 'bg-white border-2 border-gray-200',
     elevated: 'bg-white shadow-2xl'
   };
-  $: hoverClass = hoverable ? 'hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer' : '';
+  $: hoverClass = hoverable ? 'hover:shadow-sm hover:-translate-y-1 transition-all duration-150 cursor-pointer' : '';
 </script>
 <div class="rounded-xl overflow-hidden {variantClasses[variant]} {hoverClass}">
   {#if $$slots.header}

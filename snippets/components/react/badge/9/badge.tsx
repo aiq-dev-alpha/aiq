@@ -27,9 +27,9 @@ const statusConfig = {
     label: 'Pending',
   },
   archived: {
-    color: 'bg-purple-500',
-    textColor: 'text-purple-700',
-    bgColor: 'bg-purple-50',
+    color: 'bg-green-500',
+    textColor: 'text-green-700',
+    bgColor: 'bg-green-50',
     label: 'Archived',
   },
 };

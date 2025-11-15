@@ -1,35 +1,27 @@
 import React from 'react';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger';
-  size?: 'sm' | 'md' | 'lg';
+interface RippleButton4Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
 }
 
-const variantClasses = {
-  primary: 'bg-blue-600 hover:bg-blue-700 text-white',
-  secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-900',
-  danger: 'bg-red-600 hover:bg-red-700 text-white',
-};
-
-const sizeClasses = {
-  sm: 'px-3 py-1.5 text-sm',
-  md: 'px-4 py-2 text-base',
-  lg: 'px-6 py-3 text-lg',
-};
-
-export const Button: React.FC<ButtonProps> = ({
-  variant = 'primary',
-  size = 'md',
+export const RippleButton4: React.FC<RippleButton4Props> = ({
   children,
-  className = '',
-  disabled,
+  disabled = false,
   ...props
 }) => {
   return (
     <button
-      className={`rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
       disabled={disabled}
+      className={`
+        px-6 py-3 rounded-lg
+        bg-orange-600 hover:bg-orange-700
+        text-white font-medium
+        transition-all duration-400
+        hover:scale-109
+        active:scale-99
+        shadow-sm
+        ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+      `}
       {...props}
     >
       {children}
@@ -37,4 +29,4 @@ export const Button: React.FC<ButtonProps> = ({
   );
 };
 
-export default Button;
+export default RippleButton4;

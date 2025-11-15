@@ -50,7 +50,7 @@
     border-color: #cbd5e1;
   }
   .field-input.focused {
-    border-color: var(--red-500, #3b82f6);
+    border-color: var(--orange-500, #3b82f6);
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   }
   .field-input.error {

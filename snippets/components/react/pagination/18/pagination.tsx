@@ -12,7 +12,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   children,
 }) => {
   return (
-    <div className={`rounded-md p-4 border-2 border-blue-500 bg-transparent ${className}`}>
+    <div className={`rounded-2xl p-4 border-2 border-purple-500 bg-transparent ${className}`}>
       {children}
     </div>
   );

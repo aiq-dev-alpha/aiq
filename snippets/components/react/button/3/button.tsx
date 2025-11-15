@@ -1,97 +1,38 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  className?: string;
+interface GlassButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
-  onClick?: () => void;
-  variant?: 'glass' | 'frosted';
-  size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
+  variant?: 'light' | 'dark';
 }
 
-export const Button: React.FC<ButtonProps> = ({
+export const GlassButton: React.FC<GlassButtonProps> = ({
   children,
-  onClick,
-  variant = 'glass',
-  size = 'md',
-  disabled = false
+  variant = 'light',
+  disabled = false,
+  ...props
 }) => {
-  const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
-
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    setRipples([...ripples, { x, y, id: Date.now() }]);
-    setTimeout(() => setRipples(r => r.slice(1)), 600);
-    onClick?.();
+  const variants = {
+    light: 'bg-white/20 backdrop-blur-lg border-white/30 text-gray-900 hover:bg-white/30',
+    dark: 'bg-black/20 backdrop-blur-lg border-white/20 text-white hover:bg-black/30'
   };
-
-  const sizeStyles = {
-    sm: { padding: '8px 16px', fontSize: '14px' },
-    md: { padding: '12px 24px', fontSize: '16px' },
-    lg: { padding: '16px 32px', fontSize: '18px' }
-  };
-
-  const variantStyles = {
-    glass: {
-      background: 'rgba(255, 255, 255, 0.1)',
-      backdropFilter: 'blur(10px)',
-      border: '1px solid rgba(255, 255, 255, 0.2)',
-    },
-    frosted: {
-      background: 'rgba(255, 255, 255, 0.05)',
-      backdropFilter: 'blur(20px) saturate(180%)',
-      border: '1px solid rgba(255, 255, 255, 0.3)',
-    }
-  };
-
+  
   return (
     <button
-      onClick={handleClick}
       disabled={disabled}
-      style={{
-        ...sizeStyles[size],
-        ...variantStyles[variant],
-        position: 'relative',
-        overflow: 'hidden',
-        borderRadius: '12px',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        opacity: disabled ? 0.5 : 1,
-        transition: 'all 0.3s ease',
-        color: '#fff',
-        fontWeight: 600,
-        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
-      }}
-     {...props}>
+      className={`
+        px-6 py-3 rounded-2xl
+        border backdrop-blur-lg
+        font-semibold
+        ${variants[variant]}
+        transition-all duration-300
+        hover:scale-105
+        $${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+      `}
+      {...props}
+    >
       {children}
-      {ripples.map(ripple => (
-        <span
-          key={ripple.id}
-          style={{
-            position: 'absolute',
-            left: ripple.x,
-            top: ripple.y,
-            width: 0,
-            height: 0,
-            borderRadius: '50%',
-            background: 'rgba(255, 255, 255, 0.6)',
-            transform: 'translate(-50%, -50%)',
-            animation: 'ripple 0.6s ease-out'
-          }}
-        />
-      ))}
-      <style>{`
-        @keyframes ripple {
-          to {
-            width: 200px;
-            height: 200px;
-            opacity: 0;
-          }
-        }
-      `}</style>
     </button>
   );
 };
 
-export default Button;
+export default GlassButton;

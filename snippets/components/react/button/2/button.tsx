@@ -1,42 +1,40 @@
 import React from 'react';
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  className?: string;
+
+interface Button3DProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
-  onClick?: () => void;
-  variant?: 'solid' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
-  loading?: boolean;
+  color?: 'blue' | 'red' | 'green' | 'purple';
 }
-export const Button: React.FC<ButtonProps> = ({
+
+export const Button3D: React.FC<Button3DProps> = ({
   children,
-  onClick,
-  variant = 'solid',
-  size = 'md',
+  color = 'blue',
   disabled = false,
-  loading = false
+  ...props
 }) => {
-  const baseClasses = 'rounded font-medium transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500';
-  const variantClasses = {
-    solid: 'bg-blue-500 text-white hover:brightness-110 hover:-translate-y-0.5 shadow-sm',
-    outline: 'border-2 border-blue-500 text-blue-600 hover:bg-blue-50',
-    ghost: 'text-blue-600 hover:bg-blue-100'
+  const colors = {
+    blue: 'bg-blue-500 shadow-[0_6px_0_0_#1e40af] hover:shadow-[0_4px_0_0_#1e40af] active:shadow-[0_2px_0_0_#1e40af]',
+    red: 'bg-red-500 shadow-[0_6px_0_0_#991b1b] hover:shadow-[0_4px_0_0_#991b1b] active:shadow-[0_2px_0_0_#991b1b]',
+    green: 'bg-green-500 shadow-[0_6px_0_0_#166534] hover:shadow-[0_4px_0_0_#166534] active:shadow-[0_2px_0_0_#166534]',
+    purple: 'bg-purple-500 shadow-[0_6px_0_0_#6b21a8] hover:shadow-[0_4px_0_0_#6b21a8] active:shadow-[0_2px_0_0_#6b21a8]'
   };
-  const sizeClasses = {
-    sm: 'px-2 py-1 text-xs',
-    md: 'px-3.5 py-2 text-sm',
-    lg: 'px-5 py-3 text-md'
-  };
+  
   return (
     <button
-      onClick={onClick}
-      disabled={disabled || loading}
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-     {...props}>
-      {loading && <span className="animate-spin mr-2">⏳</span>}
+      disabled={disabled}
+      className={`
+        px-6 py-3 rounded-lg
+        text-white font-bold
+        ${colors[color]}
+        transition-all duration-150
+        hover:translate-y-0.5
+        active:translate-y-1
+        $${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+      `}
+      {...props}
+    >
       {children}
     </button>
   );
 };
 
-export default Button;
+export default Button3D;

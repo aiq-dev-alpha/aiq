@@ -16,11 +16,11 @@ export const Button: React.FC<ButtonProps> = ({
   disabled = false,
   loading = false
 }) => {
-  const baseClasses = 'rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500';
+  const baseClasses = 'rounded-2xl font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500';
   const variantClasses = {
-    solid: 'bg-indigo-500 text-white hover:bg-indigo-600 hover:shadow-lg shadow-2xl',
-    outline: 'border-2 border-indigo-500 text-indigo-600 hover:bg-indigo-50',
-    ghost: 'text-indigo-600 hover:bg-indigo-100'
+    solid: 'bg-teal-500 text-white hover:bg-teal-600 hover:shadow shadow-2xl',
+    outline: 'border-2 border-teal-500 text-teal-600 hover:bg-teal-50',
+    ghost: 'text-teal-600 hover:bg-teal-100'
   };
   const sizeClasses = {
     sm: 'px-3 py-1 text-xs',

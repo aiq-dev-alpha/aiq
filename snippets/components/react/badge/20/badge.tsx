@@ -23,7 +23,7 @@ export const Badge: React.FC<BadgeProps> = ({
   if (!children) {
     return showBadge ? (
       <span
-        className={`animate-pulse inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-500 rounded-full ${className}`}
+        className={`animate-pulse inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-orange-500 rounded ${className}`}
       >
         {dot ? null : displayCount}
       </span>
@@ -37,7 +37,7 @@ export const Badge: React.FC<BadgeProps> = ({
         <span
           className={`animate-pulse absolute -top-1 -right-1 flex items-center justify-center ${
             dot ? 'w-2 h-2' : 'min-w-[20px] h-5 px-1'
-          } text-xs font-bold text-white bg-red-500 rounded-full border-2 border-white`}
+          } text-xs font-bold text-white bg-orange-500 rounded border-2 border-white`}
         >
           {dot ? null : displayCount}
         </span>

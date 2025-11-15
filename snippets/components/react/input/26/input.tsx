@@ -1,42 +1,83 @@
-import React from 'react';
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  className?: string;
-  children: React.ReactNode;
-  onClick?: () => void;
-  variant?: 'solid' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
-  loading?: boolean;
+import React, { useState, useId } from 'react';
+
+interface FloatingInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
+  label: string;
+  error?: string;
+  helperText?: string;
+  icon?: React.ReactNode;
 }
-export const Button: React.FC<ButtonProps> = ({
-  children,
-  onClick,
-  variant = 'solid',
-  size = 'md',
-  disabled = false,
-  loading = false
+
+export const FloatingInput: React.FC<FloatingInputProps> = ({
+  label,
+  error,
+  helperText,
+  icon,
+  className = '',
+  ...props
 }) => {
-  const baseClasses = 'rounded-full font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
-  const variantClasses = {
-    solid: 'bg-red-500 text-white hover:bg-red-600 hover:shadow-lg shadow',
-    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
-    ghost: 'text-red-600 hover:bg-red-100'
+  const [isFocused, setIsFocused] = useState(false);
+  const [hasValue, setHasValue] = useState(!!props.value || !!props.defaultValue);
+  const id = useId();
+  
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setHasValue(e.target.value.length > 0);
+    props.onChange?.(e);
   };
-  const sizeClasses = {
-    sm: 'px-3 py-1 text-xs',
-    md: 'px-3.5 py-2 text-sm',
-    lg: 'px-6 py-3 text-lg'
-  };
+  
+  const isFloating = isFocused || hasValue;
+  
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled || loading}
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-     {...props}>
-      {loading && <span className="animate-spin mr-2">⏳</span>}
-      {children}
-    </button>
+    <div className="relative">
+      <div className="relative">
+        {icon && (
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+            {icon}
+          </div>
+        )}
+        <input
+          id={id}
+          onFocus={(e) => {
+            setIsFocused(true);
+            props.onFocus?.(e);
+          }}
+          onBlur={(e) => {
+            setIsFocused(false);
+            props.onBlur?.(e);
+          }}
+          onChange={handleChange}
+          className={`
+            w-full px-4 py-3 ${icon ? 'pl-10' : ''}
+            border-2 rounded-lg
+            transition-all duration-300
+            focus:outline-none
+            ${error ? 'border-purple-500 focus:border-purple-600' : 'border-gray-300 focus:border-purple-500'}
+            ${className}
+          `}
+          {...props}
+        />
+        <label
+          htmlFor={id}
+          className={`
+            absolute ${icon ? 'left-10' : 'left-4'} pointer-events-none
+            transition-all duration-300 font-medium
+            ${isFloating
+              ? '-top-2.5 text-xs bg-white px-1 left-3'
+              : 'top-1/2 -translate-y-1/2 text-base'
+            }
+            ${error ? 'text-purple-500' : isFocused ? 'text-purple-500' : 'text-gray-500'}
+          `}
+        >
+          {label}
+        </label>
+      </div>
+      {error && (
+        <p className="mt-1 text-sm text-purple-600">{error}</p>
+      )}
+      {helperText && !error && (
+        <p className="mt-1 text-sm text-gray-500">{helperText}</p>
+      )}
+    </div>
   );
 };
 
-export default Button;
+export default FloatingInput;

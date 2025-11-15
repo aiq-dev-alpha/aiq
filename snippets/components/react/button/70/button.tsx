@@ -1,36 +1,27 @@
 import React from 'react';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger';
-  size?: 'sm' | 'md' | 'lg';
+interface ParticleButton3Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
 }
 
-const variantClasses = {
-  primary: 'bg-blue-600 hover:bg-blue-700 text-white',
-  secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-900',
-  danger: 'bg-red-600 hover:bg-red-700 text-white',
-};
-
-const sizeClasses = {
-  sm: 'px-3 py-1.5 text-sm',
-  md: 'px-4 py-2 text-base',
-  lg: 'px-6 py-3 text-lg',
-};
-
-export const Button: React.FC<ButtonProps> = ({
-  variant = 'primary',
-  size = 'md',
+export const ParticleButton3: React.FC<ParticleButton3Props> = ({
   children,
-  className = '',
-  disabled,
+  disabled = false,
   ...props
 }) => {
   return (
     <button
-      onClick={(e) => { const ripple = document.createElement("span"); ripple.className = "absolute inset-0 bg-white opacity-25 animate-ping"; e.currentTarget.appendChild(ripple); setTimeout(() => ripple.remove(), 600); onClick?.(e); }}
-      className={`rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
       disabled={disabled}
+      className={`
+        px-6 py-3 rounded-lg
+        bg-red-600 hover:bg-red-700
+        text-white font-medium
+        transition-all duration-350
+        hover:scale-108
+        active:scale-98
+        shadow-xl
+        ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+      `}
       {...props}
     >
       {children}
@@ -38,4 +29,4 @@ export const Button: React.FC<ButtonProps> = ({
   );
 };
 
-export default Button;
+export default ParticleButton3;

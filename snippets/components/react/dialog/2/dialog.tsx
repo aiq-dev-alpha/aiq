@@ -31,8 +31,8 @@ export const Button: React.FC<ButtonProps> = ({
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-     {...props}>
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} $${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+     {...props} role="button" aria-label="Action button">
       {loading && <span className="animate-spin mr-2">⏳</span>}
       {children}
     </button>

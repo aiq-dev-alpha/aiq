@@ -1,42 +1,82 @@
-import React from 'react';
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  className?: string;
-  children: React.ReactNode;
-  onClick?: () => void;
-  variant?: 'solid' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
-  loading?: boolean;
+import React, { useState, useId } from 'react';
+
+interface CountingInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'maxLength'> {
+  label?: string;
+  maxLength: number;
+  showCount?: boolean;
+  variant?: 'outlined' | 'filled';
 }
-export const Button: React.FC<ButtonProps> = ({
-  children,
-  onClick,
-  variant = 'solid',
-  size = 'md',
-  disabled = false,
-  loading = false
+
+export const CountingInput: React.FC<CountingInputProps> = ({
+  label,
+  maxLength,
+  showCount = true,
+  variant = 'outlined',
+  className = '',
+  ...props
 }) => {
-  const baseClasses = 'rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500';
-  const variantClasses = {
-    solid: 'bg-indigo-500 text-white hover:bg-indigo-600 hover:shadow-lg shadow-2xl',
-    outline: 'border-2 border-indigo-500 text-indigo-600 hover:bg-indigo-50',
-    ghost: 'text-indigo-600 hover:bg-indigo-100'
+  const [value, setValue] = useState(String(props.value || props.defaultValue || ''));
+  const id = useId();
+  
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    if (newValue.length <= maxLength) {
+      setValue(newValue);
+      props.onChange?.(e);
+    }
   };
-  const sizeClasses = {
-    sm: 'px-3 py-1 text-xs',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-5 py-3 text-md'
+  
+  const percentage = (value.length / maxLength) * 100;
+  const isNearLimit = percentage >= 90;
+  
+  const variants = {
+    outlined: 'border-2 border-gray-300 bg-white focus:border-teal-500',
+    filled: 'border-0 bg-gray-100 focus:bg-gray-200'
   };
+  
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled || loading}
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-     {...props}>
-      {loading && <span className="animate-spin mr-2">⏳</span>}
-      {children}
-    </button>
+    <div>
+      {label && (
+        <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">
+          {label}
+        </label>
+      )}
+      <div className="relative">
+        <input
+          id={id}
+          value={value}
+          onChange={handleChange}
+          className={`
+            w-full px-4 py-2.5 rounded-2xl
+            transition-all duration-200
+            focus:outline-none focus:ring-2 focus:ring-teal-500
+            ${variants[variant]}
+            ${className}
+          `}
+          {...props}
+        />
+        {showCount && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2">
+            <span className={`text-xs font-medium ${
+              isNearLimit ? 'text-teal-600' : 'text-gray-500'
+            }`}>
+              {value.length}/{maxLength}
+            </span>
+          </div>
+        )}
+      </div>
+      {showCount && (
+        <div className="mt-1 h-1 bg-gray-200 rounded-2xl overflow-hidden">
+          <div
+            className={`h-full transition-all duration-200 ${
+              isNearLimit ? 'bg-teal-500' : 'bg-teal-500'
+            }`}
+            style={{ width: `${percentage}%` }}
+          />
+        </div>
+      )}
+    </div>
   );
 };
 
-export default Button;
+export default CountingInput;

@@ -12,7 +12,7 @@ export const Menu: React.FC<MenuProps> = ({
   children,
 }) => {
   return (
-    <div className={`rounded-md p-4 bg-white shadow-lg ${className}`}>
+    <div className={`rounded p-4 bg-white shadow-xl ${className}`}>
       {children}
     </div>
   );

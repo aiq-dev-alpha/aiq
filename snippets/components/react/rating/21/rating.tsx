@@ -12,7 +12,7 @@ export const Rating: React.FC<RatingProps> = ({
   children,
 }) => {
   return (
-    <div className={`rounded-md p-4 bg-white border border-gray-300 ${className}`}>
+    <div className={`rounded-lg p-4 bg-white border border-gray-300 ${className}`}>
       {children}
     </div>
   );

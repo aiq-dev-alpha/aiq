@@ -37,7 +37,7 @@ export const Avatar: React.FC<AvatarProps> = ({
   
   return (
     <div
-      className={`relative inline-flex items-center justify-center rounded-full ring-4 ring-pink-500 bg-gray-200 overflow-hidden ${sizeClasses[size]} ${className}`}
+      className={`relative inline-flex items-center justify-center rounded-xl ring-4 ring-green-500 bg-gray-200 overflow-hidden ${sizeClasses[size]} ${className}`}
       role="img"
       aria-label={alt || name}
     >

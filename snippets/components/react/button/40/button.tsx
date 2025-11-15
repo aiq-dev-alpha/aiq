@@ -1,43 +1,32 @@
 import React from 'react';
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  className?: string;
+
+interface RotateButton2Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
-  onClick?: () => void;
-  variant?: 'solid' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
-  loading?: boolean;
 }
-export const Button: React.FC<ButtonProps> = ({
+
+export const RotateButton2: React.FC<RotateButton2Props> = ({
   children,
-  onClick,
-  variant = 'solid',
-  size = 'md',
   disabled = false,
-  loading = false
+  ...props
 }) => {
-  const baseClasses = 'rounded-2xl font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500';
-  const variantClasses = {
-    solid: 'bg-teal-500 text-white hover:bg-teal-600 hover:shadow-lg shadow-xl',
-    outline: 'border-2 border-teal-500 text-teal-600 hover:bg-teal-50',
-    ghost: 'text-teal-600 hover:bg-teal-100'
-  };
-  const sizeClasses = {
-    sm: 'px-2 py-1 text-xs',
-    md: 'px-5 py-2.5 text-sm',
-    lg: 'px-5 py-3 text-md'
-  };
   return (
     <button
-      onClick={onClick}
-      disabled={disabled || loading}
-      onClick={(e) => { const ripple = document.createElement("span"); ripple.className = "absolute inset-0 bg-white opacity-25 animate-ping"; e.currentTarget.appendChild(ripple); setTimeout(() => ripple.remove(), 600); onClick?.(e); }}
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-     {...props}>
-      {loading && <span className="animate-spin mr-2">⏳</span>}
+      disabled={disabled}
+      className={`
+        px-6 py-3 rounded-lg
+        bg-purple-600 hover:bg-purple-700
+        text-white font-medium
+        transition-all duration-300
+        hover:scale-107
+        active:scale-97
+        shadow-lg
+        ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+      `}
+      {...props}
+    >
       {children}
     </button>
   );
 };
 
-export default Button;
+export default RotateButton2;

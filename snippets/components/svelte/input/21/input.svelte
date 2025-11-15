@@ -18,7 +18,7 @@
     <label class="block text-sm font-medium text-gray-700 mb-1">
       {label}
       {#if required}
-        <span class="text-red-500">*</span>
+        <span class="text-teal-500">*</span>
       {/if}
     </label>
   {/if}
@@ -39,7 +39,7 @@
       } {
         $$slots.suffix ? 'pr-10' : ''
       } {
-        error ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
+        error ? 'border-teal-300 focus:ring-teal-500' : 'border-gray-300 focus:ring-teal-500'
       } {
         disabled ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'
       }"
@@ -54,7 +54,7 @@
     {/if}
   </div>
   {#if error}
-    <p class="mt-1 text-sm text-red-600">{error}</p>
+    <p class="mt-1 text-sm text-teal-600">{error}</p>
   {:else if hint}
     <p class="mt-1 text-sm text-gray-500">{hint}</p>
   {/if}

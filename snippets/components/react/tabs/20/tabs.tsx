@@ -12,7 +12,7 @@ export const Tabs: React.FC<TabsProps> = ({
   children,
 }) => {
   return (
-    <div className={`rounded-md p-4 bg-white shadow-lg ${className}`}>
+    <div className={`rounded p-4 bg-white shadow-md ${className}`}>
       {children}
     </div>
   );

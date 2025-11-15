@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState } from "react";
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   children: React.ReactNode;
@@ -16,11 +17,11 @@ export const Button: React.FC<ButtonProps> = ({
   disabled = false,
   loading = false
 }) => {
-  const baseClasses = 'rounded-full font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-red-500';
+  const baseClasses = 'rounded-lg font-medium transition-opacity duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500';
   const variantClasses = {
-    solid: 'bg-red-500 text-white hover:bg-red-600 hover:shadow-lg shadow',
-    outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50',
-    ghost: 'text-red-600 hover:bg-red-100'
+    solid: 'bg-purple-500 text-white hover:bg-purple-600 hover:shadow-md shadow',
+    outline: 'border-2 border-purple-500 text-purple-600 hover:bg-purple-50',
+    ghost: 'text-purple-600 hover:bg-purple-100'
   };
   const sizeClasses = {
     sm: 'px-3 py-1 text-xs',
@@ -31,7 +32,7 @@ export const Button: React.FC<ButtonProps> = ({
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} $${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
      {...props}>
       {loading && <span className="animate-spin mr-2">⏳</span>}
       {children}

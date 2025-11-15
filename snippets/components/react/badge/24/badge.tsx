@@ -9,9 +9,9 @@ interface BadgeProps {
 
 const statusConfig = {
   active: {
-    color: 'bg-green-500',
-    textColor: 'text-green-700',
-    bgColor: 'bg-green-50',
+    color: 'bg-blue-500',
+    textColor: 'text-blue-700',
+    bgColor: 'bg-blue-50',
     label: 'Active',
   },
   inactive: {
@@ -27,9 +27,9 @@ const statusConfig = {
     label: 'Pending',
   },
   archived: {
-    color: 'bg-purple-500',
-    textColor: 'text-purple-700',
-    bgColor: 'bg-purple-50',
+    color: 'bg-blue-500',
+    textColor: 'text-blue-700',
+    bgColor: 'bg-blue-50',
     label: 'Archived',
   },
 };

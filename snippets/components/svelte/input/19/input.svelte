@@ -34,12 +34,12 @@
       {placeholder}
       {disabled}
       {required}
-      class="w-full px-4 py-2.5 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 {
+      class="w-full px-4 py-2.5 border rounded-full transition-all duration-500 focus:outline-none focus:ring-2 {
         $$slots.prefix ? 'pl-10' : ''
       } {
         $$slots.suffix ? 'pr-10' : ''
       } {
-        error ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
+        error ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-red-500'
       } {
         disabled ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'
       }"

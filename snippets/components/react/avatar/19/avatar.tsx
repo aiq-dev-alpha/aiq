@@ -42,7 +42,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-400 to-cyan-400 text-white font-semibold">
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-400 to-red-400 text-white font-semibold">
               {user.name.charAt(0).toUpperCase()}
             </div>
           )}

@@ -1,56 +1,32 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  className?: string;
+interface RippleButton0Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
-  onClick?: () => void;
-  color?: 'red' | 'blue' | 'green' | 'orange';
-  depth?: number;
 }
 
-export const Button: React.FC<ButtonProps> = ({
+export const RippleButton0: React.FC<RippleButton0Props> = ({
   children,
-  onClick,
-  color = 'blue',
-  depth = 6
+  disabled = false,
+  ...props
 }) => {
-  const [isPressed, setIsPressed] = useState(false);
-
-  const colors = {
-    red: { top: '#e74c3c', bottom: '#c0392b' },
-    blue: { top: '#3498db', bottom: '#2980b9' },
-    green: { top: '#2ecc71', bottom: '#27ae60' },
-    orange: { top: '#e67e22', bottom: '#d35400' }
-  };
-
-  const currentColor = colors[color];
-
   return (
     <button
-      onClick={onClick}
-      onMouseDown={() = {...props}> setIsPressed(true)}
-      onMouseUp={() => setIsPressed(false)}
-      onMouseLeave={() => setIsPressed(false)}
-      style={{
-        padding: '14px 28px',
-        background: currentColor.top,
-        border: 'none',
-        borderRadius: '10px',
-        color: '#fff',
-        fontSize: '16px',
-        fontWeight: 'bold',
-        cursor: 'pointer',
-        position: 'relative',
-        transform: isPressed ? `translateY(${depth}px)` : 'translateY(0)',
-        boxShadow: isPressed
-          ? '0 0 0 rgba(0,0,0,0.2)'
-          : `0 ${depth}px 0 ${currentColor.bottom}`,
-        transition: 'all 0.1s ease'
-      }}
+      disabled={disabled}
+      className={`
+        px-6 py-3 rounded-lg
+        bg-blue-600 hover:bg-blue-700
+        text-white font-medium
+        transition-all duration-200
+        hover:scale-105
+        active:scale-95
+        shadow-sm
+        ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+      `}
+      {...props}
     >
       {children}
     </button>
   );
 };
 
-export default Button;
+export default RippleButton0;

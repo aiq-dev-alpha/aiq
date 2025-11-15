@@ -9,9 +9,9 @@ interface BadgeProps {
 
 const statusConfig = {
   active: {
-    color: 'bg-green-500',
-    textColor: 'text-green-700',
-    bgColor: 'bg-green-50',
+    color: 'bg-red-500',
+    textColor: 'text-red-700',
+    bgColor: 'bg-red-50',
     label: 'Active',
   },
   inactive: {
@@ -27,9 +27,9 @@ const statusConfig = {
     label: 'Pending',
   },
   archived: {
-    color: 'bg-purple-500',
-    textColor: 'text-purple-700',
-    bgColor: 'bg-purple-50',
+    color: 'bg-red-500',
+    textColor: 'text-red-700',
+    bgColor: 'bg-red-50',
     label: 'Archived',
   },
 };
@@ -44,10 +44,10 @@ export const Badge: React.FC<BadgeProps> = ({
 
   return (
     <span
-      className={`animate-pulse inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${config.bgColor} ${config.textColor} ${className}`}
+      className={`animate-pulse inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-sm font-medium ${config.bgColor} ${config.textColor} ${className}`}
     >
       {showIcon && (
-        <span className={`animate-pulse w-2 h-2 rounded-full ${config.color}`} />
+        <span className={`animate-pulse w-2 h-2 rounded-xl ${config.color}`} />
       )}
       {label || config.label}
     </span>
