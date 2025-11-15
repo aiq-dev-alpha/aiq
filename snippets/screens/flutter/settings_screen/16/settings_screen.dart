@@ -1,53 +1,32 @@
 import 'package:flutter/material.dart';
 
-class SettingsScreen extends StatelessWidget {
+class Screen extends StatelessWidget {
   final Color primaryColor;
+  final Color backgroundColor;
   
-  const SettingsScreen({
+  const Screen({
     Key? key,
     this.primaryColor = const Color(0xFF6200EE),
+    this.backgroundColor = Colors.white,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: const Text('Screen'),
         backgroundColor: primaryColor,
       ),
-      body: ListView(
-        children: [
-          const ListTile(
-            leading: Icon(Icons.person),
-            title: Text('Account'),
-            trailing: Icon(Icons.chevron_right),
-          ),
-          const ListTile(
-            leading: Icon(Icons.notifications),
-            title: Text('Notifications'),
-            trailing: Icon(Icons.chevron_right),
-          ),
-          const ListTile(
-            leading: Icon(Icons.privacy_tip),
-            title: Text('Privacy'),
-            trailing: Icon(Icons.chevron_right),
-          ),
-          const ListTile(
-            leading: Icon(Icons.security),
-            title: Text('Security'),
-            trailing: Icon(Icons.chevron_right),
-          ),
-          const ListTile(
-            leading: Icon(Icons.help),
-            title: Text('Help'),
-            trailing: Icon(Icons.chevron_right),
-          ),
-          const ListTile(
-            leading: Icon(Icons.info),
-            title: Text('About'),
-            trailing: Icon(Icons.chevron_right),
-          ),
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.check_circle, size: 80, color: primaryColor),
+            const SizedBox(height: 24),
+            const Text('Screen Content', style: TextStyle(fontSize: 20)),
+          ],
+        ),
       ),
     );
   }

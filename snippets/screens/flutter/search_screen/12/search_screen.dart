@@ -1,53 +1,31 @@
 import 'package:flutter/material.dart';
 
-class SearchScreen extends StatefulWidget {
+class Screen extends StatelessWidget {
   final Color primaryColor;
+  final Color backgroundColor;
   
-  const SearchScreen({
+  const Screen({
     Key? key,
-    this.primaryColor = const Color(0xFF1976D2),
+    this.primaryColor = const Color(0xFF6200EE),
+    this.backgroundColor = Colors.white,
   }) : super(key: key);
-
-  @override
-  State<SearchScreen> createState() => _SearchScreenState();
-}
-
-class _SearchScreenState extends State<SearchScreen> {
-  final _searchController = TextEditingController();
-  List<String> _results = [];
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  void _search(String query) {
-    setState(() {
-      _results = query.isEmpty
-          ? []
-          : List.generate(10, (i) => 'Result $i: $query');
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: TextField(
-          controller: _searchController,
-          decoration: const InputDecoration(
-            hintText: 'Search...',
-            border: InputBorder.none,
-          ),
-          onChanged: _search,
-        ),
-        backgroundColor: widget.primaryColor,
+        title: const Text('Screen'),
+        backgroundColor: primaryColor,
       ),
-      body: ListView.builder(
-        itemCount: _results.length,
-        itemBuilder: (context, index) => ListTile(
-          title: Text(_results[index]),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.check_circle, size: 80, color: primaryColor),
+            const SizedBox(height: 24),
+            const Text('Screen Content', style: TextStyle(fontSize: 20)),
+          ],
         ),
       ),
     );
