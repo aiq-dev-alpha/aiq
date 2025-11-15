@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
-
 interface InputTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -11,7 +10,6 @@ interface InputTheme {
   errorColor: string;
   successColor: string;
 }
-
 @Component({
   selector: 'app-input',
   template: `
@@ -236,16 +234,13 @@ export class InputComponent implements ControlValueAccessor {
   @Output() focus = new EventEmitter<void>();
   @Output() blur = new EventEmitter<void>();
   @Output() clear = new EventEmitter<void>();
-
   value: string = '';
   isFocused = false;
   inputId = `input-${Math.random().toString(36).substr(2, 9)}`;
   helperTextId = `helper-${this.inputId}`;
   inputType: string = this.type;
-
   private onChange: (value: string) => void = () => {};
   private onTouched: () => void = () => {};
-
   private defaultTheme: InputTheme = {
   primaryColor: '#6366f1',
   secondaryColor: '#8b5cf6',
@@ -257,32 +252,26 @@ export class InputComponent implements ControlValueAccessor {
   errorColor: '#ef4444',
   successColor: '#10b981'
   };
-
   get appliedTheme(): InputTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get hasError(): boolean {
   return !!this.errorMessage || (this.formControl ? this.formControl.invalid && this.formControl.touched : false);
   }
-
   get showSuccess(): boolean {
   return !!this.successMessage || (this.formControl ? this.formControl.valid && this.formControl.touched && !!this.value : false);
   }
-
   get wrapperStyles() {
   return {
   fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
   };
   }
-
   get labelStyles() {
   const t = this.appliedTheme;
   return {
   color: this.hasError ? t.errorColor : this.isFocused ? t.primaryColor : t.textColor
   };
   }
-
   get containerStyles() {
   const t = this.appliedTheme;
   const sizeMap = {
@@ -290,7 +279,6 @@ export class InputComponent implements ControlValueAccessor {
   md: { padding: '10px 14px', gap: '10px' },
   lg: { padding: '14px 18px', gap: '14px' }
   };
-
   const variantStyles = {
   default: {
   backgroundColor: t.backgroundColor,
@@ -314,7 +302,6 @@ export class InputComponent implements ControlValueAccessor {
   borderRadius: '0'
   }
   };
-
   return {
   ...sizeMap[this.size],
   ...variantStyles[this.variant],
@@ -324,7 +311,6 @@ export class InputComponent implements ControlValueAccessor {
   boxShadow: this.isFocused ? `0 0 0 3px ${t.primaryColor}20` : 'none'
   };
   }
-
   get inputStyles() {
   const t = this.appliedTheme;
   const sizeMap = {
@@ -332,27 +318,23 @@ export class InputComponent implements ControlValueAccessor {
   md: { fontSize: '15px' },
   lg: { fontSize: '17px' }
   };
-
   return {
   ...sizeMap[this.size],
   color: t.textColor
   };
   }
-
   get iconStyles() {
   const t = this.appliedTheme;
   return {
   color: this.hasError ? t.errorColor : this.showSuccess ? t.successColor : t.primaryColor
   };
   }
-
   get helperStyles() {
   const t = this.appliedTheme;
   return {
   color: t.textColor
   };
   }
-
   get errorStyles() {
   const t = this.appliedTheme;
   return {
@@ -360,7 +342,6 @@ export class InputComponent implements ControlValueAccessor {
   fontWeight: '500'
   };
   }
-
   get successStyles() {
   const t = this.appliedTheme;
   return {
@@ -368,14 +349,12 @@ export class InputComponent implements ControlValueAccessor {
   fontWeight: '500'
   };
   }
-
   get clearButtonStyles() {
   const t = this.appliedTheme;
   return {
   color: t.textColor
   };
   }
-
   get charCounterStyles() {
   const t = this.appliedTheme;
   const isAtLimit = this.maxLength && this.value.length === this.maxLength;
@@ -384,44 +363,36 @@ export class InputComponent implements ControlValueAccessor {
   fontWeight: isAtLimit ? '600' : '400'
   };
   }
-
   onInput(event: Event): void {
   const value = (event.target as HTMLInputElement).value;
   this.value = value;
   this.onChange(value);
   this.valueChange.emit(value);
   }
-
   onFocus(): void {
   this.isFocused = true;
   this.focus.emit();
   }
-
   onBlur(): void {
   this.isFocused = false;
   this.onTouched();
   this.blur.emit();
   }
-
   clearInput(): void {
   this.value = '';
   this.onChange('');
   this.valueChange.emit('');
   this.clear.emit();
   }
-
   writeValue(value: string): void {
   this.value = value || '';
   }
-
   registerOnChange(fn: (value: string) => void): void {
   this.onChange = fn;
   }
-
   registerOnTouched(fn: () => void): void {
   this.onTouched = fn;
   }
-
   setDisabledState(isDisabled: boolean): void {
   this.disabled = isDisabled;
   }

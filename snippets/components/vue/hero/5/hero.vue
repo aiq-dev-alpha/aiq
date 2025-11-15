@@ -9,7 +9,6 @@
       <div class="gradient-orb orb-3" :style="{ backgroundColor: currentTheme.primaryColor }"></div>
       <div class="gradient-mesh"></div>
     </div>
-
     <div class="hero-content">
       <div class="content-grid">
         <div class="text-section">
@@ -17,14 +16,12 @@
             <span class="tag-dot" :style="{ backgroundColor: currentTheme.primaryColor }"></span>
             Introducing
           </div>
-
           <h1
             class="hero-title animate-slide-up delay-1"
             :style="{ color: currentTheme.textColor }"
           >
             {{ title }}
           </h1>
-
           <p
             v-if="subtitle"
             class="hero-subtitle animate-slide-up delay-2"
@@ -32,7 +29,6 @@
           >
             {{ subtitle }}
           </p>
-
           <p
             v-if="description"
             class="hero-description animate-slide-up delay-3"
@@ -40,7 +36,6 @@
           >
             {{ description }}
           </p>
-
           <div
             v-if="ctaButtons && ctaButtons.length"
             class="hero-cta animate-slide-up delay-4"
@@ -58,7 +53,6 @@
               </svg>
             </button>
           </div>
-
           <div class="stats animate-slide-up delay-5">
             <div class="stat-item">
               <div class="stat-value" :style="{ color: currentTheme.primaryColor }">10k+</div>
@@ -76,7 +70,6 @@
             </div>
           </div>
         </div>
-
         <div
           v-if="image"
           class="image-section animate-float"
@@ -88,17 +81,14 @@
         </div>
       </div>
     </div>
-
     <div class="decorative-elements">
       <div class="grid-pattern"></div>
       <div class="dots-pattern"></div>
     </div>
   </section>
 </template>
-
 <script setup lang="ts">
 import { computed, PropType } from 'vue'
-
 interface HeroTheme {
   primaryColor: string
   backgroundColor: string
@@ -106,15 +96,12 @@ interface HeroTheme {
   accentColor: string
   overlayColor: string
 }
-
 interface CtaButton {
   label: string
   onClick: () => void
   variant?: 'primary' | 'secondary' | 'outline'
 }
-
 type VariantType = 'full-screen' | 'split' | 'centered' | 'minimal' | 'video-bg' | 'gradient'
-
 const props = defineProps({
   title: {
     type: String,
@@ -149,7 +136,6 @@ const props = defineProps({
     default: () => ({})
   }
 })
-
 const defaultTheme: HeroTheme = {
   primaryColor: '#8b5cf6',
   backgroundColor: '#faf5ff',
@@ -157,16 +143,13 @@ const defaultTheme: HeroTheme = {
   accentColor: '#a78bfa',
   overlayColor: 'rgba(139, 92, 246, 0.1)'
 }
-
 const currentTheme = computed(() => ({
   ...defaultTheme,
   ...props.theme
 }))
-
 const heroStyles = computed(() => ({
   backgroundColor: currentTheme.value.backgroundColor
 }))
-
 const getButtonStyles = (variant?: string) => {
   if (variant === 'secondary') {
     return {
@@ -188,7 +171,6 @@ const getButtonStyles = (variant?: string) => {
   }
 }
 </script>
-
 <style scoped>
 .hero-gradient {
   position: relative;
@@ -197,7 +179,6 @@ const getButtonStyles = (variant?: string) => {
   display: flex;
   align-items: center;
 }
-
 .gradient-background {
   position: absolute;
   top: 0;
@@ -207,14 +188,12 @@ const getButtonStyles = (variant?: string) => {
   z-index: 0;
   overflow: hidden;
 }
-
 .gradient-orb {
   position: absolute;
   border-radius: 50%;
   filter: blur(100px);
   opacity: 0.3;
 }
-
 .orb-1 {
   width: 500px;
   height: 500px;
@@ -222,7 +201,6 @@ const getButtonStyles = (variant?: string) => {
   right: -5%;
   animation: orbFloat1 20s ease-in-out infinite;
 }
-
 .orb-2 {
   width: 400px;
   height: 400px;
@@ -230,7 +208,6 @@ const getButtonStyles = (variant?: string) => {
   left: -5%;
   animation: orbFloat2 15s ease-in-out infinite;
 }
-
 .orb-3 {
   width: 300px;
   height: 300px;
@@ -239,7 +216,6 @@ const getButtonStyles = (variant?: string) => {
   transform: translate(-50%, -50%);
   animation: orbFloat3 25s ease-in-out infinite;
 }
-
 .gradient-mesh {
   position: absolute;
   top: 0;
@@ -249,7 +225,6 @@ const getButtonStyles = (variant?: string) => {
   background: radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
               radial-gradient(circle at 80% 80%, rgba(167, 139, 250, 0.1) 0%, transparent 50%);
 }
-
 .hero-content {
   position: relative;
   z-index: 1;
@@ -258,18 +233,15 @@ const getButtonStyles = (variant?: string) => {
   margin: 0 auto;
   padding: 4rem 2rem;
 }
-
 .content-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 4rem;
   align-items: center;
 }
-
 .text-section {
   max-width: 600px;
 }
-
 .tag {
   display: inline-flex;
   align-items: center;
@@ -280,14 +252,12 @@ const getButtonStyles = (variant?: string) => {
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
-
 .tag-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   animation: pulse 2s ease-in-out infinite;
 }
-
 .hero-title {
   font-size: 4rem;
   font-weight: 900;
@@ -299,28 +269,24 @@ const getButtonStyles = (variant?: string) => {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-
 .hero-subtitle {
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 1rem;
   opacity: 0.9;
 }
-
 .hero-description {
   font-size: 1.125rem;
   line-height: 1.7;
   margin-bottom: 2.5rem;
   opacity: 0.7;
 }
-
 .hero-cta {
   display: flex;
   gap: 1rem;
   margin-bottom: 3rem;
   flex-wrap: wrap;
 }
-
 .hero-button {
   display: inline-flex;
   align-items: center;
@@ -333,60 +299,49 @@ const getButtonStyles = (variant?: string) => {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
 .hero-button:hover {
   transform: translateX(4px);
   box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
 }
-
 .button-icon {
   transition: transform 0.3s ease;
 }
-
 .hero-button:hover .button-icon {
   transform: translateX(4px);
 }
-
 .stats {
   display: flex;
   gap: 2rem;
   align-items: center;
 }
-
 .stat-item {
   text-align: left;
 }
-
 .stat-value {
   font-size: 2rem;
   font-weight: 800;
   line-height: 1;
   margin-bottom: 0.25rem;
 }
-
 .stat-label {
   font-size: 0.875rem;
   opacity: 0.6;
 }
-
 .stat-divider {
   width: 1px;
   height: 40px;
   background: currentColor;
   opacity: 0.2;
 }
-
 .image-section {
   position: relative;
 }
-
 .image-wrapper {
   position: relative;
   border-radius: 1.5rem;
   overflow: hidden;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
 }
-
 .image-wrapper img {
   width: 100%;
   height: auto;
@@ -394,7 +349,6 @@ const getButtonStyles = (variant?: string) => {
   position: relative;
   z-index: 1;
 }
-
 .image-glow {
   position: absolute;
   top: 50%;
@@ -407,7 +361,6 @@ const getButtonStyles = (variant?: string) => {
   opacity: 0.4;
   z-index: 0;
 }
-
 .decorative-elements {
   position: absolute;
   top: 0;
@@ -417,7 +370,6 @@ const getButtonStyles = (variant?: string) => {
   z-index: 0;
   pointer-events: none;
 }
-
 .grid-pattern {
   position: absolute;
   top: 0;
@@ -430,7 +382,6 @@ const getButtonStyles = (variant?: string) => {
   background-size: 30px 30px;
   opacity: 0.5;
 }
-
 .dots-pattern {
   position: absolute;
   bottom: 0;
@@ -440,7 +391,6 @@ const getButtonStyles = (variant?: string) => {
   background-image: radial-gradient(circle, rgba(139, 92, 246, 0.1) 1px, transparent 1px);
   background-size: 20px 20px;
 }
-
 @keyframes orbFloat1 {
   0%, 100% {
     transform: translate(0, 0) scale(1);
@@ -449,7 +399,6 @@ const getButtonStyles = (variant?: string) => {
     transform: translate(-30px, 30px) scale(1.1);
   }
 }
-
 @keyframes orbFloat2 {
   0%, 100% {
     transform: translate(0, 0) scale(1);
@@ -458,7 +407,6 @@ const getButtonStyles = (variant?: string) => {
     transform: translate(40px, -40px) scale(1.15);
   }
 }
-
 @keyframes orbFloat3 {
   0%, 100% {
     transform: translate(-50%, -50%) scale(1);
@@ -467,37 +415,29 @@ const getButtonStyles = (variant?: string) => {
     transform: translate(-50%, -50%) scale(1.2);
   }
 }
-
 .animate-slide-up {
   animation: slideUp 0.8s ease-out forwards;
   opacity: 0;
 }
-
 .animate-float {
   animation: float 3s ease-in-out infinite, fadeIn 1s ease-out forwards;
   opacity: 0;
 }
-
 .delay-1 {
   animation-delay: 0.1s;
 }
-
 .delay-2 {
   animation-delay: 0.2s;
 }
-
 .delay-3 {
   animation-delay: 0.3s;
 }
-
 .delay-4 {
   animation-delay: 0.4s;
 }
-
 .delay-5 {
   animation-delay: 0.5s;
 }
-
 @keyframes slideUp {
   from {
     opacity: 0;
@@ -508,7 +448,6 @@ const getButtonStyles = (variant?: string) => {
     transform: translateY(0);
   }
 }
-
 @keyframes float {
   0%, 100% {
     transform: translateY(0);
@@ -517,7 +456,6 @@ const getButtonStyles = (variant?: string) => {
     transform: translateY(-20px);
   }
 }
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -526,7 +464,6 @@ const getButtonStyles = (variant?: string) => {
     opacity: 1;
   }
 }
-
 @keyframes pulse {
   0%, 100% {
     opacity: 1;
@@ -535,64 +472,50 @@ const getButtonStyles = (variant?: string) => {
     opacity: 0.5;
   }
 }
-
 @media (max-width: 1024px) {
   .content-grid {
     grid-template-columns: 1fr;
     gap: 3rem;
   }
-
   .text-section {
     max-width: 100%;
   }
-
   .hero-title {
     font-size: 3rem;
   }
-
   .stats {
     justify-content: space-between;
   }
 }
-
 @media (max-width: 768px) {
   .hero-content {
     padding: 3rem 1.5rem;
   }
-
   .hero-title {
     font-size: 2.25rem;
   }
-
   .hero-subtitle {
     font-size: 1.25rem;
   }
-
   .hero-description {
     font-size: 1rem;
   }
-
   .stats {
     gap: 1rem;
   }
-
   .stat-value {
     font-size: 1.5rem;
   }
-
   .stat-label {
     font-size: 0.75rem;
   }
-
   .hero-cta {
     flex-direction: column;
   }
-
   .hero-button {
     width: 100%;
     justify-content: center;
   }
-
   .orb-1, .orb-2, .orb-3 {
     opacity: 0.15;
   }

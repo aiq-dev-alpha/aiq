@@ -37,7 +37,6 @@
         </span>
       </div>
     </div>
-
     <!-- Compact Dense Table -->
     <div class="table-wrapper">
       <table class="data-table" :class="{ compact: density === 'compact' }">
@@ -180,7 +179,6 @@
         </tbody>
       </table>
     </div>
-
     <!-- Compact Pagination -->
     <div v-if="pagination && !loading && paginatedData.length > 0" class="pagination" :style="paginationStyles">
       <div class="pagination-controls">
@@ -232,10 +230,8 @@
     </div>
   </div>
 </template>
-
-<script>
+<script lang="ts">
 import { ref, computed, watch } from 'vue';
-
 export default {
   name: 'CompactDenseTable',
   props: {
@@ -297,10 +293,8 @@ export default {
     const expandedRows = ref([]);
     const itemsPerPageLocal = ref(props.itemsPerPage);
     const density = ref('compact');
-
     const filteredData = computed(() => {
       if (!searchQuery.value) return props.data;
-
       return props.data.filter(row => {
         return props.columns.some(column => {
           const value = row[column.key];
@@ -308,53 +302,42 @@ export default {
         });
       });
     });
-
     const sortedData = computed(() => {
       if (!sortKey.value) return filteredData.value;
-
       return [...filteredData.value].sort((a, b) => {
         const aVal = a[sortKey.value];
         const bVal = b[sortKey.value];
-
         if (aVal < bVal) return sortOrder.value === 'asc' ? -1 : 1;
         if (aVal > bVal) return sortOrder.value === 'asc' ? 1 : -1;
         return 0;
       });
     });
-
     const totalPages = computed(() => {
       if (!props.pagination) return 1;
       return Math.ceil(sortedData.value.length / itemsPerPageLocal.value);
     });
-
     const paginatedData = computed(() => {
       if (!props.pagination) return sortedData.value;
-
       const start = (currentPage.value - 1) * itemsPerPageLocal.value;
       const end = start + itemsPerPageLocal.value;
       return sortedData.value.slice(start, end);
     });
-
     const allSelected = computed(() => {
       return paginatedData.value.length > 0 &&
         paginatedData.value.every(row => selectedRows.value.includes(row.id || paginatedData.value.indexOf(row)));
     });
-
     const totalColumns = computed(() => {
       let count = props.columns.length;
       if (props.selectable) count++;
       if (props.hasActions) count++;
       return count;
     });
-
     const startItem = computed(() => {
       return Math.min((currentPage.value - 1) * itemsPerPageLocal.value + 1, filteredData.value.length);
     });
-
     const endItem = computed(() => {
       return Math.min(currentPage.value * itemsPerPageLocal.value, filteredData.value.length);
     });
-
     const toggleSort = (key) => {
       if (sortKey.value === key) {
         sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
@@ -363,7 +346,6 @@ export default {
         sortOrder.value = 'asc';
       }
     };
-
     const toggleSelect = (rowId) => {
       const index = selectedRows.value.indexOf(rowId);
       if (index > -1) {
@@ -373,7 +355,6 @@ export default {
       }
       emit('selection-change', selectedRows.value);
     };
-
     const toggleSelectAll = () => {
       if (allSelected.value) {
         selectedRows.value = [];
@@ -382,7 +363,6 @@ export default {
       }
       emit('selection-change', selectedRows.value);
     };
-
     const toggleExpand = (rowId) => {
       const index = expandedRows.value.indexOf(rowId);
       if (index > -1) {
@@ -391,7 +371,6 @@ export default {
         expandedRows.value.push(rowId);
       }
     };
-
     const goToPage = () => {
       if (currentPageInput.value >= 1 && currentPageInput.value <= totalPages.value) {
         currentPage.value = currentPageInput.value;
@@ -399,53 +378,43 @@ export default {
         currentPageInput.value = currentPage.value;
       }
     };
-
     watch(currentPage, (newVal) => {
       currentPageInput.value = newVal;
     });
-
     watch(() => props.data, () => {
       currentPage.value = 1;
       selectedRows.value = [];
     });
-
     watch(itemsPerPageLocal, () => {
       currentPage.value = 1;
     });
-
     // Styles
     const containerStyles = computed(() => ({
       backgroundColor: props.theme.background,
       border: `1px solid ${props.theme.border}`,
       borderRadius: '6px',
     }));
-
     const toolbarStyles = computed(() => ({
       backgroundColor: '#fff5f7',
       borderBottom: `1px solid ${props.theme.border}`,
     }));
-
     const searchInputStyles = computed(() => ({
       border: `1px solid ${props.theme.border}`,
       color: props.theme.headerColor,
     }));
-
     const toggleBtnStyles = computed(() => ({
       backgroundColor: props.theme.background,
       color: props.theme.headerColor,
       border: `1px solid ${props.theme.border}`,
     }));
-
     const activeBtnStyles = computed(() => ({
       backgroundColor: props.theme.primary,
       color: '#ffffff',
       border: `1px solid ${props.theme.primary}`,
     }));
-
     const resultsCountStyles = computed(() => ({
       color: props.theme.headerColor,
     }));
-
     const theadStyles = computed(() => ({
       backgroundColor: '#fda4af',
       borderBottom: `2px solid ${props.theme.primary}`,
@@ -453,7 +422,6 @@ export default {
       top: 0,
       zIndex: 10,
     }));
-
     const getThStyles = (isFixed, width = null) => ({
       padding: density.value === 'compact' ? '0.5rem 0.75rem' : '0.75rem 1rem',
       textAlign: 'left',
@@ -465,7 +433,6 @@ export default {
       width: width || (isFixed ? 'auto' : null),
       whiteSpace: 'nowrap',
     });
-
     const tdStyles = computed(() => ({
       padding: density.value === 'compact' ? '0.375rem 0.75rem' : '0.625rem 1rem',
       fontSize: '0.813rem',
@@ -473,64 +440,52 @@ export default {
       borderBottom: `1px solid ${props.theme.border}`,
       lineHeight: '1.3',
     }));
-
     const getTrStyles = (index) => ({
       backgroundColor: index % 2 === 0 ? props.theme.background : '#fff9fa',
       transition: 'background-color 0.15s',
     });
-
     const iconBtnStyles = computed(() => ({
       backgroundColor: 'transparent',
       color: props.theme.primary,
       border: `1px solid ${props.theme.border}`,
     }));
-
     const editIconBtnStyles = computed(() => ({
       backgroundColor: 'transparent',
       color: props.theme.primary,
       border: `1px solid ${props.theme.primary}`,
     }));
-
     const deleteIconBtnStyles = computed(() => ({
       backgroundColor: 'transparent',
       color: '#dc2626',
       border: '1px solid #fecdd3',
     }));
-
     const paginationStyles = computed(() => ({
       borderTop: `1px solid ${props.theme.border}`,
       backgroundColor: '#fff5f7',
     }));
-
     const navBtnStyles = computed(() => ({
       backgroundColor: props.theme.background,
       color: props.theme.primary,
       border: `1px solid ${props.theme.border}`,
     }));
-
     const pageInputStyles = computed(() => ({
       border: `1px solid ${props.theme.border}`,
       color: props.theme.headerColor,
     }));
-
     const perPageSelectStyles = computed(() => ({
       border: `1px solid ${props.theme.border}`,
       color: props.theme.headerColor,
     }));
-
     const expandedRowStyles = computed(() => ({
       backgroundColor: '#ffe4e6',
     }));
-
     const expandedTdStyles = computed(() => ({
       padding: 0,
       borderBottom: `1px solid ${props.theme.border}`,
     }));
-
     const innerLabelStyles = computed(() => ({
       color: props.theme.primary,
     }));
-
     return {
       searchQuery,
       sortKey,
@@ -577,13 +532,11 @@ export default {
   },
 };
 </script>
-
 <style scoped>
 .table-container {
   font-family: system-ui, -apple-system, sans-serif;
   font-size: 0.875rem;
 }
-
 .toolbar {
   padding: 0.75rem 1rem;
   display: flex;
@@ -591,25 +544,21 @@ export default {
   align-items: center;
   gap: 1rem;
 }
-
 .toolbar-left {
   display: flex;
   align-items: center;
   gap: 1rem;
   flex: 1;
 }
-
 .toolbar-right {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
-
 .search-box {
   flex: 1;
   max-width: 300px;
 }
-
 .search-input {
   width: 100%;
   padding: 0.375rem 0.625rem;
@@ -618,18 +567,15 @@ export default {
   outline: none;
   transition: border-color 0.15s;
 }
-
 .search-input:focus {
   border-color: #f43f5e;
 }
-
 .view-toggle {
   display: flex;
   gap: 0;
   border-radius: 4px;
   overflow: hidden;
 }
-
 .density-btn {
   padding: 0.375rem 0.75rem;
   font-size: 0.75rem;
@@ -640,56 +586,46 @@ export default {
   text-transform: uppercase;
   letter-spacing: 0.025em;
 }
-
 .density-btn:first-child {
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
 }
-
 .density-btn:last-child {
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
 }
-
 .results-count {
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
-
 .table-wrapper {
   overflow-x: auto;
   max-height: 600px;
   overflow-y: auto;
 }
-
 .data-table {
   width: 100%;
   min-width: 600px;
   border-collapse: collapse;
 }
-
 .data-table thead th.sortable {
   cursor: pointer;
   user-select: none;
 }
-
 .data-table thead th.sortable:hover {
   background-color: rgba(244, 63, 94, 0.2);
 }
-
 .data-table thead th.sorted {
   background-color: rgba(244, 63, 94, 0.15);
 }
-
 .th-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.375rem;
 }
-
 .sort-icons {
   display: flex;
   flex-direction: column;
@@ -697,49 +633,40 @@ export default {
   font-size: 0.625rem;
   opacity: 0.4;
 }
-
 .sort-icons .active {
   opacity: 1;
   color: #881337;
 }
-
 .data-table tbody tr:hover {
   background-color: #ffe4e6 !important;
 }
-
 .data-table tbody tr.expandable {
   cursor: pointer;
 }
-
 .data-table tbody tr.selected {
   background-color: rgba(244, 63, 94, 0.1) !important;
   border-left: 2px solid #f43f5e;
 }
-
 .data-table tbody tr.expanded {
   border-bottom: none;
 }
-
 .cell-text {
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
 .checkbox {
   width: 0.875rem;
   height: 0.875rem;
   cursor: pointer;
   accent-color: #f43f5e;
 }
-
 .action-group {
   display: flex;
   gap: 0.25rem;
   justify-content: center;
 }
-
 .icon-btn {
   padding: 0.25rem;
   width: 1.5rem;
@@ -754,16 +681,13 @@ export default {
   transition: all 0.15s;
   line-height: 1;
 }
-
 .icon-btn:hover {
   transform: scale(1.1);
 }
-
 .expanded-panel {
   padding: 1rem;
   animation: slideDown 0.2s ease-out;
 }
-
 @keyframes slideDown {
   from {
     opacity: 0;
@@ -774,25 +698,20 @@ export default {
     max-height: 500px;
   }
 }
-
 .inner-table {
   width: 100%;
   border-collapse: collapse;
 }
-
 .inner-table tr {
   border-bottom: 1px solid #fecdd3;
 }
-
 .inner-table tr:last-child {
   border-bottom: none;
 }
-
 .inner-table td {
   padding: 0.5rem;
   font-size: 0.813rem;
 }
-
 .inner-label {
   font-weight: 700;
   width: 200px;
@@ -800,11 +719,9 @@ export default {
   font-size: 0.688rem;
   letter-spacing: 0.05em;
 }
-
 .inner-value {
   color: #4b5563;
 }
-
 .pagination {
   padding: 0.75rem 1rem;
   display: flex;
@@ -812,13 +729,11 @@ export default {
   align-items: center;
   gap: 1rem;
 }
-
 .pagination-controls {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
-
 .nav-btn {
   padding: 0.375rem 0.625rem;
   min-width: 2rem;
@@ -828,23 +743,19 @@ export default {
   cursor: pointer;
   transition: all 0.15s;
 }
-
 .nav-btn:hover:not(:disabled) {
   background-color: #ffe4e6;
 }
-
 .nav-btn:disabled {
   opacity: 0.3;
   cursor: not-allowed;
 }
-
 .page-input-group {
   display: flex;
   align-items: center;
   gap: 0.375rem;
   font-size: 0.813rem;
 }
-
 .page-input {
   width: 3rem;
   padding: 0.375rem 0.5rem;
@@ -853,23 +764,19 @@ export default {
   text-align: center;
   outline: none;
 }
-
 .page-input::-webkit-inner-spin-button,
 .page-input::-webkit-outer-spin-button {
   opacity: 1;
 }
-
 .page-total {
   color: #6b7280;
   font-weight: 500;
 }
-
 .pagination-info {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
-
 .per-page-select {
   padding: 0.375rem 0.5rem;
   border-radius: 3px;
@@ -878,14 +785,12 @@ export default {
   outline: none;
   background-color: #ffffff;
 }
-
 .info-text {
   font-size: 0.813rem;
   color: #6b7280;
   font-weight: 500;
   white-space: nowrap;
 }
-
 .empty-message {
   display: flex;
   flex-direction: column;
@@ -893,12 +798,10 @@ export default {
   gap: 0.5rem;
   color: #9ca3af;
 }
-
 .empty-icon {
   font-size: 2rem;
   opacity: 0.5;
 }
-
 .skeleton {
   height: 0.875rem;
   background: linear-gradient(90deg, #fecdd3 25%, #fda4af 50%, #fecdd3 75%);
@@ -906,7 +809,6 @@ export default {
   animation: loading 1.5s infinite;
   border-radius: 3px;
 }
-
 @keyframes loading {
   0% {
     background-position: 200% 0;
@@ -915,11 +817,9 @@ export default {
     background-position: -200% 0;
   }
 }
-
 .select-column {
   width: 50px;
 }
-
 .actions-column {
   width: 120px;
   text-align: center;

@@ -19,7 +19,6 @@
             We create exceptional digital experiences that help businesses grow and succeed in the modern world. Innovation meets creativity.
           </p>
         </div>
-
         <!-- Link Columns -->
         <div class="link-columns">
           <div
@@ -39,7 +38,6 @@
           </div>
         </div>
       </div>
-
       <!-- Middle Section - Social & CTA -->
       <div class="footer-middle">
         <div class="social-section">
@@ -65,7 +63,6 @@
           <span>Back to Top</span>
         </button>
       </div>
-
       <!-- Bottom Section -->
       <div class="footer-bottom">
         <p class="copyright">{{ copyright }}</p>
@@ -83,10 +80,8 @@
     </div>
   </footer>
 </template>
-
 <script setup lang="ts">
 import { computed, defineProps, withDefaults } from 'vue';
-
 interface FooterTheme {
   primaryColor: string;
   backgroundColor: string;
@@ -94,29 +89,24 @@ interface FooterTheme {
   linkColor: string;
   borderColor: string;
 }
-
 interface FooterLink {
   id: string;
   label: string;
   url: string;
   icon?: string;
 }
-
 interface FooterSection {
   id: string;
   title: string;
   links: FooterLink[];
 }
-
 interface SocialLink {
   id: string;
   label: string;
   url: string;
   icon: string;
 }
-
 type FooterVariant = 'simple' | 'multi-column' | 'centered' | 'minimal' | 'newsletter';
-
 interface Props {
   sections?: FooterSection[];
   copyright?: string;
@@ -124,7 +114,6 @@ interface Props {
   variant?: FooterVariant;
   theme?: Partial<FooterTheme>;
 }
-
 const props = withDefaults(defineProps<Props>(), {
   sections: () => [
     {
@@ -180,7 +169,6 @@ const props = withDefaults(defineProps<Props>(), {
   variant: 'simple',
   theme: () => ({})
 });
-
 const defaultTheme: FooterTheme = {
   primaryColor: '#f59e0b',
   backgroundColor: '#111827',
@@ -188,12 +176,10 @@ const defaultTheme: FooterTheme = {
   linkColor: '#f3f4f6',
   borderColor: '#1f2937'
 };
-
 const currentTheme = computed<FooterTheme>(() => ({
   ...defaultTheme,
   ...props.theme
 }));
-
 const computedStyles = computed(() => ({
   '--primary-color': currentTheme.value.primaryColor,
   '--background-color': currentTheme.value.backgroundColor,
@@ -201,12 +187,10 @@ const computedStyles = computed(() => ({
   '--link-color': currentTheme.value.linkColor,
   '--border-color': currentTheme.value.borderColor
 }));
-
 const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 </script>
-
 <style scoped>
 .footer {
   background-color: var(--background-color);
@@ -214,7 +198,6 @@ const scrollToTop = () => {
   padding: 4rem 2rem 2rem;
   position: relative;
 }
-
 .footer::before {
   content: '';
   position: absolute;
@@ -224,7 +207,6 @@ const scrollToTop = () => {
   height: 4px;
   background: linear-gradient(90deg, var(--primary-color), #fbbf24, var(--primary-color));
 }
-
 .footer-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -232,32 +214,27 @@ const scrollToTop = () => {
   flex-direction: column;
   gap: 3rem;
 }
-
 /* Top Section */
 .footer-top {
   display: grid;
   grid-template-columns: 1.5fr 2.5fr;
   gap: 4rem;
 }
-
 .brand-column {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
-
 .brand-header {
   display: flex;
   align-items: flex-start;
   gap: 1rem;
 }
-
 .brand-text {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 }
-
 .brand-name {
   font-size: 1.75rem;
   font-weight: 700;
@@ -265,33 +242,28 @@ const scrollToTop = () => {
   margin: 0;
   line-height: 1.2;
 }
-
 .brand-motto {
   font-size: 0.875rem;
   color: var(--primary-color);
   margin: 0;
   font-weight: 500;
 }
-
 .brand-description {
   font-size: 0.95rem;
   line-height: 1.7;
   color: var(--text-color);
   margin: 0;
 }
-
 .link-columns {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
 }
-
 .link-column {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
 }
-
 .column-title {
   font-size: 0.875rem;
   font-weight: 700;
@@ -302,7 +274,6 @@ const scrollToTop = () => {
   padding-bottom: 0.5rem;
   border-bottom: 2px solid var(--border-color);
 }
-
 .column-links {
   list-style: none;
   padding: 0;
@@ -311,7 +282,6 @@ const scrollToTop = () => {
   flex-direction: column;
   gap: 0.875rem;
 }
-
 .link-item {
   color: var(--text-color);
   text-decoration: none;
@@ -321,18 +291,15 @@ const scrollToTop = () => {
   align-items: center;
   gap: 0.5rem;
 }
-
 .link-item:hover {
   color: var(--primary-color);
   transform: translateX(4px);
 }
-
 .link-item i {
   font-size: 0.875rem;
   width: 16px;
   color: var(--primary-color);
 }
-
 /* Middle Section */
 .footer-middle {
   display: flex;
@@ -342,13 +309,11 @@ const scrollToTop = () => {
   border-top: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
 }
-
 .social-section {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
-
 .social-heading {
   font-size: 0.875rem;
   font-weight: 600;
@@ -357,12 +322,10 @@ const scrollToTop = () => {
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
-
 .social-links {
   display: flex;
   gap: 1rem;
 }
-
 .social-link {
   display: flex;
   align-items: center;
@@ -377,7 +340,6 @@ const scrollToTop = () => {
   position: relative;
   overflow: hidden;
 }
-
 .social-link::before {
   content: '';
   position: absolute;
@@ -388,24 +350,20 @@ const scrollToTop = () => {
   background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
   transition: left 0.5s ease;
 }
-
 .social-link:hover::before {
   left: 100%;
 }
-
 .social-link:hover {
   background: var(--primary-color);
   color: var(--background-color);
   transform: translateY(-3px);
   box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
 }
-
 .social-link i {
   font-size: 1.125rem;
   position: relative;
   z-index: 1;
 }
-
 .scroll-top-button {
   display: flex;
   align-items: center;
@@ -420,16 +378,13 @@ const scrollToTop = () => {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
 .scroll-top-button:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 24px rgba(245, 158, 11, 0.5);
 }
-
 .scroll-top-button i {
   font-size: 0.875rem;
 }
-
 /* Bottom Section */
 .footer-bottom {
   display: flex;
@@ -437,18 +392,15 @@ const scrollToTop = () => {
   align-items: center;
   padding-top: 1.5rem;
 }
-
 .copyright {
   margin: 0;
   font-size: 0.875rem;
   color: var(--text-color);
 }
-
 .footer-badges {
   display: flex;
   gap: 1rem;
 }
-
 .badge {
   display: flex;
   align-items: center;
@@ -462,84 +414,68 @@ const scrollToTop = () => {
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
-
 .badge i {
   color: var(--primary-color);
   font-size: 0.875rem;
 }
-
 /* Responsive Design */
 @media (max-width: 1024px) {
   .footer-top {
     grid-template-columns: 1fr;
     gap: 3rem;
   }
-
   .link-columns {
     grid-template-columns: repeat(2, 1fr);
   }
 }
-
 @media (max-width: 768px) {
   .footer {
     padding: 3rem 1.5rem 2rem;
   }
-
   .link-columns {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
-
   .footer-middle {
     flex-direction: column;
     gap: 2rem;
     text-align: center;
   }
-
   .social-section {
     align-items: center;
   }
-
   .footer-bottom {
     flex-direction: column;
     gap: 1.5rem;
     text-align: center;
   }
 }
-
 @media (max-width: 640px) {
   .brand-header {
     flex-direction: column;
     align-items: center;
     text-align: center;
   }
-
   .social-links {
     flex-wrap: wrap;
     justify-content: center;
   }
-
   .footer-badges {
     flex-direction: column;
     width: 100%;
   }
-
   .badge {
     justify-content: center;
   }
 }
-
-
 @keyframes enter {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
 }
-
 @keyframes slideDown {
   from { transform: translateY(-10px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
-
 @keyframes glow {
   0%, 100% { box-shadow: 0 0 5px currentColor; }
   50% { box-shadow: 0 0 20px currentColor; }

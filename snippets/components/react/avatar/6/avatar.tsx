@@ -1,43 +1,33 @@
 import React from 'react';
-
 interface AvatarProps {
   src?: string;
   alt?: string;
-  size?: 'sm' | 'md' | 'lg';
-  status?: 'online' | 'offline' | 'away';
+  size?: number;
+  badge?: string;
 }
-
 export const Avatar: React.FC<AvatarProps> = ({
   src,
   alt = 'User',
-  size = 'md',
-  status
+  size = 64,
+  badge
 }) => {
-  const sizes = {
-    sm: 'w-8 h-8',
-    md: 'w-12 h-12',
-    lg: 'w-16 h-16'
-  };
-  
-  const statusColors = {
-    online: 'bg-green-500',
-    offline: 'bg-gray-400',
-    away: 'bg-yellow-500'
-  };
-  
+  const clipPath = 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)';
   return (
-    <div className="relative inline-block">
-      <div className={`${sizes[size]} rounded overflow-hidden bg-gradient-to-br from-amber-400 to-amber-600 shadow-lg ring-2 ring-white`}>
+    <div className="relative inline-block" style={{ width: size, height: size }}>
+      <div
+        className="w-full h-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center overflow-hidden shadow-lg"
+        style={{ clipPath }}
+      >
         {src ? (
           <img src={src} alt={alt} className="w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-white font-bold">
-            {alt[0].toUpperCase()}
-          </div>
+          <span className="text-white font-bold text-xl">{alt[0]?.toUpperCase()}</span>
         )}
       </div>
-      {status && (
-        <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${statusColors[status]} ring-2 ring-white`} />
+      {badge && (
+        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-2 py-0.5 font-semibold shadow">
+          {badge}
+        </span>
       )}
     </div>
   );

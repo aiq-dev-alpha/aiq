@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
-
 class CustomInputField extends StatefulWidget {
   final Widget? child;
   final VoidCallback? onTap;
   final Color? borderColor;
-
   const CustomInputField({
   Key? key,
   this.child,
   this.onTap,
   this.borderColor,
   }) : super(key: key);
-
   @override
   State<CustomInputField> createState() => _CustomInputFieldState();
 }
-
 class _CustomInputFieldState extends State<CustomInputField> {
   bool _isHovered = false;
-
   @override
   Widget build(BuildContext context) {
   return MouseRegion(

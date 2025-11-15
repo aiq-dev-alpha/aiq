@@ -1,6 +1,5 @@
 // Neon Cyberpunk Navbar
 import { Component } from '@angular/core';
-
 @Component({
   selector: 'app-navbar',
   template: `<nav class="cyber-nav"><div class="scan-line"></div><ng-content></ng-content></nav>`,

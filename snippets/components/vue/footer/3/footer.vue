@@ -29,7 +29,6 @@
           </p>
         </form>
       </div>
-
       <!-- Main Footer Content -->
       <div class="footer-main">
         <!-- Brand Section -->
@@ -56,7 +55,6 @@
             </a>
           </div>
         </div>
-
         <!-- Footer Links -->
         <div class="footer-links">
           <div
@@ -76,7 +74,6 @@
           </div>
         </div>
       </div>
-
       <!-- Bottom Bar -->
       <div class="footer-bottom">
         <div class="footer-bottom-content">
@@ -98,10 +95,8 @@
     </div>
   </footer>
 </template>
-
 <script setup lang="ts">
 import { ref, computed, defineProps, withDefaults } from 'vue';
-
 interface FooterTheme {
   primaryColor: string;
   backgroundColor: string;
@@ -109,29 +104,24 @@ interface FooterTheme {
   linkColor: string;
   borderColor: string;
 }
-
 interface FooterLink {
   id: string;
   label: string;
   url: string;
   icon?: string;
 }
-
 interface FooterSection {
   id: string;
   title: string;
   links: FooterLink[];
 }
-
 interface SocialLink {
   id: string;
   label: string;
   url: string;
   icon: string;
 }
-
 type FooterVariant = 'simple' | 'multi-column' | 'centered' | 'minimal' | 'newsletter';
-
 interface Props {
   sections?: FooterSection[];
   copyright?: string;
@@ -139,7 +129,6 @@ interface Props {
   variant?: FooterVariant;
   theme?: Partial<FooterTheme>;
 }
-
 const props = withDefaults(defineProps<Props>(), {
   sections: () => [
     {
@@ -194,7 +183,6 @@ const props = withDefaults(defineProps<Props>(), {
   variant: 'newsletter',
   theme: () => ({})
 });
-
 const defaultTheme: FooterTheme = {
   primaryColor: '#8b5cf6',
   backgroundColor: '#18181b',
@@ -202,12 +190,10 @@ const defaultTheme: FooterTheme = {
   linkColor: '#e4e4e7',
   borderColor: '#27272a'
 };
-
 const currentTheme = computed<FooterTheme>(() => ({
   ...defaultTheme,
   ...props.theme
 }));
-
 const computedStyles = computed(() => ({
   '--primary-color': currentTheme.value.primaryColor,
   '--background-color': currentTheme.value.backgroundColor,
@@ -215,11 +201,9 @@ const computedStyles = computed(() => ({
   '--link-color': currentTheme.value.linkColor,
   '--border-color': currentTheme.value.borderColor
 }));
-
 const email = ref('');
 const subscriptionMessage = ref('');
 const subscriptionSuccess = ref(false);
-
 const handleNewsletterSubmit = () => {
   if (email.value) {
     subscriptionSuccess.value = true;
@@ -230,25 +214,21 @@ const handleNewsletterSubmit = () => {
     }, 5000);
   }
 };
-
 const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 </script>
-
 <style scoped>
 .footer {
   background-color: var(--background-color);
   color: var(--text-color);
   border-top: 1px solid var(--border-color);
 }
-
 .footer-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
 }
-
 /* Newsletter Section */
 .newsletter-section {
   padding: 4rem 0;
@@ -258,13 +238,11 @@ const scrollToTop = () => {
   gap: 3rem;
   align-items: center;
 }
-
 .newsletter-content {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
-
 .newsletter-title {
   font-size: 2rem;
   font-weight: 700;
@@ -275,25 +253,21 @@ const scrollToTop = () => {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-
 .newsletter-description {
   font-size: 1rem;
   line-height: 1.6;
   color: var(--text-color);
   margin: 0;
 }
-
 .newsletter-form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
-
 .form-group {
   display: flex;
   gap: 0.75rem;
 }
-
 .newsletter-input {
   flex: 1;
   padding: 1rem 1.5rem;
@@ -304,17 +278,14 @@ const scrollToTop = () => {
   font-size: 1rem;
   transition: all 0.3s ease;
 }
-
 .newsletter-input:focus {
   outline: none;
   border-color: var(--primary-color);
   background: rgba(139, 92, 246, 0.1);
 }
-
 .newsletter-input::placeholder {
   color: var(--text-color);
 }
-
 .newsletter-button {
   padding: 1rem 2rem;
   background: linear-gradient(135deg, var(--primary-color), #a78bfa);
@@ -329,12 +300,10 @@ const scrollToTop = () => {
   align-items: center;
   gap: 0.5rem;
 }
-
 .newsletter-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
 }
-
 .subscription-message {
   margin: 0;
   padding: 0.75rem 1rem;
@@ -344,13 +313,11 @@ const scrollToTop = () => {
   color: var(--primary-color);
   border: 1px solid var(--primary-color);
 }
-
 .subscription-message.success {
   background: rgba(34, 197, 94, 0.1);
   color: #22c55e;
   border-color: #22c55e;
 }
-
 /* Main Footer */
 .footer-main {
   padding: 4rem 0;
@@ -358,37 +325,31 @@ const scrollToTop = () => {
   grid-template-columns: 1.5fr 2fr;
   gap: 4rem;
 }
-
 .footer-brand {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
-
 .brand-logo {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
-
 .brand-name {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--link-color);
 }
-
 .brand-description {
   font-size: 0.95rem;
   line-height: 1.6;
   color: var(--text-color);
   margin: 0;
 }
-
 .brand-social {
   display: flex;
   gap: 0.75rem;
 }
-
 .social-link {
   display: flex;
   align-items: center;
@@ -401,25 +362,21 @@ const scrollToTop = () => {
   text-decoration: none;
   transition: all 0.3s ease;
 }
-
 .social-link:hover {
   background: var(--primary-color);
   color: white;
   transform: translateY(-2px);
 }
-
 .footer-links {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
 }
-
 .link-group {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
-
 .link-group-title {
   font-size: 0.875rem;
   font-weight: 600;
@@ -428,7 +385,6 @@ const scrollToTop = () => {
   letter-spacing: 0.05em;
   margin: 0;
 }
-
 .link-list {
   list-style: none;
   padding: 0;
@@ -437,7 +393,6 @@ const scrollToTop = () => {
   flex-direction: column;
   gap: 0.75rem;
 }
-
 .footer-link {
   color: var(--text-color);
   text-decoration: none;
@@ -447,16 +402,13 @@ const scrollToTop = () => {
   align-items: center;
   gap: 0.5rem;
 }
-
 .footer-link:hover {
   color: var(--primary-color);
   padding-left: 0.25rem;
 }
-
 .footer-link i {
   font-size: 0.875rem;
 }
-
 /* Footer Bottom */
 .footer-bottom {
   padding: 2rem 0;
@@ -465,24 +417,20 @@ const scrollToTop = () => {
   justify-content: space-between;
   align-items: center;
 }
-
 .footer-bottom-content {
   display: flex;
   align-items: center;
   gap: 2rem;
 }
-
 .copyright {
   margin: 0;
   font-size: 0.875rem;
   color: var(--text-color);
 }
-
 .footer-badges {
   display: flex;
   gap: 0.5rem;
 }
-
 .badge {
   padding: 0.25rem 0.75rem;
   background: var(--border-color);
@@ -493,7 +441,6 @@ const scrollToTop = () => {
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
-
 .back-to-top {
   display: flex;
   align-items: center;
@@ -507,77 +454,61 @@ const scrollToTop = () => {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
 .back-to-top:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
 }
-
 /* Responsive Design */
 @media (max-width: 1024px) {
   .newsletter-section {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
-
   .footer-main {
     grid-template-columns: 1fr;
     gap: 3rem;
   }
-
   .footer-links {
     grid-template-columns: repeat(2, 1fr);
   }
 }
-
 @media (max-width: 768px) {
   .footer-container {
     padding: 0 1.5rem;
   }
-
   .newsletter-section {
     padding: 3rem 0;
   }
-
   .newsletter-title {
     font-size: 1.5rem;
   }
-
   .form-group {
     flex-direction: column;
   }
-
   .footer-main {
     padding: 3rem 0;
   }
-
   .footer-links {
     grid-template-columns: 1fr;
   }
-
   .footer-bottom {
     flex-direction: column;
     gap: 1.5rem;
   }
-
   .footer-bottom-content {
     flex-direction: column;
     gap: 1rem;
     text-align: center;
   }
 }
-
-
 @keyframes enter {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
 }
-
 @keyframes slideDown {
   from { transform: translateY(-10px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
-
 @keyframes glow {
   0%, 100% { box-shadow: 0 0 5px currentColor; }
   50% { box-shadow: 0 0 20px currentColor; }

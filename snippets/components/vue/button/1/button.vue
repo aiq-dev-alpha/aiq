@@ -8,10 +8,8 @@
     <slot />
   </button>
 </template>
-
 <script lang="ts">
 import { defineComponent } from 'vue';
-
 export default defineComponent({
   name: 'CustomButton',
   props: {
@@ -23,7 +21,6 @@ export default defineComponent({
   emits: ['click']
 });
 </script>
-
 <style scoped>
 .custom-btn {
   display: inline-flex;
@@ -35,27 +32,22 @@ export default defineComponent({
   cursor: pointer;
   transition: all 0.2s ease;
 }
-
 .custom-btn.primary {
   background: linear-gradient(135deg, #green400 0%, #green600 100%);
   color: white;
 }
-
 .custom-btn.primary:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
-
 .custom-btn.md {
   padding: 0.5rem 1rem;
   font-size: 1rem;
 }
-
 .custom-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
-
 .loader {
   width: 1rem;
   height: 1rem;
@@ -64,7 +56,6 @@ export default defineComponent({
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
-
 @keyframes spin {
   to { transform: rotate(360deg); }
 }

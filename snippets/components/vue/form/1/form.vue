@@ -3,10 +3,8 @@
     <slot />
   </div>
 </template>
-
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-
 export default defineComponent({
   name: 'Component',
   props: {
@@ -25,16 +23,13 @@ export default defineComponent({
       backgroundColor: '#ffffff',
       textColor: '#111827'
     };
-
     const appliedTheme = { ...defaultTheme, ...props.theme };
-
     const componentStyles = computed(() => ({
       padding: props.size === 'sm' ? '0.5rem' : props.size === 'lg' ? '1.5rem' : '1rem',
       backgroundColor: appliedTheme.backgroundColor,
       color: appliedTheme.textColor,
       borderRadius: '0.5rem'
     }));
-
     return { componentStyles };
   }
 });

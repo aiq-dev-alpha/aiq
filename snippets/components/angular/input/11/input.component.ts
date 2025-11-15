@@ -1,7 +1,6 @@
 // Liquid Morphing Input
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-
 @Component({
   selector: 'app-input',
   template: `<div class="liquid"><svg class="liquid-svg"><defs><filter id="goo"><feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/><feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo"/></feGaussianBlur></filter></defs></svg><input [type]="type" [placeholder]="placeholder" [value]="value" (input)="handleInput($event)" class="liquid-field" /></div>`,

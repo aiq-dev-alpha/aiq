@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-
 class CustomComponent extends StatefulWidget {
   final String text;
   final VoidCallback? onPressed;
   final Color? backgroundColor;
   final bool elevated;
-
   const CustomComponent({
   Key? key,
   this.text = 'Button',
@@ -13,14 +11,11 @@ class CustomComponent extends StatefulWidget {
   this.backgroundColor,
   this.elevated = true,
   }) : super(key: key);
-
   @override
   State<CustomComponent> createState() => _CustomComponentState();
 }
-
 class _CustomComponentState extends State<CustomComponent> {
   bool _isHovered = false;
-
   @override
   Widget build(BuildContext context) {
   return MouseRegion(

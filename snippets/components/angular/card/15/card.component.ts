@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface DesignSystem {
   colors: {
   surface: string;
@@ -23,30 +22,24 @@ interface DesignSystem {
   radius: string;
   };
 }
-
 type LayoutStyle = 'vertical' | 'horizontal' | 'compact' | 'feature';
-
 @Component({
   selector: 'app-card',
   template: `
   <article [ngStyle]="computedStyle" [ngClass]="layoutClass" class="card">
   <div *ngIf="badge" class="badge">{{ badge }}</div>
-
   <div *ngIf="thumbnail" class="thumbnail-section">
   <img [src]="thumbnail" [alt]="thumbnailAlt" class="thumbnail-img">
   </div>
-
   <div class="content-section">
   <header *ngIf="heading || meta" class="card-header-section">
   <div *ngIf="meta" class="meta-info">{{ meta }}</div>
   <h2 *ngIf="heading" class="heading">{{ heading }}</h2>
   <p *ngIf="description" class="description">{{ description }}</p>
   </header>
-
   <div class="main-content">
   <ng-content></ng-content>
   </div>
-
   <footer *ngIf="hasActions" class="card-actions">
   <ng-content select="[actions]"></ng-content>
   </footer>
@@ -134,18 +127,14 @@ type LayoutStyle = 'vertical' | 'horizontal' | 'compact' | 'feature';
   transform: translateY(-4px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
   }
-  
-  
   @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
   }
-  
   @keyframes slideIn {
   from { transform: translateX(-20px); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
   }
-  
   @keyframes scaleIn {
   from { transform: scale(0.95); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
@@ -164,7 +153,6 @@ export class CardComponent {
   @Input() hasActions = false;
   @Input() interactive = false;
   @Output() interact = new EventEmitter<MouseEvent>();
-
   private defaults: DesignSystem = {
   colors: {
   surface: '#ffffff',
@@ -188,7 +176,6 @@ export class CardComponent {
   radius: '18px'
   }
   };
-
   get system(): DesignSystem {
   return {
   colors: { ...this.defaults.colors, ...this.designSystem.colors },
@@ -197,11 +184,9 @@ export class CardComponent {
   effects: { ...this.defaults.effects, ...this.designSystem.effects }
   };
   }
-
   get layoutClass(): string {
   return this.layoutStyle;
   }
-
   get computedStyle(): Record<string, string> {
   const s = this.system;
   return {

@@ -1,6 +1,5 @@
 // Kanban Board Style List
 import { Component, Input } from '@angular/core';
-
 @Component({
   selector: 'app-list',
   template: `<div class="kanban-list"><div class="kanban-column" *ngFor="let column of columns"><div class="column-header">{{ column.title }}</div><div class="column-items"><div class="kanban-item" *ngFor="let item of column.items"><ng-content></ng-content></div></div></div></div>`,

@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface ButtonTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -8,7 +7,6 @@ interface ButtonTheme {
   borderColor: string;
   accentColor: string;
 }
-
 @Component({
   selector: 'app-button',
   template: `
@@ -45,7 +43,6 @@ interface ButtonTheme {
   gap: 0.5rem;
   box-shadow: 0 5px 20px rgba(20, 184, 166, 0.4);
   }
-
   .shimmer-button::before {
   content: '';
   position: absolute;
@@ -56,45 +53,37 @@ interface ButtonTheme {
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
   transition: left 0.7s;
   }
-
   .shimmer-button:hover:not(:disabled)::before {
   left: 100%;
   }
-
   .shimmer-button:hover:not(:disabled) {
   box-shadow: 0 8px 30px rgba(20, 184, 166, 0.6);
   transform: scale(1.03);
   }
-
   .shimmer-button:active:not(:disabled) {
   transform: scale(0.98);
   }
-
   .shimmer-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   }
-
   .double-ring-spinner {
   width: 1.2em;
   height: 1.2em;
   position: relative;
   display: inline-block;
   }
-
   .ring-outer, .ring-inner {
   position: absolute;
   border: 2px solid transparent;
   border-radius: 50%;
   }
-
   .ring-outer {
   width: 100%;
   height: 100%;
   border-top-color: currentColor;
   animation: spinOuter 1.5s linear infinite;
   }
-
   .ring-inner {
   width: 70%;
   height: 70%;
@@ -103,39 +92,32 @@ interface ButtonTheme {
   border-bottom-color: currentColor;
   animation: spinInner 1s linear infinite reverse;
   }
-
   @keyframes spinOuter {
   to { transform: rotate(360deg); }
   }
-
   @keyframes spinInner {
   to { transform: rotate(360deg); }
   }
-
   .btn-content {
   display: flex;
   align-items: center;
   position: relative;
   z-index: 1;
   }
-
   .icon-left, .icon-right {
   position: relative;
   z-index: 1;
   }
-
   .btn-sm {
   padding: 0.5rem 1.5rem;
   font-size: 0.875rem;
   border-radius: 0.5rem;
   }
-
   .btn-md {
   padding: 0.75rem 2rem;
   font-size: 1rem;
   border-radius: 0.75rem;
   }
-
   .btn-lg {
   padding: 1rem 2.5rem;
   font-size: 1.125rem;
@@ -153,7 +135,6 @@ export class ButtonComponent {
   @Input() iconRight: string = '';
   @Input() ariaLabel: string = '';
   @Output() clicked = new EventEmitter<MouseEvent>();
-
   private defaultTheme: ButtonTheme = {
   primaryColor: '#14b8a6',
   secondaryColor: '#0d9488',
@@ -163,11 +144,9 @@ export class ButtonComponent {
   borderColor: '#14b8a6',
   accentColor: '#2dd4bf'
   };
-
   get appliedTheme(): ButtonTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get buttonStyles() {
   const variantStyles = {
   default: {
@@ -192,10 +171,8 @@ export class ButtonComponent {
   boxShadow: `0 0 20px ${this.appliedTheme.primaryColor}`
   }
   };
-
   return variantStyles[this.variant];
   }
-
   handleClick(event: MouseEvent): void {
   if (!this.disabled && !this.loading) {
   this.clicked.emit(event);

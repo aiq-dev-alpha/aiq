@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 @Component({
   selector: 'app-component',
   standalone: true,
@@ -23,7 +22,6 @@ export class Component {
   @Input() theme: { primary?: string; background?: string; text?: string; } = {};
   @Input() className: string = '';
   @Output() interact = new EventEmitter<string>();
-  
   handleClick() {
     this.interact.emit('click');
   }

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-
 class CustomComponent extends StatefulWidget {
   final String text;
   final VoidCallback? onPressed;
   final IconData? leftIcon;
   final IconData? rightIcon;
-
   const CustomComponent({
   Key? key,
   this.text = 'Button',
@@ -13,14 +11,11 @@ class CustomComponent extends StatefulWidget {
   this.leftIcon,
   this.rightIcon,
   }) : super(key: key);
-
   @override
   State<CustomComponent> createState() => _CustomComponentState();
 }
-
 class _CustomComponentState extends State<CustomComponent> {
   bool _isPressed = false;
-
   @override
   Widget build(BuildContext context) {
   return GestureDetector(

@@ -1,7 +1,6 @@
 // Particle Effect Input - Animated particles on focus
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-
 @Component({
   selector: 'app-input',
   template: `<div class="particle-input" [class.active]="isFocused"><div class="particles"><span class="particle" *ngFor="let p of [1,2,3,4,5,6]"></span></div><input [type]="type" [placeholder]="placeholder" [value]="value" (input)="handleInput($event)" (focus)="isFocused=true" (blur)="isFocused=false" class="particle-field" /></div>`,

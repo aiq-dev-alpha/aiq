@@ -1,7 +1,6 @@
 // Skeuomorphic Realistic Input
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-
 @Component({
   selector: 'app-input',
   template: `<div class="skeu"><input [type]="type" [placeholder]="placeholder" [value]="value" (input)="handleInput($event)" class="skeu-field" /></div>`,

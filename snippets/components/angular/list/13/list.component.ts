@@ -1,12 +1,10 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface ListItem {
   id: string;
   title: string;
   subtitle?: string;
   avatar?: string;
 }
-
 @Component({
   selector: 'app-list',
   template: `
@@ -95,9 +93,7 @@ interface ListItem {
 export class ListComponent {
   @Input() items: ListItem[] = [];
   @Output() select = new EventEmitter<ListItem>();
-  
   hoveredId: string | null = null;
-
   onSelect(item: ListItem): void {
   this.select.emit(item);
   }

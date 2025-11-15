@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-
 class CustomComponent extends StatefulWidget {
   final String text;
   final VoidCallback? onPressed;
   final bool isLoading;
   final Color? color;
-
   const CustomComponent({
   Key? key,
   this.text = 'Button',
@@ -13,11 +11,9 @@ class CustomComponent extends StatefulWidget {
   this.isLoading = false,
   this.color,
   }) : super(key: key);
-
   @override
   State<CustomComponent> createState() => _CustomComponentState();
 }
-
 class _CustomComponentState extends State<CustomComponent> {
   @override
   Widget build(BuildContext context) {

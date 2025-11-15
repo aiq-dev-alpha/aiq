@@ -1,43 +1,42 @@
-import React from 'react';
-
+import React, { useState } from 'react';
 interface AvatarProps {
   src?: string;
   alt?: string;
   size?: 'sm' | 'md' | 'lg';
-  status?: 'online' | 'offline' | 'away';
+  showTooltip?: boolean;
 }
-
 export const Avatar: React.FC<AvatarProps> = ({
   src,
   alt = 'User',
   size = 'md',
-  status
+  showTooltip = false
 }) => {
+  const [isHovered, setIsHovered] = useState(false);
   const sizes = {
-    sm: 'w-8 h-8',
-    md: 'w-12 h-12',
-    lg: 'w-16 h-16'
+    sm: 'w-10 h-10',
+    md: 'w-16 h-16',
+    lg: 'w-24 h-24'
   };
-  
-  const statusColors = {
-    online: 'bg-green-500',
-    offline: 'bg-gray-400',
-    away: 'bg-yellow-500'
-  };
-  
   return (
-    <div className="relative inline-block">
-      <div className={`${sizes[size]} rounded-lg overflow-hidden bg-gradient-to-br from-amber-400 to-amber-600 shadow-2xl ring-2 ring-white`}>
-        {src ? (
-          <img src={src} alt={alt} className="w-full h-full object-cover" />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-white font-bold">
-            {alt[0].toUpperCase()}
-          </div>
-        )}
+    <div
+      className="relative inline-block"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className={`${sizes[size]} relative`}>
+        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 animate-spin" style={{ animationDuration: '3s' }} />
+        <div className={`${sizes[size]} rounded-full overflow-hidden absolute inset-1 bg-white flex items-center justify-center shadow-inner`}>
+          {src ? (
+            <img src={src} alt={alt} className="w-full h-full object-cover" />
+          ) : (
+            <span className="text-gray-700 font-semibold">{alt[0]?.toUpperCase()}</span>
+          )}
+        </div>
       </div>
-      {status && (
-        <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${statusColors[status]} ring-2 ring-white`} />
+      {showTooltip && isHovered && (
+        <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-2 py-1 rounded text-sm whitespace-nowrap">
+          {alt}
+        </div>
       )}
     </div>
   );

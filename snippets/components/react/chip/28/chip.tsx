@@ -1,35 +1,40 @@
-import React from 'react';
-
+import React, { useState } from 'react';
 interface ChipProps {
   label: string;
-  onDelete?: () => void;
-  clickable?: boolean;
-  onClick?: () => void;
-  icon?: React.ReactNode;
+  selected?: boolean;
+  onChange?: (selected: boolean) => void;
+  disabled?: boolean;
 }
-
 export const Chip: React.FC<ChipProps> = ({
   label,
-  onDelete,
-  clickable = false,
-  onClick,
-  icon
+  selected: controlledSelected,
+  onChange,
+  disabled = false
 }) => {
+  const [internalSelected, setInternalSelected] = useState(false);
+  const selected = controlledSelected ?? internalSelected;
+  const handleClick = () => {
+    if (disabled) return;
+    const newSelected = !selected;
+    setInternalSelected(newSelected);
+    onChange?.(newSelected);
+  };
   return (
-    <span
-      onClick={clickable ? onClick : undefined}
-      className={`inline-flex items-center gap-1.5 px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-800 transition-colors ${clickable ? 'cursor-pointer hover:bg-purple-200' : ''} ${shadow}`}
+    <button
+      onClick={handleClick}
+      disabled={disabled}
+      className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+        selected
+          ? 'bg-indigo-600 text-white ring-indigo-500 shadow-md scale-105'
+          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+      } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
     >
-      {icon}
-      <span className="font-medium">{label}</span>
-      {onDelete && (
-        <button
-          onClick={onDelete}
-          className="ml-0.5 hover:bg-purple-200 rounded-full p-0.5"
-        >
-          ✕
-        </button>
+      {selected && (
+        <svg className="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+        </svg>
       )}
-    </span>
+      {label}
+    </button>
   );
 };

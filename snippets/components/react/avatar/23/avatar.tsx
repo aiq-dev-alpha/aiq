@@ -1,44 +1,49 @@
 import React from 'react';
-
 interface AvatarProps {
   src?: string;
   alt?: string;
-  size?: 'sm' | 'md' | 'lg';
-  status?: 'online' | 'offline' | 'away';
+  activityLevel?: number;
+  size?: number;
 }
-
 export const Avatar: React.FC<AvatarProps> = ({
   src,
   alt = 'User',
-  size = 'md',
-  status
+  activityLevel = 0,
+  size = 80
 }) => {
-  const sizes = {
-    sm: 'w-8 h-8',
-    md: 'w-12 h-12',
-    lg: 'w-16 h-16'
-  };
-  
-  const statusColors = {
-    online: 'bg-green-500',
-    offline: 'bg-gray-400',
-    away: 'bg-yellow-500'
-  };
-  
+  const strokeColor = activityLevel > 70 ? '#10b981' : activityLevel > 30 ? '#f59e0b' : '#ef4444';
+  const circumference = 2 * Math.PI * 36;
+  const strokeDashoffset = circumference - (activityLevel / 100) * circumference;
   return (
-    <div className="relative inline-block">
-      <div className={`${sizes[size]} rounded overflow-hidden bg-gradient-to-br from-indigo-400 to-indigo-600 shadow-sm ring-2 ring-white`}>
+    <div className="relative inline-block" style={{ width: size, height: size }}>
+      <svg className="absolute inset-0 -rotate-90" viewBox="0 0 80 80">
+        <circle
+          cx="40"
+          cy="40"
+          r="36"
+          fill="none"
+          stroke="#e5e7eb"
+          strokeWidth="4"
+        />
+        <circle
+          cx="40"
+          cy="40"
+          r="36"
+          fill="none"
+          stroke={strokeColor}
+          strokeWidth="4"
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashoffset}
+          className="transition-all duration-500"
+        />
+      </svg>
+      <div className="absolute inset-3 rounded-full overflow-hidden bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center">
         {src ? (
           <img src={src} alt={alt} className="w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-white font-bold">
-            {alt[0].toUpperCase()}
-          </div>
+          <span className="text-white font-bold text-lg">{alt[0]?.toUpperCase()}</span>
         )}
       </div>
-      {status && (
-        <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${statusColors[status]} ring-2 ring-white`} />
-      )}
     </div>
   );
 };

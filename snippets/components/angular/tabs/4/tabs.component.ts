@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
-
 interface TabItem {
   id: string;
   label: string;
@@ -8,7 +7,6 @@ interface TabItem {
   content: string;
   disabled?: boolean;
 }
-
 interface TabsTheme {
   primaryColor: string;
   backgroundColor: string;
@@ -17,7 +15,6 @@ interface TabsTheme {
   borderColor: string;
   indicatorColor: string;
 }
-
 @Component({
   selector: 'app-tabs',
   template: `
@@ -58,7 +55,6 @@ export class TabsComponent {
   @Input() variant: 'default' | 'pills' | 'underline' | 'cards' | 'vertical' = 'vertical';
   @Input() activeTab: number = 0;
   @Output() tabChanged = new EventEmitter<number>();
-
   private defaultTheme: TabsTheme = {
   primaryColor: '#f59e0b',
   backgroundColor: '#fffbeb',
@@ -68,11 +64,9 @@ export class TabsComponent {
   borderColor: '#fde68a',
   indicatorColor: '#f59e0b'
   };
-
   get appliedTheme(): TabsTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get containerStyles() {
   return {
   display: 'flex',
@@ -81,7 +75,6 @@ export class TabsComponent {
   fontFamily: 'system-ui, -apple-system, sans-serif'
   };
   }
-
   get sidebarStyles() {
   return {
   display: 'flex',
@@ -94,11 +87,9 @@ export class TabsComponent {
   border: `1px solid ${this.appliedTheme.borderColor}`
   };
   }
-
   getTabStyles(index: number) {
   const isActive = this.activeTab === index;
   const isDisabled = this.tabs[index]?.disabled;
-
   return {
   position: 'relative',
   padding: '0.75rem 1rem',
@@ -119,7 +110,6 @@ export class TabsComponent {
   boxShadow: isActive ? '0 2px 4px rgba(245, 158, 11, 0.1)' : 'none'
   };
   }
-
   get indicatorStyles() {
   return {
   position: 'absolute',
@@ -131,13 +121,11 @@ export class TabsComponent {
   borderRadius: '0 4px 4px 0'
   };
   }
-
   get iconStyles() {
   return {
   fontSize: '1.25rem'
   };
   }
-
   get contentStyles() {
   return {
   flex: 1,
@@ -150,17 +138,14 @@ export class TabsComponent {
   border: `1px solid ${this.appliedTheme.borderColor}`
   };
   }
-
   selectTab(index: number) {
   if (!this.tabs[index]?.disabled && index !== this.activeTab) {
   this.activeTab = index;
   this.tabChanged.emit(index);
   }
   }
-
   onKeyDown(event: KeyboardEvent, currentIndex: number) {
   let newIndex = currentIndex;
-
   switch (event.key) {
   case 'ArrowDown':
   newIndex = (currentIndex + 1) % this.tabs.length;
@@ -177,14 +162,12 @@ export class TabsComponent {
   default:
   return;
   }
-
   event.preventDefault();
   while (this.tabs[newIndex]?.disabled && newIndex !== currentIndex) {
   newIndex = event.key === 'ArrowDown' || event.key === 'End'
   ? (newIndex + 1) % this.tabs.length
   : newIndex === 0 ? this.tabs.length - 1 : newIndex - 1;
   }
-
   this.selectTab(newIndex);
   }
 }

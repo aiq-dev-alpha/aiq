@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
-
 class CustomSection extends StatefulWidget {
   final Widget? child;
   final VoidCallback? onTap;
   final Color? color;
-
   const CustomSection({
   Key? key,
   this.child,
   this.onTap,
   this.color,
   }) : super(key: key);
-
   @override
   State<CustomSection> createState() => _CustomSectionState();
 }
-
 class _CustomSectionState extends State<CustomSection> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-
   @override
   void initState() {
   super.initState();
@@ -27,13 +22,11 @@ class _CustomSectionState extends State<CustomSection> with SingleTickerProvider
   vsync: this,
   );
   }
-
   @override
   void dispose() {
   _controller.dispose();
   super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
   return GestureDetector(

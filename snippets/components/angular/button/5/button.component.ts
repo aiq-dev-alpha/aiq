@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface ButtonTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -8,7 +7,6 @@ interface ButtonTheme {
   borderColor: string;
   hoverColor: string;
 }
-
 @Component({
   selector: 'app-button',
   template: `
@@ -100,7 +98,6 @@ export class ButtonComponent {
   @Input() fullWidth = false;
   @Input() borderRadius: 'sm' | 'md' | 'lg' | 'xl' = 'md';
   @Output() clicked = new EventEmitter<MouseEvent>();
-
   private defaultTheme: ButtonTheme = {
   primaryColor: '#ec4899',
   secondaryColor: '#db2777',
@@ -110,11 +107,9 @@ export class ButtonComponent {
   borderColor: '#f9a8d4',
   hoverColor: '#f472b6'
   };
-
   get appliedTheme(): ButtonTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get buttonStyles() {
   const t = this.appliedTheme;
   const sizeMap = {
@@ -123,14 +118,12 @@ export class ButtonComponent {
   lg: { padding: '17px 36px', fontSize: '17px', minHeight: '52px', gap: '11px' },
   xl: { padding: '21px 44px', fontSize: '19px', minHeight: '60px', gap: '13px' }
   };
-
   const radiusMap = {
   sm: '8px',
   md: '14px',
   lg: '20px',
   xl: '28px'
   };
-
   const variantMap = {
   solid: {
   background: t.primaryColor,
@@ -157,14 +150,12 @@ export class ButtonComponent {
   boxShadow: '0 2px 6px rgba(0, 0, 0, 0.05)'
   }
   };
-
   const bgStyle = variantMap[this.variant];
   const btnBg = this.variant === 'outline'
   ? { background: `${t.primaryColor}15` }
   : this.variant === 'soft'
   ? { background: t.hoverColor }
   : { background: t.secondaryColor };
-
   return {
   ...sizeMap[this.size],
   ...bgStyle,
@@ -178,7 +169,6 @@ export class ButtonComponent {
   '--btn-bg': bgStyle.background
   };
   }
-
   handleClick(event: MouseEvent): void {
   if (!this.disabled && !this.isProcessing) {
   this.clicked.emit(event);

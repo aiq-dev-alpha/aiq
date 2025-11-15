@@ -1,7 +1,6 @@
 // Animated Gradient Border Input
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-
 @Component({
   selector: 'app-input',
   template: `<div class="gradient-wrap"><div class="gradient-border"></div><input [type]="type" [placeholder]="placeholder" [value]="value" (input)="handleInput($event)" class="gradient-field" /></div>`,

@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
-
 class CustomAvatar extends StatefulWidget {
   final Widget? child;
   final VoidCallback? onTap;
-
   const CustomAvatar({
   Key? key,
   this.child,
   this.onTap,
   }) : super(key: key);
-
   @override
   State<CustomAvatar> createState() => _CustomAvatarState();
 }
-
 class _CustomAvatarState extends State<CustomAvatar> {
   bool _isHovered = false;
-
   @override
   Widget build(BuildContext context) {
   return MouseRegion(

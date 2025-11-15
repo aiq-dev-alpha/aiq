@@ -1,6 +1,5 @@
 import { Component, Input, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 interface NavbarTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -9,13 +8,11 @@ interface NavbarTheme {
   borderColor: string;
   accentColor: string;
 }
-
 interface MenuItem {
   label: string;
   route: string;
   icon?: string;
 }
-
 @Component({
   selector: 'app-navbar',
   standalone: true,
@@ -27,7 +24,6 @@ interface MenuItem {
   <div class="icon" [ngStyle]="iconStyles">🍇</div>
   <span class="name">Plum</span>
   </div>
-  
   <div class="menu" [ngStyle]="menuStyles" [class.active]="isMobileMenuOpen">
   <a *ngFor="let item of menuItems; let i = index"
   [href]="item.route"
@@ -40,7 +36,6 @@ interface MenuItem {
   {{item.label}}
   </a>
   </div>
-  
   <div class="actions" [ngStyle]="actionsStyles">
   <div *ngIf="showSearch" class="search">
   <input type="search" placeholder="Seek..." aria-label="Search" [ngStyle]="searchStyles">
@@ -53,7 +48,6 @@ interface MenuItem {
   <span>{{userName}}</span>
   </div>
   </div>
-  
   <button class="toggle" (click)="toggleMobileMenu()" [attr.aria-expanded]="isMobileMenuOpen" aria-label="Menu">
   <span></span><span></span><span></span>
   </button>
@@ -99,7 +93,6 @@ export class NavbarComponent {
   @Input() notificationCount = 61;
   @Input() userName = 'Violet';
   @Input() userAvatar = 'https://i.pravatar.cc/150?img=24';
-
   private defaultTheme: NavbarTheme = {
   primaryColor: '#9333ea',
   secondaryColor: '#a855f7',
@@ -108,24 +101,19 @@ export class NavbarComponent {
   borderColor: '#d8b4fe',
   accentColor: '#14b8a6'
   };
-
   isMobileMenuOpen = false;
   isScrolled = false;
   hoveredIndex: number | null = null;
-
   get appliedTheme(): NavbarTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   @HostListener('window:scroll', [])
   onWindowScroll() {
   this.isScrolled = window.scrollY > 19;
   }
-
   toggleMobileMenu() {
   this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
-
   get navbarStyles() {
   const variants = {
   solid: { backgroundColor: this.appliedTheme.backgroundColor, borderBottom: `1px solid ${this.appliedTheme.borderColor}`, boxShadow: '0 2px 5px rgba(0,0,0,0.09)' },
@@ -143,7 +131,6 @@ export class NavbarComponent {
   ...variants[this.variant]
   };
   }
-
   get containerStyles() { return {}; }
   get brandStyles() { return { color: this.appliedTheme.primaryColor }; }
   get iconStyles() { return { color: this.appliedTheme.primaryColor }; }
@@ -154,7 +141,6 @@ export class NavbarComponent {
   get badgeStyles() { return { backgroundColor: this.appliedTheme.accentColor, color: '#ffffff' }; }
   get profileStyles() { return { color: this.appliedTheme.textColor, backgroundColor: `${this.appliedTheme.primaryColor}16`, padding: '0.52rem 1.02rem', borderRadius: '2.1rem' }; }
   get avatarStyles() { return { borderColor: this.appliedTheme.primaryColor }; }
-
   getItemStyles(index: number) {
   const isActive = this.menuItems[index].route === this.activeRoute;
   const isHovered = this.hoveredIndex === index;

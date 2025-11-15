@@ -1,6 +1,5 @@
 // Expanding Blob Navbar
 import { Component } from '@angular/core';
-
 @Component({
   selector: 'app-navbar',
   template: `<nav class="blob-nav"><div class="blob"></div><div class="nav-content"><ng-content></ng-content></div></nav>`,

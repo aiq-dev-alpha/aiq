@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
-
 class CustomNavigation extends StatefulWidget {
   final Widget? child;
   final VoidCallback? onTap;
   final Color? color;
-
   const CustomNavigation({
   Key? key,
   this.child,
   this.onTap,
   this.color,
   }) : super(key: key);
-
   @override
   State<CustomNavigation> createState() => _CustomNavigationState();
 }
-
 class _CustomNavigationState extends State<CustomNavigation> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-
   @override
   void initState() {
   super.initState();
@@ -27,13 +22,11 @@ class _CustomNavigationState extends State<CustomNavigation> with SingleTickerPr
   vsync: this,
   );
   }
-
   @override
   void dispose() {
   _controller.dispose();
   super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
   return GestureDetector(

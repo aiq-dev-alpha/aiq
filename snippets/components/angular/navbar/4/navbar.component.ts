@@ -1,6 +1,5 @@
 import { Component, Input, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 interface NavbarTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -9,14 +8,12 @@ interface NavbarTheme {
   borderColor: string;
   accentColor: string;
 }
-
 interface MenuItem {
   label: string;
   route: string;
   icon?: string;
   badge?: string;
 }
-
 @Component({
   selector: 'app-navbar',
   standalone: true,
@@ -32,7 +29,6 @@ interface MenuItem {
   </div>
   <span class="brand-title" [ngStyle]="brandTitleStyles">{{ brandName }}</span>
   </a>
-
   <div class="menu-items" [ngStyle]="menuItemsStyles" [class.active]="isMobileMenuOpen">
   <a *ngFor="let item of menuItems; let i = index"
   [href]="item.route"
@@ -48,7 +44,6 @@ interface MenuItem {
   </a>
   </div>
   </div>
-
   <!-- Right Section: Actions -->
   <div class="nav-right" [ngStyle]="rightStyles">
   <!-- Search Input -->
@@ -62,7 +57,6 @@ interface MenuItem {
   <button class="search-clear" [ngStyle]="searchClearStyles" aria-label="Clear">✕</button>
   </div>
   </div>
-
   <!-- Action Buttons -->
   <div class="action-group" [ngStyle]="actionGroupStyles">
   <button *ngIf="showNotifications"
@@ -76,11 +70,9 @@ interface MenuItem {
   {{ notificationCount > 99 ? '99+' : notificationCount }}
   </span>
   </button>
-
   <button class="action-button" [ngStyle]="actionButtonStyles" aria-label="Settings">
   <span class="action-icon">⚙️</span>
   </button>
-
   <div *ngIf="showUserProfile" class="profile-section" [ngStyle]="profileSectionStyles">
   <button class="profile-button" [ngStyle]="profileButtonStyles" aria-label="User profile">
   <img [src]="userAvatar" alt="{{ userName }}" class="profile-pic" [ngStyle]="profilePicStyles">
@@ -93,7 +85,6 @@ interface MenuItem {
   </div>
   </div>
   </div>
-
   <!-- Mobile Menu Button -->
   <button class="mobile-menu-btn"
   [ngStyle]="mobileBtnStyles"
@@ -365,7 +356,6 @@ export class NavbarComponent {
   @Input() notificationCount = 24;
   @Input() userName = 'Taylor';
   @Input() userAvatar = 'https://i.pravatar.cc/150?img=5';
-
   private defaultTheme: NavbarTheme = {
   primaryColor: '#8b5cf6',
   secondaryColor: '#ec4899',
@@ -375,32 +365,25 @@ export class NavbarComponent {
   borderColor: '#374151',
   accentColor: '#f59e0b'
   };
-
   isMobileMenuOpen = false;
   isScrolled = false;
   hoveredIndex: number | null = null;
-
   get appliedTheme(): NavbarTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   @HostListener('window:scroll', [])
   onWindowScroll() {
   this.isScrolled = window.scrollY > 15;
   }
-
   toggleMobileMenu() {
   this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
-
   onHoverItem(index: number) {
   this.hoveredIndex = index;
   }
-
   onLeaveItem() {
   this.hoveredIndex = null;
   }
-
   get navbarStyles() {
   const variants = {
   solid: {
@@ -424,7 +407,6 @@ export class NavbarComponent {
   borderBottom: 'none'
   }
   };
-
   return {
   position: this.position,
   top: '0',
@@ -435,7 +417,6 @@ export class NavbarComponent {
   ...variants[this.variant]
   };
   }
-
   get contentStyles() {
   return {
   maxWidth: '1600px',
@@ -443,38 +424,31 @@ export class NavbarComponent {
   padding: '1.125rem 2rem'
   };
   }
-
   get leftStyles() {
   return {};
   }
-
   get brandLinkStyles() {
   return {
   color: this.appliedTheme.textColor
   };
   }
-
   get brandIconStyles() {
   return {
   background: `linear-gradient(135deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})`,
   boxShadow: `0 4px 16px ${this.appliedTheme.primaryColor}40`
   };
   }
-
   get brandTitleStyles() {
   return {
   color: 'inherit'
   };
   }
-
   get menuItemsStyles() {
   return {};
   }
-
   getMenuLinkStyles(index: number) {
   const isActive = this.menuItems[index].route === this.activeRoute;
   const isHovered = this.hoveredIndex === index;
-
   return {
   color: this.appliedTheme.textColor,
   backgroundColor: isActive
@@ -485,26 +459,21 @@ export class NavbarComponent {
   boxShadow: isActive ? `0 4px 12px ${this.appliedTheme.primaryColor}25` : 'none'
   };
   }
-
   get linkBadgeStyles() {
   return {
   backgroundColor: this.appliedTheme.accentColor,
   color: '#ffffff'
   };
   }
-
   get rightStyles() {
   return {};
   }
-
   get searchWrapperStyles() {
   return {};
   }
-
   get searchGroupStyles() {
   return {};
   }
-
   get searchFieldStyles() {
   return {
   width: '280px',
@@ -517,18 +486,15 @@ export class NavbarComponent {
   transition: 'all 0.3s'
   };
   }
-
   get searchClearStyles() {
   return {
   color: this.appliedTheme.textColor,
   fontSize: '0.875rem'
   };
   }
-
   get actionGroupStyles() {
   return {};
   }
-
   get actionButtonStyles() {
   return {
   backgroundColor: `${this.appliedTheme.primaryColor}15`,
@@ -536,18 +502,15 @@ export class NavbarComponent {
   border: `1px solid ${this.appliedTheme.primaryColor}25`
   };
   }
-
   get actionBadgeStyles() {
   return {
   backgroundColor: this.appliedTheme.accentColor,
   color: '#ffffff'
   };
   }
-
   get profileSectionStyles() {
   return {};
   }
-
   get profileButtonStyles() {
   return {
   backgroundColor: `${this.appliedTheme.primaryColor}15`,
@@ -555,13 +518,11 @@ export class NavbarComponent {
   border: `1px solid ${this.appliedTheme.primaryColor}25`
   };
   }
-
   get profilePicStyles() {
   return {
   border: `2px solid ${this.appliedTheme.primaryColor}`
   };
   }
-
   get mobileBtnStyles() {
   return {
   color: this.appliedTheme.textColor

@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
-
 class CustomToggleSwitch extends StatefulWidget {
   final Widget? child;
   final VoidCallback? onTap;
   final Color? color;
-
   const CustomToggleSwitch({
   Key? key,
   this.child,
   this.onTap,
   this.color,
   }) : super(key: key);
-
   @override
   State<CustomToggleSwitch> createState() => _CustomToggleSwitchState();
 }
-
 class _CustomToggleSwitchState extends State<CustomToggleSwitch> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-
   @override
   void initState() {
   super.initState();
@@ -27,13 +22,11 @@ class _CustomToggleSwitchState extends State<CustomToggleSwitch> with SingleTick
   vsync: this,
   );
   }
-
   @override
   void dispose() {
   _controller.dispose();
   super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
   return GestureDetector(

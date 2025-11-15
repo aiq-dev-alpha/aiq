@@ -1,12 +1,10 @@
 import React from 'react';
-
 interface AvatarProps {
   src?: string;
   alt?: string;
   size?: 'sm' | 'md' | 'lg';
   status?: 'online' | 'offline' | 'away';
 }
-
 export const Avatar: React.FC<AvatarProps> = ({
   src,
   alt = 'User',
@@ -18,13 +16,11 @@ export const Avatar: React.FC<AvatarProps> = ({
     md: 'w-12 h-12',
     lg: 'w-16 h-16'
   };
-  
   const statusColors = {
     online: 'bg-green-500',
     offline: 'bg-gray-400',
     away: 'bg-yellow-500'
   };
-  
   return (
     <div className="relative inline-block">
       <div className={`${sizes[size]} rounded overflow-hidden bg-gradient-to-br from-blue-400 to-blue-600 shadow-sm ring-2 ring-white`}>

@@ -1,6 +1,5 @@
 // Sticky Header with Shrink Animation
 import { Component, HostListener } from '@angular/core';
-
 @Component({
   selector: 'app-navbar',
   template: `<nav class="sticky-nav" [class.scrolled]="scrolled"><ng-content></ng-content></nav>`,

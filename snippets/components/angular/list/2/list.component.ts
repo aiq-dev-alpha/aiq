@@ -1,12 +1,10 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface ListItem {
   id: string | number;
   content: string;
   icon?: string;
   metadata?: any;
 }
-
 interface ListTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -15,7 +13,6 @@ interface ListTheme {
   borderColor: string;
   hoverColor: string;
 }
-
 @Component({
   selector: 'app-list',
   template: `
@@ -87,9 +84,7 @@ export class ListComponent {
   @Input() loading: boolean = false;
   @Output() itemClicked = new EventEmitter<ListItem>();
   @Output() selectionChanged = new EventEmitter<ListItem[]>();
-
   selectedItems: Set<string | number> = new Set();
-
   private defaultTheme: ListTheme = {
   primaryColor: '#10b981',
   secondaryColor: '#059669',
@@ -99,11 +94,9 @@ export class ListComponent {
   borderColor: '#d1fae5',
   hoverColor: '#a7f3d0'
   };
-
   get appliedTheme(): ListTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get containerStyles() {
   return {
   backgroundColor: this.appliedTheme.backgroundColor,
@@ -112,17 +105,14 @@ export class ListComponent {
   borderRadius: '20px'
   };
   }
-
   getItemStyles(item: ListItem) {
   return {
   color: this.appliedTheme.textColor
   };
   }
-
   isSelected(item: ListItem): boolean {
   return this.selectedItems.has(item.id);
   }
-
   onItemClick(item: ListItem) {
   this.itemClicked.emit(item);
   if (this.selectable) {

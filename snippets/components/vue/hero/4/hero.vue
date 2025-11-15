@@ -19,20 +19,17 @@
       <div class="hero-overlay" :style="{ backgroundColor: currentTheme.overlayColor }"></div>
       <div class="animated-gradient"></div>
     </div>
-
     <div class="hero-content">
       <div class="content-wrapper">
         <div class="badge animate-bounce-in" :style="{ backgroundColor: currentTheme.accentColor }">
           <span :style="{ color: currentTheme.textColor }">NEW</span>
         </div>
-
         <h1
           class="hero-title animate-zoom-in delay-1"
           :style="{ color: currentTheme.textColor }"
         >
           {{ title }}
         </h1>
-
         <p
           v-if="subtitle"
           class="hero-subtitle animate-zoom-in delay-2"
@@ -40,7 +37,6 @@
         >
           {{ subtitle }}
         </p>
-
         <p
           v-if="description"
           class="hero-description animate-zoom-in delay-3"
@@ -48,7 +44,6 @@
         >
           {{ description }}
         </p>
-
         <div
           v-if="ctaButtons && ctaButtons.length"
           class="hero-cta animate-zoom-in delay-4"
@@ -63,7 +58,6 @@
             {{ button.label }}
           </button>
         </div>
-
         <div class="hero-features animate-fade-in delay-5">
           <div class="feature-item">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
@@ -86,7 +80,6 @@
         </div>
       </div>
     </div>
-
     <div class="floating-shapes">
       <div class="shape shape-1" :style="{ backgroundColor: currentTheme.primaryColor }"></div>
       <div class="shape shape-2" :style="{ backgroundColor: currentTheme.accentColor }"></div>
@@ -94,10 +87,8 @@
     </div>
   </section>
 </template>
-
 <script setup lang="ts">
 import { computed, PropType } from 'vue'
-
 interface HeroTheme {
   primaryColor: string
   backgroundColor: string
@@ -105,15 +96,12 @@ interface HeroTheme {
   accentColor: string
   overlayColor: string
 }
-
 interface CtaButton {
   label: string
   onClick: () => void
   variant?: 'primary' | 'secondary' | 'outline'
 }
-
 type VariantType = 'full-screen' | 'split' | 'centered' | 'minimal' | 'video-bg' | 'gradient'
-
 const props = defineProps({
   title: {
     type: String,
@@ -148,7 +136,6 @@ const props = defineProps({
     default: () => ({})
   }
 })
-
 const defaultTheme: HeroTheme = {
   primaryColor: '#ec4899',
   backgroundColor: '#1f2937',
@@ -156,16 +143,13 @@ const defaultTheme: HeroTheme = {
   accentColor: '#f472b6',
   overlayColor: 'rgba(31, 41, 55, 0.75)'
 }
-
 const currentTheme = computed(() => ({
   ...defaultTheme,
   ...props.theme
 }))
-
 const heroStyles = computed(() => ({
   backgroundColor: currentTheme.value.backgroundColor
 }))
-
 const getButtonStyles = (variant?: string) => {
   if (variant === 'secondary') {
     return {
@@ -188,7 +172,6 @@ const getButtonStyles = (variant?: string) => {
   }
 }
 </script>
-
 <style scoped>
 .hero-video-bg {
   position: relative;
@@ -198,7 +181,6 @@ const getButtonStyles = (variant?: string) => {
   justify-content: center;
   overflow: hidden;
 }
-
 .hero-background-container {
   position: absolute;
   top: 0;
@@ -207,7 +189,6 @@ const getButtonStyles = (variant?: string) => {
   height: 100%;
   z-index: 0;
 }
-
 .hero-video-placeholder {
   position: absolute;
   top: 0;
@@ -220,11 +201,9 @@ const getButtonStyles = (variant?: string) => {
   align-items: center;
   justify-content: center;
 }
-
 .video-play-icon {
   animation: pulse 2s ease-in-out infinite;
 }
-
 .hero-overlay {
   position: absolute;
   top: 0;
@@ -233,7 +212,6 @@ const getButtonStyles = (variant?: string) => {
   height: 100%;
   z-index: 1;
 }
-
 .animated-gradient {
   position: absolute;
   top: 0;
@@ -248,7 +226,6 @@ const getButtonStyles = (variant?: string) => {
   animation: gradientShift 10s ease infinite;
   z-index: 2;
 }
-
 .hero-content {
   position: relative;
   z-index: 3;
@@ -256,11 +233,9 @@ const getButtonStyles = (variant?: string) => {
   padding: 2rem;
   width: 100%;
 }
-
 .content-wrapper {
   text-align: center;
 }
-
 .badge {
   display: inline-block;
   padding: 0.5rem 1.25rem;
@@ -270,7 +245,6 @@ const getButtonStyles = (variant?: string) => {
   margin-bottom: 1.5rem;
   letter-spacing: 0.05em;
 }
-
 .hero-title {
   font-size: 4rem;
   font-weight: 900;
@@ -279,7 +253,6 @@ const getButtonStyles = (variant?: string) => {
   letter-spacing: -0.03em;
   text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
-
 .hero-subtitle {
   font-size: 1.75rem;
   font-weight: 600;
@@ -287,7 +260,6 @@ const getButtonStyles = (variant?: string) => {
   opacity: 0.95;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
-
 .hero-description {
   font-size: 1.25rem;
   line-height: 1.6;
@@ -298,7 +270,6 @@ const getButtonStyles = (variant?: string) => {
   opacity: 0.9;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
-
 .hero-cta {
   display: flex;
   gap: 1rem;
@@ -306,7 +277,6 @@ const getButtonStyles = (variant?: string) => {
   flex-wrap: wrap;
   margin-bottom: 2rem;
 }
-
 .hero-button {
   padding: 1.125rem 2.5rem;
   font-size: 1.125rem;
@@ -316,12 +286,10 @@ const getButtonStyles = (variant?: string) => {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
 .hero-button:hover {
   transform: translateY(-3px);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
 }
-
 .hero-features {
   display: flex;
   gap: 2rem;
@@ -329,7 +297,6 @@ const getButtonStyles = (variant?: string) => {
   flex-wrap: wrap;
   opacity: 0.95;
 }
-
 .feature-item {
   display: flex;
   align-items: center;
@@ -337,7 +304,6 @@ const getButtonStyles = (variant?: string) => {
   color: white;
   font-size: 0.95rem;
 }
-
 .floating-shapes {
   position: absolute;
   top: 0;
@@ -347,13 +313,11 @@ const getButtonStyles = (variant?: string) => {
   z-index: 1;
   pointer-events: none;
 }
-
 .shape {
   position: absolute;
   border-radius: 50%;
   opacity: 0.1;
 }
-
 .shape-1 {
   width: 300px;
   height: 300px;
@@ -361,7 +325,6 @@ const getButtonStyles = (variant?: string) => {
   left: 10%;
   animation: float 20s ease-in-out infinite;
 }
-
 .shape-2 {
   width: 200px;
   height: 200px;
@@ -369,7 +332,6 @@ const getButtonStyles = (variant?: string) => {
   right: 15%;
   animation: float 15s ease-in-out infinite reverse;
 }
-
 .shape-3 {
   width: 150px;
   height: 150px;
@@ -377,7 +339,6 @@ const getButtonStyles = (variant?: string) => {
   left: 20%;
   animation: float 25s ease-in-out infinite;
 }
-
 @keyframes pulse {
   0%, 100% {
     transform: scale(1);
@@ -388,7 +349,6 @@ const getButtonStyles = (variant?: string) => {
     opacity: 1;
   }
 }
-
 @keyframes gradientShift {
   0% {
     background-position: 0% 50%;
@@ -400,7 +360,6 @@ const getButtonStyles = (variant?: string) => {
     background-position: 0% 50%;
   }
 }
-
 @keyframes float {
   0%, 100% {
     transform: translateY(0) rotate(0deg);
@@ -409,42 +368,33 @@ const getButtonStyles = (variant?: string) => {
     transform: translateY(-30px) rotate(180deg);
   }
 }
-
 .animate-bounce-in {
   animation: bounceIn 0.6s ease-out forwards;
   opacity: 0;
 }
-
 .animate-zoom-in {
   animation: zoomIn 0.8s ease-out forwards;
   opacity: 0;
 }
-
 .animate-fade-in {
   animation: fadeIn 1s ease-out forwards;
   opacity: 0;
 }
-
 .delay-1 {
   animation-delay: 0.2s;
 }
-
 .delay-2 {
   animation-delay: 0.4s;
 }
-
 .delay-3 {
   animation-delay: 0.6s;
 }
-
 .delay-4 {
   animation-delay: 0.8s;
 }
-
 .delay-5 {
   animation-delay: 1s;
 }
-
 @keyframes bounceIn {
   0% {
     opacity: 0;
@@ -461,7 +411,6 @@ const getButtonStyles = (variant?: string) => {
     transform: scale(1) translateY(0);
   }
 }
-
 @keyframes zoomIn {
   from {
     opacity: 0;
@@ -472,7 +421,6 @@ const getButtonStyles = (variant?: string) => {
     transform: scale(1);
   }
 }
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -481,31 +429,25 @@ const getButtonStyles = (variant?: string) => {
     opacity: 1;
   }
 }
-
 @media (max-width: 768px) {
   .hero-title {
     font-size: 2.25rem;
   }
-
   .hero-subtitle {
     font-size: 1.25rem;
   }
-
   .hero-description {
     font-size: 1rem;
   }
-
   .hero-button {
     padding: 1rem 2rem;
     font-size: 1rem;
   }
-
   .hero-features {
     flex-direction: column;
     gap: 1rem;
     align-items: center;
   }
-
   .shape {
     display: none;
   }

@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface ButtonTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -8,7 +7,6 @@ interface ButtonTheme {
   borderColor: string;
   shadowColor: string;
 }
-
 @Component({
   selector: 'app-button',
   template: `
@@ -79,7 +77,6 @@ export class ButtonComponent {
   @Input() ariaLabel?: string;
   @Input() fullWidth = false;
   @Output() clicked = new EventEmitter<MouseEvent>();
-
   private defaultTheme: ButtonTheme = {
   primaryColor: '#3b82f6',
   secondaryColor: '#8b5cf6',
@@ -89,11 +86,9 @@ export class ButtonComponent {
   borderColor: '#e2e8f0',
   shadowColor: 'rgba(59, 130, 246, 0.2)'
   };
-
   get appliedTheme(): ButtonTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get buttonStyles() {
   const t = this.appliedTheme;
   const sizeMap = {
@@ -101,7 +96,6 @@ export class ButtonComponent {
   md: { padding: '12px 24px', fontSize: '15px', minHeight: '40px', gap: '8px' },
   lg: { padding: '16px 32px', fontSize: '16px', minHeight: '48px', gap: '10px' }
   };
-
   const variantMap = {
   default: {
   background: t.backgroundColor,
@@ -122,7 +116,6 @@ export class ButtonComponent {
   boxShadow: `0 4px 12px ${t.shadowColor}`
   }
   };
-
   return {
   ...sizeMap[this.size],
   ...variantMap[this.variant],
@@ -134,7 +127,6 @@ export class ButtonComponent {
   justifyContent: 'center'
   };
   }
-
   handleClick(event: MouseEvent): void {
   if (!this.disabled && !this.loading) {
   this.clicked.emit(event);

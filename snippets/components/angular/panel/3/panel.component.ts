@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-
 interface PanelTheme {
   primaryColor: string;
   backgroundColor: string;
@@ -8,12 +7,10 @@ interface PanelTheme {
   headerColor: string;
   shadowColor: string;
 }
-
 @Component({
   selector: 'app-panel',
   template: `
   <div class="panel-container" [ngStyle]="panelStyles">
-  
   <div class="panel-header" [ngStyle]="headerStyles" (click)="toggle()">
   <div class="header-accent" [ngStyle]="accentStyles"></div>
   <div class="header-content">
@@ -52,9 +49,7 @@ interface PanelTheme {
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
-  
   }
-  
   .header-content {
   flex: 1;
   padding-left: 1rem;
@@ -77,7 +72,6 @@ interface PanelTheme {
   display: flex;
   align-items: center;
   gap: 1rem;
-  
   }
   .collapse-btn {
   background: linear-gradient(135deg, #ec4899, #8b5cf6);
@@ -100,7 +94,6 @@ interface PanelTheme {
   .panel-body {
   padding: 2rem;
   position: relative;
-  
   }
   .loading-overlay {
   position: absolute;
@@ -169,7 +162,6 @@ export class PanelComponent {
   @Input() headerActions: boolean = false;
   @Input() loading: boolean = false;
   @Output() toggled = new EventEmitter<boolean>();
-
   private defaultTheme: PanelTheme = {
   primaryColor: '#ec4899',
   backgroundColor: '#ffffff',
@@ -178,18 +170,15 @@ export class PanelComponent {
   headerColor: '#f9a8d4',
   shadowColor: 'rgba(236, 72, 153, 0.2)'
   };
-
   get appliedTheme(): PanelTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   toggle() {
   if (this.collapsible) {
   this.collapsed = !this.collapsed;
   this.toggled.emit(this.collapsed);
   }
   }
-
   get panelStyles() {
   return {
   background: this.appliedTheme.backgroundColor,
@@ -197,20 +186,17 @@ export class PanelComponent {
   boxShadow: `0 20px 25px -5px ${this.appliedTheme.shadowColor}`
   };
   }
-
   get headerStyles() {
   return {
   background: this.appliedTheme.backgroundColor,
   borderBottom: `1px solid ${this.appliedTheme.borderColor}`
   };
   }
-
   get bodyStyles() {
   return {
   backgroundColor: this.appliedTheme.backgroundColor
   };
   }
-
   get titleStyles() {
   return {
   background: `linear-gradient(135deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.headerColor})`,
@@ -219,11 +205,9 @@ export class PanelComponent {
   backgroundClip: 'text'
   };
   }
-
   get buttonStyles() {
   return {};
   }
-
   get loadingStyles() {
   return {
   backgroundColor: 'rgba(255, 255, 255, 0.9)',

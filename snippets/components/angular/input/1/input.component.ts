@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-
 interface InputTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -10,7 +9,6 @@ interface InputTheme {
   focusColor: string;
   errorColor: string;
 }
-
 @Component({
   selector: 'app-input',
   template: `
@@ -133,14 +131,11 @@ export class InputComponent implements ControlValueAccessor {
   @Input() ariaLabel?: string;
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
   @Output() valueChange = new EventEmitter<string>();
-
   value: string = '';
   isFocused = false;
   inputId = `input-${Math.random().toString(36).substr(2, 9)}`;
-
   private onChange: (value: string) => void = () => {};
   private onTouched: () => void = () => {};
-
   private defaultTheme: InputTheme = {
   primaryColor: '#3b82f6',
   secondaryColor: '#8b5cf6',
@@ -151,24 +146,20 @@ export class InputComponent implements ControlValueAccessor {
   focusColor: '#3b82f6',
   errorColor: '#ef4444'
   };
-
   get appliedTheme(): InputTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get wrapperStyles() {
   return {
   fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
   };
   }
-
   get labelStyles() {
   const t = this.appliedTheme;
   return {
   color: t.textColor
   };
   }
-
   get inputStyles() {
   const t = this.appliedTheme;
   const sizeMap = {
@@ -176,7 +167,6 @@ export class InputComponent implements ControlValueAccessor {
   md: { padding: '10px 14px', fontSize: '14px', height: '40px' },
   lg: { padding: '12px 16px', fontSize: '16px', height: '48px' }
   };
-
   return {
   ...sizeMap[this.size],
   color: t.textColor,
@@ -187,7 +177,6 @@ export class InputComponent implements ControlValueAccessor {
   boxShadow: this.isFocused ? `0 0 0 3px ${t.focusColor}20` : 'none'
   };
   }
-
   get iconStyles() {
   const t = this.appliedTheme;
   const sizeMap = {
@@ -195,55 +184,45 @@ export class InputComponent implements ControlValueAccessor {
   md: { fontSize: '18px', padding: '0 10px' },
   lg: { fontSize: '20px', padding: '0 12px' }
   };
-
   return {
   ...sizeMap[this.size],
   color: t.textColor
   };
   }
-
   get helperStyles() {
   const t = this.appliedTheme;
   return {
   color: `${t.textColor}99`
   };
   }
-
   get errorStyles() {
   const t = this.appliedTheme;
   return {
   color: t.errorColor
   };
   }
-
   onInput(event: Event): void {
   const value = (event.target as HTMLInputElement).value;
   this.value = value;
   this.onChange(value);
   this.valueChange.emit(value);
   }
-
   onFocus(): void {
   this.isFocused = true;
   }
-
   onBlur(): void {
   this.isFocused = false;
   this.onTouched();
   }
-
   writeValue(value: string): void {
   this.value = value || '';
   }
-
   registerOnChange(fn: (value: string) => void): void {
   this.onChange = fn;
   }
-
   registerOnTouched(fn: () => void): void {
   this.onTouched = fn;
   }
-
   setDisabledState(isDisabled: boolean): void {
   this.disabled = isDisabled;
   }

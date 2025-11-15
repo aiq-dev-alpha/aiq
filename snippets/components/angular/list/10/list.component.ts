@@ -1,12 +1,10 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface Theme {
   primaryColor: string;
   backgroundColor: string;
   textColor: string;
   borderColor: string;
 }
-
 @Component({
   selector: 'app-list',
   template: `
@@ -38,21 +36,17 @@ export class ListComponent {
   @Input() theme: Partial<Theme> = {};
   @Input() variant = 'default';
   @Output() interact = new EventEmitter<string>();
-
   active = false;
   hovered = false;
-
   private defaultTheme: Theme = {
   primaryColor: '#3b82f6',
   backgroundColor: '#ffffff',
   textColor: '#1f2937',
   borderColor: '#e5e7eb'
   };
-
   get appliedTheme(): Theme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get styles() {
   const t = this.appliedTheme;
   return {
@@ -70,7 +64,6 @@ export class ListComponent {
   gap: '8px'
   };
   }
-
   handleClick(): void {
   this.active = !this.active;
   this.interact.emit('list_v10');

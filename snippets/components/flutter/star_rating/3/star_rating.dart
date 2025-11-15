@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
-
 class CustomComponent extends StatefulWidget {
   final Widget? child;
   final VoidCallback? onTap;
-
   const CustomComponent({
   Key? key,
   this.child,
   this.onTap,
   }) : super(key: key);
-
   @override
   State<CustomComponent> createState() => _CustomComponentState();
 }
-
 class _CustomComponentState extends State<CustomComponent> {
   bool _isHovered = false;
-
   @override
   Widget build(BuildContext context) {
   return MouseRegion(

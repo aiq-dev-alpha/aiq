@@ -1,6 +1,5 @@
 // Parallax Depth Card
 import { Component, Input } from '@angular/core';
-
 @Component({
   selector: 'app-card',
   template: `<div class="parallax-card" (mousemove)="onMouseMove($event)" (mouseleave)="onMouseLeave()" [style.transform]="transform"><div class="card-layer layer-1"></div><div class="card-layer layer-2"></div><div class="card-content"><ng-content></ng-content></div></div>`,

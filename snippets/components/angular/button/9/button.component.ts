@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface ButtonTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -8,7 +7,6 @@ interface ButtonTheme {
   borderColor: string;
   accentColor: string;
 }
-
 @Component({
   selector: 'app-button',
   template: `
@@ -42,27 +40,22 @@ interface ButtonTheme {
   gap: 0.5rem;
   box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
   }
-
   .neon-pulse-button:hover:not(:disabled) {
   transform: translateY(-2px) scale(1.02);
   box-shadow: 0 0 40px rgba(139, 92, 246, 0.6), 0 0 80px rgba(236, 72, 153, 0.4);
   animation: neonPulse 1.5s ease-in-out infinite;
   }
-
   .neon-pulse-button:active:not(:disabled) {
   transform: translateY(0) scale(0.98);
   }
-
   .neon-pulse-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   }
-
   @keyframes neonPulse {
   0%, 100% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.6), 0 0 80px rgba(236, 72, 153, 0.4); }
   50% { box-shadow: 0 0 60px rgba(139, 92, 246, 0.8), 0 0 120px rgba(236, 72, 153, 0.6); }
   }
-
   .neon-spinner {
   width: 1em;
   height: 1em;
@@ -71,28 +64,23 @@ interface ButtonTheme {
   border-radius: 50%;
   animation: neonSpin 0.8s linear infinite;
   }
-
   @keyframes neonSpin {
   to { transform: rotate(360deg); }
   }
-
   .btn-content {
   display: flex;
   align-items: center;
   }
-
   .btn-sm {
   padding: 0.5rem 1.25rem;
   font-size: 0.875rem;
   border-radius: 0.75rem;
   }
-
   .btn-md {
   padding: 0.75rem 1.75rem;
   font-size: 1rem;
   border-radius: 1rem;
   }
-
   .btn-lg {
   padding: 1rem 2.5rem;
   font-size: 1.125rem;
@@ -110,7 +98,6 @@ export class ButtonComponent {
   @Input() iconRight: string = '';
   @Input() ariaLabel: string = '';
   @Output() clicked = new EventEmitter<MouseEvent>();
-
   private defaultTheme: ButtonTheme = {
   primaryColor: '#8b5cf6',
   secondaryColor: '#ec4899',
@@ -120,11 +107,9 @@ export class ButtonComponent {
   borderColor: '#8b5cf6',
   accentColor: '#a78bfa'
   };
-
   get appliedTheme(): ButtonTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get buttonStyles() {
   const variantStyles = {
   default: {
@@ -148,10 +133,8 @@ export class ButtonComponent {
   border: 'none'
   }
   };
-
   return variantStyles[this.variant];
   }
-
   handleClick(event: MouseEvent): void {
   if (!this.disabled && !this.loading) {
   this.clicked.emit(event);

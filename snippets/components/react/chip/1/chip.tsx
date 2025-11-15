@@ -1,5 +1,4 @@
 import React from 'react';
-
 interface ChipProps {
   label: string;
   onDelete?: () => void;
@@ -7,7 +6,6 @@ interface ChipProps {
   onClick?: () => void;
   icon?: React.ReactNode;
 }
-
 export const Chip: React.FC<ChipProps> = ({
   label,
   onDelete,

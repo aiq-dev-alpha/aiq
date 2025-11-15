@@ -1,6 +1,5 @@
 // Modern Smooth Accordion with Icons
 import { Component, Input } from '@angular/core';
-
 @Component({
   selector: 'app-accordion',
   template: `
@@ -38,7 +37,6 @@ export class AccordionComponent {
   { title: 'Section 3', content: 'Content 3' }
   ];
   activeIndex: number | null = null;
-  
   toggle(index: number): void {
   this.activeIndex = this.activeIndex === index ? null : index;
   }

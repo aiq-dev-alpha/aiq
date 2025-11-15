@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
-
 class CustomTabs extends StatefulWidget {
   final Widget? child;
   final VoidCallback? onTap;
   final Color? color;
-
   const CustomTabs({
   Key? key,
   this.child,
   this.onTap,
   this.color,
   }) : super(key: key);
-
   @override
   State<CustomTabs> createState() => _CustomTabsState();
 }
-
 class _CustomTabsState extends State<CustomTabs> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-
   @override
   void initState() {
   super.initState();
@@ -27,13 +22,11 @@ class _CustomTabsState extends State<CustomTabs> with SingleTickerProviderStateM
   vsync: this,
   );
   }
-
   @override
   void dispose() {
   _controller.dispose();
   super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
   return GestureDetector(

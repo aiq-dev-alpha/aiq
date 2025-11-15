@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, HostListener } from '@angular/core';
-
 interface ModalTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -8,10 +7,8 @@ interface ModalTheme {
   borderColor: string;
   overlayColor: string;
 }
-
 type ModalSize = 'small' | 'medium' | 'large' | 'full';
 type ModalPosition = 'center' | 'top' | 'bottom' | 'left' | 'right';
-
 @Component({
   selector: 'app-modal',
   template: `
@@ -27,7 +24,6 @@ type ModalPosition = 'center' | 'top' | 'bottom' | 'left' | 'right';
   aria-modal="true"
   [attr.aria-labelledby]="'modal-title-' + modalId"
   [attr.aria-describedby]="'modal-body-' + modalId">
-
   <div class="modal-header" [ngStyle]="headerStyles">
   <h2 [id]="'modal-title-' + modalId" [ngStyle]="titleStyles">{{ title }}</h2>
   <button class="close-button"
@@ -38,13 +34,11 @@ type ModalPosition = 'center' | 'top' | 'bottom' | 'left' | 'right';
   <span aria-hidden="true">&times;</span>
   </button>
   </div>
-
   <div class="modal-body"
   [id]="'modal-body-' + modalId"
   [ngStyle]="bodyStyles">
   <ng-content></ng-content>
   </div>
-
   <div class="modal-footer" [ngStyle]="footerStyles" *ngIf="showFooter">
   <ng-content select="[footer]"></ng-content>
   </div>
@@ -101,18 +95,14 @@ type ModalPosition = 'center' | 'top' | 'bottom' | 'left' | 'right';
   outline: 2px solid currentColor;
   outline-offset: 2px;
   }
-  
-  
   @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
   }
-  
   @keyframes slideIn {
   from { transform: translateX(-20px); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
   }
-  
   @keyframes scaleIn {
   from { transform: scale(0.95); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
@@ -127,13 +117,10 @@ export class ModalComponent implements OnInit, OnDestroy {
   @Input() closeOnOverlayClick = true;
   @Input() showFooter = true;
   @Input() theme: Partial<ModalTheme> = {};
-
   @Output() modalClose = new EventEmitter<void>();
   @Output() modalOpen = new EventEmitter<void>();
-
   modalId = `modal-${Math.random().toString(36).substr(2, 9)}`;
   private previouslyFocusedElement: HTMLElement | null = null;
-
   private defaultTheme: ModalTheme = {
   primaryColor: '#3b82f6',
   secondaryColor: '#8b5cf6',
@@ -143,11 +130,9 @@ export class ModalComponent implements OnInit, OnDestroy {
   borderColor: '#e5e7eb',
   overlayColor: 'rgba(0, 0, 0, 0.5)'
   };
-
   get appliedTheme(): ModalTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get overlayStyles() {
   const positionMap = {
   center: { alignItems: 'center', justifyContent: 'center' },
@@ -156,7 +141,6 @@ export class ModalComponent implements OnInit, OnDestroy {
   left: { alignItems: 'center', justifyContent: 'flex-start', paddingLeft: '2rem' },
   right: { alignItems: 'center', justifyContent: 'flex-end', paddingRight: '2rem' }
   };
-
   return {
   backgroundColor: this.appliedTheme.overlayColor,
   backdropFilter: 'blur(2px)',
@@ -164,7 +148,6 @@ export class ModalComponent implements OnInit, OnDestroy {
   animation: 'fadeIn 0.25s ease-out'
   };
   }
-
   get containerStyles() {
   const sizeMap = {
   small: { width: '400px', maxWidth: '90vw' },
@@ -172,7 +155,6 @@ export class ModalComponent implements OnInit, OnDestroy {
   large: { width: '800px', maxWidth: '90vw' },
   full: { width: '95vw', height: '95vh' }
   };
-
   return {
   ...sizeMap[this.size],
   backgroundColor: this.appliedTheme.backgroundColor,
@@ -181,7 +163,6 @@ export class ModalComponent implements OnInit, OnDestroy {
   border: `1px solid ${this.appliedTheme.primaryColor}`
   };
   }
-
   get headerStyles() {
   return {
   padding: '1.5rem',
@@ -189,7 +170,6 @@ export class ModalComponent implements OnInit, OnDestroy {
   background: `linear-gradient(135deg, ${this.appliedTheme.primaryColor}10, transparent)`
   };
   }
-
   get titleStyles() {
   return {
   margin: '0',
@@ -199,7 +179,6 @@ export class ModalComponent implements OnInit, OnDestroy {
   letterSpacing: '-0.025em'
   };
   }
-
   get bodyStyles() {
   return {
   padding: '1.5rem',
@@ -207,7 +186,6 @@ export class ModalComponent implements OnInit, OnDestroy {
   lineHeight: '1.6'
   };
   }
-
   get footerStyles() {
   return {
   padding: '1rem 1.5rem',
@@ -219,25 +197,21 @@ export class ModalComponent implements OnInit, OnDestroy {
   backdropFilter: 'blur(10px)'
   };
   }
-
   get closeButtonStyles() {
   return {
   color: this.appliedTheme.primaryColor,
   opacity: '0.7'
   };
   }
-
   ngOnInit() {
   if (this.isOpen) {
   this.onOpen();
   }
   }
-
   ngOnDestroy() {
   this.restoreFocus();
   this.unlockBodyScroll();
   }
-
   ngOnChanges(changes: any) {
   if (changes.isOpen) {
   if (changes.isOpen.currentValue) {
@@ -247,61 +221,50 @@ export class ModalComponent implements OnInit, OnDestroy {
   }
   }
   }
-
   @HostListener('document:keydown.escape')
   onEscapeKey() {
   if (this.isOpen) {
   this.close();
   }
   }
-
   onOverlayClick() {
   if (this.closeOnOverlayClick) {
   this.close();
   }
   }
-
   close() {
   this.isOpen = false;
   this.onClose();
   this.modalClose.emit();
   }
-
   open() {
   this.isOpen = true;
   this.onOpen();
   this.modalOpen.emit();
   }
-
   private onOpen() {
   this.saveFocus();
   this.lockBodyScroll();
   setTimeout(() => this.setFocusTrap(), 100);
   }
-
   private onClose() {
   this.restoreFocus();
   this.unlockBodyScroll();
   }
-
   private saveFocus() {
   this.previouslyFocusedElement = document.activeElement as HTMLElement;
   }
-
   private restoreFocus() {
   if (this.previouslyFocusedElement) {
   this.previouslyFocusedElement.focus();
   }
   }
-
   private lockBodyScroll() {
   document.body.style.overflow = 'hidden';
   }
-
   private unlockBodyScroll() {
   document.body.style.overflow = '';
   }
-
   private setFocusTrap() {
   const modalElement = document.querySelector(`[id="${this.modalId}"]`);
   if (modalElement) {

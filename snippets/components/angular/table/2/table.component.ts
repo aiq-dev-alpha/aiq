@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface TableTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -9,19 +8,16 @@ interface TableTheme {
   headerBgColor: string;
   hoverColor: string;
 }
-
 interface TableColumn {
   key: string;
   label: string;
   sortable?: boolean;
   width?: string;
 }
-
 interface TableRow {
   [key: string]: any;
   id: string | number;
 }
-
 @Component({
   selector: 'app-table',
   template: `
@@ -36,13 +32,11 @@ interface TableRow {
   placeholder="Search..."
   aria-label="Search table">
   </div>
-
   <!-- Loading State -->
   <div *ngIf="loading" [ngStyle]="loadingStyles">
   <div [ngStyle]="spinnerStyles"></div>
   <p>Loading data...</p>
   </div>
-
   <!-- Table -->
   <div *ngIf="!loading" [ngStyle]="tableWrapperStyles">
   <table [ngStyle]="tableStyles">
@@ -82,7 +76,6 @@ interface TableRow {
   </div>
   </td>
   </tr>
-
   <!-- Data Rows -->
   <ng-container *ngFor="let row of paginatedData; let i = index">
   <tr [ngStyle]="getTrStyles(row)"
@@ -115,7 +108,6 @@ interface TableRow {
   </tbody>
   </table>
   </div>
-
   <!-- Pagination -->
   <div *ngIf="paginate && filteredData.length > 0" [ngStyle]="paginationStyles">
   <div [ngStyle]="paginationInfoStyles">
@@ -139,18 +131,14 @@ interface TableRow {
   `,
   styles: [`
   .table-container { width: 100%; }
-  
-  
   @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
   }
-  
   @keyframes slideIn {
   from { transform: translateX(-20px); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
   }
-  
   @keyframes scaleIn {
   from { transform: scale(0.95); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
@@ -172,19 +160,16 @@ export class TableComponent {
   @Input() expandable: boolean = false;
   @Input() hasActions: boolean = true;
   @Input() loading: boolean = false;
-
   @Output() rowClick = new EventEmitter<TableRow>();
   @Output() edit = new EventEmitter<TableRow>();
   @Output() delete = new EventEmitter<TableRow>();
   @Output() selectionChange = new EventEmitter<(string | number)[]>();
-
   searchTerm: string = '';
   sortKey: string = '';
   sortDirection: 'asc' | 'desc' | null = null;
   currentPage: number = 1;
   selectedRows: Set<string | number> = new Set();
   expandedRows: Set<string | number> = new Set();
-
   private defaultTheme: TableTheme = {
   primaryColor: '#2563eb',
   secondaryColor: '#3b82f6',
@@ -195,14 +180,11 @@ export class TableComponent {
   headerBgColor: '#f3f4f6',
   hoverColor: '#eff6ff'
   };
-
   get appliedTheme(): TableTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get filteredData(): TableRow[] {
   let result = [...this.data];
-
   if (this.searchTerm) {
   result = result.filter(row =>
   Object.values(row).some(val =>
@@ -210,7 +192,6 @@ export class TableComponent {
   )
   );
   }
-
   if (this.sortKey && this.sortDirection) {
   result.sort((a, b) => {
   const aVal = a[this.sortKey];
@@ -219,37 +200,29 @@ export class TableComponent {
   return aVal > bVal ? modifier : aVal < bVal ? -modifier : 0;
   });
   }
-
   return result;
   }
-
   get paginatedData(): TableRow[] {
   if (!this.paginate) return this.filteredData;
   const start = (this.currentPage - 1) * this.pageSize;
   return this.filteredData.slice(start, start + this.pageSize);
   }
-
   get totalPages(): number {
   return Math.ceil(this.filteredData.length / this.pageSize);
   }
-
   get startIndex(): number {
   return (this.currentPage - 1) * this.pageSize;
   }
-
   get endIndex(): number {
   return Math.min(this.startIndex + this.pageSize, this.filteredData.length);
   }
-
   get allSelected(): boolean {
   return this.paginatedData.length > 0 &&
   this.paginatedData.every(row => this.selectedRows.has(row.id));
   }
-
   get totalColumns(): number {
   return this.columns.length + (this.selectable ? 1 : 0) + (this.hasActions ? 1 : 0);
   }
-
   get containerStyles() {
   return {
   width: '100%',
@@ -259,14 +232,12 @@ export class TableComponent {
   overflow: 'hidden'
   };
   }
-
   get searchBarStyles() {
   return {
   padding: '16px',
   borderBottom: `1px solid ${this.appliedTheme.borderColor}`
   };
   }
-
   get searchInputStyles() {
   return {
   width: '100%',
@@ -277,7 +248,6 @@ export class TableComponent {
   outline: 'none'
   };
   }
-
   get tableWrapperStyles() {
   return {
   overflowX: 'auto',
@@ -285,7 +255,6 @@ export class TableComponent {
   overflowY: this.stickyHeader ? 'auto' : 'visible'
   };
   }
-
   get tableStyles() {
   return {
   width: '100%',
@@ -293,7 +262,6 @@ export class TableComponent {
   fontSize: this.size === 'compact' ? '13px' : this.size === 'comfortable' ? '14px' : '16px'
   };
   }
-
   get theadStyles() {
   return {
   backgroundColor: this.appliedTheme.headerBgColor,
@@ -302,7 +270,6 @@ export class TableComponent {
   zIndex: '10'
   };
   }
-
   get thStyles() {
   const padding = this.size === 'compact' ? '8px 12px' :
   this.size === 'comfortable' ? '12px 16px' : '16px 20px';
@@ -315,7 +282,6 @@ export class TableComponent {
   borderRight: this.bordered ? `1px solid ${this.appliedTheme.borderColor}` : 'none'
   };
   }
-
   get thContentStyles() {
   return {
   display: 'flex',
@@ -323,7 +289,6 @@ export class TableComponent {
   gap: '8px'
   };
   }
-
   get sortButtonStyles() {
   return {
   background: 'none',
@@ -334,12 +299,10 @@ export class TableComponent {
   padding: '2px 4px'
   };
   }
-
   getTrStyles(row: TableRow) {
   const isRowSelected = this.selectedRows.has(row.id);
   const padding = this.size === 'compact' ? '8px 12px' :
   this.size === 'comfortable' ? '12px 16px' : '16px 20px';
-
   return {
   backgroundColor: isRowSelected ? this.appliedTheme.hoverColor : 'transparent',
   cursor: 'pointer',
@@ -349,7 +312,6 @@ export class TableComponent {
   }
   };
   }
-
   get tdStyles() {
   const padding = this.size === 'compact' ? '8px 12px' :
   this.size === 'comfortable' ? '12px 16px' : '16px 20px';
@@ -360,7 +322,6 @@ export class TableComponent {
   color: this.appliedTheme.textColor
   };
   }
-
   get emptyStateStyles() {
   return {
   padding: '48px 16px',
@@ -368,13 +329,11 @@ export class TableComponent {
   color: '#9ca3af'
   };
   }
-
   get emptyStateContentStyles() {
   return {
   fontSize: '14px'
   };
   }
-
   get loadingStyles() {
   return {
   display: 'flex',
@@ -385,7 +344,6 @@ export class TableComponent {
   gap: '16px'
   };
   }
-
   get spinnerStyles() {
   return {
   width: '40px',
@@ -396,7 +354,6 @@ export class TableComponent {
   animation: 'spin 1s linear infinite'
   };
   }
-
   get paginationStyles() {
   return {
   display: 'flex',
@@ -407,13 +364,11 @@ export class TableComponent {
   fontSize: '14px'
   };
   }
-
   get paginationInfoStyles() {
   return {
   color: this.appliedTheme.textColor
   };
   }
-
   get paginationButtonGroupStyles() {
   return {
   display: 'flex',
@@ -421,7 +376,6 @@ export class TableComponent {
   alignItems: 'center'
   };
   }
-
   get paginationButtonStyles() {
   return {
   padding: '6px 12px',
@@ -433,21 +387,18 @@ export class TableComponent {
   fontSize: '14px'
   };
   }
-
   get pageNumberStyles() {
   return {
   color: this.appliedTheme.textColor,
   fontSize: '14px'
   };
   }
-
   get actionButtonGroupStyles() {
   return {
   display: 'flex',
   gap: '8px'
   };
   }
-
   get actionButtonStyles() {
   return {
   padding: '4px 8px',
@@ -459,7 +410,6 @@ export class TableComponent {
   fontSize: '12px'
   };
   }
-
   get deleteButtonStyles() {
   return {
   padding: '4px 8px',
@@ -472,24 +422,20 @@ export class TableComponent {
   fontSize: '12px'
   };
   }
-
   get expandedRowStyles() {
   return {
   backgroundColor: '#f9fafb',
   backdropFilter: 'blur(10px)'
   };
   }
-
   get expandedContentStyles() {
   return {
   padding: '16px'
   };
   }
-
   onSearch() {
   this.currentPage = 1;
   }
-
   onSort(key: string) {
   if (this.sortKey === key) {
   this.sortDirection = this.sortDirection === 'asc' ? 'desc' : this.sortDirection === 'desc' ? null : 'asc';
@@ -499,17 +445,14 @@ export class TableComponent {
   this.sortDirection = 'asc';
   }
   }
-
   getSortIcon(key: string): string {
   if (this.sortKey !== key) return '↕';
   return this.sortDirection === 'asc' ? '↑' : '↓';
   }
-
   getSortDirection(key: string): string | null {
   if (this.sortKey !== key) return null;
   return this.sortDirection === 'asc' ? 'ascending' : 'descending';
   }
-
   toggleSelect(id: string | number) {
   if (this.selectedRows.has(id)) {
   this.selectedRows.delete(id);
@@ -518,7 +461,6 @@ export class TableComponent {
   }
   this.selectionChange.emit(Array.from(this.selectedRows));
   }
-
   toggleSelectAll() {
   if (this.allSelected) {
   this.paginatedData.forEach(row => this.selectedRows.delete(row.id));
@@ -527,11 +469,9 @@ export class TableComponent {
   }
   this.selectionChange.emit(Array.from(this.selectedRows));
   }
-
   isSelected(id: string | number): boolean {
   return this.selectedRows.has(id);
   }
-
   onRowClick(row: TableRow) {
   if (this.expandable) {
   if (this.expandedRows.has(row.id)) {
@@ -542,21 +482,17 @@ export class TableComponent {
   }
   this.rowClick.emit(row);
   }
-
   onEdit(row: TableRow) {
   this.edit.emit(row);
   }
-
   onDelete(row: TableRow) {
   this.delete.emit(row);
   }
-
   nextPage() {
   if (this.currentPage < this.totalPages) {
   this.currentPage++;
   }
   }
-
   previousPage() {
   if (this.currentPage > 1) {
   this.currentPage--;

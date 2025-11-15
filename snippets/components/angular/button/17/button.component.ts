@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface ButtonTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -8,7 +7,6 @@ interface ButtonTheme {
   borderColor: string;
   accentColor: string;
 }
-
 @Component({
   selector: 'app-button',
   template: `
@@ -44,29 +42,24 @@ interface ButtonTheme {
   gap: 0.5rem;
   box-shadow: 0 5px 20px rgba(6, 182, 212, 0.4);
   }
-
   .morphing-button:hover:not(:disabled) {
   border-radius: 2rem;
   box-shadow: 0 8px 35px rgba(6, 182, 212, 0.6);
   transform: scale(1.05);
   }
-
   .morphing-button:active:not(:disabled) {
   transform: scale(0.97);
   }
-
   .morphing-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   }
-
   .triangle-spinner {
   width: 1em;
   height: 1em;
   position: relative;
   display: inline-block;
   }
-
   .triangle {
   width: 0;
   height: 0;
@@ -75,28 +68,23 @@ interface ButtonTheme {
   border-bottom: 1em solid currentColor;
   animation: triangleSpin 1.2s linear infinite;
   }
-
   @keyframes triangleSpin {
   to { transform: rotate(360deg); }
   }
-
   .btn-content {
   display: flex;
   align-items: center;
   }
-
   .btn-sm {
   padding: 0.5rem 1.5rem;
   font-size: 0.875rem;
   border-radius: 0.5rem;
   }
-
   .btn-md {
   padding: 0.75rem 2rem;
   font-size: 1rem;
   border-radius: 0.75rem;
   }
-
   .btn-lg {
   padding: 1rem 2.5rem;
   font-size: 1.125rem;
@@ -114,7 +102,6 @@ export class ButtonComponent {
   @Input() iconRight: string = '';
   @Input() ariaLabel: string = '';
   @Output() clicked = new EventEmitter<MouseEvent>();
-
   private defaultTheme: ButtonTheme = {
   primaryColor: '#06b6d4',
   secondaryColor: '#0891b2',
@@ -124,11 +111,9 @@ export class ButtonComponent {
   borderColor: '#06b6d4',
   accentColor: '#22d3ee'
   };
-
   get appliedTheme(): ButtonTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get buttonStyles() {
   const variantStyles = {
   default: {
@@ -152,10 +137,8 @@ export class ButtonComponent {
   border: 'none'
   }
   };
-
   return variantStyles[this.variant];
   }
-
   handleClick(event: MouseEvent): void {
   if (!this.disabled && !this.loading) {
   this.clicked.emit(event);

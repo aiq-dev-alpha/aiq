@@ -1,6 +1,5 @@
 // Ripple Effect Interactive Panel
 import { Component, Input } from '@angular/core';
-
 @Component({
   selector: 'app-panel',
   template: `<div class="ripple-panel" (click)="createRipple($event)"><span class="ripple-effect" *ngIf="showRipple" [style.left.px]="rippleX" [style.top.px]="rippleY"></span><ng-content></ng-content></div>`,
@@ -15,7 +14,6 @@ export class PanelComponent {
   showRipple = false;
   rippleX = 0;
   rippleY = 0;
-  
   createRipple(e: MouseEvent): void {
   this.rippleX = e.offsetX;
   this.rippleY = e.offsetY;

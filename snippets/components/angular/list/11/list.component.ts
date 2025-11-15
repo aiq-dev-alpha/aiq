@@ -1,12 +1,10 @@
 import { Component, Input } from '@angular/core';
-
 interface ListItem {
   id: string;
   text: string;
   icon?: string;
   badge?: string;
 }
-
 @Component({
   selector: 'app-list',
   template: `

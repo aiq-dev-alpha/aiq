@@ -1,44 +1,30 @@
 import React from 'react';
-
 interface AvatarProps {
   src?: string;
   alt?: string;
-  size?: 'sm' | 'md' | 'lg';
-  status?: 'online' | 'offline' | 'away';
+  size?: number;
+  isLoading?: boolean;
 }
-
 export const Avatar: React.FC<AvatarProps> = ({
   src,
   alt = 'User',
-  size = 'md',
-  status
+  size = 80,
+  isLoading = false
 }) => {
-  const sizes = {
-    sm: 'w-8 h-8',
-    md: 'w-12 h-12',
-    lg: 'w-16 h-16'
-  };
-  
-  const statusColors = {
-    online: 'bg-green-500',
-    offline: 'bg-gray-400',
-    away: 'bg-yellow-500'
-  };
-  
   return (
-    <div className="relative inline-block">
-      <div className={`${sizes[size]} rounded-xl overflow-hidden bg-gradient-to-br from-green-400 to-green-600 shadow-2xl ring-2 ring-white`}>
-        {src ? (
+    <div className="relative inline-block" style={{ width: size, height: size }}>
+      <div className="w-full h-full rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg">
+        {isLoading ? (
+          <div className="w-full h-full bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse" />
+        ) : src ? (
           <img src={src} alt={alt} className="w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-white font-bold">
-            {alt[0].toUpperCase()}
+          <div className="w-full h-full flex items-center justify-center text-white font-bold text-2xl">
+            {alt[0]?.toUpperCase()}
           </div>
         )}
       </div>
-      {status && (
-        <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${statusColors[status]} ring-2 ring-white`} />
-      )}
+      <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-transparent via-white to-transparent opacity-20 animate-pulse" style={{ animationDuration: '2s' }} />
     </div>
   );
 };

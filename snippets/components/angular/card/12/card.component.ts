@@ -1,6 +1,5 @@
 // Gradient Border Animated Card
 import { Component, Input } from '@angular/core';
-
 @Component({
   selector: 'app-card',
   template: `<div class="gradient-border-card"><div class="card-content"><ng-content></ng-content></div></div>`,

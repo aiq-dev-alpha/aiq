@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
-
 class CustomNavigation extends StatelessWidget {
   final Widget? child;
   final VoidCallback? onTap;
   final Color? backgroundColor;
-
   const CustomNavigation({
   Key? key,
   this.child,
   this.onTap,
   this.backgroundColor,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
   return GestureDetector(

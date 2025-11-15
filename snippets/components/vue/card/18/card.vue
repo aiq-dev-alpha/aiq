@@ -3,10 +3,8 @@
     <slot />
   </div>
 </template>
-
 <script lang="ts">
 import { defineComponent } from 'vue';
-
 export default defineComponent({
   name: 'Component18',
   props: {
@@ -15,7 +13,6 @@ export default defineComponent({
   }
 });
 </script>
-
 <style scoped>
 .component-18 {
   padding: 1.25rem 1.75rem;
@@ -25,7 +22,6 @@ export default defineComponent({
   font-weight: 500;
   transition: all 0.2s ease;
 }
-
 .component-18:hover {
   transform: translateY(-1px);
   box-shadow: 0 7px 20px rgba(0, 0, 0, 0.13);

@@ -1,6 +1,5 @@
 // Multi-Step Wizard Form
 import { Component, Input } from '@angular/core';
-
 @Component({
   selector: 'app-form',
   template: `<div class="wizard-form"><div class="steps"><div class="step" *ngFor="let step of steps; let i = index" [class.active]="currentStep === i" [class.completed]="currentStep > i"><div class="step-number">{{ i + 1 }}</div><div class="step-label">{{ step }}</div></div></div><div class="form-content"><ng-content></ng-content></div><div class="form-actions"><button (click)="prevStep()" [disabled]="currentStep === 0">Previous</button><button (click)="nextStep()" [disabled]="currentStep === steps.length - 1">Next</button></div></div>`,

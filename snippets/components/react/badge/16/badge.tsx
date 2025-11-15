@@ -1,5 +1,4 @@
 import React from 'react';
-
 export const Badge: React.FC<{ status?: 'online' | 'offline' | 'busy'; children: React.ReactNode }> = ({ status, children }) => {
   const colors = {
     online: 'bg-green-500',

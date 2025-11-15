@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
-
 class CustomComponent extends StatefulWidget {
   final Widget? child;
   final VoidCallback? onTap;
   final Color? color;
-
   const CustomComponent({
   Key? key,
   this.child,
   this.onTap,
   this.color,
   }) : super(key: key);
-
   @override
   State<CustomComponent> createState() => _CustomComponentState();
 }
-
 class _CustomComponentState extends State<CustomComponent> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-
   @override
   void initState() {
   super.initState();
@@ -27,13 +22,11 @@ class _CustomComponentState extends State<CustomComponent> with SingleTickerProv
   vsync: this,
   );
   }
-
   @override
   void dispose() {
   _controller.dispose();
   super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
   return GestureDetector(

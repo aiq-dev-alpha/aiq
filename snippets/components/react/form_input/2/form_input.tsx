@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
-
 export interface ComponentProps {
   theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
   onInteract?: (type: string) => void;
 }
-
 export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
   const [active, setActive] = useState(false);
   const primary = theme.primary || '#ef4444';
   const background = theme.background || '#ffffff';
   const text = theme.text || '#1f2937';
-
   return (
   <div
   className={className}

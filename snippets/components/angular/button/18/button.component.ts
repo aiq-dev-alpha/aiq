@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface ButtonTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -8,7 +7,6 @@ interface ButtonTheme {
   borderColor: string;
   accentColor: string;
 }
-
 @Component({
   selector: 'app-button',
   template: `
@@ -45,21 +43,17 @@ interface ButtonTheme {
   gap: 0.5rem;
   box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
   }
-
   .ripple-button:hover:not(:disabled) {
   box-shadow: 0 8px 30px rgba(99, 102, 241, 0.6);
   transform: translateY(-2px);
   }
-
   .ripple-button:active:not(:disabled) .ripple {
   animation: rippleEffect 0.6s ease-out;
   }
-
   .ripple-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   }
-
   .ripple {
   position: absolute;
   border-radius: 50%;
@@ -67,56 +61,47 @@ interface ButtonTheme {
   transform: scale(0);
   pointer-events: none;
   }
-
   @keyframes rippleEffect {
   to {
   transform: scale(4);
   opacity: 0;
   }
   }
-
   .square-spinner {
   width: 1em;
   height: 1em;
   display: inline-block;
   }
-
   .square {
   width: 100%;
   height: 100%;
   background: currentColor;
   animation: squareRotate 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
   }
-
   @keyframes squareRotate {
   0%, 100% { transform: rotate(0deg) scale(1); }
   50% { transform: rotate(180deg) scale(0.8); }
   }
-
   .btn-content {
   display: flex;
   align-items: center;
   position: relative;
   z-index: 1;
   }
-
   .icon-left, .icon-right {
   position: relative;
   z-index: 1;
   }
-
   .btn-sm {
   padding: 0.5rem 1.5rem;
   font-size: 0.875rem;
   border-radius: 0.625rem;
   }
-
   .btn-md {
   padding: 0.75rem 2rem;
   font-size: 1rem;
   border-radius: 0.875rem;
   }
-
   .btn-lg {
   padding: 1rem 2.5rem;
   font-size: 1.125rem;
@@ -134,7 +119,6 @@ export class ButtonComponent {
   @Input() iconRight: string = '';
   @Input() ariaLabel: string = '';
   @Output() clicked = new EventEmitter<MouseEvent>();
-
   private defaultTheme: ButtonTheme = {
   primaryColor: '#6366f1',
   secondaryColor: '#4f46e5',
@@ -144,11 +128,9 @@ export class ButtonComponent {
   borderColor: '#6366f1',
   accentColor: '#818cf8'
   };
-
   get appliedTheme(): ButtonTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get buttonStyles() {
   const variantStyles = {
   default: {
@@ -173,10 +155,8 @@ export class ButtonComponent {
   boxShadow: `0 8px 20px rgba(99, 102, 241, 0.4)`
   }
   };
-
   return variantStyles[this.variant];
   }
-
   handleClick(event: MouseEvent): void {
   if (!this.disabled && !this.loading) {
   this.clicked.emit(event);

@@ -1,6 +1,5 @@
 // Neon Frame Panel
 import { Component } from '@angular/core';
-
 @Component({
   selector: 'app-panel',
   template: `<div class="neon-panel"><ng-content></ng-content></div>`,

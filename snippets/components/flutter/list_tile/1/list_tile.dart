@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
-
 class CustomListTile extends StatefulWidget {
   final Widget? child;
   final VoidCallback? onTap;
   final Color? color;
-
   const CustomListTile({
   Key? key,
   this.child,
   this.onTap,
   this.color,
   }) : super(key: key);
-
   @override
   State<CustomListTile> createState() => _CustomListTileState();
 }
-
 class _CustomListTileState extends State<CustomListTile> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-
   @override
   void initState() {
   super.initState();
@@ -27,13 +22,11 @@ class _CustomListTileState extends State<CustomListTile> with SingleTickerProvid
   vsync: this,
   );
   }
-
   @override
   void dispose() {
   _controller.dispose();
   super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
   return GestureDetector(

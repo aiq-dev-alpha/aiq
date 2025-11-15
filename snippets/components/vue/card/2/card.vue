@@ -12,10 +12,8 @@
     </div>
   </div>
 </template>
-
 <script lang="ts">
 import { defineComponent } from 'vue';
-
 export default defineComponent({
   name: 'CustomCard',
   props: {
@@ -25,39 +23,32 @@ export default defineComponent({
   }
 });
 </script>
-
 <style scoped>
 .custom-card {
   background: white;
   border-radius: 0.25rem;
   overflow: hidden;
 }
-
 .custom-card.elevated {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
-
 .custom-card.bordered {
   border: 2px solid #e5e7eb;
 }
-
 .card-header {
   padding: 1.25rem 1.5rem;
   border-bottom: 1px solid #f3f4f6;
   background: linear-gradient(to bottom, #fafafa, #ffffff);
 }
-
 .card-title {
   font-size: 1.25rem;
   font-weight: 700;
   color: #111827;
   margin: 0;
 }
-
 .card-body {
   padding: 1.5rem;
 }
-
 .card-footer {
   padding: 1rem 1.5rem;
   border-top: 1px solid #f3f4f6;

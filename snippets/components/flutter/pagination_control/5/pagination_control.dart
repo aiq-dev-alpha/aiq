@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
-
 class ControlComponent extends StatefulWidget {
   final Widget? child;
   final VoidCallback? onTap;
-
   const ControlComponent({
   Key? key,
   this.child,
   this.onTap,
   }) : super(key: key);
-
   @override
   State<ControlComponent> createState() => _ControlComponentState();
 }
-
 class _ControlComponentState extends State<ControlComponent> {
   bool _isPressed = false;
-
   @override
   Widget build(BuildContext context) {
   return GestureDetector(

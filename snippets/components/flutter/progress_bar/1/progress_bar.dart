@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
-
 class CustomProgressBar extends StatefulWidget {
   final Widget? child;
   final VoidCallback? onTap;
   final Color? color;
-
   const CustomProgressBar({
   Key? key,
   this.child,
   this.onTap,
   this.color,
   }) : super(key: key);
-
   @override
   State<CustomProgressBar> createState() => _CustomProgressBarState();
 }
-
 class _CustomProgressBarState extends State<CustomProgressBar> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-
   @override
   void initState() {
   super.initState();
@@ -27,13 +22,11 @@ class _CustomProgressBarState extends State<CustomProgressBar> with SingleTicker
   vsync: this,
   );
   }
-
   @override
   void dispose() {
   _controller.dispose();
   super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
   return GestureDetector(

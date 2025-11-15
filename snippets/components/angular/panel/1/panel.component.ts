@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-
 interface PanelTheme {
   primaryColor: string;
   backgroundColor: string;
@@ -8,7 +7,6 @@ interface PanelTheme {
   headerColor: string;
   shadowColor: string;
 }
-
 @Component({
   selector: 'app-panel',
   template: `
@@ -144,7 +142,6 @@ export class PanelComponent {
   @Input() headerActions: boolean = false;
   @Input() loading: boolean = false;
   @Output() toggled = new EventEmitter<boolean>();
-
   private defaultTheme: PanelTheme = {
   primaryColor: '#3b82f6',
   backgroundColor: '#ffffff',
@@ -153,25 +150,21 @@ export class PanelComponent {
   headerColor: '#1e40af',
   shadowColor: 'rgba(59, 130, 246, 0.3)'
   };
-
   get appliedTheme(): PanelTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   toggle() {
   if (this.collapsible) {
   this.collapsed = !this.collapsed;
   this.toggled.emit(this.collapsed);
   }
   }
-
   get panelStyles() {
   const base = {
   background: this.appliedTheme.backgroundColor,
   border: `1px solid ${this.appliedTheme.borderColor}`,
   boxShadow: `0 4px 6px -1px ${this.appliedTheme.shadowColor}, 0 2px 4px -1px ${this.appliedTheme.shadowColor}`
   };
-
   if (this.variant === 'elevated') {
   return { ...base, boxShadow: `0 10px 15px -3px ${this.appliedTheme.shadowColor}, 0 4px 6px -2px ${this.appliedTheme.shadowColor}` };
   } else if (this.variant === 'flat') {
@@ -179,30 +172,25 @@ export class PanelComponent {
   } else if (this.variant === 'bordered') {
   return { ...base, boxShadow: 'none', border: `2px solid ${this.appliedTheme.borderColor}` };
   }
-
   return base;
   }
-
   get headerStyles() {
   return {
   background: `linear-gradient(135deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.headerColor})`,
   borderBottom: `1px solid ${this.appliedTheme.borderColor}`
   };
   }
-
   get bodyStyles() {
   return {
   backgroundColor: this.appliedTheme.backgroundColor
   };
   }
-
   get buttonStyles() {
   return {
   background: 'rgba(255, 255, 255, 0.2)',
   color: '#ffffff'
   };
   }
-
   get loadingStyles() {
   return {
   backgroundColor: 'rgba(255, 255, 255, 0.9)',

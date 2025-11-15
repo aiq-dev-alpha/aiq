@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
-
 class CustomSlider extends StatefulWidget {
   final Widget? child;
   final VoidCallback? onTap;
-
   const CustomSlider({
   Key? key,
   this.child,
   this.onTap,
   }) : super(key: key);
-
   @override
   State<CustomSlider> createState() => _CustomSliderState();
 }
-
 class _CustomSliderState extends State<CustomSlider> {
   bool _isHovered = false;
-
   @override
   Widget build(BuildContext context) {
   return MouseRegion(

@@ -12,7 +12,6 @@
             <div class="progress-number">{{ progressPercentage }}%</div>
           </div>
         </div>
-
         <nav class="steps-nav">
           <div
             v-for="(step, index) in steps"
@@ -33,7 +32,6 @@
               </div>
               <div v-if="index < steps.length - 1" class="step-line"></div>
             </div>
-
             <div class="step-details">
               <div class="step-status">
                 <span v-if="step.completed || index < internalStep" class="status-badge completed">Completed</span>
@@ -46,7 +44,6 @@
           </div>
         </nav>
       </aside>
-
       <main class="wizard-main">
         <div class="main-header">
           <div class="step-breadcrumb">
@@ -59,7 +56,6 @@
             {{ currentStepData.description }}
           </p>
         </div>
-
         <div class="main-content">
           <transition name="slide-fade" mode="out-in">
             <div :key="internalStep" class="content-wrapper">
@@ -67,7 +63,6 @@
             </div>
           </transition>
         </div>
-
         <div class="main-actions">
           <button
             v-if="!isFirstStep"
@@ -108,10 +103,8 @@
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-
 interface WizardTheme {
   primaryColor?: string
   backgroundColor?: string
@@ -120,7 +113,6 @@ interface WizardTheme {
   completedColor?: string
   borderColor?: string
 }
-
 interface WizardStep {
   id: string | number
   label: string
@@ -129,7 +121,6 @@ interface WizardStep {
   completed?: boolean
   active?: boolean
 }
-
 interface Props {
   steps: WizardStep[]
   currentStep?: number
@@ -138,7 +129,6 @@ interface Props {
   theme?: WizardTheme
   allowStepNavigation?: boolean
 }
-
 const props = withDefaults(defineProps<Props>(), {
   currentStep: 0,
   variant: 'detailed',
@@ -153,31 +143,23 @@ const props = withDefaults(defineProps<Props>(), {
   }),
   allowStepNavigation: true
 })
-
 const emit = defineEmits<{
   (e: 'step-changed', step: number): void
   (e: 'completed'): void
   (e: 'update:currentStep', step: number): void
 }>()
-
 const internalStep = ref(props.currentStep)
-
 watch(() => props.currentStep, (newVal) => {
   internalStep.value = newVal
 })
-
 const currentStepData = computed(() => props.steps[internalStep.value])
-
 const isFirstStep = computed(() => internalStep.value === 0)
 const isLastStep = computed(() => internalStep.value === props.steps.length - 1)
-
 const progressPercentage = computed(() => {
   const completed = props.steps.filter((s, i) => s.completed || i < internalStep.value).length
   return Math.round((completed / props.steps.length) * 100)
 })
-
 const orientationClass = computed(() => `orientation-${props.orientation}`)
-
 const containerStyles = computed(() => ({
   '--primary-color': props.theme.primaryColor,
   '--background-color': props.theme.backgroundColor,
@@ -186,7 +168,6 @@ const containerStyles = computed(() => ({
   '--completed-color': props.theme.completedColor,
   '--border-color': props.theme.borderColor
 }))
-
 const buttonStyles = computed(() => ({
   primary: {
     backgroundColor: props.theme.primaryColor,
@@ -201,14 +182,12 @@ const buttonStyles = computed(() => ({
     borderColor: props.theme.completedColor
   }
 }))
-
 const navStepClasses = (index: number) => ({
   'step-completed': props.steps[index].completed || index < internalStep.value,
   'step-active': index === internalStep.value,
   'step-pending': index > internalStep.value,
   'step-clickable': props.allowStepNavigation && index <= internalStep.value
 })
-
 const handleStepClick = (index: number) => {
   if (props.allowStepNavigation && index <= internalStep.value) {
     internalStep.value = index
@@ -216,7 +195,6 @@ const handleStepClick = (index: number) => {
     emit('step-changed', index)
   }
 }
-
 const handleNext = () => {
   if (!isLastStep.value) {
     internalStep.value++
@@ -224,7 +202,6 @@ const handleNext = () => {
     emit('step-changed', internalStep.value)
   }
 }
-
 const handlePrevious = () => {
   if (!isFirstStep.value) {
     internalStep.value--
@@ -232,12 +209,10 @@ const handlePrevious = () => {
     emit('step-changed', internalStep.value)
   }
 }
-
 const handleComplete = () => {
   emit('completed')
 }
 </script>
-
 <style scoped>
 .wizard-detailed {
   background: var(--background-color);
@@ -245,13 +220,11 @@ const handleComplete = () => {
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
 }
-
 .wizard-container {
   display: grid;
   grid-template-columns: 320px 1fr;
   min-height: 600px;
 }
-
 .wizard-sidebar {
   background: linear-gradient(180deg, #ffffff 0%, #f8f9ff 100%);
   border-right: 2px solid var(--border-color);
@@ -260,7 +233,6 @@ const handleComplete = () => {
   flex-direction: column;
   gap: 2rem;
 }
-
 .sidebar-header {
   display: flex;
   flex-direction: column;
@@ -268,33 +240,28 @@ const handleComplete = () => {
   padding-bottom: 1.5rem;
   border-bottom: 2px solid var(--border-color);
 }
-
 .sidebar-title {
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--text-color);
   margin: 0;
 }
-
 .progress-circle {
   position: relative;
   width: 120px;
   height: 120px;
   margin: 0 auto;
 }
-
 .progress-circle svg {
   transform: rotate(-90deg);
   width: 100%;
   height: 100%;
 }
-
 .progress-bg {
   fill: none;
   stroke: var(--border-color);
   stroke-width: 8;
 }
-
 .progress-value {
   fill: none;
   stroke: var(--primary-color);
@@ -304,7 +271,6 @@ const handleComplete = () => {
   stroke-dashoffset: calc(283 - (283 * var(--progress)) / 100);
   transition: stroke-dashoffset 0.5s ease;
 }
-
 .progress-number {
   position: absolute;
   top: 50%;
@@ -314,13 +280,11 @@ const handleComplete = () => {
   font-weight: 700;
   color: var(--primary-color);
 }
-
 .steps-nav {
   display: flex;
   flex-direction: column;
   gap: 0;
 }
-
 .nav-step {
   display: grid;
   grid-template-columns: 48px 1fr;
@@ -328,24 +292,20 @@ const handleComplete = () => {
   padding: 1rem 0;
   transition: all 0.3s ease;
 }
-
 .step-clickable {
   cursor: pointer;
 }
-
 .step-clickable:hover {
   background: rgba(99, 102, 241, 0.05);
   margin: 0 -1rem;
   padding: 1rem;
   border-radius: 8px;
 }
-
 .step-timeline {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-
 .step-marker {
   width: 48px;
   height: 48px;
@@ -358,18 +318,15 @@ const handleComplete = () => {
   background: #e2e8f0;
   z-index: 1;
 }
-
 .step-completed .step-marker {
   background: var(--completed-color);
   box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1);
 }
-
 .step-active .step-marker {
   background: var(--primary-color);
   box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
   animation: pulse-ring 2s ease-in-out infinite;
 }
-
 @keyframes pulse-ring {
   0%, 100% {
     box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
@@ -378,19 +335,16 @@ const handleComplete = () => {
     box-shadow: 0 0 0 8px rgba(99, 102, 241, 0.1);
   }
 }
-
 .step-icon-check {
   width: 28px;
   height: 28px;
   color: white;
 }
-
 .step-icon-active {
   width: 24px;
   height: 24px;
   color: white;
 }
-
 .step-icon-pending {
   width: 24px;
   height: 24px;
@@ -401,7 +355,6 @@ const handleComplete = () => {
   font-size: 1rem;
   color: #64748b;
 }
-
 .step-line {
   width: 3px;
   flex: 1;
@@ -409,22 +362,18 @@ const handleComplete = () => {
   margin-top: 0.5rem;
   transition: background 0.3s ease;
 }
-
 .step-completed .step-line {
   background: var(--completed-color);
 }
-
 .step-details {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   padding-top: 0.25rem;
 }
-
 .step-status {
   margin-bottom: 0.25rem;
 }
-
 .status-badge {
   display: inline-block;
   padding: 0.25rem 0.75rem;
@@ -434,22 +383,18 @@ const handleComplete = () => {
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
-
 .status-badge.completed {
   background: rgba(5, 150, 105, 0.1);
   color: var(--completed-color);
 }
-
 .status-badge.active {
   background: rgba(99, 102, 241, 0.1);
   color: var(--primary-color);
 }
-
 .status-badge.pending {
   background: #f1f5f9;
   color: #94a3b8;
 }
-
 .step-title {
   font-size: 1rem;
   font-weight: 600;
@@ -457,19 +402,16 @@ const handleComplete = () => {
   margin: 0;
   line-height: 1.4;
 }
-
 .step-active .step-title {
   color: var(--primary-color);
   font-size: 1.0625rem;
 }
-
 .step-desc {
   font-size: 0.8125rem;
   color: #64748b;
   line-height: 1.5;
   margin: 0;
 }
-
 .wizard-main {
   background: white;
   padding: 2.5rem;
@@ -477,7 +419,6 @@ const handleComplete = () => {
   flex-direction: column;
   gap: 2rem;
 }
-
 .main-header {
   display: flex;
   flex-direction: column;
@@ -485,7 +426,6 @@ const handleComplete = () => {
   padding-bottom: 2rem;
   border-bottom: 2px solid var(--border-color);
 }
-
 .step-breadcrumb {
   display: flex;
   align-items: center;
@@ -493,68 +433,55 @@ const handleComplete = () => {
   font-size: 0.875rem;
   font-weight: 600;
 }
-
 .breadcrumb-step {
   color: var(--primary-color);
 }
-
 .breadcrumb-separator {
   color: #cbd5e1;
 }
-
 .breadcrumb-total {
   color: #94a3b8;
 }
-
 .main-title {
   font-size: 2rem;
   font-weight: 700;
   color: var(--text-color);
   margin: 0;
 }
-
 .main-description {
   font-size: 1rem;
   color: #64748b;
   line-height: 1.6;
   margin: 0;
 }
-
 .main-content {
   flex: 1;
   min-height: 300px;
 }
-
 .content-wrapper {
   width: 100%;
 }
-
 .slide-fade-enter-active,
 .slide-fade-leave-active {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 .slide-fade-enter-from {
   opacity: 0;
   transform: translateY(10px);
 }
-
 .slide-fade-leave-to {
   opacity: 0;
   transform: translateY(-10px);
 }
-
 .main-actions {
   display: flex;
   gap: 1rem;
   padding-top: 2rem;
   border-top: 2px solid var(--border-color);
 }
-
 .spacer {
   flex: 1;
 }
-
 .btn {
   display: flex;
   align-items: center;
@@ -567,60 +494,50 @@ const handleComplete = () => {
   transition: all 0.3s ease;
   border: 2px solid;
 }
-
 .btn-icon-left,
 .btn-icon-right {
   width: 20px;
   height: 20px;
 }
-
 .btn-primary {
   background: var(--primary-color);
   color: white;
   border-color: var(--primary-color);
 }
-
 .btn-primary:hover {
   background: var(--active-color);
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3);
 }
-
 .btn-secondary {
   background: white;
   color: var(--text-color);
   border-color: var(--border-color);
 }
-
 .btn-secondary:hover {
   background: #f8fafc;
   border-color: var(--text-color);
   transform: translateY(-2px);
 }
-
 .btn-success {
   background: var(--completed-color);
   color: white;
   border-color: var(--completed-color);
 }
-
 .btn-success:hover {
   opacity: 0.9;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(5, 150, 105, 0.3);
 }
-
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none !important;
 }
-
 @media (max-width: 768px) {
   .wizard-container {
     grid-template-columns: 1fr;
   }
-
   .wizard-sidebar {
     border-right: none;
     border-bottom: 2px solid var(--border-color);

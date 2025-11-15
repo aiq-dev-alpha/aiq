@@ -13,7 +13,6 @@
         <img v-if="logo" :src="logo" alt="Logo" class="navbar-logo" />
         <span class="navbar-brand-text">{{ brandName }}</span>
       </div>
-
       <!-- Desktop Menu -->
       <div class="navbar-menu" :class="{ 'navbar-menu-open': mobileMenuOpen }">
         <div
@@ -33,7 +32,6 @@
             <span class="navbar-item-label">{{ item.label }}</span>
             <span v-if="item.dropdown" class="navbar-item-arrow">▼</span>
           </a>
-
           <!-- Dropdown Menu -->
           <div
             v-if="item.dropdown && item.dropdown.length"
@@ -54,14 +52,12 @@
           </div>
         </div>
       </div>
-
       <!-- Right Section -->
       <div class="navbar-actions">
         <!-- Search Bar Slot -->
         <div v-if="$slots.search" class="navbar-search">
           <slot name="search"></slot>
         </div>
-
         <!-- Notifications -->
         <div v-if="showNotifications" class="navbar-notification">
           <button class="navbar-notification-btn" :style="actionButtonStyles">
@@ -71,12 +67,10 @@
             </span>
           </button>
         </div>
-
         <!-- User Profile Slot -->
         <div v-if="$slots.profile" class="navbar-profile">
           <slot name="profile"></slot>
         </div>
-
         <!-- Mobile Menu Toggle -->
         <button
           class="navbar-mobile-toggle"
@@ -87,7 +81,6 @@
         </button>
       </div>
     </div>
-
     <!-- Mobile Menu Overlay -->
     <transition name="mobile-menu-blur">
       <div v-if="mobileMenuOpen" class="navbar-mobile-overlay" :style="mobileOverlayStyles">
@@ -107,7 +100,6 @@
               <span>{{ item.label }}</span>
               <span v-if="item.dropdown" class="navbar-mobile-arrow">▼</span>
             </a>
-
             <!-- Mobile Dropdown -->
             <div
               v-if="item.dropdown && item.dropdown.length && activeDropdown === item.id"
@@ -130,10 +122,8 @@
     </transition>
   </nav>
 </template>
-
 <script setup lang="ts">
 import { ref, computed, defineProps, withDefaults } from 'vue'
-
 interface NavbarTheme {
   primary: string
   background: string
@@ -141,7 +131,6 @@ interface NavbarTheme {
   activeColor: string
   hoverColor: string
 }
-
 interface NavItem {
   id: string
   label: string
@@ -149,7 +138,6 @@ interface NavItem {
   route: string
   dropdown?: NavItem[]
 }
-
 interface Props {
   items: NavItem[]
   logo?: string
@@ -161,7 +149,6 @@ interface Props {
   showNotifications?: boolean
   notificationCount?: number
 }
-
 const props = withDefaults(defineProps<Props>(), {
   items: () => [],
   brandName: 'Brand',
@@ -172,13 +159,11 @@ const props = withDefaults(defineProps<Props>(), {
   showNotifications: true,
   notificationCount: 0
 })
-
 // State
 const mobileMenuOpen = ref(false)
 const activeItem = ref<string | null>(null)
 const hoveredItem = ref<string | null>(null)
 const activeDropdown = ref<string | null>(null)
-
 // Default theme for variant 5 - Blur Modern
 const defaultTheme: NavbarTheme = {
   primary: '#8b5cf6',
@@ -187,12 +172,10 @@ const defaultTheme: NavbarTheme = {
   activeColor: '#a78bfa',
   hoverColor: 'rgba(139, 92, 246, 0.2)'
 }
-
 const mergedTheme = computed<NavbarTheme>(() => ({
   ...defaultTheme,
   ...props.theme
 }))
-
 // Computed Styles
 const navbarStyles = computed(() => ({
   backgroundColor: props.transparent ? 'transparent' : mergedTheme.value.background,
@@ -202,7 +185,6 @@ const navbarStyles = computed(() => ({
   borderBottom: `1px solid rgba(139, 92, 246, 0.3)`,
   boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)'
 }))
-
 const dropdownStyles = computed(() => ({
   backgroundColor: mergedTheme.value.background,
   backdropFilter: 'blur(16px) saturate(200%)',
@@ -210,11 +192,9 @@ const dropdownStyles = computed(() => ({
   border: `1px solid rgba(139, 92, 246, 0.3)`,
   boxShadow: '0 8px 32px rgba(139, 92, 246, 0.15)'
 }))
-
 const dropdownItemStyles = computed(() => ({
   color: mergedTheme.value.text
 }))
-
 const actionButtonStyles = computed(() => ({
   color: mergedTheme.value.text,
   backgroundColor: 'rgba(139, 92, 246, 0.15)',
@@ -222,25 +202,21 @@ const actionButtonStyles = computed(() => ({
   backdropFilter: 'blur(8px)',
   WebkitBackdropFilter: 'blur(8px)'
 }))
-
 const badgeStyles = computed(() => ({
   backgroundColor: mergedTheme.value.activeColor,
   color: '#111827',
   fontWeight: '700',
   boxShadow: `0 0 16px ${mergedTheme.value.activeColor}`
 }))
-
 const mobileOverlayStyles = computed(() => ({
   backgroundColor: mergedTheme.value.background,
   backdropFilter: 'blur(16px) saturate(200%)',
   WebkitBackdropFilter: 'blur(16px) saturate(200%)'
 }))
-
 // Methods
 const getItemStyles = (itemId: string) => {
   const isActive = activeItem.value === itemId
   const isHovered = hoveredItem.value === itemId
-
   return {
     color: isActive ? mergedTheme.value.activeColor : mergedTheme.value.text,
     backgroundColor: isHovered || isActive ? mergedTheme.value.hoverColor : 'transparent',
@@ -249,21 +225,17 @@ const getItemStyles = (itemId: string) => {
     backdropFilter: isHovered || isActive ? 'blur(8px)' : 'none'
   }
 }
-
 const getMobileItemStyles = (itemId: string) => ({
   color: activeItem.value === itemId ? mergedTheme.value.activeColor : mergedTheme.value.text,
   backgroundColor: activeItem.value === itemId ? mergedTheme.value.hoverColor : 'transparent',
   backdropFilter: activeItem.value === itemId ? 'blur(8px)' : 'none'
 })
-
 const handleMouseEnter = (itemId: string) => {
   hoveredItem.value = itemId
 }
-
 const handleMouseLeave = () => {
   hoveredItem.value = null
 }
-
 const handleItemClick = (item: NavItem) => {
   if (item.dropdown && item.dropdown.length) {
     activeDropdown.value = activeDropdown.value === item.id ? null : item.id
@@ -272,7 +244,6 @@ const handleItemClick = (item: NavItem) => {
     activeDropdown.value = null
   }
 }
-
 const handleMobileItemClick = (item: NavItem) => {
   if (item.dropdown && item.dropdown.length) {
     activeDropdown.value = activeDropdown.value === item.id ? null : item.id
@@ -282,12 +253,10 @@ const handleMobileItemClick = (item: NavItem) => {
     activeDropdown.value = null
   }
 }
-
 const toggleMobileMenu = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value
 }
 </script>
-
 <style scoped>
 .navbar {
   position: relative;
@@ -295,13 +264,11 @@ const toggleMobileMenu = () => {
   padding: 0;
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 .navbar-sticky {
   position: sticky;
   top: 0;
   z-index: 1000;
 }
-
 .navbar-container {
   max-width: 1400px;
   margin: 0 auto;
@@ -310,7 +277,6 @@ const toggleMobileMenu = () => {
   justify-content: space-between;
   padding: 1rem 2rem;
 }
-
 .navbar-brand {
   display: flex;
   align-items: center;
@@ -322,35 +288,29 @@ const toggleMobileMenu = () => {
   text-shadow: 0 2px 10px rgba(139, 92, 246, 0.5);
   letter-spacing: 0.5px;
 }
-
 .navbar-brand:hover {
   transform: scale(1.05);
   text-shadow: 0 4px 20px rgba(139, 92, 246, 0.8);
 }
-
 .navbar-logo {
   height: 40px;
   width: auto;
   filter: drop-shadow(0 2px 8px rgba(139, 92, 246, 0.4));
 }
-
 .navbar-menu {
   display: none;
   gap: 0.625rem;
   flex: 1;
   justify-content: center;
 }
-
 @media (min-width: 768px) {
   .navbar-menu {
     display: flex;
   }
 }
-
 .navbar-item-wrapper {
   position: relative;
 }
-
 .navbar-item {
   display: flex;
   align-items: center;
@@ -363,34 +323,27 @@ const toggleMobileMenu = () => {
   font-size: 0.925rem;
   letter-spacing: 0.3px;
 }
-
 .navbar-item:hover {
   transform: translateY(-2px);
 }
-
 .navbar-item.active {
   font-weight: 700;
 }
-
 .navbar-item-icon {
   font-size: 1.125rem;
   transition: transform 0.3s ease;
 }
-
 .navbar-item:hover .navbar-item-icon {
   transform: scale(1.15) rotate(5deg);
 }
-
 .navbar-item-arrow {
   font-size: 0.7rem;
   margin-left: 0.25rem;
   transition: transform 0.3s ease;
 }
-
 .navbar-item:hover .navbar-item-arrow {
   transform: translateY(2px);
 }
-
 .navbar-dropdown {
   position: absolute;
   top: 100%;
@@ -405,13 +358,11 @@ const toggleMobileMenu = () => {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 100;
 }
-
 .navbar-dropdown.active {
   opacity: 1;
   visibility: visible;
   transform: translateY(0) scale(1);
 }
-
 .navbar-dropdown-item {
   display: flex;
   align-items: center;
@@ -423,38 +374,31 @@ const toggleMobileMenu = () => {
   font-weight: 500;
   letter-spacing: 0.25px;
 }
-
 .navbar-dropdown-item:hover {
   background-color: rgba(139, 92, 246, 0.2);
   transform: translateX(5px);
   box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
   backdrop-filter: blur(8px);
 }
-
 .navbar-dropdown-icon {
   font-size: 1.05rem;
 }
-
 .navbar-actions {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
-
 .navbar-search {
   display: none;
 }
-
 @media (min-width: 768px) {
   .navbar-search {
     display: block;
   }
 }
-
 .navbar-notification {
   position: relative;
 }
-
 .navbar-notification-btn {
   position: relative;
   border-radius: 12px;
@@ -466,17 +410,14 @@ const toggleMobileMenu = () => {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
 .navbar-notification-btn:hover {
   transform: scale(1.12);
   background-color: rgba(139, 92, 246, 0.25);
   box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
 }
-
 .navbar-notification-icon {
   font-size: 1.25rem;
 }
-
 .navbar-notification-badge {
   position: absolute;
   top: -3px;
@@ -491,7 +432,6 @@ const toggleMobileMenu = () => {
   padding: 0 6px;
   animation: glow 2s ease-in-out infinite;
 }
-
 @keyframes glow {
   0%, 100% {
     box-shadow: 0 0 16px currentColor;
@@ -500,7 +440,6 @@ const toggleMobileMenu = () => {
     box-shadow: 0 0 24px currentColor;
   }
 }
-
 .navbar-mobile-toggle {
   display: flex;
   border-radius: 12px;
@@ -508,22 +447,18 @@ const toggleMobileMenu = () => {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
 @media (min-width: 768px) {
   .navbar-mobile-toggle {
     display: none;
   }
 }
-
 .navbar-mobile-toggle:hover {
   transform: scale(1.1);
   box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
 }
-
 .navbar-hamburger {
   font-size: 1.5rem;
 }
-
 .navbar-mobile-overlay {
   position: fixed;
   top: 0;
@@ -534,21 +469,17 @@ const toggleMobileMenu = () => {
   overflow-y: auto;
   padding-top: 85px;
 }
-
 @media (min-width: 768px) {
   .navbar-mobile-overlay {
     display: none;
   }
 }
-
 .navbar-mobile-menu {
   padding: 2rem 1.5rem;
 }
-
 .navbar-mobile-item-wrapper {
   margin-bottom: 0.625rem;
 }
-
 .navbar-mobile-item {
   display: flex;
   align-items: center;
@@ -562,23 +493,19 @@ const toggleMobileMenu = () => {
   letter-spacing: 0.3px;
   border: 1px solid rgba(139, 92, 246, 0.2);
 }
-
 .navbar-mobile-icon {
   font-size: 1.35rem;
 }
-
 .navbar-mobile-arrow {
   margin-left: auto;
   font-size: 0.85rem;
   transition: transform 0.3s ease;
 }
-
 .navbar-mobile-dropdown {
   margin-left: 2.25rem;
   margin-top: 0.625rem;
   animation: dropdownSlide 0.3s ease;
 }
-
 @keyframes dropdownSlide {
   from {
     opacity: 0;
@@ -589,7 +516,6 @@ const toggleMobileMenu = () => {
     transform: translateY(0);
   }
 }
-
 .navbar-mobile-dropdown-item {
   display: flex;
   align-items: center;
@@ -604,25 +530,21 @@ const toggleMobileMenu = () => {
   border: 1px solid rgba(139, 92, 246, 0.15);
   backdrop-filter: blur(8px);
 }
-
 .navbar-mobile-dropdown-item:hover {
   background-color: rgba(139, 92, 246, 0.2);
   opacity: 1;
   transform: translateX(6px);
   box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
 }
-
 .mobile-menu-blur-enter-active,
 .mobile-menu-blur-leave-active {
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 .mobile-menu-blur-enter-from {
   opacity: 0;
   backdrop-filter: blur(0px);
   transform: translateX(100%);
 }
-
 .mobile-menu-blur-leave-to {
   opacity: 0;
   backdrop-filter: blur(0px);

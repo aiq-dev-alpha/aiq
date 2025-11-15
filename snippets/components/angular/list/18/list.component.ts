@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 @Component({
   selector: 'app-component',
   standalone: true,
@@ -23,10 +22,8 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 export class Component {
   @Input() theme: { primary?: string; background?: string; text?: string; } = {};
   @Output() onInteract = new EventEmitter<string>();
-
   title = 'List';
   count = 0;
-
   handleClick() {
   this.count++;
   this.onInteract.emit('click');

@@ -1,6 +1,5 @@
 // Liquid Fill Button - Fills with color on hover
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 @Component({
   selector: 'app-button',
   template: `<button class="liquid-btn" (click)="handleClick()" [disabled]="disabled"><span class="liquid-fill"></span><span class="btn-text"><ng-content></ng-content></span></button>`,

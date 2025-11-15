@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-
 export interface SidebarItem {
   id: string;
   label: string;
@@ -9,7 +8,6 @@ export interface SidebarItem {
   route: string;
   children?: SidebarItem[];
 }
-
 export interface SidebarTheme {
   primaryColor: string;
   backgroundColor: string;
@@ -18,7 +16,6 @@ export interface SidebarTheme {
   hoverColor: string;
   borderColor: string;
 }
-
 @Component({
   selector: 'app-sidebar',
   standalone: true,
@@ -28,13 +25,11 @@ export interface SidebarTheme {
   *ngIf="isOpen && variant === 'overlay'"
   (click)="toggle()"
   [@fadeAnimation]></div>
-
   <div class="sidebar gradient-sidebar"
   [class.open]="isOpen"
   [class.position-right]="position === 'right'"
   [ngStyle]="sidebarStyles"
   [@slideAnimation]="isOpen ? 'open' : 'closed'">
-
   <div class="sidebar-header">
   <div class="brand">
   <span class="brand-icon">🎨</span>
@@ -44,7 +39,6 @@ export interface SidebarTheme {
   <span>{{ isOpen ? '←' : '→' }}</span>
   </button>
   </div>
-
   <nav class="sidebar-nav">
   <div *ngFor="let item of items" class="nav-item-wrapper">
   <div class="nav-item"
@@ -58,7 +52,6 @@ export interface SidebarTheme {
   {{ expandedItems[item.id] ? '▾' : '▸' }}
   </span>
   </div>
-
   <div *ngIf="item.children && expandedItems[item.id]"
   class="submenu"
   [@expandAnimation]>
@@ -73,7 +66,6 @@ export interface SidebarTheme {
   </div>
   </div>
   </nav>
-
   <div class="sidebar-footer">
   <div class="user-profile">
   <div class="avatar">👤</div>
@@ -96,7 +88,6 @@ export interface SidebarTheme {
   z-index: 998;
   backdrop-filter: blur(2px);
   }
-
   .sidebar {
   position: fixed;
   top: 0;
@@ -107,17 +98,14 @@ export interface SidebarTheme {
   box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-
   .gradient-sidebar {
   background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
   }
-
   .sidebar.position-right {
   left: auto;
   right: 0;
   box-shadow: -4px 0 20px rgba(0, 0, 0, 0.2);
   }
-
   .sidebar-header {
   padding: 2rem 1.5rem;
   display: flex;
@@ -125,24 +113,20 @@ export interface SidebarTheme {
   align-items: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   }
-
   .brand {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   }
-
   .brand-icon {
   font-size: 2rem;
   }
-
   .sidebar-header h2 {
   margin: 0;
   font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: 0.5px;
   }
-
   .toggle-btn {
   background: rgba(255, 255, 255, 0.2);
   border: none;
@@ -153,21 +137,17 @@ export interface SidebarTheme {
   transition: all 0.2s;
   color: white;
   }
-
   .toggle-btn:hover {
   background: rgba(255, 255, 255, 0.3);
   transform: scale(1.1);
   }
-
   .sidebar-nav {
   padding: 1.5rem 0;
   flex: 1;
   }
-
   .nav-item-wrapper {
   margin-bottom: 0.5rem;
   }
-
   .nav-item {
   display: flex;
   align-items: center;
@@ -178,48 +158,39 @@ export interface SidebarTheme {
   border-radius: 0 2rem 2rem 0;
   margin-right: 1rem;
   }
-
   .nav-item.child {
   padding-left: 3.5rem;
   font-size: 0.9rem;
   }
-
   .nav-item:hover {
   background: rgba(255, 255, 255, 0.15);
   transform: translateX(5px);
   }
-
   .nav-item.active {
   background: rgba(255, 255, 255, 0.25);
   font-weight: 600;
   }
-
   .nav-item .icon {
   margin-right: 1rem;
   font-size: 1.5rem;
   width: 2rem;
   text-align: center;
   }
-
   .nav-item .label {
   flex: 1;
   font-weight: 500;
   }
-
   .nav-item .arrow {
   font-size: 1rem;
   margin-left: auto;
   }
-
   .submenu {
   overflow: hidden;
   }
-
   .sidebar-footer {
   padding: 1.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
   }
-
   .user-profile {
   display: flex;
   align-items: center;
@@ -228,7 +199,6 @@ export interface SidebarTheme {
   border-radius: 0.75rem;
   background: rgba(255, 255, 255, 0.1);
   }
-
   .avatar {
   width: 3rem;
   height: 3rem;
@@ -239,39 +209,31 @@ export interface SidebarTheme {
   justify-content: center;
   font-size: 1.5rem;
   }
-
   .user-info {
   flex: 1;
   }
-
   .name {
   font-weight: 600;
   font-size: 0.95rem;
   }
-
   .role {
   font-size: 0.8rem;
   opacity: 0.8;
   }
-
   @media (max-width: 768px) {
   .sidebar {
   width: 100% !important;
   max-width: 320px;
   }
   }
-  
-  
   @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
   }
-  
   @keyframes slideIn {
   from { transform: translateX(-20px); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
   }
-  
   @keyframes scaleIn {
   from { transform: scale(0.95); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
@@ -310,13 +272,10 @@ export class SidebarComponent {
   @Input() isOpen: boolean = true;
   @Input() position: 'left' | 'right' = 'left';
   @Input() width: string = '280px';
-
   @Output() itemClicked = new EventEmitter<SidebarItem>();
   @Output() toggleSidebar = new EventEmitter<boolean>();
-
   activeItemId: string = '';
   expandedItems: { [key: string]: boolean } = {};
-
   private defaultTheme: SidebarTheme = {
   primaryColor: '#667eea',
   backgroundColor: '#667eea',
@@ -325,24 +284,20 @@ export class SidebarComponent {
   hoverColor: 'rgba(255, 255, 255, 0.15)',
   borderColor: 'rgba(255, 255, 255, 0.2)'
   };
-
   get appliedTheme(): SidebarTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get sidebarStyles() {
   return {
   width: this.width,
   color: this.appliedTheme.textColor
   };
   }
-
   get buttonStyles() {
   return {
   color: this.appliedTheme.textColor
   };
   }
-
   getItemStyles(item: SidebarItem) {
   const isActive = item.id === this.activeItemId;
   return {
@@ -350,7 +305,6 @@ export class SidebarComponent {
   color: this.appliedTheme.textColor
   };
   }
-
   onItemClick(item: SidebarItem) {
   if (item.children && item.children.length > 0) {
   this.expandedItems[item.id] = !this.expandedItems[item.id];
@@ -359,7 +313,6 @@ export class SidebarComponent {
   this.itemClicked.emit(item);
   }
   }
-
   toggle() {
   this.isOpen = !this.isOpen;
   this.toggleSidebar.emit(this.isOpen);

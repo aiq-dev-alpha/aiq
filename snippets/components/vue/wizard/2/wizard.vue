@@ -28,7 +28,6 @@
         </svg>
       </div>
     </div>
-
     <div class="wizard-steps">
       <div
         v-for="(step, index) in steps"
@@ -59,7 +58,6 @@
         </div>
       </div>
     </div>
-
     <div class="wizard-body">
       <div class="step-content-wrapper">
         <transition name="fade-slide" mode="out-in">
@@ -69,7 +67,6 @@
         </transition>
       </div>
     </div>
-
     <div class="wizard-actions">
       <button
         class="btn-outlined"
@@ -107,10 +104,8 @@
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-
 interface WizardTheme {
   primaryColor?: string
   backgroundColor?: string
@@ -119,7 +114,6 @@ interface WizardTheme {
   completedColor?: string
   borderColor?: string
 }
-
 interface WizardStep {
   id: string | number
   label: string
@@ -128,7 +122,6 @@ interface WizardStep {
   completed?: boolean
   active?: boolean
 }
-
 interface Props {
   steps: WizardStep[]
   currentStep?: number
@@ -137,7 +130,6 @@ interface Props {
   theme?: WizardTheme
   allowStepNavigation?: boolean
 }
-
 const props = withDefaults(defineProps<Props>(), {
   currentStep: 0,
   variant: 'icons',
@@ -152,37 +144,27 @@ const props = withDefaults(defineProps<Props>(), {
   }),
   allowStepNavigation: false
 })
-
 const emit = defineEmits<{
   (e: 'step-changed', step: number): void
   (e: 'completed'): void
   (e: 'update:currentStep', step: number): void
 }>()
-
 const internalStep = ref(props.currentStep)
-
 watch(() => props.currentStep, (newVal) => {
   internalStep.value = newVal
 })
-
 const currentStepData = computed(() => props.steps[internalStep.value])
-
 const isFirstStep = computed(() => internalStep.value === 0)
 const isLastStep = computed(() => internalStep.value === props.steps.length - 1)
-
 const progressPercentage = computed(() => {
   return Math.round(((internalStep.value + 1) / props.steps.length) * 100)
 })
-
 const circumference = computed(() => 2 * Math.PI * 54)
-
 const progressOffset = computed(() => {
   const progress = ((internalStep.value + 1) / props.steps.length) * 100
   return circumference.value - (progress / 100) * circumference.value
 })
-
 const orientationClass = computed(() => `orientation-${props.orientation}`)
-
 const containerStyles = computed(() => ({
   '--primary-color': props.theme.primaryColor,
   '--background-color': props.theme.backgroundColor,
@@ -191,7 +173,6 @@ const containerStyles = computed(() => ({
   '--completed-color': props.theme.completedColor,
   '--border-color': props.theme.borderColor
 }))
-
 const buttonStyles = computed(() => ({
   filled: {
     backgroundColor: props.theme.primaryColor,
@@ -202,14 +183,12 @@ const buttonStyles = computed(() => ({
     color: props.theme.primaryColor
   }
 }))
-
 const stepClasses = (index: number) => ({
   'step-completed': props.steps[index].completed,
   'step-active': index === internalStep.value,
   'step-pending': !props.steps[index].completed && index !== internalStep.value,
   'step-clickable': props.allowStepNavigation && (props.steps[index].completed || index < internalStep.value)
 })
-
 const handleStepClick = (index: number) => {
   const canNavigate = props.allowStepNavigation && (props.steps[index].completed || index < internalStep.value)
   if (canNavigate) {
@@ -218,7 +197,6 @@ const handleStepClick = (index: number) => {
     emit('step-changed', index)
   }
 }
-
 const handleNext = () => {
   if (!isLastStep.value) {
     internalStep.value++
@@ -226,7 +204,6 @@ const handleNext = () => {
     emit('step-changed', internalStep.value)
   }
 }
-
 const handlePrevious = () => {
   if (!isFirstStep.value) {
     internalStep.value--
@@ -234,12 +211,10 @@ const handlePrevious = () => {
     emit('step-changed', internalStep.value)
   }
 }
-
 const handleComplete = () => {
   emit('completed')
 }
 </script>
-
 <style scoped>
 .wizard-icons {
   display: flex;
@@ -251,58 +226,48 @@ const handleComplete = () => {
   box-shadow: 0 4px 6px rgba(139, 92, 246, 0.1);
   border: 1px solid var(--border-color);
 }
-
 .wizard-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
 }
-
 .wizard-title {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--text-color);
   margin: 0;
 }
-
 .wizard-progress-ring {
   flex-shrink: 0;
 }
-
 .progress-ring {
   width: 100px;
   height: 100px;
   transform: rotate(-90deg);
 }
-
 .progress-ring-bg {
   stroke: var(--border-color);
 }
-
 .progress-ring-fill {
   stroke: var(--primary-color);
   transition: stroke-dashoffset 0.5s ease;
   stroke-linecap: round;
 }
-
 .progress-text {
   font-size: 1.5rem;
   font-weight: 700;
   fill: var(--primary-color);
 }
-
 .wizard-steps {
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1rem;
 }
-
 .orientation-vertical .wizard-steps {
   flex-direction: column;
   gap: 1rem;
 }
-
 .step-item {
   display: flex;
   flex-direction: column;
@@ -310,20 +275,16 @@ const handleComplete = () => {
   flex: 1;
   transition: all 0.3s ease;
 }
-
 .orientation-vertical .step-item {
   flex-direction: row;
   align-items: flex-start;
 }
-
 .step-clickable {
   cursor: pointer;
 }
-
 .step-clickable:hover .step-icon {
   transform: scale(1.1);
 }
-
 .step-icon-wrapper {
   display: flex;
   flex-direction: column;
@@ -331,14 +292,12 @@ const handleComplete = () => {
   width: 100%;
   margin-bottom: 0.75rem;
 }
-
 .orientation-vertical .step-icon-wrapper {
   flex-direction: row;
   width: auto;
   margin-bottom: 0;
   margin-right: 1rem;
 }
-
 .step-icon {
   width: 56px;
   height: 56px;
@@ -348,14 +307,12 @@ const handleComplete = () => {
   transition: all 0.3s ease;
   flex-shrink: 0;
 }
-
 .icon-completed {
   width: 100%;
   height: 100%;
   stroke: var(--completed-color);
   filter: drop-shadow(0 2px 4px rgba(16, 185, 129, 0.3));
 }
-
 .icon-active {
   width: 100%;
   height: 100%;
@@ -363,13 +320,11 @@ const handleComplete = () => {
   filter: drop-shadow(0 2px 8px rgba(167, 139, 250, 0.4));
   animation: pulse 2s ease-in-out infinite;
 }
-
 .icon-pending {
   width: 100%;
   height: 100%;
   stroke: #d1d5db;
 }
-
 @keyframes pulse {
   0%, 100% {
     transform: scale(1);
@@ -378,7 +333,6 @@ const handleComplete = () => {
     transform: scale(1.05);
   }
 }
-
 .step-line {
   flex: 1;
   height: 2px;
@@ -387,29 +341,24 @@ const handleComplete = () => {
   margin-left: 56px;
   transition: background 0.3s ease;
 }
-
 .orientation-vertical .step-line {
   width: 2px;
   height: 40px;
   margin-top: 0;
   margin-left: 28px;
 }
-
 .step-completed + .step-item .step-line,
 .step-active .step-line {
   background: linear-gradient(90deg, var(--completed-color) 0%, var(--active-color) 100%);
 }
-
 .step-info {
   text-align: center;
   min-width: 0;
 }
-
 .orientation-vertical .step-info {
   text-align: left;
   flex: 1;
 }
-
 .step-number {
   font-size: 0.75rem;
   font-weight: 600;
@@ -418,27 +367,22 @@ const handleComplete = () => {
   letter-spacing: 0.05em;
   margin-bottom: 0.25rem;
 }
-
 .step-active .step-number {
   color: var(--active-color);
 }
-
 .step-label {
   font-size: 0.875rem;
   font-weight: 600;
   color: #6b7280;
   line-height: 1.3;
 }
-
 .step-active .step-label {
   color: var(--text-color);
   font-size: 1rem;
 }
-
 .step-completed .step-label {
   color: var(--completed-color);
 }
-
 .wizard-body {
   background: white;
   border-radius: 12px;
@@ -447,36 +391,29 @@ const handleComplete = () => {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   border: 1px solid var(--border-color);
 }
-
 .step-content-wrapper {
   position: relative;
 }
-
 .step-content {
   width: 100%;
 }
-
 .fade-slide-enter-active,
 .fade-slide-leave-active {
   transition: all 0.3s ease;
 }
-
 .fade-slide-enter-from {
   opacity: 0;
   transform: translateX(20px);
 }
-
 .fade-slide-leave-to {
   opacity: 0;
   transform: translateX(-20px);
 }
-
 .wizard-actions {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
 }
-
 .btn-filled,
 .btn-outlined {
   display: flex;
@@ -490,34 +427,28 @@ const handleComplete = () => {
   border: 2px solid;
   font-size: 1rem;
 }
-
 .btn-icon {
   width: 20px;
   height: 20px;
 }
-
 .btn-filled {
   background: var(--primary-color);
   color: white;
   border-color: var(--primary-color);
 }
-
 .btn-filled:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(139, 92, 246, 0.3);
 }
-
 .btn-outlined {
   background: white;
   color: var(--primary-color);
   border-color: var(--primary-color);
 }
-
 .btn-outlined:hover:not(:disabled) {
   background: var(--background-color);
   transform: translateY(-2px);
 }
-
 button:disabled {
   opacity: 0.4;
   cursor: not-allowed;

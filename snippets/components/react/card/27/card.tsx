@@ -1,44 +1,38 @@
 import React from 'react';
-
-interface ButtonProps {
+interface CardProps {
+  title?: string;
   children: React.ReactNode;
-  onClick?: () => void;
-  variant?: 'solid' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
-  loading?: boolean;
+  footer?: React.ReactNode;
+  variant?: 'default' | 'bordered' | 'elevated';
+  hoverable?: boolean;
 }
-
-export const Button: React.FC<ButtonProps> = ({
+export const Card: React.FC<CardProps> = ({
+  title,
   children,
-  onClick,
-  variant = 'solid',
-  size = 'md',
-  disabled = false,
-  loading = false
+  footer,
+  variant = 'default',
+  hoverable = false
 }) => {
-  const baseClasses = 'rounded-full font-medium transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500';
-  
-  const variantClasses = {
-    solid: 'bg-teal-500 text-white hover:brightness-110 hover:-translate-y-0.5 shadow-md',
-    outline: 'border-2 border-teal-500 text-teal-600 hover:bg-teal-50',
-    ghost: 'text-teal-600 hover:bg-teal-100'
+  const variants = {
+    default: 'bg-white shadow-md',
+    bordered: 'bg-white border-2 border-gray-200',
+    elevated: 'bg-white shadow-xl'
   };
-  
-  const sizeClasses = {
-    sm: 'px-2 py-1 text-xs',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-6 py-3 text-lg'
-  };
-  
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled || loading}
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-    >
-      {loading && <span className="animate-spin mr-2">⏳</span>}
-      {children}
-    </button>
+    <div className={`${variants[variant]} rounded-xl overflow-hidden ${hoverable ? 'hover:shadow-2xl hover:-translate-y-1 transition-all duration-300' : ''}`}>
+      {title && (
+        <div className="px-6 py-4 border-b border-gray-100">
+          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+        </div>
+      )}
+      <div className="px-6 py-4">
+        {children}
+      </div>
+      {footer && (
+        <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
+          {footer}
+        </div>
+      )}
+    </div>
   );
 };

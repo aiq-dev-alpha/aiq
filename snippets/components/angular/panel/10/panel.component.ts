@@ -1,6 +1,5 @@
 // Animated Gradient Background Panel
 import { Component } from '@angular/core';
-
 @Component({
   selector: 'app-panel',
   template: `<div class="gradient-panel"><ng-content></ng-content></div>`,

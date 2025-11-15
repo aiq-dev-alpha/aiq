@@ -8,7 +8,6 @@
         @click="handleToggle"
       />
     </Transition>
-
     <!-- Toggle button -->
     <button
       class="sidebar-toggle"
@@ -20,7 +19,6 @@
       <span class="hamburger-line"></span>
       <span class="hamburger-line"></span>
     </button>
-
     <!-- Sidebar -->
     <Transition :name="variant === 'overlay' ? 'slide' : 'slide'">
       <aside
@@ -35,7 +33,6 @@
             <h2 class="sidebar-title">Menu</h2>
           </slot>
         </div>
-
         <!-- Navigation items -->
         <nav class="sidebar-nav">
           <ul class="sidebar-menu">
@@ -59,7 +56,6 @@
                   ▼
                 </span>
               </div>
-
               <!-- Nested children -->
               <Transition name="expand">
                 <ul
@@ -85,7 +81,6 @@
             </li>
           </ul>
         </nav>
-
         <!-- Sidebar footer -->
         <div class="sidebar-footer">
           <slot name="footer" />
@@ -94,10 +89,8 @@
     </Transition>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ref, computed, defineProps, defineEmits } from 'vue';
-
 // Interfaces
 interface SidebarTheme {
   primaryColor: string;
@@ -107,7 +100,6 @@ interface SidebarTheme {
   hoverColor: string;
   borderColor: string;
 }
-
 interface SidebarItem {
   id: string;
   label: string;
@@ -115,10 +107,8 @@ interface SidebarItem {
   route?: string;
   children?: SidebarItem[];
 }
-
 type VariantType = 'overlay' | 'push' | 'mini' | 'responsive' | 'drawer';
 type PositionType = 'left' | 'right';
-
 // Props
 const props = defineProps<{
   items: SidebarItem[];
@@ -128,7 +118,6 @@ const props = defineProps<{
   variant?: VariantType;
   theme?: Partial<SidebarTheme>;
 }>();
-
 // Default theme - Dark Purple
 const defaultTheme: SidebarTheme = {
   primaryColor: '#6B46C1',
@@ -138,23 +127,19 @@ const defaultTheme: SidebarTheme = {
   hoverColor: '#4C1D95',
   borderColor: '#7C3AED'
 };
-
 // Emits
 const emit = defineEmits<{
   'item-clicked': [item: SidebarItem];
   'toggle': [isOpen: boolean];
 }>();
-
 // State
 const activeItemId = ref<string | null>(null);
 const expandedItems = ref<Set<string>>(new Set());
-
 // Computed
 const mergedTheme = computed<SidebarTheme>(() => ({
   ...defaultTheme,
   ...props.theme
 }));
-
 const sidebarStyles = computed(() => ({
   width: props.width || '280px',
   backgroundColor: mergedTheme.value.backgroundColor,
@@ -162,17 +147,14 @@ const sidebarStyles = computed(() => ({
   borderColor: mergedTheme.value.borderColor,
   [props.position === 'right' ? 'right' : 'left']: 0
 }));
-
 const toggleButtonStyles = computed(() => ({
   backgroundColor: mergedTheme.value.primaryColor,
   borderColor: mergedTheme.value.borderColor
 }));
-
 // Methods
 const handleToggle = () => {
   emit('toggle', !props.isOpen);
 };
-
 const handleItemClick = (item: SidebarItem) => {
   if (item.children && item.children.length > 0) {
     // Toggle expand/collapse
@@ -188,12 +170,10 @@ const handleItemClick = (item: SidebarItem) => {
   }
 };
 </script>
-
 <style scoped>
 .sidebar-wrapper {
   position: relative;
 }
-
 /* Overlay backdrop */
 .sidebar-overlay {
   position: fixed;
@@ -205,7 +185,6 @@ const handleItemClick = (item: SidebarItem) => {
   z-index: 998;
   backdrop-filter: blur(2px);
 }
-
 /* Toggle button */
 .sidebar-toggle {
   position: fixed;
@@ -225,12 +204,10 @@ const handleItemClick = (item: SidebarItem) => {
   z-index: 1000;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
-
 .sidebar-toggle:hover {
   transform: scale(1.05);
   box-shadow: 0 6px 12px rgba(107, 70, 193, 0.4);
 }
-
 .hamburger-line {
   width: 1.5rem;
   height: 2px;
@@ -238,19 +215,15 @@ const handleItemClick = (item: SidebarItem) => {
   transition: all 0.3s ease;
   border-radius: 2px;
 }
-
 .sidebar-toggle.is-open .hamburger-line:nth-child(1) {
   transform: translateY(7px) rotate(45deg);
 }
-
 .sidebar-toggle.is-open .hamburger-line:nth-child(2) {
   opacity: 0;
 }
-
 .sidebar-toggle.is-open .hamburger-line:nth-child(3) {
   transform: translateY(-7px) rotate(-45deg);
 }
-
 /* Sidebar */
 .sidebar {
   position: fixed;
@@ -264,23 +237,19 @@ const handleItemClick = (item: SidebarItem) => {
   display: flex;
   flex-direction: column;
 }
-
 .sidebar-overlay .sidebar-left {
   border-right-width: 2px;
   border-right-style: solid;
 }
-
 .sidebar-overlay .sidebar-right {
   border-left-width: 2px;
   border-left-style: solid;
 }
-
 /* Sidebar header */
 .sidebar-header {
   padding: 2rem 1.5rem 1.5rem;
   border-bottom: 1px solid rgba(124, 58, 237, 0.3);
 }
-
 .sidebar-title {
   margin: 0;
   font-size: 1.5rem;
@@ -290,24 +259,20 @@ const handleItemClick = (item: SidebarItem) => {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-
 /* Navigation */
 .sidebar-nav {
   flex: 1;
   padding: 1rem 0;
   overflow-y: auto;
 }
-
 .sidebar-menu {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-
 .sidebar-menu-item {
   margin: 0.25rem 0;
 }
-
 .sidebar-menu-link,
 .sidebar-submenu-link {
   display: flex;
@@ -319,7 +284,6 @@ const handleItemClick = (item: SidebarItem) => {
   position: relative;
   overflow: hidden;
 }
-
 .sidebar-menu-link::before {
   content: '';
   position: absolute;
@@ -331,46 +295,38 @@ const handleItemClick = (item: SidebarItem) => {
   transform: scaleY(0);
   transition: transform 0.25s ease;
 }
-
 .sidebar-menu-link:hover,
 .sidebar-submenu-link:hover {
   background-color: var(--hover-color, #4C1D95);
   padding-left: 1.75rem;
 }
-
 .sidebar-menu-link.is-active,
 .sidebar-submenu-link.is-active {
   background-color: var(--active-color, #9333EA);
   font-weight: 600;
   box-shadow: inset 0 0 20px rgba(147, 51, 234, 0.3);
 }
-
 .sidebar-menu-link.is-active::before {
   transform: scaleY(1);
 }
-
 .sidebar-icon {
   font-size: 1.25rem;
   flex-shrink: 0;
   width: 1.5rem;
   text-align: center;
 }
-
 .sidebar-label {
   flex: 1;
   font-size: 0.9375rem;
 }
-
 .sidebar-arrow {
   font-size: 0.625rem;
   transition: transform 0.3s ease;
   color: rgba(233, 213, 255, 0.7);
 }
-
 .sidebar-arrow.is-expanded {
   transform: rotate(180deg);
 }
-
 /* Submenu */
 .sidebar-submenu {
   list-style: none;
@@ -380,104 +336,84 @@ const handleItemClick = (item: SidebarItem) => {
   border-left: 2px solid rgba(124, 58, 237, 0.5);
   margin-left: 1.5rem;
 }
-
 .sidebar-submenu-link {
   padding: 0.75rem 1.5rem;
   font-size: 0.875rem;
 }
-
 /* Sidebar footer */
 .sidebar-footer {
   padding: 1.5rem;
   border-top: 1px solid rgba(124, 58, 237, 0.3);
   margin-top: auto;
 }
-
 /* Transitions */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s ease;
 }
-
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
 }
-
 .slide-enter-active,
 .slide-leave-active {
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 .sidebar-left.slide-enter-from,
 .sidebar-left.slide-leave-to {
   transform: translateX(-100%);
 }
-
 .sidebar-right.slide-enter-from,
 .sidebar-right.slide-leave-to {
   transform: translateX(100%);
 }
-
 .expand-enter-active,
 .expand-leave-active {
   transition: all 0.3s ease;
   overflow: hidden;
 }
-
 .expand-enter-from,
 .expand-leave-to {
   opacity: 0;
   max-height: 0;
 }
-
 .expand-enter-to,
 .expand-leave-from {
   opacity: 1;
   max-height: 500px;
 }
-
 /* Scrollbar styling */
 .sidebar::-webkit-scrollbar {
   width: 6px;
 }
-
 .sidebar::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.2);
 }
-
 .sidebar::-webkit-scrollbar-thumb {
   background: rgba(124, 58, 237, 0.5);
   border-radius: 3px;
 }
-
 .sidebar::-webkit-scrollbar-thumb:hover {
   background: rgba(147, 51, 234, 0.7);
 }
-
 /* Mobile responsive */
 @media (max-width: 768px) {
   .sidebar {
     width: 85vw !important;
     max-width: 320px;
   }
-
   .sidebar-overlay {
     display: block;
   }
 }
-
-
 @keyframes enter {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
 }
-
 @keyframes slideDown {
   from { transform: translateY(-10px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
-
 @keyframes glow {
   0%, 100% { box-shadow: 0 0 5px currentColor; }
   50% { box-shadow: 0 0 20px currentColor; }

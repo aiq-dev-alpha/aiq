@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
-
 class CustomTabs extends StatefulWidget {
   final Widget? child;
   final VoidCallback? onTap;
   final Color? borderColor;
-
   const CustomTabs({
   Key? key,
   this.child,
   this.onTap,
   this.borderColor,
   }) : super(key: key);
-
   @override
   State<CustomTabs> createState() => _CustomTabsState();
 }
-
 class _CustomTabsState extends State<CustomTabs> {
   bool _isHovered = false;
-
   @override
   Widget build(BuildContext context) {
   return MouseRegion(

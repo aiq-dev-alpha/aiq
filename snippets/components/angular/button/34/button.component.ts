@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface ColorPalette {
   primary: string;
   secondary: string;
@@ -7,7 +6,6 @@ interface ColorPalette {
   surface: string;
   onSurface: string;
 }
-
 @Component({
   selector: 'app-button',
   template: `
@@ -42,13 +40,10 @@ export class ButtonComponent {
   @Input() rounded = true;
   @Input() ripple = true;
   @Output() click = new EventEmitter<MouseEvent>();
-
   private base: ColorPalette = { primary: '#10b981', secondary: '#059669', tertiary: '#047857', surface: '#ffffff', onSurface: '#111827' };
-
   get colors(): ColorPalette {
   return { ...this.base, ...this.palette };
   }
-
   get styles(): Record<string, string> {
   const c = this.colors;
   const sizes = { sm: { padding: '7px 16px', fontSize: '13px', minHeight: '34px' }, md: { padding: '11px 22px', fontSize: '14px', minHeight: '42px' }, lg: { padding: '14px 28px', fontSize: '16px', minHeight: '50px' } };
@@ -60,11 +55,9 @@ export class ButtonComponent {
   };
   return { ...sizes[this.size], ...looks[this.look], borderRadius: this.rounded ? '12px' : '5px', width: this.wide ? '100%' : 'auto', fontWeight: '600', letterSpacing: '0.3px' };
   }
-
   get classes(): string[] {
   return [`look-${this.look}`, `size-${this.size}`];
   }
-
   emit(e: MouseEvent): void {
   if (!this.disabled && !this.busy) this.click.emit(e);
   }

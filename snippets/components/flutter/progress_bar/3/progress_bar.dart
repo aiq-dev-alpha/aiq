@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
-
 class CustomProgressBar extends StatefulWidget {
   final Widget? child;
   final VoidCallback? onTap;
-
   const CustomProgressBar({
   Key? key,
   this.child,
   this.onTap,
   }) : super(key: key);
-
   @override
   State<CustomProgressBar> createState() => _CustomProgressBarState();
 }
-
 class _CustomProgressBarState extends State<CustomProgressBar> {
   bool _isHovered = false;
-
   @override
   Widget build(BuildContext context) {
   return MouseRegion(

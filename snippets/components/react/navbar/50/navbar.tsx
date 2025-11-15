@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 export interface ComponentProps {
   theme?: {
   primary?: string;
@@ -9,18 +8,15 @@ export interface ComponentProps {
   className?: string;
   onInteract?: (type: string) => void;
 }
-
 export const Component: React.FC<ComponentProps> = ({
   theme = {},
   className = '',
   onInteract
 }) => {
   const [state, setState] = useState({ active: false, hovered: false });
-
   const primary = theme.primary || 'hsl(0, 70%, 50%)';
   const background = theme.background || '#ffffff';
   const text = theme.text || '#1f2937';
-
   return (
   <div
   className={className}

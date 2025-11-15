@@ -1,9 +1,8 @@
 import React from 'react';
-
-export const Badge: React.FC<{ variant?: 'dot' | 'number'; color?: string; children: React.ReactNode }> = ({ 
-  variant = 'number', 
+export const Badge: React.FC<{ variant?: 'dot' | 'number'; color?: string; children: React.ReactNode }> = ({
+  variant = 'number',
   color = 'bg-emerald-500',
-  children 
+  children
 }) => {
   return (
     <div className="relative inline-flex">

@@ -1,11 +1,9 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface ListItem {
   id: string;
   label: string;
   selected?: boolean;
 }
-
 @Component({
   selector: 'app-list',
   template: `
@@ -56,7 +54,6 @@ interface ListItem {
 export class ListComponent {
   @Input() items: ListItem[] = [];
   @Output() itemClick = new EventEmitter<ListItem>();
-
   onItemClick(item: ListItem): void {
   this.itemClick.emit(item);
   }

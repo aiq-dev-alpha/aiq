@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-
 interface CardTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -8,7 +7,6 @@ interface CardTheme {
   borderColor: string;
   shadowColor: string;
 }
-
 @Component({
   selector: 'app-card',
   template: `
@@ -93,18 +91,14 @@ interface CardTheme {
   transform: translateY(-4px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
   }
-  
-  
   @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
   }
-  
   @keyframes slideIn {
   from { transform: translateX(-20px); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
   }
-  
   @keyframes scaleIn {
   from { transform: scale(0.95); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
@@ -122,7 +116,6 @@ export class CardComponent {
   @Input() hoverable = true;
   @Input() clickable = false;
   @Input() hasFooter = false;
-
   private defaultTheme: CardTheme = {
   primaryColor: '#3b82f6',
   secondaryColor: '#8b5cf6',
@@ -132,11 +125,9 @@ export class CardComponent {
   borderColor: '#e2e8f0',
   shadowColor: 'rgba(0, 0, 0, 0.1)'
   };
-
   get appliedTheme(): CardTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get cardStyles() {
   const t = this.appliedTheme;
   const variants = {
@@ -156,17 +147,14 @@ export class CardComponent {
   boxShadow: 'none'
   }
   };
-
   return {
   ...variants[this.variant],
   color: t.textColor
   };
   }
-
   get imageStyles() {
   return {};
   }
-
   get badgeStyles() {
   const t = this.appliedTheme;
   return {
@@ -174,36 +162,30 @@ export class CardComponent {
   color: '#ffffff'
   };
   }
-
   get contentStyles() {
   return {};
   }
-
   get titleStyles() {
   const t = this.appliedTheme;
   return {
   color: t.textColor
   };
   }
-
   get subtitleStyles() {
   const t = this.appliedTheme;
   return {
   color: t.textColor
   };
   }
-
   get bodyStyles() {
   const t = this.appliedTheme;
   return {
   color: t.textColor
   };
   }
-
   get footerStyles() {
   return {};
   }
-
   handleClick(): void {
   if (this.clickable) {
   // Emit click event or handle navigation

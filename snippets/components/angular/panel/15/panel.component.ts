@@ -1,6 +1,5 @@
 // Striped Pattern Panel
 import { Component } from '@angular/core';
-
 @Component({
   selector: 'app-panel',
   template: `<div class="stripe-panel"><ng-content></ng-content></div>`,

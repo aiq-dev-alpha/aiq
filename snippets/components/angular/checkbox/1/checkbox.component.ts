@@ -1,7 +1,6 @@
 // Animated Modern Checkbox
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-
 @Component({
   selector: 'app-checkbox',
   template: `
@@ -32,17 +31,14 @@ export class CheckboxComponent implements ControlValueAccessor {
   @Input() label?: string;
   @Input() disabled = false;
   @Output() checkedChange = new EventEmitter<boolean>();
-  
   checked = false;
   private onChangeFn: any = () => {};
   private onTouchedFn: any = () => {};
-  
   onChange(event: Event): void {
   this.checked = (event.target as HTMLInputElement).checked;
   this.onChangeFn(this.checked);
   this.checkedChange.emit(this.checked);
   }
-  
   writeValue(value: boolean): void { this.checked = value; }
   registerOnChange(fn: any): void { this.onChangeFn = fn; }
   registerOnTouched(fn: any): void { this.onTouchedFn = fn; }

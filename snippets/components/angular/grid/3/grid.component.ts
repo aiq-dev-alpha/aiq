@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface GridItem {
   id: string | number;
   content: string;
@@ -7,7 +6,6 @@ interface GridItem {
   title?: string;
   description?: string;
 }
-
 interface GridTheme {
   primaryColor: string;
   backgroundColor: string;
@@ -16,7 +14,6 @@ interface GridTheme {
   borderColor: string;
   shadowColor: string;
 }
-
 @Component({
   selector: 'app-grid',
   template: `
@@ -72,7 +69,6 @@ export class GridComponent {
   @Input() variant: 'masonry' | 'uniform' | 'card' | 'minimal' | 'detailed' = 'minimal';
   @Input() loading: boolean = false;
   @Output() itemClicked = new EventEmitter<GridItem>();
-
   private defaultTheme: GridTheme = {
   primaryColor: '#f59e0b',
   backgroundColor: '#fffbeb',
@@ -82,18 +78,15 @@ export class GridComponent {
   borderColor: '#fcd34d',
   shadowColor: 'rgba(245, 158, 11, 0.2)'
   };
-
   get appliedTheme(): GridTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get containerStyles() {
   return {
   backgroundColor: this.appliedTheme.backgroundColor,
   padding: '1.5rem'
   };
   }
-
   get gridStyles() {
   const gapMap = { xs: '0.5rem', sm: '1rem', md: '1.5rem', lg: '2rem', xl: '3rem' };
   return {
@@ -101,7 +94,6 @@ export class GridComponent {
   gridTemplateColumns: `repeat(${this.columns}, 1fr)`
   };
   }
-
   get itemStyles() {
   return {
   backgroundColor: this.appliedTheme.cardColor,
@@ -109,14 +101,12 @@ export class GridComponent {
   borderRadius: '0.5rem'
   };
   }
-
   get skeletonStyles() {
   return {
   backgroundColor: this.appliedTheme.cardColor,
   minHeight: '300px'
   };
   }
-
   onItemClick(item: GridItem) {
   this.itemClicked.emit(item);
   }

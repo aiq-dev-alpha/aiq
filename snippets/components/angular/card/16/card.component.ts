@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface CardAppearance {
   backgroundColor: string;
   borderColor: string;
@@ -7,9 +6,7 @@ interface CardAppearance {
   accentColor: string;
   shadowIntensity: 'none' | 'light' | 'medium' | 'heavy';
 }
-
 type CardPattern = 'default' | 'image-top' | 'image-left' | 'overlay' | 'minimal';
-
 @Component({
   selector: 'app-card',
   template: `
@@ -18,24 +15,19 @@ type CardPattern = 'default' | 'image-top' | 'image-left' | 'overlay' | 'minimal
   <img [src]="coverImage" [alt]="coverImageAlt" class="cover-image">
   <div *ngIf="pattern === 'overlay'" class="overlay-gradient"></div>
   </div>
-
   <div class="card-content-wrapper" [ngClass]="{'overlay-content': pattern === 'overlay'}">
   <div *ngIf="coverImage && pattern === 'image-left'" class="side-image">
   <img [src]="coverImage" [alt]="coverImageAlt">
   </div>
-
   <div class="text-content">
   <div *ngIf="label" class="label-tag">{{ label }}</div>
-
   <div *ngIf="cardTitle" class="title-section">
   <h3 class="title">{{ cardTitle }}</h3>
   <p *ngIf="tagline" class="tagline">{{ tagline }}</p>
   </div>
-
   <div class="body-section">
   <ng-content></ng-content>
   </div>
-
   <div *ngIf="showFooter" class="footer-section">
   <ng-content select="[cardFooter]"></ng-content>
   </div>
@@ -138,18 +130,14 @@ type CardPattern = 'default' | 'image-top' | 'image-left' | 'overlay' | 'minimal
   transform: translateY(-4px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
   }
-  
-  
   @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
   }
-  
   @keyframes slideIn {
   from { transform: translateX(-20px); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
   }
-  
   @keyframes scaleIn {
   from { transform: scale(0.95); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
@@ -167,7 +155,6 @@ export class CardComponent {
   @Input() showFooter = false;
   @Input() selectable = false;
   @Output() cardClicked = new EventEmitter<MouseEvent>();
-
   private defaultAppearance: CardAppearance = {
   backgroundColor: '#ffffff',
   backdropFilter: 'blur(10px)',
@@ -176,15 +163,12 @@ export class CardComponent {
   accentColor: '#3b82f6',
   shadowIntensity: 'medium'
   };
-
   get cardAppearance(): CardAppearance {
   return { ...this.defaultAppearance, ...this.appearance };
   }
-
   get patternClass(): string {
   return `pattern-${this.pattern}`;
   }
-
   get containerStyles(): Record<string, string> {
   const a = this.cardAppearance;
   const shadowMap = {
@@ -193,7 +177,6 @@ export class CardComponent {
   medium: '0 4px 6px rgba(0, 0, 0, 0.1)',
   heavy: '0 20px 25px rgba(0, 0, 0, 0.15)'
   };
-
   const baseStyles = {
   backgroundColor: a.backgroundColor,
   color: a.textColor,
@@ -201,16 +184,13 @@ export class CardComponent {
   boxShadow: shadowMap[a.shadowIntensity],
   cursor: this.selectable ? 'pointer' : 'default'
   };
-
   if (this.pattern === 'overlay') {
   return { ...baseStyles, padding: '0' };
   } else if (this.pattern === 'minimal') {
   return { ...baseStyles, padding: '1rem', border: `1px solid ${a.borderColor}` };
   }
-
   return { ...baseStyles, padding: '1.5rem' };
   }
-
   onCardClick(event: MouseEvent): void {
   if (this.selectable) {
   this.cardClicked.emit(event);

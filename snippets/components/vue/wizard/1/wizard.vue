@@ -23,18 +23,15 @@
         </div>
       </div>
     </div>
-
     <div class="wizard-progress">
       <div class="progress-bar">
         <div class="progress-fill" :style="{ width: progressPercentage + '%' }"></div>
       </div>
       <div class="progress-text">{{ progressPercentage }}% Complete</div>
     </div>
-
     <div class="wizard-body">
       <slot :current-step="currentStepData"></slot>
     </div>
-
     <div class="wizard-actions">
       <button
         class="btn-secondary"
@@ -63,10 +60,8 @@
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-
 interface WizardTheme {
   primaryColor?: string
   backgroundColor?: string
@@ -75,7 +70,6 @@ interface WizardTheme {
   completedColor?: string
   borderColor?: string
 }
-
 interface WizardStep {
   id: string | number
   label: string
@@ -84,7 +78,6 @@ interface WizardStep {
   completed?: boolean
   active?: boolean
 }
-
 interface Props {
   steps: WizardStep[]
   currentStep?: number
@@ -93,7 +86,6 @@ interface Props {
   theme?: WizardTheme
   allowStepNavigation?: boolean
 }
-
 const props = withDefaults(defineProps<Props>(), {
   currentStep: 0,
   variant: 'numbered',
@@ -108,31 +100,23 @@ const props = withDefaults(defineProps<Props>(), {
   }),
   allowStepNavigation: true
 })
-
 const emit = defineEmits<{
   (e: 'step-changed', step: number): void
   (e: 'completed'): void
   (e: 'update:currentStep', step: number): void
 }>()
-
 const internalStep = ref(props.currentStep)
-
 watch(() => props.currentStep, (newVal) => {
   internalStep.value = newVal
 })
-
 const currentStepData = computed(() => props.steps[internalStep.value])
-
 const isFirstStep = computed(() => internalStep.value === 0)
 const isLastStep = computed(() => internalStep.value === props.steps.length - 1)
-
 const progressPercentage = computed(() => {
   const completed = props.steps.filter(s => s.completed).length
   return Math.round((completed / props.steps.length) * 100)
 })
-
 const orientationClass = computed(() => `orientation-${props.orientation}`)
-
 const containerStyles = computed(() => ({
   '--primary-color': props.theme.primaryColor,
   '--background-color': props.theme.backgroundColor,
@@ -141,7 +125,6 @@ const containerStyles = computed(() => ({
   '--completed-color': props.theme.completedColor,
   '--border-color': props.theme.borderColor
 }))
-
 const buttonStyles = computed(() => ({
   primary: {
     backgroundColor: props.theme.primaryColor,
@@ -152,14 +135,12 @@ const buttonStyles = computed(() => ({
     color: props.theme.textColor
   }
 }))
-
 const stepClasses = (index: number) => ({
   'step-completed': props.steps[index].completed,
   'step-active': index === internalStep.value,
   'step-pending': !props.steps[index].completed && index !== internalStep.value,
   'step-clickable': props.allowStepNavigation
 })
-
 const handleStepClick = (index: number) => {
   if (props.allowStepNavigation) {
     internalStep.value = index
@@ -167,7 +148,6 @@ const handleStepClick = (index: number) => {
     emit('step-changed', index)
   }
 }
-
 const handleNext = () => {
   if (!isLastStep.value) {
     internalStep.value++
@@ -175,7 +155,6 @@ const handleNext = () => {
     emit('step-changed', internalStep.value)
   }
 }
-
 const handlePrevious = () => {
   if (!isFirstStep.value) {
     internalStep.value--
@@ -183,12 +162,10 @@ const handlePrevious = () => {
     emit('step-changed', internalStep.value)
   }
 }
-
 const handleComplete = () => {
   emit('completed')
 }
 </script>
-
 <style scoped>
 .wizard-numbered {
   display: flex;
@@ -199,16 +176,13 @@ const handleComplete = () => {
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
-
 .wizard-steps {
   display: flex;
   gap: 1rem;
 }
-
 .orientation-vertical .wizard-steps {
   flex-direction: column;
 }
-
 .step-item {
   display: flex;
   align-items: flex-start;
@@ -217,19 +191,15 @@ const handleComplete = () => {
   position: relative;
   transition: all 0.3s ease;
 }
-
 .orientation-vertical .step-item {
   flex-direction: row;
 }
-
 .step-clickable {
   cursor: pointer;
 }
-
 .step-clickable:hover .step-indicator {
   transform: scale(1.05);
 }
-
 .step-indicator {
   display: flex;
   flex-direction: column;
@@ -237,11 +207,9 @@ const handleComplete = () => {
   gap: 0.5rem;
   transition: transform 0.3s ease;
 }
-
 .orientation-vertical .step-indicator {
   flex-direction: row;
 }
-
 .step-number {
   width: 48px;
   height: 48px;
@@ -257,25 +225,21 @@ const handleComplete = () => {
   transition: all 0.3s ease;
   flex-shrink: 0;
 }
-
 .step-completed .step-number {
   background: var(--completed-color);
   color: white;
   border-color: var(--completed-color);
 }
-
 .step-active .step-number {
   background: var(--active-color);
   color: white;
   border-color: var(--active-color);
   box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
 }
-
 .checkmark {
   width: 24px;
   height: 24px;
 }
-
 .step-connector {
   flex: 1;
   height: 3px;
@@ -284,79 +248,66 @@ const handleComplete = () => {
   top: 24px;
   transition: background 0.3s ease;
 }
-
 .orientation-vertical .step-connector {
   width: 3px;
   height: 40px;
   top: 0;
   left: 24px;
 }
-
 .step-completed .step-connector {
   background: var(--completed-color);
 }
-
 .step-content {
   flex: 1;
   min-width: 0;
 }
-
 .step-label {
   font-weight: 600;
   color: var(--text-color);
   margin-bottom: 0.25rem;
   transition: color 0.3s ease;
 }
-
 .step-active .step-label {
   color: var(--active-color);
 }
-
 .step-description {
   font-size: 0.875rem;
   color: #6b7280;
 }
-
 .wizard-progress {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
-
 .progress-bar {
   height: 8px;
   background: #f3f4f6;
   border-radius: 9999px;
   overflow: hidden;
 }
-
 .progress-fill {
   height: 100%;
   background: linear-gradient(90deg, var(--primary-color), var(--active-color));
   transition: width 0.5s ease;
   border-radius: 9999px;
 }
-
 .progress-text {
   font-size: 0.875rem;
   color: #6b7280;
   text-align: center;
   font-weight: 500;
 }
-
 .wizard-body {
   padding: 1.5rem;
   background: #f9fafb;
   border-radius: 8px;
   min-height: 200px;
 }
-
 .wizard-actions {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
 }
-
 .btn-primary,
 .btn-secondary {
   padding: 0.75rem 1.5rem;
@@ -367,46 +318,37 @@ const handleComplete = () => {
   border: 2px solid;
   font-size: 1rem;
 }
-
 .btn-primary {
   background: var(--primary-color);
   color: white;
   border-color: var(--primary-color);
 }
-
 .btn-primary:hover:not(:disabled) {
   opacity: 0.9;
   transform: translateY(-1px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-
 .btn-secondary {
   background: white;
   color: var(--text-color);
   border-color: var(--border-color);
 }
-
 .btn-secondary:hover:not(:disabled) {
   background: #f9fafb;
   transform: translateY(-1px);
 }
-
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
-
-
 @keyframes enter {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
 }
-
 @keyframes slideDown {
   from { transform: translateY(-10px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
-
 @keyframes glow {
   0%, 100% { box-shadow: 0 0 5px currentColor; }
   50% { box-shadow: 0 0 20px currentColor; }

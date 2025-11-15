@@ -4,7 +4,6 @@
     <input :type="type" :value="modelValue" :placeholder="placeholder" @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)" class="input" />
   </div>
 </template>
-
 <script lang="ts">
 import { defineComponent } from 'vue';
 export default defineComponent({
@@ -13,7 +12,6 @@ export default defineComponent({
   emits: ['update:modelValue']
 });
 </script>
-
 <style scoped>
 .premium-input { margin: 1.25rem 0; }
 .label { display: block; margin-bottom: 0.625rem; font-size: 0.875rem; font-weight: 600; color: #1a202c; }

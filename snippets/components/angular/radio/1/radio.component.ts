@@ -1,7 +1,6 @@
 // Modern Radio Button Group
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-
 @Component({
   selector: 'app-radio',
   template: `
@@ -35,17 +34,14 @@ export class RadioComponent implements ControlValueAccessor {
   @Input() options: {label: string, value: any}[] = [];
   @Input() name = 'radio-group';
   @Output() valueChange = new EventEmitter<any>();
-  
   value: any;
   private onChangeFn: any = () => {};
   private onTouchedFn: any = () => {};
-  
   onChange(value: any): void {
   this.value = value;
   this.onChangeFn(value);
   this.valueChange.emit(value);
   }
-  
   writeValue(value: any): void { this.value = value; }
   registerOnChange(fn: any): void { this.onChangeFn = fn; }
   registerOnTouched(fn: any): void { this.onTouchedFn = fn; }

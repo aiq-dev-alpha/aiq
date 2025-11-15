@@ -10,7 +10,6 @@
     >
       <div class="hero-overlay" :style="{ backgroundColor: currentTheme.overlayColor }"></div>
     </div>
-
     <div class="hero-content">
       <div
         v-if="image"
@@ -18,14 +17,12 @@
       >
         <img :src="image" :alt="title" />
       </div>
-
       <h1
         class="hero-title animate-fade-in delay-1"
         :style="{ color: currentTheme.textColor }"
       >
         {{ title }}
       </h1>
-
       <p
         v-if="subtitle"
         class="hero-subtitle animate-fade-in delay-2"
@@ -33,7 +30,6 @@
       >
         {{ subtitle }}
       </p>
-
       <p
         v-if="description"
         class="hero-description animate-fade-in delay-3"
@@ -41,7 +37,6 @@
       >
         {{ description }}
       </p>
-
       <div
         v-if="ctaButtons && ctaButtons.length"
         class="hero-cta animate-fade-in delay-4"
@@ -59,10 +54,8 @@
     </div>
   </section>
 </template>
-
 <script setup lang="ts">
 import { computed, PropType } from 'vue'
-
 interface HeroTheme {
   primaryColor: string
   backgroundColor: string
@@ -70,15 +63,12 @@ interface HeroTheme {
   accentColor: string
   overlayColor: string
 }
-
 interface CtaButton {
   label: string
   onClick: () => void
   variant?: 'primary' | 'secondary' | 'outline'
 }
-
 type VariantType = 'full-screen' | 'split' | 'centered' | 'minimal' | 'video-bg' | 'gradient'
-
 const props = defineProps({
   title: {
     type: String,
@@ -113,7 +103,6 @@ const props = defineProps({
     default: () => ({})
   }
 })
-
 const defaultTheme: HeroTheme = {
   primaryColor: '#f59e0b',
   backgroundColor: '#fffbeb',
@@ -121,16 +110,13 @@ const defaultTheme: HeroTheme = {
   accentColor: '#fbbf24',
   overlayColor: 'rgba(255, 251, 235, 0.95)'
 }
-
 const currentTheme = computed(() => ({
   ...defaultTheme,
   ...props.theme
 }))
-
 const heroStyles = computed(() => ({
   backgroundColor: currentTheme.value.backgroundColor
 }))
-
 const getButtonStyles = (variant?: string) => {
   if (variant === 'secondary') {
     return {
@@ -152,7 +138,6 @@ const getButtonStyles = (variant?: string) => {
   }
 }
 </script>
-
 <style scoped>
 .hero-centered {
   position: relative;
@@ -162,7 +147,6 @@ const getButtonStyles = (variant?: string) => {
   justify-content: center;
   padding: 4rem 2rem;
 }
-
 .hero-background {
   position: absolute;
   top: 0;
@@ -173,7 +157,6 @@ const getButtonStyles = (variant?: string) => {
   background-position: center;
   z-index: 0;
 }
-
 .hero-overlay {
   position: absolute;
   top: 0;
@@ -181,7 +164,6 @@ const getButtonStyles = (variant?: string) => {
   width: 100%;
   height: 100%;
 }
-
 .hero-content {
   position: relative;
   z-index: 1;
@@ -189,7 +171,6 @@ const getButtonStyles = (variant?: string) => {
   max-width: 800px;
   margin: 0 auto;
 }
-
 .hero-image {
   width: 120px;
   height: 120px;
@@ -198,13 +179,11 @@ const getButtonStyles = (variant?: string) => {
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
-
 .hero-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-
 .hero-title {
   font-size: 3rem;
   font-weight: 700;
@@ -212,14 +191,12 @@ const getButtonStyles = (variant?: string) => {
   margin-bottom: 1rem;
   letter-spacing: -0.02em;
 }
-
 .hero-subtitle {
   font-size: 1.25rem;
   font-weight: 500;
   margin-bottom: 0.75rem;
   opacity: 0.9;
 }
-
 .hero-description {
   font-size: 1.125rem;
   line-height: 1.6;
@@ -229,14 +206,12 @@ const getButtonStyles = (variant?: string) => {
   margin-left: auto;
   margin-right: auto;
 }
-
 .hero-cta {
   display: flex;
   gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
 }
-
 .hero-button {
   padding: 0.875rem 2rem;
   font-size: 1rem;
@@ -247,38 +222,30 @@ const getButtonStyles = (variant?: string) => {
   transition: all 0.3s ease;
   min-width: 140px;
 }
-
 .hero-button:hover {
   transform: scale(1.05);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
-
 .animate-scale-in {
   animation: scaleIn 0.6s ease-out forwards;
   opacity: 0;
 }
-
 .animate-fade-in {
   animation: fadeIn 0.8s ease-out forwards;
   opacity: 0;
 }
-
 .delay-1 {
   animation-delay: 0.15s;
 }
-
 .delay-2 {
   animation-delay: 0.3s;
 }
-
 .delay-3 {
   animation-delay: 0.45s;
 }
-
 .delay-4 {
   animation-delay: 0.6s;
 }
-
 @keyframes scaleIn {
   from {
     opacity: 0;
@@ -289,7 +256,6 @@ const getButtonStyles = (variant?: string) => {
     transform: scale(1);
   }
 }
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -300,35 +266,28 @@ const getButtonStyles = (variant?: string) => {
     transform: translateY(0);
   }
 }
-
 @media (max-width: 768px) {
   .hero-centered {
     min-height: 80vh;
     padding: 3rem 1.5rem;
   }
-
   .hero-title {
     font-size: 2rem;
   }
-
   .hero-subtitle {
     font-size: 1.125rem;
   }
-
   .hero-description {
     font-size: 1rem;
   }
-
   .hero-image {
     width: 100px;
     height: 100px;
   }
-
   .hero-cta {
     flex-direction: column;
     align-items: center;
   }
-
   .hero-button {
     width: 100%;
     max-width: 300px;

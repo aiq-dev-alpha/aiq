@@ -1,7 +1,6 @@
 // Glitch Effect Input
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-
 @Component({
   selector: 'app-input',
   template: `<div class="glitch-input"><input [type]="type" [placeholder]="placeholder" [value]="value" (input)="handleInput($event)" class="glitch-field" /><div class="glitch-effect" data-text="{{ value }}">{{ value }}</div></div>`,

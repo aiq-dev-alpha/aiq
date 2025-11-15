@@ -1,12 +1,10 @@
 import React from 'react';
-
 interface BadgeProps {
   content?: string | number;
   max?: number;
   dot?: boolean;
   children?: React.ReactNode;
 }
-
 export const Badge: React.FC<BadgeProps> = ({
   content,
   max = 99,
@@ -14,7 +12,6 @@ export const Badge: React.FC<BadgeProps> = ({
   children
 }) => {
   const displayContent = typeof content === 'number' && content > max ? `${max}+` : content;
-  
   return (
     <div className="relative inline-flex">
       {children}

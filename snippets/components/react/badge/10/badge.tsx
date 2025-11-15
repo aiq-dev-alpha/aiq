@@ -1,5 +1,4 @@
 import React from 'react';
-
 export const Badge: React.FC<{ count?: number; max?: number; children: React.ReactNode }> = ({ count, max = 99, children }) => {
   const display = count && count > max ? `${max}+` : count;
   return (

@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface ButtonTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -8,7 +7,6 @@ interface ButtonTheme {
   borderColor: string;
   glowColor: string;
 }
-
 @Component({
   selector: 'app-button',
   template: `
@@ -98,7 +96,6 @@ export class ButtonComponent {
   @Input() enableRipple = false;
   @Input() glow = false;
   @Output() clicked = new EventEmitter<MouseEvent>();
-
   private defaultTheme: ButtonTheme = {
   primaryColor: '#14b8a6',
   secondaryColor: '#0d9488',
@@ -108,11 +105,9 @@ export class ButtonComponent {
   borderColor: '#cbd5e1',
   glowColor: 'rgba(20, 184, 166, 0.4)'
   };
-
   get appliedTheme(): ButtonTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get buttonStyles() {
   const t = this.appliedTheme;
   const sizeMap = {
@@ -121,7 +116,6 @@ export class ButtonComponent {
   md: { padding: '12px 26px', fontSize: '15px', minHeight: '44px', gap: '8px' },
   lg: { padding: '15px 34px', fontSize: '17px', minHeight: '52px', gap: '10px' }
   };
-
   const variantMap = {
   default: {
   background: t.backgroundColor,
@@ -148,7 +142,6 @@ export class ButtonComponent {
   boxShadow: `0 0 20px ${t.glowColor}, inset 0 0 10px ${t.glowColor}`
   }
   };
-
   return {
   ...sizeMap[this.size],
   ...variantMap[this.variant],
@@ -162,13 +155,11 @@ export class ButtonComponent {
   textTransform: 'none' as any
   };
   }
-
   get buttonClasses(): string[] {
   const classes = [];
   if (this.glow) classes.push('glow');
   return classes;
   }
-
   handleClick(event: MouseEvent): void {
   if (!this.disabled && !this.isLoading) {
   this.clicked.emit(event);

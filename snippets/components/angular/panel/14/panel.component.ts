@@ -1,6 +1,5 @@
 // Layered Shadow Depth Panel
 import { Component } from '@angular/core';
-
 @Component({
   selector: 'app-panel',
   template: `<div class="depth-panel"><ng-content></ng-content></div>`,

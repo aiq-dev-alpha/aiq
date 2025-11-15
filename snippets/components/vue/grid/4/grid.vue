@@ -34,10 +34,8 @@
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
-
 interface GridTheme {
   primaryColor?: string;
   backgroundColor?: string;
@@ -46,7 +44,6 @@ interface GridTheme {
   borderColor?: string;
   shadowColor?: string;
 }
-
 interface GridItem {
   id: string | number;
   content?: string;
@@ -54,10 +51,8 @@ interface GridItem {
   title?: string;
   description?: string;
 }
-
 type GridVariant = 'masonry' | 'uniform' | 'card' | 'minimal' | 'detailed';
 type GridGap = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-
 interface Props {
   items?: GridItem[];
   columns?: number;
@@ -66,7 +61,6 @@ interface Props {
   loading?: boolean;
   theme?: GridTheme;
 }
-
 const props = withDefaults(defineProps<Props>(), {
   items: () => [],
   columns: 4,
@@ -82,11 +76,9 @@ const props = withDefaults(defineProps<Props>(), {
     shadowColor: 'rgba(245, 158, 11, 0.08)'
   })
 });
-
 const emit = defineEmits<{
   itemClick: [item: GridItem];
 }>();
-
 const gapSizes = {
   xs: '0.5rem',
   sm: '1rem',
@@ -94,20 +86,16 @@ const gapSizes = {
   lg: '2rem',
   xl: '3rem'
 };
-
 const skeletonCount = computed(() => props.columns * 3);
-
 const containerStyles = computed(() => ({
   backgroundColor: props.theme?.backgroundColor || '#fffbeb',
   padding: gapSizes[props.gap]
 }));
-
 const gridStyles = computed(() => ({
   display: 'grid',
   gap: gapSizes[props.gap],
   gridTemplateColumns: `repeat(${props.columns}, 1fr)`
 }));
-
 const itemStyles = computed(() => ({
   backgroundColor: props.theme?.cardColor || '#fef3c7',
   borderColor: props.theme?.borderColor || '#fde68a',
@@ -115,26 +103,21 @@ const itemStyles = computed(() => ({
   '--primary-color': props.theme?.primaryColor || '#f59e0b',
   '--shadow-color': props.theme?.shadowColor || 'rgba(245, 158, 11, 0.08)'
 }));
-
 const handleItemClick = (item: GridItem) => {
   emit('itemClick', item);
 };
 </script>
-
 <style scoped>
 .grid-container {
   width: 100%;
   min-height: 200px;
 }
-
 .grid {
   width: 100%;
 }
-
 .minimal-grid {
   grid-auto-rows: auto;
 }
-
 .grid-item {
   border-radius: 8px;
   overflow: hidden;
@@ -142,25 +125,21 @@ const handleItemClick = (item: GridItem) => {
   transition: all 0.25s ease;
   position: relative;
 }
-
 .minimal-item {
   border: 1px solid;
   box-shadow: 0 1px 3px 0 var(--shadow-color);
   background: transparent;
 }
-
 .minimal-item:hover {
   transform: scale(1.03);
   box-shadow: 0 10px 20px -5px var(--shadow-color);
   border-color: var(--primary-color);
 }
-
 .minimal-wrapper {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
-
 .minimal-image {
   width: 100%;
   height: 160px;
@@ -169,18 +148,15 @@ const handleItemClick = (item: GridItem) => {
   flex-shrink: 0;
   background: linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%);
 }
-
 .minimal-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: opacity 0.25s ease;
 }
-
 .minimal-item:hover .minimal-image img {
   opacity: 0.9;
 }
-
 .minimal-overlay {
   position: absolute;
   top: 0;
@@ -192,18 +168,15 @@ const handleItemClick = (item: GridItem) => {
   transition: opacity 0.25s ease;
   mix-blend-mode: multiply;
 }
-
 .minimal-item:hover .minimal-overlay {
   opacity: 0.15;
 }
-
 .minimal-content {
   padding: 1rem;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
 }
-
 .minimal-title {
   margin: 0 0 0.5rem 0;
   font-size: 1rem;
@@ -211,27 +184,23 @@ const handleItemClick = (item: GridItem) => {
   line-height: 1.4;
   color: var(--primary-color);
 }
-
 .minimal-description {
   margin: 0 0 0.25rem 0;
   font-size: 0.8125rem;
   line-height: 1.5;
   opacity: 0.8;
 }
-
 .minimal-text {
   font-size: 0.75rem;
   line-height: 1.5;
   opacity: 0.7;
   margin-top: auto;
 }
-
 /* Skeleton Loading */
 .skeleton {
   pointer-events: none;
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
-
 .skeleton-image {
   width: 100%;
   height: 160px;
@@ -239,7 +208,6 @@ const handleItemClick = (item: GridItem) => {
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
 }
-
 .skeleton-title {
   height: 1rem;
   background: linear-gradient(90deg, #fde68a 25%, #fffbeb 50%, #fde68a 75%);
@@ -249,7 +217,6 @@ const handleItemClick = (item: GridItem) => {
   margin: 1rem;
   width: calc(100% - 2rem);
 }
-
 @keyframes pulse {
   0%, 100% {
     opacity: 1;
@@ -258,7 +225,6 @@ const handleItemClick = (item: GridItem) => {
     opacity: 0.5;
   }
 }
-
 @keyframes shimmer {
   0% {
     background-position: -200% 0;
@@ -267,19 +233,16 @@ const handleItemClick = (item: GridItem) => {
     background-position: 200% 0;
   }
 }
-
 /* Responsive */
 @media (max-width: 1024px) {
   .grid {
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
   }
 }
-
 @media (max-width: 640px) {
   .grid {
     grid-template-columns: repeat(2, 1fr) !important;
   }
-
   .minimal-image {
     height: 140px;
   }

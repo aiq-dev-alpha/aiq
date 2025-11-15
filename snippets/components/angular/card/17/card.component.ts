@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface ElevationSystem {
   flat: string;
   low: string;
@@ -7,38 +6,31 @@ interface ElevationSystem {
   high: string;
   ultra: string;
 }
-
 interface CardDesign {
   bg: string;
   fg: string;
   accent: string;
   muted: string;
 }
-
 type LayoutMode = 'stacked' | 'horizontal' | 'overlay' | 'masonry';
-
 @Component({
   selector: 'app-card',
   template: `
   <article [ngStyle]="cardStyle" [ngClass]="modeClass" class="card-element" (click)="handleCardClick()">
   <div *ngIf="tag" class="card-tag" [ngStyle]="tagStyle">{{ tag }}</div>
-
   <div *ngIf="cover" class="card-cover" [ngStyle]="coverStyle">
   <img [src]="cover" [alt]="coverAlt" />
   <div *ngIf="mode === 'overlay'" class="overlay-scrim"></div>
   </div>
-
   <div class="card-main" [ngClass]="{'overlay-positioned': mode === 'overlay'}">
   <header *ngIf="heading || meta" class="card-head">
   <small *ngIf="meta" class="meta-text">{{ meta }}</small>
   <h3 *ngIf="heading" class="heading-text">{{ heading }}</h3>
   </header>
-
   <div class="card-content">
   <p *ngIf="excerpt" class="excerpt-text">{{ excerpt }}</p>
   <ng-content></ng-content>
   </div>
-
   <footer *ngIf="showFooter" class="card-foot">
   <ng-content select="[cardFooter]"></ng-content>
   </footer>
@@ -67,18 +59,14 @@ type LayoutMode = 'stacked' | 'horizontal' | 'overlay' | 'masonry';
   transform: translateY(-4px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
   }
-  
-  
   @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
   }
-  
   @keyframes slideIn {
   from { transform: translateX(-20px); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
   }
-  
   @keyframes scaleIn {
   from { transform: scale(0.95); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
@@ -98,14 +86,12 @@ export class CardComponent {
   @Input() showFooter = false;
   @Input() interactive = false;
   @Output() cardClick = new EventEmitter<void>();
-
   private defaultDesign: CardDesign = {
   bg: '#ffffff',
   fg: '#0f172a',
   accent: '#3b82f6',
   muted: '#64748b'
   };
-
   private shadows: ElevationSystem = {
   flat: 'none',
   low: '0 1px 3px rgba(0,0,0,0.08)',
@@ -113,15 +99,12 @@ export class CardComponent {
   high: '0 12px 24px rgba(0,0,0,0.15)',
   ultra: '0 24px 48px rgba(0,0,0,0.2)'
   };
-
   get cardDesign(): CardDesign {
   return { ...this.defaultDesign, ...this.design };
   }
-
   get modeClass(): string {
   return this.mode;
   }
-
   get cardStyle(): Record<string, string> {
   const d = this.cardDesign;
   return {
@@ -132,20 +115,17 @@ export class CardComponent {
   cursor: this.interactive ? 'pointer' : 'default'
   };
   }
-
   get tagStyle(): Record<string, string> {
   return {
   background: this.cardDesign.accent,
   color: '#ffffff'
   };
   }
-
   get coverStyle(): Record<string, string> {
   return {
   borderRadius: this.mode === 'stacked' ? '18px 18px 0 0' : this.mode === 'horizontal' ? '18px 0 0 18px' : '18px'
   };
   }
-
   handleCardClick(): void {
   if (this.interactive) {
   this.cardClick.emit();

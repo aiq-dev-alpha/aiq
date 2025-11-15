@@ -3,12 +3,10 @@
   export let label: string = '';
   export let placeholder: string = '';
 </script>
-
 <div class="input-field">
   {#if label}<label>{label}</label>{/if}
   <input type="text" bind:value {placeholder} class="styled-input" />
 </div>
-
 <style>
   .input-field { margin: 1rem 0; }
   label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2d3748; }

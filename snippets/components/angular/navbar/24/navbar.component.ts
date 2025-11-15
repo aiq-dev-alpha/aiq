@@ -1,11 +1,9 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface NavItem {
   label: string;
   href: string;
   active?: boolean;
 }
-
 @Component({
   selector: 'app-navbar',
   template: `
@@ -71,7 +69,6 @@ export class NavbarComponent {
   @Input() brand = 'Brand';
   @Input() items: NavItem[] = [];
   @Output() navClick = new EventEmitter<NavItem>();
-
   onNavClick(item: NavItem): void {
   this.navClick.emit(item);
   }

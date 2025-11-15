@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
-
 class CustomPicker extends StatefulWidget {
   final Widget? child;
   final VoidCallback? onTap;
-
   const CustomPicker({
   Key? key,
   this.child,
   this.onTap,
   }) : super(key: key);
-
   @override
   State<CustomPicker> createState() => _CustomPickerState();
 }
-
 class _CustomPickerState extends State<CustomPicker> {
   bool _isPressed = false;
-
   @override
   Widget build(BuildContext context) {
   return GestureDetector(

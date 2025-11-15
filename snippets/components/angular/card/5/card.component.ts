@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface CardTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -9,7 +8,6 @@ interface CardTheme {
   shadowColor: string;
   accentColor: string;
 }
-
 @Component({
   selector: 'app-card',
   template: `
@@ -30,7 +28,6 @@ interface CardTheme {
   <div *ngIf="imageOverlay" class="image-overlay" [ngStyle]="overlayStyles"></div>
   <div *ngIf="badge" class="badge" [ngStyle]="badgeStyles">{{ badge }}</div>
   </div>
-
   <div class="card-content" [ngStyle]="contentStyles">
   <div *ngIf="label" class="card-label" [ngStyle]="labelStyles">{{ label }}</div>
   <div *ngIf="title" class="card-title" [ngStyle]="titleStyles">{{ title }}</div>
@@ -39,7 +36,6 @@ interface CardTheme {
   <ng-content></ng-content>
   </div>
   </div>
-
   <div *ngIf="hasFooter" class="card-footer" [ngStyle]="footerStyles">
   <ng-content select="[footer]"></ng-content>
   </div>
@@ -138,18 +134,14 @@ interface CardTheme {
   transform: translateY(-4px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
   }
-  
-  
   @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
   }
-  
   @keyframes slideIn {
   from { transform: translateX(-20px); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
   }
-  
   @keyframes scaleIn {
   from { transform: scale(0.95); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
@@ -170,10 +162,8 @@ export class CardComponent {
   @Input() hoverable = true;
   @Input() clickable = false;
   @Input() hasFooter = false;
-
   @Output() cardClick = new EventEmitter<MouseEvent>();
   @Output() cardHover = new EventEmitter<boolean>();
-
   private defaultTheme: CardTheme = {
   primaryColor: '#f59e0b',
   secondaryColor: '#fbbf24',
@@ -184,11 +174,9 @@ export class CardComponent {
   shadowColor: 'rgba(245, 158, 11, 0.2)',
   accentColor: '#ea580c'
   };
-
   get appliedTheme(): CardTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get cardStyles() {
   const t = this.appliedTheme;
   const sizeMap = {
@@ -196,7 +184,6 @@ export class CardComponent {
   md: { maxWidth: '360px' },
   lg: { maxWidth: '480px' }
   };
-
   const variants = {
   flat: {
   backgroundColor: t.backgroundColor,
@@ -230,18 +217,15 @@ export class CardComponent {
   boxShadow: `0 10px 28px ${t.shadowColor}`
   }
   };
-
   return {
   ...sizeMap[this.size],
   ...variants[this.variant],
   color: this.variant === 'gradient' ? '#ffffff' : t.textColor
   };
   }
-
   get imageStyles() {
   return {};
   }
-
   get overlayStyles() {
   const t = this.appliedTheme;
   return {
@@ -249,7 +233,6 @@ export class CardComponent {
   opacity: this.imageOverlay ? 1 : 0
   };
   }
-
   get badgeStyles() {
   const t = this.appliedTheme;
   return {
@@ -257,7 +240,6 @@ export class CardComponent {
   color: '#ffffff'
   };
   }
-
   get labelStyles() {
   const t = this.appliedTheme;
   return {
@@ -265,42 +247,35 @@ export class CardComponent {
   color: t.primaryColor
   };
   }
-
   get contentStyles() {
   return {};
   }
-
   get titleStyles() {
   const t = this.appliedTheme;
   return {
   color: this.variant === 'gradient' ? '#ffffff' : t.textColor
   };
   }
-
   get subtitleStyles() {
   const t = this.appliedTheme;
   return {
   color: this.variant === 'gradient' ? '#ffffff' : t.textColor
   };
   }
-
   get bodyStyles() {
   const t = this.appliedTheme;
   return {
   color: this.variant === 'gradient' ? '#ffffff' : t.textColor
   };
   }
-
   get footerStyles() {
   return {};
   }
-
   handleClick(event?: MouseEvent): void {
   if (this.clickable && event) {
   this.cardClick.emit(event);
   }
   }
-
   handleHover(isHovering: boolean): void {
   this.cardHover.emit(isHovering);
   }

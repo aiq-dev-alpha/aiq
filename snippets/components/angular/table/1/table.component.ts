@@ -1,12 +1,10 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface TableColumn {
   key: string;
   label: string;
   sortable?: boolean;
   width?: string;
 }
-
 interface TableTheme {
   primaryColor: string;
   backgroundColor: string;
@@ -15,7 +13,6 @@ interface TableTheme {
   borderColor: string;
   hoverColor: string;
 }
-
 @Component({
   selector: 'app-table',
   template: `
@@ -99,18 +96,14 @@ interface TableTheme {
   border-bottom: 1px solid;
   font-size: 14px;
   }
-  
-  
   @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
   }
-  
   @keyframes slideIn {
   from { transform: translateX(-20px); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
   }
-  
   @keyframes scaleIn {
   from { transform: scale(0.95); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
@@ -126,10 +119,8 @@ export class TableComponent {
   @Input() emptyMessage = 'No data available';
   @Output() rowClicked = new EventEmitter<any>();
   @Output() sorted = new EventEmitter<{column: string, direction: 'asc' | 'desc'}>();
-
   sortColumn: string | null = null;
   sortDirection: 'asc' | 'desc' = 'asc';
-
   private defaultTheme: TableTheme = {
   primaryColor: '#3b82f6',
   backgroundColor: '#ffffff',
@@ -139,18 +130,15 @@ export class TableComponent {
   borderColor: '#e2e8f0',
   hoverColor: '#f1f5f9'
   };
-
   get appliedTheme(): TableTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get containerStyles() {
   const t = this.appliedTheme;
   return {
   border: `1px solid ${t.borderColor}`
   };
   }
-
   get tableStyles() {
   const t = this.appliedTheme;
   return {
@@ -158,7 +146,6 @@ export class TableComponent {
   color: t.textColor
   };
   }
-
   get headerStyles() {
   const t = this.appliedTheme;
   return {
@@ -166,13 +153,11 @@ export class TableComponent {
   borderColor: t.primaryColor
   };
   }
-
   getColumnStyles(column: TableColumn) {
   return {
   width: column.width || 'auto'
   };
   }
-
   get rowStyles() {
   const t = this.appliedTheme;
   return this.hoverable ? {
@@ -181,14 +166,12 @@ export class TableComponent {
   }
   } : {};
   }
-
   get cellStyles() {
   const t = this.appliedTheme;
   return {
   borderColor: t.borderColor
   };
   }
-
   get emptyCellStyles() {
   return {
   textAlign: 'center',
@@ -197,20 +180,16 @@ export class TableComponent {
   fontStyle: 'italic'
   };
   }
-
   handleSort(column: TableColumn): void {
   if (!column.sortable) return;
-
   if (this.sortColumn === column.key) {
   this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
   } else {
   this.sortColumn = column.key;
   this.sortDirection = 'asc';
   }
-
   this.sorted.emit({ column: column.key, direction: this.sortDirection });
   }
-
   handleRowClick(row: any): void {
   this.rowClicked.emit(row);
   }

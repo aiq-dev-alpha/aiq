@@ -1,6 +1,5 @@
 // Magnetic Hover Items Navbar
 import { Component } from '@angular/core';
-
 @Component({
   selector: 'app-navbar',
   template: `<nav class="magnetic-nav"><div class="nav-items"><a class="nav-item" (mousemove)="onItemHover($event, i)" (mouseleave)="onItemLeave(i)" *ngFor="let item of items; let i = index" [style.transform]="transforms[i]"><ng-content></ng-content></a></div></nav>`,

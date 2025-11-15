@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface TableTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -9,19 +8,16 @@ interface TableTheme {
   headerBgColor: string;
   hoverColor: string;
 }
-
 interface TableColumn {
   key: string;
   label: string;
   sortable?: boolean;
   width?: string;
 }
-
 interface TableRow {
   [key: string]: any;
   id: string | number;
 }
-
 @Component({
   selector: 'app-table',
   template: `
@@ -95,19 +91,16 @@ export class TableComponent {
   @Input() expandable: boolean = false;
   @Input() hasActions: boolean = true;
   @Input() loading: boolean = false;
-
   @Output() rowClick = new EventEmitter<TableRow>();
   @Output() edit = new EventEmitter<TableRow>();
   @Output() delete = new EventEmitter<TableRow>();
   @Output() selectionChange = new EventEmitter<(string | number)[]>();
-
   searchTerm: string = '';
   sortKey: string = '';
   sortDirection: 'asc' | 'desc' | null = null;
   currentPage: number = 1;
   selectedRows: Set<string | number> = new Set();
   expandedRows: Set<string | number> = new Set();
-
   private defaultTheme: TableTheme = {
   primaryColor: '#8b5cf6',
   secondaryColor: '#7c3aed',
@@ -118,11 +111,9 @@ export class TableComponent {
   headerBgColor: '#e9d5ff',
   hoverColor: '#f3e8ff'
   };
-
   get appliedTheme(): TableTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get filteredData(): TableRow[] {
   let result = [...this.data];
   if (this.searchTerm) {
@@ -140,33 +131,26 @@ export class TableComponent {
   }
   return result;
   }
-
   get paginatedData(): TableRow[] {
   if (!this.paginate) return this.filteredData;
   const start = (this.currentPage - 1) * this.pageSize;
   return this.filteredData.slice(start, start + this.pageSize);
   }
-
   get totalPages(): number {
   return Math.ceil(this.filteredData.length / this.pageSize);
   }
-
   get startIndex(): number {
   return (this.currentPage - 1) * this.pageSize;
   }
-
   get endIndex(): number {
   return Math.min(this.startIndex + this.pageSize, this.filteredData.length);
   }
-
   get allSelected(): boolean {
   return this.paginatedData.length > 0 && this.paginatedData.every(row => this.selectedRows.has(row.id));
   }
-
   get totalColumns(): number {
   return this.columns.length + (this.selectable ? 1 : 0) + (this.hasActions ? 1 : 0);
   }
-
   get containerStyles() {
   return {
   width: '100%',
@@ -176,7 +160,6 @@ export class TableComponent {
   border: `3px solid ${this.appliedTheme.borderColor}`
   };
   }
-
   get searchBarStyles() {
   return {
   padding: '18px',
@@ -184,7 +167,6 @@ export class TableComponent {
   borderBottom: `3px solid ${this.appliedTheme.borderColor}`
   };
   }
-
   get searchInputStyles() {
   return {
   width: '100%',
@@ -196,7 +178,6 @@ export class TableComponent {
   backdropFilter: 'blur(10px)'
   };
   }
-
   get tableWrapperStyles() {
   return {
   overflowX: 'auto',
@@ -204,7 +185,6 @@ export class TableComponent {
   overflowY: this.stickyHeader ? 'auto' : 'visible'
   };
   }
-
   get tableStyles() {
   return {
   width: '100%',
@@ -212,7 +192,6 @@ export class TableComponent {
   fontSize: this.size === 'compact' ? '13px' : this.size === 'comfortable' ? '15px' : '17px'
   };
   }
-
   get theadStyles() {
   return {
   backgroundColor: this.appliedTheme.headerBgColor,
@@ -221,7 +200,6 @@ export class TableComponent {
   zIndex: '10'
   };
   }
-
   get thStyles() {
   const padding = this.size === 'compact' ? '9px 13px' : this.size === 'comfortable' ? '13px 17px' : '17px 21px';
   return {
@@ -233,7 +211,6 @@ export class TableComponent {
   borderRight: this.bordered ? `2px solid ${this.appliedTheme.borderColor}` : 'none'
   };
   }
-
   get thContentStyles() {
   return {
   display: 'flex',
@@ -241,7 +218,6 @@ export class TableComponent {
   gap: '9px'
   };
   }
-
   get sortButtonStyles() {
   return {
   background: this.appliedTheme.primaryColor,
@@ -253,7 +229,6 @@ export class TableComponent {
   borderRadius: '3px'
   };
   }
-
   getTrStyles(row: TableRow) {
   const isRowSelected = this.selectedRows.has(row.id);
   return {
@@ -263,7 +238,6 @@ export class TableComponent {
   borderBottom: `2px solid ${this.appliedTheme.borderColor}`
   };
   }
-
   get tdStyles() {
   const padding = this.size === 'compact' ? '9px 13px' : this.size === 'comfortable' ? '13px 17px' : '17px 21px';
   return {
@@ -272,7 +246,6 @@ export class TableComponent {
   borderRight: this.bordered ? `2px solid ${this.appliedTheme.borderColor}` : 'none'
   };
   }
-
   get emptyStateStyles() {
   return {
   padding: '55px 18px',
@@ -281,7 +254,6 @@ export class TableComponent {
   fontSize: '15px'
   };
   }
-
   get loadingStyles() {
   return {
   display: 'flex',
@@ -292,7 +264,6 @@ export class TableComponent {
   gap: '18px'
   };
   }
-
   get spinnerStyles() {
   return {
   width: '45px',
@@ -303,7 +274,6 @@ export class TableComponent {
   animation: 'spin 0.9s linear infinite'
   };
   }
-
   get paginationStyles() {
   return {
   display: 'flex',
@@ -314,14 +284,12 @@ export class TableComponent {
   backgroundColor: this.appliedTheme.headerBgColor
   };
   }
-
   get paginationInfoStyles() {
   return {
   color: this.appliedTheme.textColor,
   fontSize: '14px'
   };
   }
-
   get paginationButtonGroupStyles() {
   return {
   display: 'flex',
@@ -329,7 +297,6 @@ export class TableComponent {
   alignItems: 'center'
   };
   }
-
   get paginationButtonStyles() {
   return {
   padding: '7px 14px',
@@ -343,7 +310,6 @@ export class TableComponent {
   fontWeight: '600'
   };
   }
-
   get pageNumberStyles() {
   return {
   color: this.appliedTheme.primaryColor,
@@ -351,14 +317,12 @@ export class TableComponent {
   fontWeight: '700'
   };
   }
-
   get actionButtonGroupStyles() {
   return {
   display: 'flex',
   gap: '9px'
   };
   }
-
   get actionButtonStyles() {
   return {
   padding: '5px 10px',
@@ -371,7 +335,6 @@ export class TableComponent {
   fontSize: '12px'
   };
   }
-
   get deleteButtonStyles() {
   return {
   padding: '5px 10px',
@@ -384,20 +347,17 @@ export class TableComponent {
   fontSize: '12px'
   };
   }
-
   get expandedRowStyles() {
   return {
   backgroundColor: '#ffffff',
   backdropFilter: 'blur(10px)'
   };
   }
-
   get expandedContentStyles() {
   return {
   padding: '18px'
   };
   }
-
   onSearch() { this.currentPage = 1; }
   onSort(key: string) {
   if (this.sortKey === key) {

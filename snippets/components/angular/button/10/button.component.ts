@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface ButtonTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -8,7 +7,6 @@ interface ButtonTheme {
   borderColor: string;
   accentColor: string;
 }
-
 @Component({
   selector: 'app-button',
   template: `
@@ -46,33 +44,27 @@ interface ButtonTheme {
   gap: 0.5rem;
   box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
   }
-
   .bounce-button:hover:not(:disabled) {
   animation: bounce 0.6s ease;
   box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
   }
-
   .bounce-button:active:not(:disabled) {
   transform: scale(0.95);
   }
-
   .bounce-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   }
-
   @keyframes bounce {
   0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
   40% { transform: translateY(-12px); }
   60% { transform: translateY(-6px); }
   }
-
   .dots-spinner {
   display: flex;
   gap: 0.25rem;
   align-items: center;
   }
-
   .dot {
   width: 0.4em;
   height: 0.4em;
@@ -80,32 +72,26 @@ interface ButtonTheme {
   border-radius: 50%;
   animation: dotBounce 1.4s infinite ease-in-out both;
   }
-
   .dot:nth-child(1) { animation-delay: -0.32s; }
   .dot:nth-child(2) { animation-delay: -0.16s; }
-
   @keyframes dotBounce {
   0%, 80%, 100% { transform: scale(0); }
   40% { transform: scale(1); }
   }
-
   .btn-content {
   display: flex;
   align-items: center;
   }
-
   .btn-sm {
   padding: 0.5rem 1.5rem;
   font-size: 0.875rem;
   border-radius: 2rem;
   }
-
   .btn-md {
   padding: 0.75rem 2rem;
   font-size: 1rem;
   border-radius: 2.5rem;
   }
-
   .btn-lg {
   padding: 1rem 2.75rem;
   font-size: 1.125rem;
@@ -123,7 +109,6 @@ export class ButtonComponent {
   @Input() iconRight: string = '';
   @Input() ariaLabel: string = '';
   @Output() clicked = new EventEmitter<MouseEvent>();
-
   private defaultTheme: ButtonTheme = {
   primaryColor: '#10b981',
   secondaryColor: '#059669',
@@ -133,11 +118,9 @@ export class ButtonComponent {
   borderColor: '#10b981',
   accentColor: '#34d399'
   };
-
   get appliedTheme(): ButtonTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get buttonStyles() {
   const variantStyles = {
   default: {
@@ -161,10 +144,8 @@ export class ButtonComponent {
   border: 'none'
   }
   };
-
   return variantStyles[this.variant];
   }
-
   handleClick(event: MouseEvent): void {
   if (!this.disabled && !this.loading) {
   this.clicked.emit(event);

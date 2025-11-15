@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
-
 class CustomInputField extends StatefulWidget {
   final Widget? child;
   final VoidCallback? onTap;
   final Color? color;
-
   const CustomInputField({
   Key? key,
   this.child,
   this.onTap,
   this.color,
   }) : super(key: key);
-
   @override
   State<CustomInputField> createState() => _CustomInputFieldState();
 }
-
 class _CustomInputFieldState extends State<CustomInputField> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-
   @override
   void initState() {
   super.initState();
@@ -27,13 +22,11 @@ class _CustomInputFieldState extends State<CustomInputField> with SingleTickerPr
   vsync: this,
   );
   }
-
   @override
   void dispose() {
   _controller.dispose();
   super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
   return GestureDetector(

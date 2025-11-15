@@ -1,11 +1,9 @@
 import { Component, Input } from '@angular/core';
-
 interface NavLink {
   text: string;
   url: string;
   icon?: string;
 }
-
 @Component({
   selector: 'app-navbar',
   template: `

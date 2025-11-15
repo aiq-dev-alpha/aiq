@@ -1,17 +1,61 @@
 <script lang="ts">
   export let value: string = '';
   export let label: string = '';
+  export let type: string = 'text';
   export let placeholder: string = '';
+  export let disabled: boolean = false;
+  export let required: boolean = false;
+  export let error: string = '';
+  export let hint: string = '';
+  let isFocused = false;
+  function handleInput(event: Event) {
+    const target = event.target as HTMLInputElement;
+    value = target.value;
+  }
 </script>
-
-<div class="input-field">
-  {#if label}<label>{label}</label>{/if}
-  <input type="text" bind:value {placeholder} class="styled-input" />
+<div class="relative">
+  {#if label}
+    <label class="block text-sm font-medium text-gray-700 mb-1">
+      {label}
+      {#if required}
+        <span class="text-red-500">*</span>
+      {/if}
+    </label>
+  {/if}
+  <div class="relative">
+    {#if $$slots.prefix}
+      <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+        <slot name="prefix" />
+      </div>
+    {/if}
+    <input
+      {type}
+      {value}
+      {placeholder}
+      {disabled}
+      {required}
+      class="w-full px-4 py-2.5 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 {
+        $$slots.prefix ? 'pl-10' : ''
+      } {
+        $$slots.suffix ? 'pr-10' : ''
+      } {
+        error ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
+      } {
+        disabled ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'
+      }"
+      on:input={handleInput}
+      on:focus={() => isFocused = true}
+      on:blur={() => isFocused = false}
+    />
+    {#if $$slots.suffix}
+      <div class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+        <slot name="suffix" />
+      </div>
+    {/if}
+  </div>
+  {#if error}
+    <p class="mt-1 text-sm text-red-600">{error}</p>
+  {:else if hint}
+    <p class="mt-1 text-sm text-gray-500">{hint}</p>
+  {/if}
 </div>
-
-<style>
-  .input-field { margin: 1rem 0; }
-  label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2d3748; }
-  .styled-input { width: 100%; padding: 1.6rem 2.1rem; border: 2px solid #cbd5e1; border-radius: 26px; font-size: 1rem; transition: all 0.2s; }
-  .styled-input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
-</style>

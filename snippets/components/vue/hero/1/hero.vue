@@ -10,7 +10,6 @@
     >
       <div class="hero-overlay" :style="{ backgroundColor: currentTheme.overlayColor }"></div>
     </div>
-
     <div class="hero-content">
       <div class="hero-text">
         <h1
@@ -33,7 +32,6 @@
         >
           {{ description }}
         </p>
-
         <div
           v-if="ctaButtons && ctaButtons.length"
           class="hero-cta animate-fade-in-up delay-3"
@@ -50,16 +48,13 @@
         </div>
       </div>
     </div>
-
     <div class="hero-scroll-indicator">
       <div class="scroll-arrow"></div>
     </div>
   </section>
 </template>
-
 <script setup lang="ts">
 import { computed, PropType } from 'vue'
-
 interface HeroTheme {
   primaryColor: string
   backgroundColor: string
@@ -67,15 +62,12 @@ interface HeroTheme {
   accentColor: string
   overlayColor: string
 }
-
 interface CtaButton {
   label: string
   onClick: () => void
   variant?: 'primary' | 'secondary' | 'outline'
 }
-
 type VariantType = 'full-screen' | 'split' | 'centered' | 'minimal' | 'video-bg' | 'gradient'
-
 const props = defineProps({
   title: {
     type: String,
@@ -110,7 +102,6 @@ const props = defineProps({
     default: () => ({})
   }
 })
-
 const defaultTheme: HeroTheme = {
   primaryColor: '#6366f1',
   backgroundColor: '#0f172a',
@@ -118,16 +109,13 @@ const defaultTheme: HeroTheme = {
   accentColor: '#818cf8',
   overlayColor: 'rgba(15, 23, 42, 0.7)'
 }
-
 const currentTheme = computed(() => ({
   ...defaultTheme,
   ...props.theme
 }))
-
 const heroStyles = computed(() => ({
   backgroundColor: currentTheme.value.backgroundColor
 }))
-
 const getButtonStyles = (variant?: string) => {
   if (variant === 'secondary') {
     return {
@@ -147,7 +135,6 @@ const getButtonStyles = (variant?: string) => {
   }
 }
 </script>
-
 <style scoped>
 .hero-full-screen {
   position: relative;
@@ -157,7 +144,6 @@ const getButtonStyles = (variant?: string) => {
   justify-content: center;
   overflow: hidden;
 }
-
 .hero-background {
   position: absolute;
   top: 0;
@@ -169,7 +155,6 @@ const getButtonStyles = (variant?: string) => {
   background-repeat: no-repeat;
   z-index: 0;
 }
-
 .hero-overlay {
   position: absolute;
   top: 0;
@@ -178,7 +163,6 @@ const getButtonStyles = (variant?: string) => {
   height: 100%;
   background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(15, 23, 42, 0.8) 100%);
 }
-
 .hero-content {
   position: relative;
   z-index: 1;
@@ -186,11 +170,9 @@ const getButtonStyles = (variant?: string) => {
   padding: 2rem;
   width: 100%;
 }
-
 .hero-text {
   text-align: center;
 }
-
 .hero-title {
   font-size: 4.5rem;
   font-weight: 800;
@@ -198,14 +180,12 @@ const getButtonStyles = (variant?: string) => {
   margin-bottom: 1.5rem;
   letter-spacing: -0.02em;
 }
-
 .hero-subtitle {
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 1rem;
   opacity: 0.95;
 }
-
 .hero-description {
   font-size: 1.25rem;
   line-height: 1.6;
@@ -215,14 +195,12 @@ const getButtonStyles = (variant?: string) => {
   margin-right: auto;
   opacity: 0.9;
 }
-
 .hero-cta {
   display: flex;
   gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
 }
-
 .hero-button {
   padding: 1rem 2.5rem;
   font-size: 1.125rem;
@@ -233,12 +211,10 @@ const getButtonStyles = (variant?: string) => {
   transition: all 0.3s ease;
   color: white;
 }
-
 .hero-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
-
 .hero-scroll-indicator {
   position: absolute;
   bottom: 2rem;
@@ -246,7 +222,6 @@ const getButtonStyles = (variant?: string) => {
   transform: translateX(-50%);
   z-index: 1;
 }
-
 .scroll-arrow {
   width: 24px;
   height: 24px;
@@ -256,7 +231,6 @@ const getButtonStyles = (variant?: string) => {
   animation: bounce 2s infinite;
   opacity: 0.7;
 }
-
 @keyframes bounce {
   0%, 20%, 50%, 80%, 100% {
     transform: rotate(45deg) translateY(0);
@@ -268,24 +242,19 @@ const getButtonStyles = (variant?: string) => {
     transform: rotate(45deg) translateY(-5px);
   }
 }
-
 .animate-fade-in-up {
   animation: fadeInUp 0.8s ease-out forwards;
   opacity: 0;
 }
-
 .delay-1 {
   animation-delay: 0.2s;
 }
-
 .delay-2 {
   animation-delay: 0.4s;
 }
-
 .delay-3 {
   animation-delay: 0.6s;
 }
-
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -296,20 +265,16 @@ const getButtonStyles = (variant?: string) => {
     transform: translateY(0);
   }
 }
-
 @media (max-width: 768px) {
   .hero-title {
     font-size: 2.5rem;
   }
-
   .hero-subtitle {
     font-size: 1.25rem;
   }
-
   .hero-description {
     font-size: 1rem;
   }
-
   .hero-button {
     padding: 0.875rem 2rem;
     font-size: 1rem;

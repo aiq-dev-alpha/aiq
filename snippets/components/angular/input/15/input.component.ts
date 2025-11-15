@@ -1,7 +1,6 @@
 // Ripple Wave Input
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-
 @Component({
   selector: 'app-input',
   template: `<div class="ripple-input" (click)="triggerRipple($event)"><input [type]="type" [placeholder]="placeholder" [value]="value" (input)="handleInput($event)" class="ripple-field" /><span class="ripple" *ngIf="showRipple" [style.left.px]="rippleX" [style.top.px]="rippleY"></span></div>`,

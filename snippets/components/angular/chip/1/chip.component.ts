@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-
 interface ComponentTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -7,7 +6,6 @@ interface ComponentTheme {
   textColor: string;
   borderColor: string;
 }
-
 @Component({
   selector: 'app-component',
   template: `
@@ -20,7 +18,6 @@ export class ComponentComponent {
   @Input() theme: Partial<ComponentTheme> = {};
   @Input() variant: 'default' | 'outlined' | 'filled' = 'default';
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
-
   private defaultTheme: ComponentTheme = {
   primaryColor: '#3b82f6',
   secondaryColor: '#8b5cf6',
@@ -29,18 +26,15 @@ export class ComponentComponent {
   textColor: '#111827',
   borderColor: '#e5e7eb'
   };
-
   get appliedTheme(): ComponentTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get componentStyles() {
   const sizeMap = {
   sm: { padding: '0.5rem 1rem', fontSize: '0.875rem' },
   md: { padding: '0.75rem 1.5rem', fontSize: '1rem' },
   lg: { padding: '1rem 2rem', fontSize: '1.125rem' }
   };
-
   const variantMap = {
   default: {
   backgroundColor: this.appliedTheme.backgroundColor,
@@ -56,7 +50,6 @@ export class ComponentComponent {
   color: '#ffffff'
   }
   };
-
   return {
   ...sizeMap[this.size],
   ...variantMap[this.variant],

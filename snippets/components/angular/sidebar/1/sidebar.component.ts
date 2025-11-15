@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-
 export interface SidebarItem {
   id: string;
   label: string;
@@ -9,7 +8,6 @@ export interface SidebarItem {
   route: string;
   children?: SidebarItem[];
 }
-
 export interface SidebarTheme {
   primaryColor: string;
   backgroundColor: string;
@@ -18,7 +16,6 @@ export interface SidebarTheme {
   hoverColor: string;
   borderColor: string;
 }
-
 @Component({
   selector: 'app-sidebar',
   standalone: true,
@@ -28,20 +25,17 @@ export interface SidebarTheme {
   *ngIf="isOpen && variant === 'overlay'"
   (click)="toggle()"
   [@fadeAnimation]></div>
-
   <div class="sidebar"
   [class.open]="isOpen"
   [class.position-right]="position === 'right'"
   [ngStyle]="sidebarStyles"
   [@slideAnimation]="isOpen ? 'open' : 'closed'">
-
   <div class="sidebar-header">
   <h2 [ngStyle]="{ color: appliedTheme.textColor }">Menu</h2>
   <button class="toggle-btn" (click)="toggle()" [ngStyle]="buttonStyles">
   <span>{{ isOpen ? '✕' : '☰' }}</span>
   </button>
   </div>
-
   <nav class="sidebar-nav">
   <div *ngFor="let item of items" class="nav-item-wrapper">
   <div class="nav-item"
@@ -55,7 +49,6 @@ export interface SidebarTheme {
   {{ expandedItems[item.id] ? '▼' : '▶' }}
   </span>
   </div>
-
   <div *ngIf="item.children && expandedItems[item.id]"
   class="submenu"
   [@expandAnimation]>
@@ -82,7 +75,6 @@ export interface SidebarTheme {
   background: rgba(0, 0, 0, 0.5);
   z-index: 998;
   }
-
   .sidebar {
   position: fixed;
   top: 0;
@@ -93,13 +85,11 @@ export interface SidebarTheme {
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease;
   }
-
   .sidebar.position-right {
   left: auto;
   right: 0;
   box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
   }
-
   .sidebar-header {
   padding: 1.5rem;
   display: flex;
@@ -107,13 +97,11 @@ export interface SidebarTheme {
   align-items: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
-
   .sidebar-header h2 {
   margin: 0;
   font-size: 1.5rem;
   font-weight: 600;
   }
-
   .toggle-btn {
   background: none;
   border: none;
@@ -123,15 +111,12 @@ export interface SidebarTheme {
   border-radius: 0.375rem;
   transition: background-color 0.2s;
   }
-
   .sidebar-nav {
   padding: 1rem 0;
   }
-
   .nav-item-wrapper {
   margin-bottom: 0.25rem;
   }
-
   .nav-item {
   display: flex;
   align-items: center;
@@ -140,51 +125,41 @@ export interface SidebarTheme {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   }
-
   .nav-item.child {
   padding-left: 3rem;
   font-size: 0.9rem;
   }
-
   .nav-item .icon {
   margin-right: 0.75rem;
   font-size: 1.25rem;
   width: 1.5rem;
   text-align: center;
   }
-
   .nav-item .label {
   flex: 1;
   font-weight: 500;
   }
-
   .nav-item .arrow {
   font-size: 0.75rem;
   margin-left: auto;
   }
-
   .submenu {
   overflow: hidden;
   }
-
   @media (max-width: 768px) {
   .sidebar {
   width: 100% !important;
   max-width: 320px;
   }
   }
-  
-  
   @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
   }
-  
   @keyframes slideIn {
   from { transform: translateX(-20px); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
   }
-  
   @keyframes scaleIn {
   from { transform: scale(0.95); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
@@ -223,13 +198,10 @@ export class SidebarComponent {
   @Input() isOpen: boolean = true;
   @Input() position: 'left' | 'right' = 'left';
   @Input() width: string = '280px';
-
   @Output() itemClicked = new EventEmitter<SidebarItem>();
   @Output() toggleSidebar = new EventEmitter<boolean>();
-
   activeItemId: string = '';
   expandedItems: { [key: string]: boolean } = {};
-
   private defaultTheme: SidebarTheme = {
   primaryColor: '#1e40af',
   backgroundColor: '#1e293b',
@@ -239,11 +211,9 @@ export class SidebarComponent {
   hoverColor: '#334155',
   borderColor: '#475569'
   };
-
   get appliedTheme(): SidebarTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get sidebarStyles() {
   return {
   width: this.width,
@@ -252,7 +222,6 @@ export class SidebarComponent {
   borderRight: `1px solid ${this.appliedTheme.borderColor}`
   };
   }
-
   get buttonStyles() {
   return {
   color: this.appliedTheme.textColor,
@@ -261,7 +230,6 @@ export class SidebarComponent {
   }
   };
   }
-
   getItemStyles(item: SidebarItem) {
   const isActive = item.id === this.activeItemId;
   return {
@@ -272,7 +240,6 @@ export class SidebarComponent {
   }
   };
   }
-
   onItemClick(item: SidebarItem) {
   if (item.children && item.children.length > 0) {
   this.expandedItems[item.id] = !this.expandedItems[item.id];
@@ -281,7 +248,6 @@ export class SidebarComponent {
   this.itemClicked.emit(item);
   }
   }
-
   toggle() {
   this.isOpen = !this.isOpen;
   this.toggleSidebar.emit(this.isOpen);

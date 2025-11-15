@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface ButtonTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -8,7 +7,6 @@ interface ButtonTheme {
   borderColor: string;
   accentColor: string;
 }
-
 @Component({
   selector: 'app-button',
   template: `
@@ -92,7 +90,6 @@ export class ButtonComponent {
   @Input() fullWidth = false;
   @Input() rounded: 'sm' | 'md' | 'lg' | 'full' = 'md';
   @Output() clicked = new EventEmitter<MouseEvent>();
-
   private defaultTheme: ButtonTheme = {
   primaryColor: '#f97316',
   secondaryColor: '#ea580c',
@@ -102,11 +99,9 @@ export class ButtonComponent {
   borderColor: '#e7e5e4',
   accentColor: '#fb923c'
   };
-
   get appliedTheme(): ButtonTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get buttonStyles() {
   const t = this.appliedTheme;
   const sizeMap = {
@@ -116,14 +111,12 @@ export class ButtonComponent {
   lg: { padding: '16px 32px', fontSize: '17px', minHeight: '48px', gap: '10px' },
   xl: { padding: '20px 40px', fontSize: '19px', minHeight: '56px', gap: '12px' }
   };
-
   const roundedMap = {
   sm: '6px',
   md: '10px',
   lg: '16px',
   full: '9999px'
   };
-
   const variantMap = {
   default: {
   background: t.backgroundColor,
@@ -150,7 +143,6 @@ export class ButtonComponent {
   boxShadow: 'none'
   }
   };
-
   return {
   ...sizeMap[this.size],
   ...variantMap[this.variant],
@@ -163,7 +155,6 @@ export class ButtonComponent {
   letterSpacing: '0.3px'
   };
   }
-
   handleClick(event: MouseEvent): void {
   if (!this.disabled && !this.processing) {
   this.clicked.emit(event);

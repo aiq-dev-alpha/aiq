@@ -1,7 +1,6 @@
 // Minimal Line Input - Japanese minimalism style
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-
 @Component({
   selector: 'app-input',
   template: `<div class="zen-input"><input [type]="type" [placeholder]="placeholder" [value]="value" (input)="handleInput($event)" class="zen-field" /><div class="zen-line"></div></div>`,

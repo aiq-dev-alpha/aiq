@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface ButtonTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -8,7 +7,6 @@ interface ButtonTheme {
   borderColor: string;
   accentColor: string;
 }
-
 @Component({
   selector: 'app-button',
   template: `
@@ -44,28 +42,23 @@ interface ButtonTheme {
   gap: 0.5rem;
   box-shadow: 0 5px 20px rgba(245, 158, 11, 0.3);
   }
-
   .rotate-button:hover:not(:disabled) {
   transform: rotate(2deg) scale(1.05);
   box-shadow: 0 10px 35px rgba(245, 158, 11, 0.5);
   }
-
   .rotate-button:active:not(:disabled) {
   transform: rotate(0deg) scale(0.98);
   }
-
   .rotate-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   }
-
   .orbit-spinner {
   width: 1.2em;
   height: 1.2em;
   position: relative;
   display: inline-block;
   }
-
   .orbit {
   position: absolute;
   width: 100%;
@@ -75,29 +68,24 @@ interface ButtonTheme {
   border-radius: 50%;
   animation: orbitRotate 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
   }
-
   @keyframes orbitRotate {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
   }
-
   .btn-content {
   display: flex;
   align-items: center;
   }
-
   .btn-sm {
   padding: 0.5rem 1.5rem;
   font-size: 0.875rem;
   border-radius: 0.625rem;
   }
-
   .btn-md {
   padding: 0.75rem 2rem;
   font-size: 1rem;
   border-radius: 0.875rem;
   }
-
   .btn-lg {
   padding: 1rem 2.5rem;
   font-size: 1.125rem;
@@ -115,7 +103,6 @@ export class ButtonComponent {
   @Input() iconRight: string = '';
   @Input() ariaLabel: string = '';
   @Output() clicked = new EventEmitter<MouseEvent>();
-
   private defaultTheme: ButtonTheme = {
   primaryColor: '#f59e0b',
   secondaryColor: '#d97706',
@@ -125,11 +112,9 @@ export class ButtonComponent {
   borderColor: '#f59e0b',
   accentColor: '#fbbf24'
   };
-
   get appliedTheme(): ButtonTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get buttonStyles() {
   const variantStyles = {
   default: {
@@ -154,10 +139,8 @@ export class ButtonComponent {
   boxShadow: `0 0 30px ${this.appliedTheme.primaryColor}`
   }
   };
-
   return variantStyles[this.variant];
   }
-
   handleClick(event: MouseEvent): void {
   if (!this.disabled && !this.loading) {
   this.clicked.emit(event);

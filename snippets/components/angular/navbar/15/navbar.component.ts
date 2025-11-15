@@ -1,6 +1,5 @@
 // Particle Background Navbar
 import { Component } from '@angular/core';
-
 @Component({
   selector: 'app-navbar',
   template: `<nav class="particle-nav"><div class="particles"><span class="particle" *ngFor="let p of [1,2,3,4,5,6,7,8]"></span></div><div class="nav-content"><ng-content></ng-content></div></nav>`,

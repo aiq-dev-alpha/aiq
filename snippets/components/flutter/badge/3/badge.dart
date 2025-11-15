@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
-
 class CustomBadge extends StatefulWidget {
   final Widget? child;
   final VoidCallback? onTap;
-
   const CustomBadge({
   Key? key,
   this.child,
   this.onTap,
   }) : super(key: key);
-
   @override
   State<CustomBadge> createState() => _CustomBadgeState();
 }
-
 class _CustomBadgeState extends State<CustomBadge> {
   bool _isHovered = false;
-
   @override
   Widget build(BuildContext context) {
   return MouseRegion(

@@ -17,10 +17,8 @@
     <p v-if="error" class="error-text">{{ error }}</p>
   </div>
 </template>
-
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-
 export default defineComponent({
   name: 'TextInput',
   props: {
@@ -38,12 +36,10 @@ export default defineComponent({
   }
 });
 </script>
-
 <style scoped>
 .input-container {
   margin: 1rem 0;
 }
-
 .input-label {
   display: block;
   margin-bottom: 0.5rem;
@@ -51,7 +47,6 @@ export default defineComponent({
   font-weight: 500;
   color: #374151;
 }
-
 .text-input {
   width: 100%;
   padding: 0.75rem 1.5rem;
@@ -62,16 +57,13 @@ export default defineComponent({
   transition: all 0.2s;
   background: white;
 }
-
 .text-input:focus {
   border-color: #amber500;
   box-shadow: 0 0 0 3px rgba(var(--amber-rgb), 0.1);
 }
-
 .text-input.error {
   border-color: #ef4444;
 }
-
 .error-text {
   margin-top: 0.5rem;
   font-size: 0.875rem;

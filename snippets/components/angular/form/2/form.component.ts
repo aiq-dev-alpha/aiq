@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-
 interface FormTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -10,7 +9,6 @@ interface FormTheme {
   errorColor: string;
   successColor: string;
 }
-
 @Component({
   selector: 'app-form',
   template: `
@@ -19,7 +17,6 @@ interface FormTheme {
   <h2 [ngStyle]="titleStyles">{{ title }}</h2>
   <p [ngStyle]="descriptionStyles">{{ description }}</p>
   </div>
-
   <div class="form-fields" [ngStyle]="fieldsContainerStyles">
   <div class="field-group" *ngFor="let field of fields" [ngStyle]="fieldGroupStyles">
   <label [for]="field.name" [ngStyle]="labelStyles">
@@ -44,11 +41,9 @@ interface FormTheme {
   </div>
   </div>
   </div>
-
   <div *ngIf="showSuccess" [ngStyle]="successStyles" role="status">
   {{ successMessage }}
   </div>
-
   <div class="form-actions" [ngStyle]="actionsStyles">
   <button type="submit" [disabled]="isSubmitting || formGroup.invalid" [ngStyle]="submitButtonStyles">
   {{ isSubmitting ? 'Submitting...' : submitButtonText }}
@@ -72,11 +67,9 @@ export class FormComponent {
   @Input() submitButtonText: string = 'Submit';
   @Input() resetButtonText: string = 'Reset';
   @Input() successMessage: string = 'Form submitted successfully!';
-
   formGroup: FormGroup;
   isSubmitting: boolean = false;
   showSuccess: boolean = false;
-
   private defaultTheme: FormTheme = {
   primaryColor: '#3b82f6',
   secondaryColor: '#8b5cf6',
@@ -87,19 +80,15 @@ export class FormComponent {
   errorColor: '#ef4444',
   successColor: '#10b981'
   };
-
   constructor(private fb: FormBuilder) {
   this.formGroup = this.fb.group({});
   }
-
   ngOnInit() {
   this.initializeForm();
   }
-
   get appliedTheme(): FormTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   initializeForm() {
   const group: any = {};
   this.fields.forEach(field => {
@@ -110,19 +99,16 @@ export class FormComponent {
   });
   this.formGroup = this.fb.group(group);
   }
-
   isFieldInvalid(fieldName: string): boolean {
   const field = this.formGroup.get(fieldName);
   return !!(field && field.invalid && field.touched);
   }
-
   getErrorMessage(fieldName: string): string {
   const field = this.formGroup.get(fieldName);
   if (field?.errors?.['required']) return 'This field is required';
   if (field?.errors?.['email']) return 'Please enter a valid email';
   return 'Invalid input';
   }
-
   onSubmit() {
   if (this.formGroup.valid) {
   this.isSubmitting = true;
@@ -133,12 +119,10 @@ export class FormComponent {
   }, 1000);
   }
   }
-
   onReset() {
   this.formGroup.reset();
   this.showSuccess = false;
   }
-
   get formStyles() {
   return {
   backgroundColor: this.appliedTheme.backgroundColor,
@@ -149,14 +133,12 @@ export class FormComponent {
   margin: '0 auto'
   };
   }
-
   get headerStyles() {
   return {
   marginBottom: '1.5rem',
   textAlign: 'center'
   };
   }
-
   get titleStyles() {
   return {
   color: this.appliedTheme.primaryColor,
@@ -165,7 +147,6 @@ export class FormComponent {
   margin: '0 0 0.5rem 0'
   };
   }
-
   get descriptionStyles() {
   return {
   color: this.appliedTheme.textColor,
@@ -174,7 +155,6 @@ export class FormComponent {
   opacity: '0.7'
   };
   }
-
   get fieldsContainerStyles() {
   return {
   display: 'flex',
@@ -182,7 +162,6 @@ export class FormComponent {
   gap: '1rem'
   };
   }
-
   get fieldGroupStyles() {
   return {
   display: 'flex',
@@ -190,7 +169,6 @@ export class FormComponent {
   gap: '0.5rem'
   };
   }
-
   get labelStyles() {
   return {
   color: this.appliedTheme.textColor,
@@ -198,14 +176,12 @@ export class FormComponent {
   fontWeight: '500'
   };
   }
-
   get requiredStyles() {
   return {
   color: this.appliedTheme.errorColor,
   marginLeft: '0.25rem'
   };
   }
-
   getInputStyles(fieldName: string) {
   const isInvalid = this.isFieldInvalid(fieldName);
   return {
@@ -218,7 +194,6 @@ export class FormComponent {
   transition: 'border-color 0.2s'
   };
   }
-
   get errorStyles() {
   return {
   color: this.appliedTheme.errorColor,
@@ -226,7 +201,6 @@ export class FormComponent {
   marginTop: '0.25rem'
   };
   }
-
   get successStyles() {
   return {
   backgroundColor: `${this.appliedTheme.successColor}15`,
@@ -238,7 +212,6 @@ export class FormComponent {
   fontSize: '0.875rem'
   };
   }
-
   get actionsStyles() {
   return {
   display: 'flex',
@@ -246,7 +219,6 @@ export class FormComponent {
   marginTop: '1.5rem'
   };
   }
-
   get submitButtonStyles() {
   return {
   flex: '1',
@@ -262,7 +234,6 @@ export class FormComponent {
   transition: 'opacity 0.2s'
   };
   }
-
   get resetButtonStyles() {
   return {
   flex: '1',

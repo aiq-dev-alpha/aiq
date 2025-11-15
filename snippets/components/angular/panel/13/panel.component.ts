@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-
 interface PanelTheme {
   primaryColor: string;
   backgroundColor: string;
@@ -8,14 +7,11 @@ interface PanelTheme {
   headerColor: string;
   shadowColor: string;
 }
-
 @Component({
   selector: 'app-panel',
   template: `
   <div class="panel-container" [ngStyle]="panelStyles">
-  
   <div class="panel-header" [ngStyle]="headerStyles" (click)="toggle()">
-  
   <div class="header-content">
   <h3 class="panel-title" [ngStyle]="titleStyles">{{ title }}</h3>
   <p *ngIf="subtitle" class="panel-subtitle">{{ subtitle }}</p>
@@ -52,12 +48,9 @@ interface PanelTheme {
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
-  
   }
-  
   .header-content {
   flex: 1;
-  
   }
   .panel-title {
   margin: 0;
@@ -74,7 +67,6 @@ interface PanelTheme {
   display: flex;
   align-items: center;
   gap: 1rem;
-  
   }
   .collapse-btn {
   background: rgba(0, 0, 0, 0.08);
@@ -96,7 +88,6 @@ interface PanelTheme {
   .panel-body {
   padding: 1.5rem;
   position: relative;
-  
   }
   .loading-overlay {
   position: absolute;
@@ -121,7 +112,6 @@ interface PanelTheme {
   @keyframes spin {
   to { transform: rotate(360deg); }
   }
-  
   `],
   animations: [
   trigger('flipExpand', [
@@ -153,7 +143,6 @@ export class PanelComponent {
   @Input() headerActions: boolean = false;
   @Input() loading: boolean = false;
   @Output() toggled = new EventEmitter<boolean>();
-
   private defaultTheme: PanelTheme = {
   primaryColor: '#6366f1',
   backgroundColor: '#eef2ff',
@@ -162,18 +151,15 @@ export class PanelComponent {
   headerColor: '#4f46e5',
   shadowColor: 'rgba(99, 102, 241, 0.25)'
   };
-
   get appliedTheme(): PanelTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   toggle() {
   if (this.collapsible) {
   this.collapsed = !this.collapsed;
   this.toggled.emit(this.collapsed);
   }
   }
-
   get panelStyles() {
   return {
   background: `linear-gradient(135deg, ${this.appliedTheme.backgroundColor} 0%, ${this.appliedTheme.headerColor}15 100%)`,
@@ -181,28 +167,23 @@ export class PanelComponent {
   boxShadow: `0 8px 32px ${this.appliedTheme.shadowColor}`
   };
   }
-
   get headerStyles() {
   return {
   background: 'rgba(255, 255, 255, 0.1)',
   borderBottom: `1px solid rgba(255, 255, 255, 0.2)`
   };
   }
-
   get bodyStyles() {
   return {
   backgroundColor: this.appliedTheme.backgroundColor
   };
   }
-
   get titleStyles() {
   return {};
   }
-
   get buttonStyles() {
   return {};
   }
-
   get loadingStyles() {
   return {
   backgroundColor: 'rgba(255, 255, 255, 0.9)',

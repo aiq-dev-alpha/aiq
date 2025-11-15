@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
-
 class CustomCarousel extends StatefulWidget {
   final Widget? child;
   final VoidCallback? onTap;
   final Color? color;
-
   const CustomCarousel({
   Key? key,
   this.child,
   this.onTap,
   this.color,
   }) : super(key: key);
-
   @override
   State<CustomCarousel> createState() => _CustomCarouselState();
 }
-
 class _CustomCarouselState extends State<CustomCarousel> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-
   @override
   void initState() {
   super.initState();
@@ -27,13 +22,11 @@ class _CustomCarouselState extends State<CustomCarousel> with SingleTickerProvid
   vsync: this,
   );
   }
-
   @override
   void dispose() {
   _controller.dispose();
   super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
   return GestureDetector(

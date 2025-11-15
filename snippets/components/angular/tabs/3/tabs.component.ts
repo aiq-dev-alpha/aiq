@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
-
 interface TabItem {
   id: string;
   label: string;
@@ -8,7 +7,6 @@ interface TabItem {
   content: string;
   disabled?: boolean;
 }
-
 interface TabsTheme {
   primaryColor: string;
   backgroundColor: string;
@@ -17,7 +15,6 @@ interface TabsTheme {
   borderColor: string;
   indicatorColor: string;
 }
-
 @Component({
   selector: 'app-tabs',
   template: `
@@ -57,7 +54,6 @@ export class TabsComponent {
   @Input() variant: 'default' | 'pills' | 'underline' | 'cards' | 'vertical' = 'cards';
   @Input() activeTab: number = 0;
   @Output() tabChanged = new EventEmitter<number>();
-
   private defaultTheme: TabsTheme = {
   primaryColor: '#10b981',
   backgroundColor: '#ffffff',
@@ -67,18 +63,15 @@ export class TabsComponent {
   borderColor: '#d1d5db',
   indicatorColor: '#10b981'
   };
-
   get appliedTheme(): TabsTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get containerStyles() {
   return {
   width: '100%',
   fontFamily: 'system-ui, -apple-system, sans-serif'
   };
   }
-
   get tabListStyles() {
   return {
   display: 'flex',
@@ -89,11 +82,9 @@ export class TabsComponent {
   borderRadius: '0.5rem 0.5rem 0 0'
   };
   }
-
   getTabStyles(index: number) {
   const isActive = this.activeTab === index;
   const isDisabled = this.tabs[index]?.disabled;
-
   return {
   padding: '0.875rem 1.5rem',
   border: `2px solid ${isActive ? this.appliedTheme.indicatorColor : this.appliedTheme.borderColor}`,
@@ -113,13 +104,11 @@ export class TabsComponent {
   boxShadow: isActive ? '0 4px 12px rgba(16, 185, 129, 0.2)' : 'none'
   };
   }
-
   get iconStyles() {
   return {
   fontSize: '1.15rem'
   };
   }
-
   get contentStyles() {
   return {
   padding: '2rem',
@@ -132,17 +121,14 @@ export class TabsComponent {
   borderRadius: '0 0 0.5rem 0.5rem'
   };
   }
-
   selectTab(index: number) {
   if (!this.tabs[index]?.disabled && index !== this.activeTab) {
   this.activeTab = index;
   this.tabChanged.emit(index);
   }
   }
-
   onKeyDown(event: KeyboardEvent, currentIndex: number) {
   let newIndex = currentIndex;
-
   switch (event.key) {
   case 'ArrowRight':
   newIndex = (currentIndex + 1) % this.tabs.length;
@@ -159,14 +145,12 @@ export class TabsComponent {
   default:
   return;
   }
-
   event.preventDefault();
   while (this.tabs[newIndex]?.disabled && newIndex !== currentIndex) {
   newIndex = event.key === 'ArrowRight' || event.key === 'End'
   ? (newIndex + 1) % this.tabs.length
   : newIndex === 0 ? this.tabs.length - 1 : newIndex - 1;
   }
-
   this.selectTab(newIndex);
   }
 }

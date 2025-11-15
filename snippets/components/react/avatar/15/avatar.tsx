@@ -1,43 +1,48 @@
 import React from 'react';
-
-interface AvatarProps {
-  src?: string;
-  alt?: string;
-  size?: 'sm' | 'md' | 'lg';
-  status?: 'online' | 'offline' | 'away';
+interface AvatarGroupProps {
+  avatars: Array<{ src?: string; alt: string }>;
+  max?: number;
+  size?: number;
 }
-
-export const Avatar: React.FC<AvatarProps> = ({
-  src,
-  alt = 'User',
-  size = 'md',
-  status
+export const AvatarGroup: React.FC<AvatarGroupProps> = ({
+  avatars,
+  max = 4,
+  size = 40
 }) => {
-  const sizes = {
-    sm: 'w-8 h-8',
-    md: 'w-12 h-12',
-    lg: 'w-16 h-16'
-  };
-  
-  const statusColors = {
-    online: 'bg-green-500',
-    offline: 'bg-gray-400',
-    away: 'bg-yellow-500'
-  };
-  
+  const visible = avatars.slice(0, max);
+  const remaining = avatars.length - max;
   return (
-    <div className="relative inline-block">
-      <div className={`${sizes[size]} rounded overflow-hidden bg-gradient-to-br from-red-400 to-red-600 shadow-xl ring-2 ring-white`}>
-        {src ? (
-          <img src={src} alt={alt} className="w-full h-full object-cover" />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-white font-bold">
-            {alt[0].toUpperCase()}
-          </div>
-        )}
-      </div>
-      {status && (
-        <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${statusColors[status]} ring-2 ring-white`} />
+    <div className="flex items-center">
+      {visible.map((avatar, i) => (
+        <div
+          key={i}
+          className="rounded-full border-2 border-white overflow-hidden bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-semibold shadow-md hover:scale-110 hover:z-10 transition-transform"
+          style={{
+            width: size,
+            height: size,
+            marginLeft: i > 0 ? -size / 3 : 0,
+            zIndex: visible.length - i
+          }}
+        >
+          {avatar.src ? (
+            <img src={avatar.src} alt={avatar.alt} className="w-full h-full object-cover" />
+          ) : (
+            <span>{avatar.alt[0]?.toUpperCase()}</span>
+          )}
+        </div>
+      ))}
+      {remaining > 0 && (
+        <div
+          className="rounded-full border-2 border-white bg-gray-200 flex items-center justify-center text-gray-600 font-semibold shadow-md"
+          style={{
+            width: size,
+            height: size,
+            marginLeft: -size / 3,
+            zIndex: 0
+          }}
+        >
+          +{remaining}
+        </div>
       )}
     </div>
   );

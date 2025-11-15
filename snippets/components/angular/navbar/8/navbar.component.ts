@@ -1,6 +1,5 @@
 // Morphing Menu Navbar
 import { Component } from '@angular/core';
-
 @Component({
   selector: 'app-navbar',
   template: `<nav class="morph-nav"><button class="morph-btn" (click)="open=!open" [class.active]="open"><span class="line"></span><span class="line"></span><span class="line"></span></button><div class="menu" [class.open]="open"><ng-content></ng-content></div></nav>`,

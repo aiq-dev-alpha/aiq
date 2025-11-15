@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface ButtonTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -8,7 +7,6 @@ interface ButtonTheme {
   borderColor: string;
   accentColor: string;
 }
-
 @Component({
   selector: 'app-button',
   template: `
@@ -114,7 +112,6 @@ export class ButtonComponent {
   @Input() fullWidth = false;
   @Input() rounded = true;
   @Output() clicked = new EventEmitter<MouseEvent>();
-
   private defaultTheme: ButtonTheme = {
   primaryColor: '#10b981',
   secondaryColor: '#059669',
@@ -124,11 +121,9 @@ export class ButtonComponent {
   borderColor: '#6ee7b7',
   accentColor: '#34d399'
   };
-
   get appliedTheme(): ButtonTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get buttonStyles() {
   const t = this.appliedTheme;
   const sizeMap = {
@@ -136,7 +131,6 @@ export class ButtonComponent {
   standard: { padding: '12px 28px', fontSize: '15px', minHeight: '44px', gap: '8px' },
   large: { padding: '16px 36px', fontSize: '17px', minHeight: '52px', gap: '10px' }
   };
-
   const variantMap = {
   elevated: {
   background: `linear-gradient(to bottom, ${t.accentColor}, ${t.primaryColor})`,
@@ -163,7 +157,6 @@ export class ButtonComponent {
   boxShadow: 'none'
   }
   };
-
   return {
   ...sizeMap[this.size],
   ...variantMap[this.variant],
@@ -176,7 +169,6 @@ export class ButtonComponent {
   letterSpacing: '0.4px'
   };
   }
-
   handleClick(event: MouseEvent): void {
   if (!this.disabled && !this.busy) {
   this.clicked.emit(event);

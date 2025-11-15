@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 @Component({
   selector: 'app-panel',
   template: `
@@ -90,9 +89,7 @@ export class PanelComponent {
   @Input() variant: 'default' | 'bordered' | 'accent' = 'default';
   @Input() collapsible = false;
   @Output() toggle = new EventEmitter<boolean>();
-
   collapsed = false;
-
   toggleCollapse(): void {
   this.collapsed = !this.collapsed;
   this.toggle.emit(this.collapsed);

@@ -1,44 +1,41 @@
-import React from 'react';
-
-interface ButtonProps {
-  children: React.ReactNode;
-  onClick?: () => void;
-  variant?: 'solid' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
-  loading?: boolean;
+import React, { useState } from 'react';
+interface TextAreaProps {
+  value?: string;
+  onChange?: (value: string) => void;
+  placeholder?: string;
+  maxLength?: number;
+  rows?: number;
+  autoResize?: boolean;
 }
-
-export const Button: React.FC<ButtonProps> = ({
-  children,
-  onClick,
-  variant = 'solid',
-  size = 'md',
-  disabled = false,
-  loading = false
+export const TextArea: React.FC<TextAreaProps> = ({
+  value: controlledValue,
+  onChange,
+  placeholder,
+  maxLength,
+  rows = 4,
+  autoResize = false
 }) => {
-  const baseClasses = 'rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-500';
-  
-  const variantClasses = {
-    solid: 'bg-cyan-500 text-white hover:brightness-110 hover:-translate-y-0.5 shadow-xl',
-    outline: 'border-2 border-cyan-500 text-cyan-600 hover:bg-cyan-50',
-    ghost: 'text-cyan-600 hover:bg-cyan-100'
+  const [value, setValue] = useState(controlledValue || '');
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value;
+    setValue(newValue);
+    onChange?.(newValue);
   };
-  
-  const sizeClasses = {
-    sm: 'px-3 py-1 text-xs',
-    md: 'px-3.5 py-2 text-sm',
-    lg: 'px-6 py-3 text-lg'
-  };
-  
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled || loading}
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-    >
-      {loading && <span className="animate-spin mr-2">⏳</span>}
-      {children}
-    </button>
+    <div className="relative">
+      <textarea
+        value={value}
+        onChange={handleChange}
+        placeholder={placeholder}
+        maxLength={maxLength}
+        rows={rows}
+        className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-${autoResize ? 'none' : 'vertical'}`}
+      />
+      {maxLength && (
+        <div className="absolute bottom-2 right-2 text-xs text-gray-500">
+          {value.length}/{maxLength}
+        </div>
+      )}
+    </div>
   );
 };

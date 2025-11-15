@@ -8,7 +8,6 @@
         @click="handleToggle"
       />
     </Transition>
-
     <!-- Floating action button to open drawer -->
     <button
       class="drawer-fab"
@@ -20,7 +19,6 @@
       <span class="fab-icon">☰</span>
       <span class="fab-label">Menu</span>
     </button>
-
     <!-- Drawer Sidebar -->
     <Transition name="drawer-slide">
       <aside
@@ -33,7 +31,6 @@
         <div class="drawer-handle" @click="handleToggle">
           <div class="handle-bar"></div>
         </div>
-
         <!-- Header with close -->
         <header class="drawer-header">
           <slot name="header">
@@ -55,7 +52,6 @@
             </div>
           </slot>
         </header>
-
         <!-- Search bar -->
         <div class="drawer-search">
           <div class="search-input-wrapper">
@@ -68,7 +64,6 @@
             />
           </div>
         </div>
-
         <!-- Navigation menu -->
         <nav class="drawer-nav">
           <ul class="drawer-menu">
@@ -97,7 +92,6 @@
                   ›
                 </span>
               </div>
-
               <!-- Nested submenu -->
               <Transition name="drawer-submenu">
                 <ul
@@ -123,10 +117,8 @@
             </li>
           </ul>
         </nav>
-
         <!-- Drawer divider -->
         <div class="drawer-divider"></div>
-
         <!-- Additional info section -->
         <div class="drawer-info-section">
           <div class="info-card">
@@ -137,7 +129,6 @@
             </div>
           </div>
         </div>
-
         <!-- Footer -->
         <footer class="drawer-footer">
           <slot name="footer">
@@ -167,10 +158,8 @@
     </Transition>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-
 // Interfaces
 interface SidebarTheme {
   primaryColor: string;
@@ -180,7 +169,6 @@ interface SidebarTheme {
   hoverColor: string;
   borderColor: string;
 }
-
 interface SidebarItem {
   id: string;
   label: string;
@@ -188,10 +176,8 @@ interface SidebarItem {
   route?: string;
   children?: SidebarItem[];
 }
-
 type VariantType = 'overlay' | 'push' | 'mini' | 'responsive' | 'drawer';
 type PositionType = 'left' | 'right';
-
 // Props
 const props = withDefaults(defineProps<{
   items: SidebarItem[];
@@ -206,7 +192,6 @@ const props = withDefaults(defineProps<{
   width: '360px',
   variant: 'drawer'
 });
-
 // Rose Pink theme
 const defaultTheme: SidebarTheme = {
   primaryColor: '#EC4899',
@@ -216,24 +201,20 @@ const defaultTheme: SidebarTheme = {
   hoverColor: '#9F1239',
   borderColor: '#DB2777'
 };
-
 // Emits
 const emit = defineEmits<{
   'item-clicked': [item: SidebarItem];
   'toggle': [isOpen: boolean];
 }>();
-
 // State
 const activeItemId = ref<string | null>(null);
 const expandedItems = ref<Set<string>>(new Set());
 const searchQuery = ref('');
-
 // Computed
 const mergedTheme = computed<SidebarTheme>(() => ({
   ...defaultTheme,
   ...props.theme
 }));
-
 const drawerStyles = computed(() => ({
   width: props.width,
   backgroundColor: mergedTheme.value.backgroundColor,
@@ -241,17 +222,14 @@ const drawerStyles = computed(() => ({
   borderColor: mergedTheme.value.borderColor,
   [props.position]: 0
 }));
-
 const fabStyles = computed(() => ({
   backgroundColor: mergedTheme.value.primaryColor,
   borderColor: mergedTheme.value.borderColor
 }));
-
 const filteredItems = computed(() => {
   if (!searchQuery.value.trim()) {
     return props.items;
   }
-
   const query = searchQuery.value.toLowerCase();
   return props.items.filter(item => {
     const matchesParent = item.label.toLowerCase().includes(query);
@@ -261,7 +239,6 @@ const filteredItems = computed(() => {
     return matchesParent || matchesChild;
   });
 });
-
 // Methods
 const handleToggle = () => {
   emit('toggle', !props.isOpen);
@@ -270,7 +247,6 @@ const handleToggle = () => {
     searchQuery.value = '';
   }
 };
-
 const handleItemClick = (item: SidebarItem) => {
   if (item.children && item.children.length > 0) {
     // Toggle submenu
@@ -286,12 +262,10 @@ const handleItemClick = (item: SidebarItem) => {
   }
 };
 </script>
-
 <style scoped>
 .drawer-sidebar-wrapper {
   position: relative;
 }
-
 /* Overlay */
 .drawer-overlay {
   position: fixed;
@@ -300,7 +274,6 @@ const handleItemClick = (item: SidebarItem) => {
   z-index: 999;
   backdrop-filter: blur(4px);
 }
-
 /* Floating Action Button */
 .drawer-fab {
   position: fixed;
@@ -320,28 +293,23 @@ const handleItemClick = (item: SidebarItem) => {
   gap: 0.25rem;
   box-shadow: 0 12px 28px rgba(236, 72, 153, 0.4);
 }
-
 .drawer-fab:hover {
   transform: scale(1.15) rotate(10deg);
   box-shadow: 0 16px 40px rgba(236, 72, 153, 0.6);
 }
-
 .drawer-fab:active {
   transform: scale(0.95);
 }
-
 .drawer-fab.fab-hidden {
   opacity: 0;
   pointer-events: none;
   transform: scale(0.5) rotate(180deg);
 }
-
 .fab-icon {
   font-size: 1.5rem;
   color: white;
   font-weight: bold;
 }
-
 .fab-label {
   font-size: 0.625rem;
   color: white;
@@ -349,7 +317,6 @@ const handleItemClick = (item: SidebarItem) => {
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-
 /* Drawer Sidebar */
 .drawer-sidebar {
   position: fixed;
@@ -363,17 +330,14 @@ const handleItemClick = (item: SidebarItem) => {
   box-shadow: -8px 0 40px rgba(236, 72, 153, 0.3);
   background: linear-gradient(180deg, #881337 0%, #9F1239 100%);
 }
-
 .drawer-left {
   left: 0;
   border-right: 4px solid;
 }
-
 .drawer-right {
   right: 0;
   border-left: 4px solid;
 }
-
 /* Drawer handle */
 .drawer-handle {
   padding: 1rem;
@@ -382,7 +346,6 @@ const handleItemClick = (item: SidebarItem) => {
   cursor: pointer;
   background: rgba(219, 39, 119, 0.2);
 }
-
 .handle-bar {
   width: 4rem;
   height: 5px;
@@ -390,33 +353,28 @@ const handleItemClick = (item: SidebarItem) => {
   border-radius: 3px;
   transition: all 0.3s ease;
 }
-
 .drawer-handle:hover .handle-bar {
   background: rgba(252, 231, 243, 0.7);
   width: 5rem;
 }
-
 /* Header */
 .drawer-header {
   padding: 1.5rem 1.75rem;
   border-bottom: 2px solid rgba(219, 39, 119, 0.4);
   background: linear-gradient(135deg, rgba(244, 114, 182, 0.15) 0%, transparent 100%);
 }
-
 .header-layout {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
 }
-
 .brand-section {
   display: flex;
   align-items: center;
   gap: 1rem;
   flex: 1;
 }
-
 .brand-icon-circle {
   width: 3.5rem;
   height: 3.5rem;
@@ -430,11 +388,9 @@ const handleItemClick = (item: SidebarItem) => {
   flex-shrink: 0;
   border: 3px solid rgba(219, 39, 119, 0.4);
 }
-
 .brand-content {
   flex: 1;
 }
-
 .brand-heading {
   margin: 0;
   font-size: 1.625rem;
@@ -443,7 +399,6 @@ const handleItemClick = (item: SidebarItem) => {
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   line-height: 1.2;
 }
-
 .brand-subtitle {
   margin: 0.25rem 0 0;
   font-size: 0.875rem;
@@ -451,7 +406,6 @@ const handleItemClick = (item: SidebarItem) => {
   opacity: 0.9;
   font-weight: 500;
 }
-
 .close-drawer-btn {
   width: 2.75rem;
   height: 2.75rem;
@@ -467,18 +421,15 @@ const handleItemClick = (item: SidebarItem) => {
   transition: all 0.3s ease;
   flex-shrink: 0;
 }
-
 .close-drawer-btn:hover {
   background: rgba(236, 72, 153, 0.4);
   transform: rotate(90deg) scale(1.1);
 }
-
 /* Search bar */
 .drawer-search {
   padding: 1.25rem 1.75rem;
   background: rgba(0, 0, 0, 0.15);
 }
-
 .search-input-wrapper {
   position: relative;
   display: flex;
@@ -489,19 +440,16 @@ const handleItemClick = (item: SidebarItem) => {
   padding: 0.75rem 1rem;
   transition: all 0.3s ease;
 }
-
 .search-input-wrapper:focus-within {
   background: rgba(255, 255, 255, 0.15);
   border-color: rgba(244, 114, 182, 0.6);
   box-shadow: 0 0 16px rgba(236, 72, 153, 0.3);
 }
-
 .search-icon {
   font-size: 1.25rem;
   margin-right: 0.75rem;
   flex-shrink: 0;
 }
-
 .search-input {
   flex: 1;
   background: transparent;
@@ -511,28 +459,23 @@ const handleItemClick = (item: SidebarItem) => {
   font-size: 1rem;
   font-weight: 500;
 }
-
 .search-input::placeholder {
   color: rgba(252, 231, 243, 0.5);
 }
-
 /* Navigation */
 .drawer-nav {
   flex: 1;
   overflow-y: auto;
   padding: 1.25rem 0;
 }
-
 .drawer-menu {
   list-style: none;
   margin: 0;
   padding: 0 1rem;
 }
-
 .drawer-menu-item {
   margin: 0.5rem 0;
 }
-
 .drawer-link {
   display: flex;
   align-items: center;
@@ -546,7 +489,6 @@ const handleItemClick = (item: SidebarItem) => {
   background: rgba(255, 255, 255, 0.05);
   border: 2px solid transparent;
 }
-
 .drawer-link::before {
   content: '';
   position: absolute;
@@ -555,32 +497,27 @@ const handleItemClick = (item: SidebarItem) => {
   opacity: 0;
   transition: opacity 0.3s ease;
 }
-
 .drawer-link:hover {
   background: rgba(159, 18, 57, 0.5);
   border-color: rgba(219, 39, 119, 0.4);
   transform: translateX(8px);
   box-shadow: 0 6px 20px rgba(236, 72, 153, 0.2);
 }
-
 .drawer-link:hover::before {
   opacity: 1;
 }
-
 .drawer-link.link-active {
   background: linear-gradient(135deg, rgba(244, 114, 182, 0.35) 0%, rgba(244, 114, 182, 0.15) 100%);
   border-color: #F472B6;
   box-shadow: 0 6px 24px rgba(244, 114, 182, 0.4), inset 0 0 24px rgba(236, 72, 153, 0.2);
   font-weight: 600;
 }
-
 .link-main {
   display: flex;
   align-items: center;
   gap: 1rem;
   flex: 1;
 }
-
 .link-icon {
   font-size: 1.625rem;
   width: 2.25rem;
@@ -588,24 +525,20 @@ const handleItemClick = (item: SidebarItem) => {
   flex-shrink: 0;
   filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3));
 }
-
 .link-text {
   font-size: 1.0625rem;
   font-weight: 500;
   letter-spacing: 0.3px;
 }
-
 .chevron-icon {
   font-size: 1.5rem;
   transition: transform 0.35s ease;
   color: #FBCFE8;
   font-weight: bold;
 }
-
 .chevron-icon.chevron-rotated {
   transform: rotate(90deg);
 }
-
 /* Submenu */
 .drawer-submenu {
   list-style: none;
@@ -616,11 +549,9 @@ const handleItemClick = (item: SidebarItem) => {
   border-left: 3px solid rgba(219, 39, 119, 0.6);
   margin-left: 2rem;
 }
-
 .drawer-submenu-item {
   margin: 0.25rem 0;
 }
-
 .drawer-sublink {
   display: flex;
   align-items: center;
@@ -630,42 +561,35 @@ const handleItemClick = (item: SidebarItem) => {
   transition: all 0.3s ease;
   border-radius: 8px;
 }
-
 .drawer-sublink:hover {
   background: rgba(159, 18, 57, 0.4);
   padding-left: 1.75rem;
 }
-
 .drawer-sublink.link-active {
   background: linear-gradient(90deg, rgba(244, 114, 182, 0.3) 0%, transparent 100%);
   border-left: 3px solid #F472B6;
   font-weight: 600;
 }
-
 .sublink-icon {
   font-size: 1.25rem;
   width: 1.75rem;
   text-align: center;
   flex-shrink: 0;
 }
-
 .sublink-text {
   font-size: 0.9375rem;
   font-weight: 500;
 }
-
 /* Divider */
 .drawer-divider {
   height: 2px;
   background: linear-gradient(90deg, transparent 0%, rgba(219, 39, 119, 0.5) 50%, transparent 100%);
   margin: 1rem 1.75rem;
 }
-
 /* Info section */
 .drawer-info-section {
   padding: 1rem 1.75rem;
 }
-
 .info-card {
   display: flex;
   align-items: center;
@@ -675,31 +599,26 @@ const handleItemClick = (item: SidebarItem) => {
   border: 2px solid rgba(219, 39, 119, 0.3);
   border-radius: 12px;
 }
-
 .info-icon {
   font-size: 2rem;
   flex-shrink: 0;
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
 }
-
 .info-content {
   flex: 1;
 }
-
 .info-title {
   margin: 0;
   font-size: 0.9375rem;
   font-weight: 700;
   color: #FCE7F3;
 }
-
 .info-text {
   margin: 0.25rem 0 0;
   font-size: 0.8125rem;
   color: #FBCFE8;
   opacity: 0.9;
 }
-
 /* Footer */
 .drawer-footer {
   padding: 1.75rem;
@@ -707,13 +626,11 @@ const handleItemClick = (item: SidebarItem) => {
   background: linear-gradient(0deg, rgba(244, 114, 182, 0.1) 0%, transparent 100%);
   margin-top: auto;
 }
-
 .footer-profile {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
-
 .profile-card {
   display: flex;
   align-items: center;
@@ -723,12 +640,10 @@ const handleItemClick = (item: SidebarItem) => {
   border-radius: 16px;
   border: 2px solid rgba(219, 39, 119, 0.4);
 }
-
 .profile-img-wrapper {
   position: relative;
   flex-shrink: 0;
 }
-
 .profile-img {
   width: 3.25rem;
   height: 3.25rem;
@@ -741,7 +656,6 @@ const handleItemClick = (item: SidebarItem) => {
   box-shadow: 0 4px 16px rgba(236, 72, 153, 0.5);
   border: 3px solid rgba(219, 39, 119, 0.3);
 }
-
 .online-badge {
   position: absolute;
   bottom: 2px;
@@ -754,7 +668,6 @@ const handleItemClick = (item: SidebarItem) => {
   box-shadow: 0 0 12px #10B981;
   animation: online-pulse 2s ease-in-out infinite;
 }
-
 @keyframes online-pulse {
   0%, 100% {
     opacity: 1;
@@ -765,12 +678,10 @@ const handleItemClick = (item: SidebarItem) => {
     box-shadow: 0 0 6px #10B981;
   }
 }
-
 .profile-details {
   flex: 1;
   min-width: 0;
 }
-
 .profile-name {
   margin: 0;
   font-size: 1.0625rem;
@@ -780,7 +691,6 @@ const handleItemClick = (item: SidebarItem) => {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .profile-email {
   margin: 0.375rem 0 0;
   font-size: 0.8125rem;
@@ -790,13 +700,11 @@ const handleItemClick = (item: SidebarItem) => {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .footer-actions {
   display: flex;
   gap: 0.75rem;
   justify-content: center;
 }
-
 .action-icon-btn {
   width: 3rem;
   height: 3rem;
@@ -810,45 +718,37 @@ const handleItemClick = (item: SidebarItem) => {
   justify-content: center;
   transition: all 0.3s ease;
 }
-
 .action-icon-btn:hover {
   background: rgba(236, 72, 153, 0.4);
   transform: translateY(-4px);
   box-shadow: 0 8px 20px rgba(236, 72, 153, 0.3);
 }
-
 /* Transitions */
 .overlay-fade-enter-active,
 .overlay-fade-leave-active {
   transition: opacity 0.35s ease;
 }
-
 .overlay-fade-enter-from,
 .overlay-fade-leave-to {
   opacity: 0;
 }
-
 .drawer-slide-enter-active,
 .drawer-slide-leave-active {
   transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
-
 .drawer-left.drawer-slide-enter-from,
 .drawer-left.drawer-slide-leave-to {
   transform: translateX(-100%);
 }
-
 .drawer-right.drawer-slide-enter-from,
 .drawer-right.drawer-slide-leave-to {
   transform: translateX(100%);
 }
-
 .drawer-submenu-enter-active,
 .drawer-submenu-leave-active {
   transition: all 0.4s ease;
   overflow: hidden;
 }
-
 .drawer-submenu-enter-from,
 .drawer-submenu-leave-to {
   opacity: 0;
@@ -857,39 +757,32 @@ const handleItemClick = (item: SidebarItem) => {
   padding-top: 0;
   padding-bottom: 0;
 }
-
 .drawer-submenu-enter-to,
 .drawer-submenu-leave-from {
   opacity: 1;
   max-height: 800px;
 }
-
 /* Scrollbar */
 .drawer-nav::-webkit-scrollbar {
   width: 8px;
 }
-
 .drawer-nav::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.25);
   border-radius: 4px;
 }
-
 .drawer-nav::-webkit-scrollbar-thumb {
   background: rgba(219, 39, 119, 0.6);
   border-radius: 4px;
 }
-
 .drawer-nav::-webkit-scrollbar-thumb:hover {
   background: rgba(244, 114, 182, 0.8);
 }
-
 /* Mobile responsive */
 @media (max-width: 768px) {
   .drawer-sidebar {
     width: 92vw !important;
     max-width: 400px;
   }
-
   .drawer-fab {
     bottom: 1.5rem;
     right: 1.5rem;

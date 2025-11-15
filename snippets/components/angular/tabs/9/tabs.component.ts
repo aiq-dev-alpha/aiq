@@ -1,6 +1,5 @@
 // Vertical Accordion Tabs
 import { Component, Input } from '@angular/core';
-
 @Component({
   selector: 'app-tabs',
   template: `<div class="vertical-tabs"><div class="tab-item" *ngFor="let tab of tabs; let i = index" [class.expanded]="activeIndex === i"><div class="tab-trigger" (click)="activeIndex = activeIndex === i ? -1 : i"><span>{{ tab.title }}</span><span class="chevron">›</span></div><div class="tab-panel" [class.open]="activeIndex === i"><ng-content></ng-content></div></div></div>`,

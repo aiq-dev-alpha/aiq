@@ -9,7 +9,6 @@
     >
       <span class="toggle-icon">{{ isOpen ? '◀' : '▶' }}</span>
     </button>
-
     <!-- Mini Sidebar - Always visible, expands on hover or click -->
     <aside
       class="mini-sidebar"
@@ -30,7 +29,6 @@
           </div>
         </Transition>
       </div>
-
       <!-- Navigation -->
       <nav class="mini-nav">
         <ul class="nav-list">
@@ -61,7 +59,6 @@
                 </span>
               </Transition>
             </div>
-
             <!-- Nested submenu -->
             <Transition name="submenu-slide">
               <ul
@@ -87,7 +84,6 @@
           </li>
         </ul>
       </nav>
-
       <!-- Footer section -->
       <div class="mini-footer">
         <Transition name="fade-slide">
@@ -110,10 +106,8 @@
     </aside>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-
 // Interfaces
 interface SidebarTheme {
   primaryColor: string;
@@ -123,7 +117,6 @@ interface SidebarTheme {
   hoverColor: string;
   borderColor: string;
 }
-
 interface SidebarItem {
   id: string;
   label: string;
@@ -131,10 +124,8 @@ interface SidebarItem {
   route?: string;
   children?: SidebarItem[];
 }
-
 type VariantType = 'overlay' | 'push' | 'mini' | 'responsive' | 'drawer';
 type PositionType = 'left' | 'right';
-
 // Props
 const props = withDefaults(defineProps<{
   items: SidebarItem[];
@@ -149,7 +140,6 @@ const props = withDefaults(defineProps<{
   width: '260px',
   variant: 'mini'
 });
-
 // Emerald Green theme
 const defaultTheme: SidebarTheme = {
   primaryColor: '#10B981',
@@ -159,24 +149,20 @@ const defaultTheme: SidebarTheme = {
   hoverColor: '#047857',
   borderColor: '#059669'
 };
-
 // Emits
 const emit = defineEmits<{
   'item-clicked': [item: SidebarItem];
   'toggle': [isOpen: boolean];
 }>();
-
 // State
 const activeItemId = ref<string | null>(null);
 const expandedItems = ref<Set<string>>(new Set());
 const isHovered = ref(false);
-
 // Computed
 const mergedTheme = computed<SidebarTheme>(() => ({
   ...defaultTheme,
   ...props.theme
 }));
-
 const sidebarStyles = computed(() => ({
   width: (isOpen.value || isHovered.value) ? props.width : '80px',
   backgroundColor: mergedTheme.value.backgroundColor,
@@ -184,28 +170,23 @@ const sidebarStyles = computed(() => ({
   borderColor: mergedTheme.value.borderColor,
   [props.position]: 0
 }));
-
 const toggleStyles = computed(() => ({
   backgroundColor: mergedTheme.value.primaryColor,
   borderColor: mergedTheme.value.borderColor,
   [props.position]: (isOpen.value || isHovered.value) ? props.width : '80px'
 }));
-
 // Methods
 const handleToggle = () => {
   emit('toggle', !props.isOpen);
 };
-
 const handleMouseEnter = () => {
   if (!props.isOpen && props.variant === 'mini') {
     isHovered.value = true;
   }
 };
-
 const handleMouseLeave = () => {
   isHovered.value = false;
 };
-
 const handleItemClick = (item: SidebarItem) => {
   if (item.children && item.children.length > 0) {
     // Toggle submenu
@@ -221,13 +202,11 @@ const handleItemClick = (item: SidebarItem) => {
   }
 };
 </script>
-
 <style scoped>
 .mini-sidebar-wrapper {
   position: relative;
   height: 100vh;
 }
-
 /* Toggle button */
 .mini-toggle {
   position: fixed;
@@ -245,22 +224,18 @@ const handleItemClick = (item: SidebarItem) => {
   justify-content: center;
   box-shadow: 2px 0 12px rgba(16, 185, 129, 0.3);
 }
-
 .mini-toggle:hover {
   transform: translateY(-50%) translateX(5px);
   box-shadow: 4px 0 20px rgba(16, 185, 129, 0.5);
 }
-
 .mini-toggle.expanded {
   border-radius: 0.5rem 0 0 0.5rem;
 }
-
 .toggle-icon {
   color: white;
   font-size: 1.125rem;
   font-weight: bold;
 }
-
 /* Mini Sidebar */
 .mini-sidebar {
   position: fixed;
@@ -275,17 +250,14 @@ const handleItemClick = (item: SidebarItem) => {
   background: linear-gradient(180deg, #065F46 0%, #047857 100%);
   box-shadow: 4px 0 16px rgba(5, 150, 105, 0.25);
 }
-
 .position-left {
   left: 0;
   border-right: 3px solid;
 }
-
 .position-right {
   right: 0;
   border-left: 3px solid;
 }
-
 /* Brand section */
 .brand-section {
   padding: 1.5rem;
@@ -295,14 +267,12 @@ const handleItemClick = (item: SidebarItem) => {
   align-items: center;
   background: linear-gradient(135deg, rgba(52, 211, 153, 0.15) 0%, transparent 100%);
 }
-
 .brand-expanded {
   display: flex;
   align-items: center;
   gap: 1rem;
   width: 100%;
 }
-
 .brand-icon,
 .brand-icon-mini {
   font-size: 2rem;
@@ -316,13 +286,11 @@ const handleItemClick = (item: SidebarItem) => {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
 }
-
 .brand-mini {
   display: flex;
   justify-content: center;
   width: 100%;
 }
-
 .brand-name {
   margin: 0;
   font-size: 1.5rem;
@@ -331,24 +299,20 @@ const handleItemClick = (item: SidebarItem) => {
   white-space: nowrap;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
-
 /* Navigation */
 .mini-nav {
   flex: 1;
   overflow-y: auto;
   padding: 1rem 0;
 }
-
 .nav-list {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-
 .nav-item {
   margin: 0.375rem 0;
 }
-
 .nav-link {
   display: flex;
   align-items: center;
@@ -359,7 +323,6 @@ const handleItemClick = (item: SidebarItem) => {
   position: relative;
   white-space: nowrap;
 }
-
 .nav-link::before {
   content: '';
   position: absolute;
@@ -372,25 +335,20 @@ const handleItemClick = (item: SidebarItem) => {
   transition: height 0.3s ease;
   border-radius: 0 3px 3px 0;
 }
-
 .nav-link:hover {
   background: rgba(4, 120, 87, 0.5);
 }
-
 .nav-link:hover::before {
   height: 70%;
 }
-
 .nav-link.active {
   background: linear-gradient(90deg, rgba(52, 211, 153, 0.3) 0%, rgba(52, 211, 153, 0.1) 100%);
   font-weight: 600;
   box-shadow: inset 0 0 16px rgba(16, 185, 129, 0.2);
 }
-
 .nav-link.active::before {
   height: 100%;
 }
-
 .nav-icon {
   font-size: 1.5rem;
   width: 2rem;
@@ -398,23 +356,19 @@ const handleItemClick = (item: SidebarItem) => {
   flex-shrink: 0;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
-
 .nav-label {
   flex: 1;
   font-size: 1rem;
   font-weight: 500;
 }
-
 .nav-chevron {
   font-size: 1rem;
   transition: transform 0.3s ease;
   color: #6EE7B7;
 }
-
 .nav-chevron.rotated {
   transform: rotate(90deg);
 }
-
 /* Submenu */
 .submenu {
   list-style: none;
@@ -425,11 +379,9 @@ const handleItemClick = (item: SidebarItem) => {
   margin-left: 2.5rem;
   border-radius: 0 0 8px 0;
 }
-
 .submenu-item {
   margin: 0;
 }
-
 .submenu-link {
   display: flex;
   align-items: center;
@@ -439,30 +391,25 @@ const handleItemClick = (item: SidebarItem) => {
   transition: all 0.3s ease;
   white-space: nowrap;
 }
-
 .submenu-link:hover {
   background: rgba(4, 120, 87, 0.4);
   padding-left: 1.5rem;
 }
-
 .submenu-link.active {
   background: linear-gradient(90deg, rgba(52, 211, 153, 0.25) 0%, transparent 100%);
   font-weight: 600;
   border-left: 2px solid #34D399;
 }
-
 .submenu-icon {
   font-size: 1.125rem;
   width: 1.5rem;
   text-align: center;
   flex-shrink: 0;
 }
-
 .submenu-label {
   flex: 1;
   font-size: 0.9375rem;
 }
-
 /* Footer section */
 .mini-footer {
   padding: 1.5rem;
@@ -473,17 +420,14 @@ const handleItemClick = (item: SidebarItem) => {
   align-items: center;
   background: linear-gradient(0deg, rgba(52, 211, 153, 0.1) 0%, transparent 100%);
 }
-
 .footer-expanded {
   width: 100%;
 }
-
 .footer-mini {
   display: flex;
   justify-content: center;
   width: 100%;
 }
-
 .profile-section {
   display: flex;
   align-items: center;
@@ -493,7 +437,6 @@ const handleItemClick = (item: SidebarItem) => {
   border-radius: 12px;
   border: 1px solid rgba(5, 150, 105, 0.4);
 }
-
 .profile-avatar,
 .avatar-mini {
   width: 2.75rem;
@@ -507,18 +450,15 @@ const handleItemClick = (item: SidebarItem) => {
   flex-shrink: 0;
   box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
 }
-
 .profile-info {
   flex: 1;
 }
-
 .profile-name {
   margin: 0;
   font-size: 0.9375rem;
   font-weight: 600;
   color: #D1FAE5;
 }
-
 .profile-status {
   margin: 0.25rem 0 0;
   font-size: 0.8125rem;
@@ -527,7 +467,6 @@ const handleItemClick = (item: SidebarItem) => {
   align-items: center;
   gap: 0.375rem;
 }
-
 .profile-status::before {
   content: '';
   width: 8px;
@@ -537,7 +476,6 @@ const handleItemClick = (item: SidebarItem) => {
   box-shadow: 0 0 8px #34D399;
   animation: pulse 2s ease-in-out infinite;
 }
-
 @keyframes pulse {
   0%, 100% {
     opacity: 1;
@@ -546,66 +484,54 @@ const handleItemClick = (item: SidebarItem) => {
     opacity: 0.5;
   }
 }
-
 /* Transitions */
 .fade-slide-enter-active,
 .fade-slide-leave-active {
   transition: all 0.3s ease;
 }
-
 .fade-slide-enter-from,
 .fade-slide-leave-to {
   opacity: 0;
   transform: translateX(-10px);
 }
-
 .submenu-slide-enter-active,
 .submenu-slide-leave-active {
   transition: all 0.3s ease;
   overflow: hidden;
 }
-
 .submenu-slide-enter-from,
 .submenu-slide-leave-to {
   opacity: 0;
   max-height: 0;
 }
-
 .submenu-slide-enter-to,
 .submenu-slide-leave-from {
   opacity: 1;
   max-height: 500px;
 }
-
 /* Scrollbar */
 .mini-nav::-webkit-scrollbar {
   width: 6px;
 }
-
 .mini-nav::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.2);
 }
-
 .mini-nav::-webkit-scrollbar-thumb {
   background: rgba(5, 150, 105, 0.6);
   border-radius: 3px;
 }
-
 .mini-nav::-webkit-scrollbar-thumb:hover {
   background: rgba(16, 185, 129, 0.8);
 }
-
 /* Mobile responsive */
 @media (max-width: 768px) {
   .mini-sidebar {
     width: 80px !important;
   }
-
   .mini-sidebar.expanded {
     width: 85vw !important;
     max-width: 300px !important;
   }
-
   .mini-toggle {
     display: none;
   }

@@ -1,6 +1,5 @@
 // Slide-in Mobile Navbar
 import { Component, Input } from '@angular/core';
-
 @Component({
   selector: 'app-navbar',
   template: `<nav class="slide-nav"><button class="menu-toggle" (click)="menuOpen = !menuOpen">☰</button><div class="menu" [class.open]="menuOpen"><ng-content></ng-content></div></nav>`,

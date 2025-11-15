@@ -14,7 +14,6 @@
           Creating beautiful digital experiences
         </p>
       </div>
-
       <!-- Navigation Links (Centered) -->
       <nav class="footer-nav">
         <div
@@ -33,7 +32,6 @@
           </ul>
         </div>
       </nav>
-
       <!-- Social Links -->
       <div class="social-section">
         <p class="social-title">Connect With Us</p>
@@ -49,7 +47,6 @@
           </a>
         </div>
       </div>
-
       <!-- Copyright -->
       <div class="footer-bottom">
         <p class="copyright">{{ copyright }}</p>
@@ -62,7 +59,6 @@
         </button>
       </div>
     </div>
-
     <!-- Decorative Elements -->
     <div class="decorative-circles">
       <div class="circle circle-1"></div>
@@ -71,10 +67,8 @@
     </div>
   </footer>
 </template>
-
 <script setup lang="ts">
 import { computed, defineProps, withDefaults } from 'vue';
-
 interface FooterTheme {
   primaryColor: string;
   backgroundColor: string;
@@ -82,29 +76,24 @@ interface FooterTheme {
   linkColor: string;
   borderColor: string;
 }
-
 interface FooterLink {
   id: string;
   label: string;
   url: string;
   icon?: string;
 }
-
 interface FooterSection {
   id: string;
   title: string;
   links: FooterLink[];
 }
-
 interface SocialLink {
   id: string;
   label: string;
   url: string;
   icon: string;
 }
-
 type FooterVariant = 'simple' | 'multi-column' | 'centered' | 'minimal' | 'newsletter';
-
 interface Props {
   sections?: FooterSection[];
   copyright?: string;
@@ -112,7 +101,6 @@ interface Props {
   variant?: FooterVariant;
   theme?: Partial<FooterTheme>;
 }
-
 const props = withDefaults(defineProps<Props>(), {
   sections: () => [
     {
@@ -154,7 +142,6 @@ const props = withDefaults(defineProps<Props>(), {
   variant: 'centered',
   theme: () => ({})
 });
-
 const defaultTheme: FooterTheme = {
   primaryColor: '#ec4899',
   backgroundColor: '#0f172a',
@@ -162,12 +149,10 @@ const defaultTheme: FooterTheme = {
   linkColor: '#f1f5f9',
   borderColor: '#1e293b'
 };
-
 const currentTheme = computed<FooterTheme>(() => ({
   ...defaultTheme,
   ...props.theme
 }));
-
 const computedStyles = computed(() => ({
   '--primary-color': currentTheme.value.primaryColor,
   '--background-color': currentTheme.value.backgroundColor,
@@ -175,12 +160,10 @@ const computedStyles = computed(() => ({
   '--link-color': currentTheme.value.linkColor,
   '--border-color': currentTheme.value.borderColor
 }));
-
 const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 </script>
-
 <style scoped>
 .footer {
   position: relative;
@@ -189,7 +172,6 @@ const scrollToTop = () => {
   padding: 5rem 2rem 2rem;
   overflow: hidden;
 }
-
 .footer-container {
   max-width: 900px;
   margin: 0 auto;
@@ -201,18 +183,15 @@ const scrollToTop = () => {
   text-align: center;
   gap: 3rem;
 }
-
 .footer-logo-section {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
 }
-
 .footer-logo svg {
   filter: drop-shadow(0 4px 12px rgba(236, 72, 153, 0.3));
 }
-
 .brand-name {
   font-size: 1.75rem;
   font-weight: 700;
@@ -223,28 +202,24 @@ const scrollToTop = () => {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-
 .footer-tagline {
   font-size: 1rem;
   color: var(--text-color);
   margin: 0;
   max-width: 400px;
 }
-
 .footer-nav {
   display: flex;
   justify-content: center;
   gap: 4rem;
   flex-wrap: wrap;
 }
-
 .nav-section {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   min-width: 150px;
 }
-
 .nav-title {
   font-size: 0.875rem;
   font-weight: 600;
@@ -253,7 +228,6 @@ const scrollToTop = () => {
   letter-spacing: 0.1em;
   margin: 0;
 }
-
 .nav-links {
   list-style: none;
   padding: 0;
@@ -262,7 +236,6 @@ const scrollToTop = () => {
   flex-direction: column;
   gap: 0.75rem;
 }
-
 .nav-link {
   color: var(--text-color);
   text-decoration: none;
@@ -273,16 +246,13 @@ const scrollToTop = () => {
   gap: 0.5rem;
   justify-content: center;
 }
-
 .nav-link:hover {
   color: var(--primary-color);
   transform: translateX(4px);
 }
-
 .nav-link i {
   font-size: 0.875rem;
 }
-
 .social-section {
   display: flex;
   flex-direction: column;
@@ -290,19 +260,16 @@ const scrollToTop = () => {
   gap: 1.5rem;
   padding: 2rem 0;
 }
-
 .social-title {
   font-size: 1rem;
   font-weight: 600;
   color: var(--link-color);
   margin: 0;
 }
-
 .social-links {
   display: flex;
   gap: 1rem;
 }
-
 .social-link {
   display: flex;
   align-items: center;
@@ -316,7 +283,6 @@ const scrollToTop = () => {
   transition: all 0.4s ease;
   border: 2px solid transparent;
 }
-
 .social-link:hover {
   background: linear-gradient(135deg, var(--primary-color), #f472b6);
   color: white;
@@ -324,11 +290,9 @@ const scrollToTop = () => {
   border-color: var(--primary-color);
   box-shadow: 0 8px 20px rgba(236, 72, 153, 0.4);
 }
-
 .social-link i {
   font-size: 1.25rem;
 }
-
 .footer-bottom {
   display: flex;
   flex-direction: column;
@@ -338,13 +302,11 @@ const scrollToTop = () => {
   border-top: 1px solid var(--border-color);
   width: 100%;
 }
-
 .copyright {
   margin: 0;
   font-size: 0.875rem;
   color: var(--text-color);
 }
-
 .back-to-top {
   display: flex;
   align-items: center;
@@ -359,16 +321,13 @@ const scrollToTop = () => {
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
 }
-
 .back-to-top:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 24px rgba(236, 72, 153, 0.5);
 }
-
 .back-to-top i {
   font-size: 1rem;
 }
-
 /* Decorative Elements */
 .decorative-circles {
   position: absolute;
@@ -379,27 +338,23 @@ const scrollToTop = () => {
   pointer-events: none;
   opacity: 0.1;
 }
-
 .circle {
   position: absolute;
   border-radius: 50%;
   background: radial-gradient(circle, var(--primary-color), transparent);
 }
-
 .circle-1 {
   width: 300px;
   height: 300px;
   top: -100px;
   left: -100px;
 }
-
 .circle-2 {
   width: 200px;
   height: 200px;
   top: 50%;
   right: -50px;
 }
-
 .circle-3 {
   width: 150px;
   height: 150px;
@@ -407,49 +362,39 @@ const scrollToTop = () => {
   left: 50%;
   transform: translateX(-50%);
 }
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .footer {
     padding: 4rem 1.5rem 2rem;
   }
-
   .footer-nav {
     gap: 2rem;
   }
-
   .nav-section {
     min-width: 120px;
   }
-
   .social-links {
     flex-wrap: wrap;
     justify-content: center;
   }
 }
-
 @media (max-width: 640px) {
   .footer-nav {
     flex-direction: column;
     gap: 2rem;
   }
-
   .brand-name {
     font-size: 1.5rem;
   }
 }
-
-
 @keyframes enter {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
 }
-
 @keyframes slideDown {
   from { transform: translateY(-10px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
-
 @keyframes glow {
   0%, 100% { box-shadow: 0 0 5px currentColor; }
   50% { box-shadow: 0 0 20px currentColor; }

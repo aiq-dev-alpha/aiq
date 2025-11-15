@@ -1,6 +1,5 @@
 // Holographic Shine Card
 import { Component, Input } from '@angular/core';
-
 @Component({
   selector: 'app-card',
   template: `<div class="holo-card"><div class="holo-shine"></div><ng-content></ng-content></div>`,

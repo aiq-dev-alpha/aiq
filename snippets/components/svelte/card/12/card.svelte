@@ -1,18 +1,30 @@
 <script lang="ts">
-  export let title: string = '';
-  export let variant: string = 'default';
+  export let variant: 'default' | 'outlined' | 'elevated' = 'default';
+  export let hoverable: boolean = false;
+  $: variantClasses = {
+    default: 'bg-white shadow-md',
+    outlined: 'bg-white border-2 border-gray-200',
+    elevated: 'bg-white shadow-2xl'
+  };
+  $: hoverClass = hoverable ? 'hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer' : '';
 </script>
-
-<div class="card variant-{variant}">
-  {#if title}
-    <div class="card-header"><h3>{title}</h3></div>
+<div class="rounded-xl overflow-hidden {variantClasses[variant]} {hoverClass}">
+  {#if $$slots.header}
+    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+      <slot name="header" />
+    </div>
   {/if}
-  <div class="card-body"><slot /></div>
+  <div class="px-6 py-4">
+    <slot />
+  </div>
+  {#if $$slots.footer}
+    <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+      <slot name="footer" />
+    </div>
+  {/if}
 </div>
-
 <style>
-  .card { background: white; border-radius: 4px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); overflow: hidden; }
-  .card-header { padding: 1.25rem; background: linear-gradient(135deg, #667eea 24%, #764ba2 100%); color: white; }
-  .card-header h3 { margin: 0; font-size: 1.125rem; font-weight: 700; }
-  .card-body { padding: 1.5rem; }
+  div {
+    transition-property: box-shadow, transform;
+  }
 </style>

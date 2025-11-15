@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
-
 class CustomSlider extends StatefulWidget {
   final Widget? child;
   final VoidCallback? onTap;
   final Color? color;
-
   const CustomSlider({
   Key? key,
   this.child,
   this.onTap,
   this.color,
   }) : super(key: key);
-
   @override
   State<CustomSlider> createState() => _CustomSliderState();
 }
-
 class _CustomSliderState extends State<CustomSlider> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-
   @override
   void initState() {
   super.initState();
@@ -27,13 +22,11 @@ class _CustomSliderState extends State<CustomSlider> with SingleTickerProviderSt
   vsync: this,
   );
   }
-
   @override
   void dispose() {
   _controller.dispose();
   super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
   return GestureDetector(

@@ -14,7 +14,6 @@
           </div>
           <p class="tagline">Simple, elegant, effective.</p>
         </div>
-
         <!-- Quick Links -->
         <nav class="footer-links">
           <template v-for="section in sections" :key="section.id">
@@ -28,7 +27,6 @@
             </a>
           </template>
         </nav>
-
         <!-- Social Links -->
         <div class="footer-social">
           <a
@@ -42,10 +40,8 @@
           </a>
         </div>
       </div>
-
       <!-- Divider -->
       <div class="footer-divider"></div>
-
       <!-- Bottom -->
       <div class="footer-bottom">
         <p class="copyright">{{ copyright }}</p>
@@ -60,10 +56,8 @@
     </div>
   </footer>
 </template>
-
 <script setup lang="ts">
 import { computed, defineProps, withDefaults } from 'vue';
-
 interface FooterTheme {
   primaryColor: string;
   backgroundColor: string;
@@ -71,29 +65,24 @@ interface FooterTheme {
   linkColor: string;
   borderColor: string;
 }
-
 interface FooterLink {
   id: string;
   label: string;
   url: string;
   icon?: string;
 }
-
 interface FooterSection {
   id: string;
   title: string;
   links: FooterLink[];
 }
-
 interface SocialLink {
   id: string;
   label: string;
   url: string;
   icon: string;
 }
-
 type FooterVariant = 'simple' | 'multi-column' | 'centered' | 'minimal' | 'newsletter';
-
 interface Props {
   sections?: FooterSection[];
   copyright?: string;
@@ -101,7 +90,6 @@ interface Props {
   variant?: FooterVariant;
   theme?: Partial<FooterTheme>;
 }
-
 const props = withDefaults(defineProps<Props>(), {
   sections: () => [
     {
@@ -129,7 +117,6 @@ const props = withDefaults(defineProps<Props>(), {
   variant: 'minimal',
   theme: () => ({})
 });
-
 const defaultTheme: FooterTheme = {
   primaryColor: '#14b8a6',
   backgroundColor: '#fafafa',
@@ -137,12 +124,10 @@ const defaultTheme: FooterTheme = {
   linkColor: '#27272a',
   borderColor: '#e4e4e7'
 };
-
 const currentTheme = computed<FooterTheme>(() => ({
   ...defaultTheme,
   ...props.theme
 }));
-
 const computedStyles = computed(() => ({
   '--primary-color': currentTheme.value.primaryColor,
   '--background-color': currentTheme.value.backgroundColor,
@@ -150,12 +135,10 @@ const computedStyles = computed(() => ({
   '--link-color': currentTheme.value.linkColor,
   '--border-color': currentTheme.value.borderColor
 }));
-
 const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 </script>
-
 <style scoped>
 .footer {
   background-color: var(--background-color);
@@ -163,7 +146,6 @@ const scrollToTop = () => {
   padding: 3rem 2rem 2rem;
   border-top: 1px solid var(--border-color);
 }
-
 .footer-container {
   max-width: 1100px;
   margin: 0 auto;
@@ -171,39 +153,33 @@ const scrollToTop = () => {
   flex-direction: column;
   gap: 2rem;
 }
-
 .footer-content {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
   gap: 3rem;
   align-items: start;
 }
-
 .footer-brand-section {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
-
 .brand-info {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
-
 .brand-text {
   font-size: 1.125rem;
   font-weight: 600;
   color: var(--link-color);
 }
-
 .tagline {
   margin: 0;
   font-size: 0.875rem;
   color: var(--text-color);
   font-style: italic;
 }
-
 .footer-links {
   display: flex;
   flex-wrap: wrap;
@@ -211,7 +187,6 @@ const scrollToTop = () => {
   justify-content: center;
   align-items: center;
 }
-
 .footer-link {
   color: var(--text-color);
   text-decoration: none;
@@ -219,11 +194,9 @@ const scrollToTop = () => {
   transition: color 0.2s ease;
   position: relative;
 }
-
 .footer-link:hover {
   color: var(--primary-color);
 }
-
 .footer-link::after {
   content: '';
   position: absolute;
@@ -234,17 +207,14 @@ const scrollToTop = () => {
   background-color: var(--primary-color);
   transition: width 0.3s ease;
 }
-
 .footer-link:hover::after {
   width: 100%;
 }
-
 .footer-social {
   display: flex;
   gap: 0.75rem;
   justify-content: flex-end;
 }
-
 .social-link {
   display: flex;
   align-items: center;
@@ -258,37 +228,31 @@ const scrollToTop = () => {
   transition: all 0.3s ease;
   border: 1px solid var(--border-color);
 }
-
 .social-link:hover {
   background: var(--primary-color);
   color: white;
   border-color: var(--primary-color);
   transform: translateY(-2px);
 }
-
 .social-link i {
   font-size: 0.95rem;
 }
-
 .footer-divider {
   height: 1px;
   background-color: var(--border-color);
   margin: 1rem 0;
 }
-
 .footer-bottom {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-top: 0.5rem;
 }
-
 .copyright {
   margin: 0;
   font-size: 0.875rem;
   color: var(--text-color);
 }
-
 .back-to-top {
   display: flex;
   align-items: center;
@@ -302,64 +266,51 @@ const scrollToTop = () => {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
 .back-to-top:hover {
   transform: translateY(-3px);
   box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
 }
-
 .back-to-top i {
   font-size: 0.875rem;
 }
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .footer {
     padding: 2.5rem 1.5rem 1.5rem;
   }
-
   .footer-content {
     grid-template-columns: 1fr;
     gap: 2rem;
     text-align: center;
   }
-
   .footer-social {
     justify-content: center;
   }
-
   .footer-links {
     gap: 1rem;
   }
-
   .footer-bottom {
     flex-direction: column;
     gap: 1.5rem;
   }
 }
-
 @media (max-width: 480px) {
   .footer-links {
     flex-direction: column;
     gap: 0.75rem;
   }
-
   .footer-link::after {
     display: none;
   }
 }
-
-
 @keyframes enter {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
 }
-
 @keyframes slideDown {
   from { transform: translateY(-10px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
-
 @keyframes glow {
   0%, 100% { box-shadow: 0 0 5px currentColor; }
   50% { box-shadow: 0 0 20px currentColor; }

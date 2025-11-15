@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 export interface ComponentProps {
   title?: string;
   content?: React.ReactNode;
@@ -8,7 +7,6 @@ export interface ComponentProps {
   className?: string;
   onInteract?: (expanded: boolean) => void;
 }
-
 export const Component: React.FC<ComponentProps> = ({
   title = 'Expandable Card',
   content = 'This is the expandable content that appears when you click the card.',
@@ -19,14 +17,12 @@ export const Component: React.FC<ComponentProps> = ({
 }) => {
   const [expanded, setExpanded] = useState(false);
   const primary = theme.primary || '#f59e0b';
-
   const toggleExpand = () => {
     if (!expandable) return;
     const newState = !expanded;
     setExpanded(newState);
     onInteract?.(newState);
   };
-
   return (
     <div className={className} style={{ border: \`2px solid \${expanded ? primary : '#e5e7eb'}\`, borderRadius: '12px', overflow: 'hidden', maxWidth: '500px', transition: 'all 300ms ease' }}>
       <div

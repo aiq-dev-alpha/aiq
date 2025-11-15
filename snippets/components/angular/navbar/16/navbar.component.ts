@@ -1,6 +1,5 @@
 // Frosted Glass Navbar with Blur
 import { Component } from '@angular/core';
-
 @Component({
   selector: 'app-navbar',
   template: `<nav class="frosted-nav"><ng-content></ng-content></nav>`,

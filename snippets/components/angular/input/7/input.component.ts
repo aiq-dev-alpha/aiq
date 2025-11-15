@@ -1,7 +1,6 @@
 // Brutalist Bold Input - Bold typography, stark contrasts
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-
 @Component({
   selector: 'app-input',
   template: `<div class="brutal"><div class="brutal-label">{{ label }}</div><input [type]="type" [placeholder]="placeholder" [value]="value" (input)="handleInput($event)" class="brutal-field" /></div>`,

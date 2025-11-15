@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-
 class CustomButton extends StatefulWidget {
   final String text;
   final VoidCallback? onPressed;
   final IconData? icon;
   final Color? color;
-
   const CustomButton({
   Key? key,
   this.text = 'Button',
@@ -13,15 +11,12 @@ class CustomButton extends StatefulWidget {
   this.icon,
   this.color,
   }) : super(key: key);
-
   @override
   State<CustomButton> createState() => _CustomButtonState();
 }
-
 class _CustomButtonState extends State<CustomButton> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
-
   @override
   void initState() {
   super.initState();
@@ -31,13 +26,11 @@ class _CustomButtonState extends State<CustomButton> with SingleTickerProviderSt
   );
   _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(_controller);
   }
-
   @override
   void dispose() {
   _controller.dispose();
   super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
   return GestureDetector(

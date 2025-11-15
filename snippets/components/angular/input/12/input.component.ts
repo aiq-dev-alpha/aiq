@@ -1,7 +1,6 @@
 // Retro Terminal Input
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-
 @Component({
   selector: 'app-input',
   template: `<div class="terminal"><span class="prompt">$</span><input [type]="type" [placeholder]="placeholder" [value]="value" (input)="handleInput($event)" class="term-field" /><span class="cursor"></span></div>`,

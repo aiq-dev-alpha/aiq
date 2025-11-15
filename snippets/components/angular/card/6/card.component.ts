@@ -1,6 +1,5 @@
 // Glassmorphism Card with Backdrop Blur
 import { Component, Input } from '@angular/core';
-
 @Component({
   selector: 'app-card',
   template: `<div class="glass-card" [ngStyle]="cardStyles"><ng-content></ng-content></div>`,

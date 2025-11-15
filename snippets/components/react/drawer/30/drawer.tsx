@@ -1,44 +1,54 @@
 import React from 'react';
-
-interface ButtonProps {
+interface DrawerProps {
+  isOpen: boolean;
+  onClose: () => void;
   children: React.ReactNode;
-  onClick?: () => void;
-  variant?: 'solid' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
-  loading?: boolean;
+  position?: 'left' | 'right';
+  width?: string;
 }
-
-export const Button: React.FC<ButtonProps> = ({
+export const Drawer: React.FC<DrawerProps> = ({
+  isOpen,
+  onClose,
   children,
-  onClick,
-  variant = 'solid',
-  size = 'md',
-  disabled = false,
-  loading = false
+  position = 'right',
+  width = '320px'
 }) => {
-  const baseClasses = 'rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-500';
-  
-  const variantClasses = {
-    solid: 'bg-cyan-500 text-white hover:brightness-110 hover:-translate-y-0.5 shadow-xl',
-    outline: 'border-2 border-cyan-500 text-cyan-600 hover:bg-cyan-50',
-    ghost: 'text-cyan-600 hover:bg-cyan-100'
+  if (!isOpen) return null;
+  const positionClasses = {
+    left: 'left-0',
+    right: 'right-0'
   };
-  
-  const sizeClasses = {
-    sm: 'px-3 py-1 text-xs',
-    md: 'px-3.5 py-2 text-sm',
-    lg: 'px-6 py-3 text-lg'
+  const animationClasses = {
+    left: isOpen ? 'translate-x-0' : '-translate-x-full',
+    right: isOpen ? 'translate-x-0' : 'translate-x-full'
   };
-  
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled || loading}
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-    >
-      {loading && <span className="animate-spin mr-2">⏳</span>}
-      {children}
-    </button>
+    <>
+      <div
+        className="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity"
+        onClick={onClose}
+      />
+      <div
+        className={`fixed top-0 ${positionClasses[position]} h-full bg-white shadow-2xl z-50 transform transition-transform duration-300 ${animationClasses[position]}`}
+        style={{ width }}
+      >
+        <div className="h-full flex flex-col">
+          <div className="flex items-center justify-between p-4 border-b">
+            <h3 className="text-lg font-semibold text-gray-900">Menu</h3>
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto p-4">
+            {children}
+          </div>
+        </div>
+      </div>
+    </>
   );
 };

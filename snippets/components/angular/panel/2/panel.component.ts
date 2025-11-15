@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-
 interface PanelTheme {
   primaryColor: string;
   backgroundColor: string;
@@ -8,14 +7,11 @@ interface PanelTheme {
   headerColor: string;
   shadowColor: string;
 }
-
 @Component({
   selector: 'app-panel',
   template: `
   <div class="panel-container" [ngStyle]="panelStyles">
-  
   <div class="panel-header" [ngStyle]="headerStyles" (click)="toggle()">
-  
   <div class="header-content">
   <h3 class="panel-title" [ngStyle]="titleStyles">{{ title }}</h3>
   <p *ngIf="subtitle" class="panel-subtitle">{{ subtitle }}</p>
@@ -69,7 +65,6 @@ interface PanelTheme {
   }
   .header-content {
   flex: 1;
-  
   }
   .panel-title {
   margin: 0;
@@ -86,7 +81,6 @@ interface PanelTheme {
   display: flex;
   align-items: center;
   gap: 1rem;
-  
   }
   .collapse-btn {
   background: transparent;
@@ -108,7 +102,6 @@ interface PanelTheme {
   .panel-body {
   padding: 2rem;
   position: relative;
-  
   }
   .loading-overlay {
   position: absolute;
@@ -133,7 +126,6 @@ interface PanelTheme {
   @keyframes spin {
   to { transform: rotate(360deg); }
   }
-  
   `],
   animations: [
   trigger('fadeSlide', [
@@ -165,7 +157,6 @@ export class PanelComponent {
   @Input() headerActions: boolean = false;
   @Input() loading: boolean = false;
   @Output() toggled = new EventEmitter<boolean>();
-
   private defaultTheme: PanelTheme = {
   primaryColor: '#8b5cf6',
   backgroundColor: '#faf5ff',
@@ -174,18 +165,15 @@ export class PanelComponent {
   headerColor: '#a78bfa',
   shadowColor: 'rgba(139, 92, 246, 0.25)'
   };
-
   get appliedTheme(): PanelTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   toggle() {
   if (this.collapsible) {
   this.collapsed = !this.collapsed;
   this.toggled.emit(this.collapsed);
   }
   }
-
   get panelStyles() {
   return {
   background: this.appliedTheme.backgroundColor,
@@ -193,28 +181,23 @@ export class PanelComponent {
   boxShadow: 'none'
   };
   }
-
   get headerStyles() {
   return {
   background: 'transparent',
   borderBottom: `2px solid ${this.appliedTheme.borderColor}`
   };
   }
-
   get bodyStyles() {
   return {
   backgroundColor: this.appliedTheme.backgroundColor
   };
   }
-
   get titleStyles() {
   return {};
   }
-
   get buttonStyles() {
   return {};
   }
-
   get loadingStyles() {
   return {
   backgroundColor: 'rgba(255, 255, 255, 0.9)',

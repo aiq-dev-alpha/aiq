@@ -24,7 +24,6 @@
           </a>
         </div>
       </div>
-
       <!-- Footer Sections -->
       <div class="footer-sections">
         <div
@@ -44,7 +43,6 @@
         </div>
       </div>
     </div>
-
     <!-- Bottom Bar -->
     <div class="footer-bottom">
       <p class="copyright">{{ copyright }}</p>
@@ -58,10 +56,8 @@
     </div>
   </footer>
 </template>
-
 <script setup lang="ts">
 import { computed, defineProps, withDefaults } from 'vue';
-
 interface FooterTheme {
   primaryColor: string;
   backgroundColor: string;
@@ -69,29 +65,24 @@ interface FooterTheme {
   linkColor: string;
   borderColor: string;
 }
-
 interface FooterLink {
   id: string;
   label: string;
   url: string;
   icon?: string;
 }
-
 interface FooterSection {
   id: string;
   title: string;
   links: FooterLink[];
 }
-
 interface SocialLink {
   id: string;
   label: string;
   url: string;
   icon: string;
 }
-
 type FooterVariant = 'simple' | 'multi-column' | 'centered' | 'minimal' | 'newsletter';
-
 interface Props {
   sections?: FooterSection[];
   copyright?: string;
@@ -99,7 +90,6 @@ interface Props {
   variant?: FooterVariant;
   theme?: Partial<FooterTheme>;
 }
-
 const props = withDefaults(defineProps<Props>(), {
   sections: () => [
     {
@@ -153,7 +143,6 @@ const props = withDefaults(defineProps<Props>(), {
   variant: 'multi-column',
   theme: () => ({})
 });
-
 const defaultTheme: FooterTheme = {
   primaryColor: '#6366f1',
   backgroundColor: '#1e293b',
@@ -161,12 +150,10 @@ const defaultTheme: FooterTheme = {
   linkColor: '#e2e8f0',
   borderColor: '#334155'
 };
-
 const currentTheme = computed<FooterTheme>(() => ({
   ...defaultTheme,
   ...props.theme
 }));
-
 const computedStyles = computed(() => ({
   '--primary-color': currentTheme.value.primaryColor,
   '--background-color': currentTheme.value.backgroundColor,
@@ -174,12 +161,10 @@ const computedStyles = computed(() => ({
   '--link-color': currentTheme.value.linkColor,
   '--border-color': currentTheme.value.borderColor
 }));
-
 const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 </script>
-
 <style scoped>
 .footer {
   background-color: var(--background-color);
@@ -187,7 +172,6 @@ const scrollToTop = () => {
   padding: 4rem 2rem 2rem;
   border-top: 1px solid var(--border-color);
 }
-
 .footer-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -196,29 +180,24 @@ const scrollToTop = () => {
   gap: 4rem;
   margin-bottom: 3rem;
 }
-
 .footer-brand {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
-
 .footer-logo svg {
   display: block;
 }
-
 .footer-description {
   font-size: 0.95rem;
   line-height: 1.6;
   margin: 0;
   color: var(--text-color);
 }
-
 .footer-social {
   display: flex;
   gap: 1rem;
 }
-
 .social-link {
   display: flex;
   align-items: center;
@@ -231,25 +210,21 @@ const scrollToTop = () => {
   text-decoration: none;
   transition: all 0.3s ease;
 }
-
 .social-link:hover {
   background: var(--primary-color);
   color: white;
   transform: translateY(-2px);
 }
-
 .footer-sections {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
 }
-
 .footer-section {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
-
 .section-title {
   font-size: 0.875rem;
   font-weight: 600;
@@ -258,7 +233,6 @@ const scrollToTop = () => {
   letter-spacing: 0.05em;
   margin: 0;
 }
-
 .section-links {
   list-style: none;
   padding: 0;
@@ -267,7 +241,6 @@ const scrollToTop = () => {
   flex-direction: column;
   gap: 0.75rem;
 }
-
 .footer-link {
   color: var(--text-color);
   text-decoration: none;
@@ -277,16 +250,13 @@ const scrollToTop = () => {
   align-items: center;
   gap: 0.5rem;
 }
-
 .footer-link:hover {
   color: var(--primary-color);
 }
-
 .footer-link i {
   font-size: 0.875rem;
   width: 16px;
 }
-
 .footer-bottom {
   max-width: 1200px;
   margin: 0 auto;
@@ -296,13 +266,11 @@ const scrollToTop = () => {
   justify-content: space-between;
   align-items: center;
 }
-
 .copyright {
   margin: 0;
   font-size: 0.875rem;
   color: var(--text-color);
 }
-
 .back-to-top {
   display: flex;
   align-items: center;
@@ -316,52 +284,42 @@ const scrollToTop = () => {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
 .back-to-top:hover {
   background: var(--primary-color);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
-
 /* Responsive Design */
 @media (max-width: 1024px) {
   .footer-container {
     grid-template-columns: 1fr;
     gap: 3rem;
   }
-
   .footer-sections {
     grid-template-columns: repeat(2, 1fr);
   }
 }
-
 @media (max-width: 640px) {
   .footer {
     padding: 3rem 1.5rem 1.5rem;
   }
-
   .footer-sections {
     grid-template-columns: 1fr;
   }
-
   .footer-bottom {
     flex-direction: column;
     gap: 1.5rem;
     text-align: center;
   }
 }
-
-
 @keyframes enter {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
 }
-
 @keyframes slideDown {
   from { transform: translateY(-10px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
-
 @keyframes glow {
   0%, 100% { box-shadow: 0 0 5px currentColor; }
   50% { box-shadow: 0 0 20px currentColor; }

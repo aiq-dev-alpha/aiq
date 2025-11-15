@@ -15,7 +15,6 @@
         </div>
       </div>
     </div>
-
     <!-- Bordered Table -->
     <div class="table-wrapper">
       <table class="data-table" :style="tableStyles">
@@ -131,7 +130,6 @@
         </tbody>
       </table>
     </div>
-
     <!-- Pagination -->
     <div v-if="pagination && !loading" class="pagination" :style="paginationStyles">
       <div class="pagination-info">
@@ -170,10 +168,8 @@
     </div>
   </div>
 </template>
-
-<script>
+<script lang="ts">
 import { ref, computed, watch } from 'vue';
-
 export default {
   name: 'BorderedMinimalTable',
   props: {
@@ -232,10 +228,8 @@ export default {
     const currentPage = ref(1);
     const selectedRows = ref([]);
     const expandedRows = ref([]);
-
     const filteredData = computed(() => {
       if (!searchQuery.value) return props.data;
-
       return props.data.filter(row => {
         return props.columns.some(column => {
           const value = row[column.key];
@@ -243,69 +237,55 @@ export default {
         });
       });
     });
-
     const sortedData = computed(() => {
       if (!sortKey.value) return filteredData.value;
-
       return [...filteredData.value].sort((a, b) => {
         const aVal = a[sortKey.value];
         const bVal = b[sortKey.value];
-
         if (aVal < bVal) return sortOrder.value === 'asc' ? -1 : 1;
         if (aVal > bVal) return sortOrder.value === 'asc' ? 1 : -1;
         return 0;
       });
     });
-
     const totalPages = computed(() => {
       if (!props.pagination) return 1;
       return Math.ceil(sortedData.value.length / props.itemsPerPage);
     });
-
     const paginatedData = computed(() => {
       if (!props.pagination) return sortedData.value;
-
       const start = (currentPage.value - 1) * props.itemsPerPage;
       const end = start + props.itemsPerPage;
       return sortedData.value.slice(start, end);
     });
-
     const allSelected = computed(() => {
       return paginatedData.value.length > 0 &&
         paginatedData.value.every(row => selectedRows.value.includes(row.id || paginatedData.value.indexOf(row)));
     });
-
     const totalColumns = computed(() => {
       let count = props.columns.length;
       if (props.selectable) count++;
       if (props.hasActions) count++;
       return count;
     });
-
     const startItem = computed(() => {
       return (currentPage.value - 1) * props.itemsPerPage + 1;
     });
-
     const endItem = computed(() => {
       return Math.min(currentPage.value * props.itemsPerPage, filteredData.value.length);
     });
-
     const visiblePages = computed(() => {
       const pages = [];
       const maxVisible = 5;
       let start = Math.max(1, currentPage.value - Math.floor(maxVisible / 2));
       let end = Math.min(totalPages.value, start + maxVisible - 1);
-
       if (end - start < maxVisible - 1) {
         start = Math.max(1, end - maxVisible + 1);
       }
-
       for (let i = start; i <= end; i++) {
         pages.push(i);
       }
       return pages;
     });
-
     const toggleSort = (key) => {
       if (sortKey.value === key) {
         sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
@@ -314,7 +294,6 @@ export default {
         sortOrder.value = 'asc';
       }
     };
-
     const toggleSelect = (rowId) => {
       const index = selectedRows.value.indexOf(rowId);
       if (index > -1) {
@@ -324,7 +303,6 @@ export default {
       }
       emit('selection-change', selectedRows.value);
     };
-
     const toggleSelectAll = () => {
       if (allSelected.value) {
         selectedRows.value = [];
@@ -333,7 +311,6 @@ export default {
       }
       emit('selection-change', selectedRows.value);
     };
-
     const toggleExpand = (rowId) => {
       const index = expandedRows.value.indexOf(rowId);
       if (index > -1) {
@@ -342,12 +319,10 @@ export default {
         expandedRows.value.push(rowId);
       }
     };
-
     watch(() => props.data, () => {
       currentPage.value = 1;
       selectedRows.value = [];
     });
-
     // Styles
     const containerStyles = computed(() => ({
       backgroundColor: props.theme.background,
@@ -355,17 +330,14 @@ export default {
       borderRadius: '8px',
       overflow: 'hidden',
     }));
-
     const searchStyles = computed(() => ({
       border: `1px solid ${props.theme.border}`,
       color: props.theme.headerColor,
       backgroundColor: props.theme.background,
     }));
-
     const tableStyles = computed(() => ({
       borderCollapse: 'collapse',
     }));
-
     const theadStyles = computed(() => ({
       backgroundColor: '#fafafa',
       borderBottom: `2px solid ${props.theme.border}`,
@@ -373,7 +345,6 @@ export default {
       top: 0,
       zIndex: 10,
     }));
-
     const thStyles = computed(() => ({
       padding: '0.875rem 1rem',
       textAlign: 'left',
@@ -383,7 +354,6 @@ export default {
       borderRight: `1px solid ${props.theme.border}`,
       borderBottom: `2px solid ${props.theme.border}`,
     }));
-
     const tdStyles = computed(() => ({
       padding: '0.875rem 1rem',
       borderRight: `1px solid ${props.theme.border}`,
@@ -391,61 +361,50 @@ export default {
       color: props.theme.headerColor,
       fontSize: '0.875rem',
     }));
-
     const getTrStyles = (index) => ({
       backgroundColor: props.theme.background,
       transition: 'background-color 0.15s',
     });
-
     const editBtnStyles = computed(() => ({
       backgroundColor: 'transparent',
       color: props.theme.primary,
       border: `1px solid ${props.theme.primary}`,
     }));
-
     const deleteBtnStyles = computed(() => ({
       backgroundColor: 'transparent',
       color: '#dc2626',
       border: '1px solid #dc2626',
     }));
-
     const paginationStyles = computed(() => ({
       borderTop: `2px solid ${props.theme.border}`,
       color: props.theme.headerColor,
     }));
-
     const pageBtnStyles = computed(() => ({
       border: `1px solid ${props.theme.border}`,
       color: props.theme.headerColor,
       backgroundColor: props.theme.background,
     }));
-
     const pageNumberStyles = computed(() => ({
       border: `1px solid ${props.theme.border}`,
       color: props.theme.headerColor,
       backgroundColor: props.theme.background,
     }));
-
     const activePageStyles = computed(() => ({
       border: `1px solid ${props.theme.primary}`,
       backgroundColor: props.theme.primary,
       color: '#ffffff',
     }));
-
     const expandedRowStyles = computed(() => ({
       backgroundColor: '#f9fafb',
     }));
-
     const expandedTdStyles = computed(() => ({
       padding: 0,
       borderRight: `1px solid ${props.theme.border}`,
       borderBottom: `1px solid ${props.theme.border}`,
     }));
-
     const emptyStateStyles = computed(() => ({
       color: '#9ca3af',
     }));
-
     return {
       searchQuery,
       sortKey,
@@ -485,25 +444,21 @@ export default {
   },
 };
 </script>
-
 <style scoped>
 .table-container {
   font-family: system-ui, -apple-system, sans-serif;
 }
-
 .table-header {
   padding: 1.25rem;
   background-color: #fafafa;
   border-bottom: 2px solid #d1d5db;
 }
-
 .header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
 }
-
 .search-input {
   flex: 1;
   max-width: 350px;
@@ -513,82 +468,67 @@ export default {
   outline: none;
   transition: all 0.2s;
 }
-
 .search-input:focus {
   border-color: #14b8a6;
   box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.1);
 }
-
 .header-info {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
-
 .item-count {
   font-size: 0.875rem;
   font-weight: 500;
   color: #6b7280;
 }
-
 .table-wrapper {
   overflow-x: auto;
   max-height: 600px;
   overflow-y: auto;
 }
-
 .data-table {
   width: 100%;
   min-width: 600px;
 }
-
 .data-table thead th.sortable {
   cursor: pointer;
   user-select: none;
 }
-
 .data-table thead th.sortable:hover {
   background-color: #f3f4f6;
 }
-
 .data-table thead th:last-child,
 .data-table tbody td:last-child {
   border-right: none;
 }
-
 .th-content {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   justify-content: space-between;
 }
-
 .sort-icon {
   font-size: 0.875rem;
   color: #14b8a6;
 }
-
 .data-table tbody tr:hover {
   background-color: #f0fdfa !important;
 }
-
 .data-table tbody tr.selected {
   background-color: rgba(20, 184, 166, 0.08) !important;
 }
-
 .checkbox {
   width: 1.125rem;
   height: 1.125rem;
   cursor: pointer;
   accent-color: #14b8a6;
 }
-
 .action-buttons {
   display: flex;
   gap: 0.5rem;
   justify-content: center;
 }
-
 .action-btn {
   padding: 0.375rem;
   width: 2rem;
@@ -601,17 +541,14 @@ export default {
   cursor: pointer;
   transition: all 0.2s;
 }
-
 .action-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
 .btn-icon {
   font-size: 1rem;
   line-height: 1;
 }
-
 .pagination {
   display: flex;
   justify-content: space-between;
@@ -620,23 +557,19 @@ export default {
   gap: 1rem;
   background-color: #fafafa;
 }
-
 .pagination-info {
   font-size: 0.875rem;
   color: #6b7280;
 }
-
 .pagination-controls {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
-
 .page-numbers {
   display: flex;
   gap: 0.25rem;
 }
-
 .page-btn,
 .page-number {
   padding: 0.375rem 0.625rem;
@@ -647,33 +580,27 @@ export default {
   transition: all 0.2s;
   text-align: center;
 }
-
 .page-btn:hover:not(:disabled),
 .page-number:hover {
   background-color: #f3f4f6;
 }
-
 .page-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
-
 .empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.75rem;
 }
-
 .empty-icon {
   font-size: 2.5rem;
   opacity: 0.5;
 }
-
 .empty-text {
   font-size: 0.875rem;
 }
-
 .skeleton {
   height: 1rem;
   background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
@@ -681,7 +608,6 @@ export default {
   animation: loading 1.5s infinite;
   border-radius: 4px;
 }
-
 @keyframes loading {
   0% {
     background-position: 200% 0;
@@ -690,32 +616,26 @@ export default {
     background-position: -200% 0;
   }
 }
-
 .expanded-content {
   padding: 1.25rem;
   background-color: #f9fafb;
 }
-
 .expanded-details {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 0.875rem;
 }
-
 .detail-row {
   font-size: 0.875rem;
   line-height: 1.5;
 }
-
 .detail-row strong {
   color: #14b8a6;
   margin-right: 0.5rem;
 }
-
 .select-column {
   width: 60px;
 }
-
 .actions-column {
   width: 120px;
   text-align: center;

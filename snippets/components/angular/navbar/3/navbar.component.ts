@@ -1,6 +1,5 @@
 import { Component, Input, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 interface NavbarTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -9,14 +8,12 @@ interface NavbarTheme {
   borderColor: string;
   accentColor: string;
 }
-
 interface MenuItem {
   label: string;
   route: string;
   icon?: string;
   children?: MenuItem[];
 }
-
 @Component({
   selector: 'app-navbar',
   standalone: true,
@@ -34,7 +31,6 @@ interface MenuItem {
   <span class="brand-tagline" [ngStyle]="brandTaglineStyles">{{ tagline }}</span>
   </div>
   </a>
-
   <!-- Main Navigation -->
   <div class="nav-links" [ngStyle]="navLinksStyles" [class.active]="isMobileMenuOpen">
   <div *ngFor="let item of menuItems; let i = index" class="nav-item">
@@ -54,7 +50,6 @@ interface MenuItem {
   ▼
   </span>
   </a>
-
   <div *ngIf="item.children && expandedItem === i"
   class="dropdown-menu"
   [ngStyle]="dropdownStyles">
@@ -67,7 +62,6 @@ interface MenuItem {
   </div>
   </div>
   </div>
-
   <!-- Right Section -->
   <div class="nav-actions" [ngStyle]="actionsStyles">
   <!-- Search -->
@@ -80,7 +74,6 @@ interface MenuItem {
   [ngStyle]="searchInputStyles"
   aria-label="Search input">
   </div>
-
   <!-- Notifications -->
   <div *ngIf="showNotifications" class="notification-wrapper">
   <button class="icon-btn" [ngStyle]="iconBtnStyles" aria-label="Notifications">
@@ -92,7 +85,6 @@ interface MenuItem {
   </span>
   </button>
   </div>
-
   <!-- User Profile -->
   <div *ngIf="showUserProfile" class="user-menu" [ngStyle]="userMenuStyles">
   <button class="user-btn" [ngStyle]="userBtnStyles" aria-label="User menu">
@@ -105,7 +97,6 @@ interface MenuItem {
   </button>
   </div>
   </div>
-
   <!-- Mobile Toggle -->
   <button class="menu-toggle"
   [ngStyle]="menuToggleStyles"
@@ -375,7 +366,6 @@ export class NavbarComponent {
   @Input() userName = 'Jordan';
   @Input() userRole = 'Admin';
   @Input() userAvatar = 'https://i.pravatar.cc/150?img=3';
-
   private defaultTheme: NavbarTheme = {
   primaryColor: '#10b981',
   secondaryColor: '#06b6d4',
@@ -385,31 +375,25 @@ export class NavbarComponent {
   borderColor: '#e5e7eb',
   accentColor: '#ef4444'
   };
-
   isMobileMenuOpen = false;
   isScrolled = false;
   hoveredIndex: number | null = null;
   expandedItem: number | null = null;
-
   get appliedTheme(): NavbarTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   @HostListener('window:scroll', [])
   onWindowScroll() {
   this.isScrolled = window.scrollY > 30;
   }
-
   toggleMobileMenu() {
   this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
-
   toggleDropdown(index: number, event: Event) {
   event.preventDefault();
   event.stopPropagation();
   this.expandedItem = this.expandedItem === index ? null : index;
   }
-
   get navbarStyles() {
   const variants = {
   solid: {
@@ -436,7 +420,6 @@ export class NavbarComponent {
   color: '#ffffff'
   }
   };
-
   return {
   position: this.position,
   top: '0',
@@ -446,7 +429,6 @@ export class NavbarComponent {
   ...variants[this.variant]
   };
   }
-
   get innerStyles() {
   return {
   maxWidth: '1440px',
@@ -454,41 +436,34 @@ export class NavbarComponent {
   padding: '1rem 2rem'
   };
   }
-
   get brandStyles() {
   return {
   color: this.variant === 'gradient' ? '#ffffff' : this.appliedTheme.textColor
   };
   }
-
   get brandLogoStyles() {
   return {
   background: `linear-gradient(135deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})`,
   boxShadow: `0 6px 20px ${this.appliedTheme.primaryColor}30`
   };
   }
-
   get brandNameStyles() {
   return {
   color: 'inherit'
   };
   }
-
   get brandTaglineStyles() {
   return {
   color: 'inherit'
   };
   }
-
   get navLinksStyles() {
   return {};
   }
-
   getNavLinkStyles(index: number) {
   const isActive = this.menuItems[index].route === this.activeRoute;
   const isHovered = this.hoveredIndex === index;
   const baseColor = this.variant === 'gradient' ? '#ffffff' : this.appliedTheme.textColor;
-
   return {
   color: baseColor,
   backgroundColor: isActive
@@ -498,7 +473,6 @@ export class NavbarComponent {
   : 'transparent'
   };
   }
-
   get dropdownStyles() {
   return {
   backgroundColor: this.appliedTheme.backgroundColor,
@@ -506,7 +480,6 @@ export class NavbarComponent {
   border: `1px solid ${this.appliedTheme.borderColor}`
   };
   }
-
   get dropdownItemStyles() {
   return {
   color: this.appliedTheme.textColor,
@@ -514,24 +487,20 @@ export class NavbarComponent {
   backdropFilter: 'blur(10px)'
   };
   }
-
   get actionsStyles() {
   return {};
   }
-
   get searchBoxStyles() {
   return {
   backgroundColor: this.variant === 'gradient' ? 'rgba(255, 255, 255, 0.2)' : `${this.appliedTheme.primaryColor}08`,
   border: `1px solid ${this.variant === 'gradient' ? 'rgba(255, 255, 255, 0.3)' : this.appliedTheme.borderColor}`
   };
   }
-
   get searchBtnStyles() {
   return {
   color: this.variant === 'gradient' ? '#ffffff' : this.appliedTheme.textColor
   };
   }
-
   get searchInputStyles() {
   return {
   width: '200px',
@@ -543,44 +512,37 @@ export class NavbarComponent {
   outline: 'none'
   };
   }
-
   get iconBtnStyles() {
   return {
   backgroundColor: this.variant === 'gradient' ? 'rgba(255, 255, 255, 0.15)' : `${this.appliedTheme.primaryColor}10`,
   color: this.variant === 'gradient' ? '#ffffff' : this.appliedTheme.textColor
   };
   }
-
   get countBadgeStyles() {
   return {
   backgroundColor: this.appliedTheme.accentColor,
   color: '#ffffff'
   };
   }
-
   get userMenuStyles() {
   return {};
   }
-
   get userBtnStyles() {
   return {
   backgroundColor: this.variant === 'gradient' ? 'rgba(255, 255, 255, 0.15)' : `${this.appliedTheme.primaryColor}10`,
   color: this.variant === 'gradient' ? '#ffffff' : this.appliedTheme.textColor
   };
   }
-
   get userAvatarStyles() {
   return {
   border: `3px solid ${this.variant === 'gradient' ? '#ffffff' : this.appliedTheme.primaryColor}`
   };
   }
-
   get menuToggleStyles() {
   return {
   color: this.variant === 'gradient' ? '#ffffff' : this.appliedTheme.textColor
   };
   }
-
   get hamburgerLineStyles() {
   return {
   width: '28px',

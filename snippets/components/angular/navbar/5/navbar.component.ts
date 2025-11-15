@@ -1,6 +1,5 @@
 import { Component, Input, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 interface NavbarTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -9,14 +8,11 @@ interface NavbarTheme {
   borderColor: string;
   accentColor: string;
 }
-
 interface MenuItem {
   label: string;
   route: string;
   icon?: string;
-  
 }
-
 @Component({
   selector: 'app-navbar',
   standalone: true,
@@ -28,7 +24,6 @@ interface MenuItem {
   <div class="icon" [ngStyle]="iconStyles">☀️</div>
   <span class="name">Solar</span>
   </div>
-  
   <div class="menu" [ngStyle]="menuStyles" [class.active]="isMobileMenuOpen">
   <a *ngFor="let item of menuItems; let i = index"
   [href]="item.route"
@@ -39,7 +34,6 @@ interface MenuItem {
   {{item.label}}
   </a>
   </div>
-  
   <div class="actions" [ngStyle]="actionsStyles">
   <div *ngIf="showSearch" class="search">
   <input type="search" placeholder="Search..." aria-label="Search" [ngStyle]="searchStyles">
@@ -52,7 +46,6 @@ interface MenuItem {
   <span>{{userName}}</span>
   </div>
   </div>
-  
   <button class="toggle" (click)="toggleMobileMenu()" [attr.aria-expanded]="isMobileMenuOpen" aria-label="Menu">
   <span></span><span></span><span></span>
   </button>
@@ -79,18 +72,14 @@ interface MenuItem {
   .toggle { display: none; flex-direction: column; gap: 0.25rem; }
   .toggle span { width: 24px; height: 2px; background: currentColor; }
   @media (max-width: 768px) { .menu, .actions { display: none; } .toggle { display: flex; } }
-  
-  
   @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
   }
-  
   @keyframes slideIn {
   from { transform: translateX(-20px); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
   }
-  
   @keyframes scaleIn {
   from { transform: scale(0.95); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
@@ -110,7 +99,6 @@ export class NavbarComponent {
   @Input() notificationCount = 8;
   @Input() userName = 'Emma';
   @Input() userAvatar = 'https://i.pravatar.cc/150?img=5';
-
   private defaultTheme: NavbarTheme = {
   primaryColor: '#f59e0b',
   secondaryColor: '#ef4444',
@@ -120,24 +108,19 @@ export class NavbarComponent {
   borderColor: '#fcd34d',
   accentColor: '#dc2626'
   };
-
   isMobileMenuOpen = false;
   isScrolled = false;
   hoveredIndex: number | null = null;
-
   get appliedTheme(): NavbarTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   @HostListener('window:scroll', [])
   onWindowScroll() {
   this.isScrolled = window.scrollY > 25;
   }
-
   toggleMobileMenu() {
   this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
-
   get navbarStyles() {
   return {
   position: this.position,
@@ -150,7 +133,6 @@ export class NavbarComponent {
   borderBottom: `1px solid ${this.appliedTheme.borderColor}`
   };
   }
-
   get containerStyles() { return {}; }
   get brandStyles() { return { color: this.appliedTheme.primaryColor }; }
   get iconStyles() { return { color: this.appliedTheme.primaryColor }; }
@@ -159,7 +141,6 @@ export class NavbarComponent {
   get searchStyles() { return { borderColor: this.appliedTheme.borderColor, color: this.appliedTheme.textColor }; }
   get notifStyles() { return { color: this.appliedTheme.textColor }; }
   get profileStyles() { return { color: this.appliedTheme.textColor }; }
-
   getItemStyles(index: number) {
   const isActive = this.menuItems[index].route === this.activeRoute;
   return {

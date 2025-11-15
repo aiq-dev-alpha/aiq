@@ -1,13 +1,11 @@
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-
 interface InputTheme {
   glassBg: string;
   glassBlur: string;
   textColor: string;
   accentGlow: string;
 }
-
 @Component({
   selector: 'app-input',
   template: `
@@ -83,24 +81,19 @@ export class InputComponent implements ControlValueAccessor {
   @Input() type = 'text';
   @Input() placeholder = '';
   @Output() valueChange = new EventEmitter<string>();
-
   value = '';
   isFocused = false;
-
   private onChange: (value: string) => void = () => {};
   private onTouched: () => void = () => {};
-
   private defaultTheme: InputTheme = {
   glassBg: 'rgba(255, 255, 255, 0.1)',
   glassBlur: '20px',
   textColor: '#1f2937',
   accentGlow: '#667eea'
   };
-
   get appliedTheme(): InputTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get wrapperStyles() {
   const t = this.appliedTheme;
   return {
@@ -108,20 +101,17 @@ export class InputComponent implements ControlValueAccessor {
   backdropFilter: `blur(${t.glassBlur})`
   };
   }
-
   get inputStyles() {
   return {
   color: this.appliedTheme.textColor
   };
   }
-
   onInput(event: Event): void {
   const value = (event.target as HTMLInputElement).value;
   this.value = value;
   this.onChange(value);
   this.valueChange.emit(value);
   }
-
   onFocus(): void { this.isFocused = true; }
   onBlur(): void { this.isFocused = false; this.onTouched(); }
   writeValue(value: string): void { this.value = value || ''; }

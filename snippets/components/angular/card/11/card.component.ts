@@ -1,6 +1,5 @@
 // Neumorphic Soft Card
 import { Component, Input } from '@angular/core';
-
 @Component({
   selector: 'app-card',
   template: `<div class="neu-card"><ng-content></ng-content></div>`,

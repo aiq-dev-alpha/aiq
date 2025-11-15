@@ -1,7 +1,6 @@
 <script lang="ts">
   import { writable } from 'svelte/store';
   import { createEventDispatcher } from 'svelte';
-
   export interface ButtonTheme {
     primary: string;
     secondary: string;
@@ -10,7 +9,6 @@
     warning: string;
     info: string;
   }
-
   export let variant: 'solid' | 'outline' | 'ghost' | 'gradient' | 'glass' | 'neumorphic' = 'solid';
   export let size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'md';
   export let fullWidth: boolean = false;
@@ -19,10 +17,8 @@
   export let iconPosition: 'left' | 'right' = 'left';
   export let disabled: boolean = false;
   export let theme: keyof ButtonTheme = 'primary';
-
   const dispatch = createEventDispatcher();
   const rippleActive = writable(false);
-
   const themes: ButtonTheme = {
     primary: '#0ea5e9',
     secondary: '#f97316',
@@ -31,7 +27,6 @@
     warning: '#ca8a04',
     info: '#0891b2'
   };
-
   const sizes = {
     xs: 'px-2 py-1 text-xs',
     sm: 'px-3 py-1.5 text-sm',
@@ -39,7 +34,6 @@
     lg: 'px-6 py-3 text-lg',
     xl: 'px-8 py-4 text-xl'
   };
-
   function handleClick(event: MouseEvent) {
     if (!disabled && !loading) {
       rippleActive.set(true);
@@ -48,7 +42,6 @@
     }
   }
 </script>
-
 <button
   class="btn {sizes[size]} {variant} {theme}"
   class:full-width={fullWidth}
@@ -73,7 +66,6 @@
     <span class="ripple"></span>
   {/if}
 </button>
-
 <style>
   .btn {
     position: relative;
@@ -87,7 +79,6 @@
     transition: all 0.3s ease;
     overflow: hidden;
   }
-
   .btn-content {
     display: flex;
     align-items: center;
@@ -95,54 +86,45 @@
     position: relative;
     z-index: 1;
   }
-
   .full-width {
     width: 100%;
     justify-content: center;
   }
-
   /* Solid with Metallic Effect */
   .solid.primary {
     background: linear-gradient(180deg, #38bdf8, #0ea5e9, #0284c7);
     color: white;
     box-shadow: 0 4px 6px rgba(14, 165, 233, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
-
   .solid.primary:hover {
     transform: translateY(-1px);
     box-shadow: 0 6px 12px rgba(14, 165, 233, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
-
   .solid.secondary {
     background: linear-gradient(180deg, #fb923c, #f97316, #ea580c);
     color: white;
     box-shadow: 0 4px 6px rgba(249, 115, 22, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
-
   .solid.success {
     background: linear-gradient(180deg, #84cc16, #65a30d, #4d7c0f);
     color: white;
     box-shadow: 0 4px 6px rgba(101, 163, 13, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
-
   .solid.danger {
     background: linear-gradient(180deg, #f43f5e, #be123c, #9f1239);
     color: white;
     box-shadow: 0 4px 6px rgba(190, 18, 60, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
-
   .solid.warning {
     background: linear-gradient(180deg, #facc15, #ca8a04, #a16207);
     color: white;
     box-shadow: 0 4px 6px rgba(202, 138, 4, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
-
   .solid.info {
     background: linear-gradient(180deg, #22d3ee, #0891b2, #0e7490);
     color: white;
     box-shadow: 0 4px 6px rgba(8, 145, 178, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
-
   .ripple {
     position: absolute;
     top: 50%;
@@ -154,7 +136,6 @@
     transform: translate(-50%, -50%);
     animation: ripple 0.6s ease-out;
   }
-
   @keyframes ripple {
     to {
       width: 300px;
@@ -162,19 +143,16 @@
       opacity: 0;
     }
   }
-
   /* Loading State */
   .btn.loading {
     pointer-events: none;
     opacity: 0.7;
   }
-
   .spinner.orbit {
     width: 1em;
     height: 1em;
     position: relative;
   }
-
   .spinner.orbit::before {
     content: '';
     position: absolute;
@@ -185,7 +163,6 @@
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-
   .spinner.orbit::after {
     content: '';
     position: absolute;
@@ -198,11 +175,9 @@
     border-radius: 50%;
     animation: spin 0.5s linear reverse infinite;
   }
-
   @keyframes spin {
     to { transform: rotate(360deg); }
   }
-
   .btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;

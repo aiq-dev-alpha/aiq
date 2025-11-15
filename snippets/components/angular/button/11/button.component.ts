@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
 interface ButtonTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -8,7 +7,6 @@ interface ButtonTheme {
   borderColor: string;
   accentColor: string;
 }
-
 @Component({
   selector: 'app-button',
   template: `
@@ -47,7 +45,6 @@ interface ButtonTheme {
   gap: 0.5rem;
   box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
   }
-
   .slide-button::before {
   content: '';
   position: absolute;
@@ -58,65 +55,53 @@ interface ButtonTheme {
   background: rgba(255, 255, 255, 0.2);
   transition: left 0.5s ease;
   }
-
   .slide-button:hover:not(:disabled)::before {
   left: 100%;
   }
-
   .slide-button:hover:not(:disabled) {
   transform: translateX(4px);
   box-shadow: 0 8px 30px rgba(239, 68, 68, 0.5);
   }
-
   .slide-button:active:not(:disabled) {
   transform: translateX(2px);
   }
-
   .slide-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   }
-
   .bar-spinner {
   display: flex;
   gap: 0.2rem;
   align-items: center;
   }
-
   .bar {
   width: 0.2em;
   height: 1em;
   background: currentColor;
   animation: barStretch 1s infinite ease-in-out;
   }
-
   .bar:nth-child(1) { animation-delay: 0s; }
   .bar:nth-child(2) { animation-delay: 0.1s; }
   .bar:nth-child(3) { animation-delay: 0.2s; }
   .bar:nth-child(4) { animation-delay: 0.3s; }
-
   @keyframes barStretch {
   0%, 40%, 100% { transform: scaleY(0.4); }
   20% { transform: scaleY(1); }
   }
-
   .btn-content {
   display: flex;
   align-items: center;
   }
-
   .btn-sm {
   padding: 0.5rem 1.5rem;
   font-size: 0.875rem;
   border-radius: 0.5rem;
   }
-
   .btn-md {
   padding: 0.75rem 2rem;
   font-size: 1rem;
   border-radius: 0.75rem;
   }
-
   .btn-lg {
   padding: 1rem 2.5rem;
   font-size: 1.125rem;
@@ -134,7 +119,6 @@ export class ButtonComponent {
   @Input() iconRight: string = '';
   @Input() ariaLabel: string = '';
   @Output() clicked = new EventEmitter<MouseEvent>();
-
   private defaultTheme: ButtonTheme = {
   primaryColor: '#ef4444',
   secondaryColor: '#dc2626',
@@ -144,11 +128,9 @@ export class ButtonComponent {
   borderColor: '#ef4444',
   accentColor: '#f87171'
   };
-
   get appliedTheme(): ButtonTheme {
   return { ...this.defaultTheme, ...this.theme };
   }
-
   get buttonStyles() {
   const variantStyles = {
   default: {
@@ -172,10 +154,8 @@ export class ButtonComponent {
   border: 'none'
   }
   };
-
   return variantStyles[this.variant];
   }
-
   handleClick(event: MouseEvent): void {
   if (!this.disabled && !this.loading) {
   this.clicked.emit(event);

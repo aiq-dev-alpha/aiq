@@ -1,28 +1,31 @@
 import React from 'react';
-
 interface BadgeProps {
-  content?: string | number;
-  max?: number;
-  dot?: boolean;
-  children?: React.ReactNode;
+  variant?: 'success' | 'warning' | 'error' | 'info';
+  pulse?: boolean;
+  size?: 'sm' | 'md' | 'lg';
 }
-
 export const Badge: React.FC<BadgeProps> = ({
-  content,
-  max = 99,
-  dot = false,
-  children
+  variant = 'success',
+  pulse = false,
+  size = 'md'
 }) => {
-  const displayContent = typeof content === 'number' && content > max ? `${max}+` : content;
-  
+  const colors = {
+    success: 'bg-green-500',
+    warning: 'bg-yellow-500',
+    error: 'bg-red-500',
+    info: 'bg-blue-500'
+  };
+  const sizes = {
+    sm: 'w-2 h-2',
+    md: 'w-3 h-3',
+    lg: 'w-4 h-4'
+  };
   return (
-    <div className="relative inline-flex">
-      {children}
-      {(content || dot) && (
-        <span className={`absolute -top-1 -right-1 flex items-center justify-center ${dot ? 'w-2 h-2' : 'min-w-5 h-5 px-1'} text-xs font-bold text-white bg-purple-500 rounded-full shadow ring-2 ring-white`}>
-          {!dot && displayContent}
-        </span>
+    <span className="relative inline-flex">
+      <span className={`${sizes[size]} ${colors[variant]} rounded-full`} />
+      {pulse && (
+        <span className={`absolute inset-0 ${colors[variant]} rounded-full opacity-75 animate-ping`} />
       )}
-    </div>
+    </span>
   );
 };

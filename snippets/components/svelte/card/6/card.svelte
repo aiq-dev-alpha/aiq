@@ -1,59 +1,30 @@
 <script lang="ts">
-  export let title: string = '';
-  export let subtitle: string = '';
-  export let padding: string = '1.5rem';
+  export let variant: 'default' | 'outlined' | 'elevated' = 'default';
+  export let hoverable: boolean = false;
+  $: variantClasses = {
+    default: 'bg-white shadow-md',
+    outlined: 'bg-white border-2 border-gray-200',
+    elevated: 'bg-white shadow-2xl'
+  };
+  $: hoverClass = hoverable ? 'hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer' : '';
 </script>
-
-<div class="modern-card">
-  {#if title || subtitle}
-    <div class="card-head">
-      {#if title}
-        <h3 class="card-heading">{title}</h3>
-      {/if}
-      {#if subtitle}
-        <p class="card-subheading">{subtitle}</p>
-      {/if}
+<div class="rounded-xl overflow-hidden {variantClasses[variant]} {hoverClass}">
+  {#if $$slots.header}
+    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+      <slot name="header" />
     </div>
   {/if}
-  <div class="card-main" style="padding: {padding}">
+  <div class="px-6 py-4">
     <slot />
   </div>
+  {#if $$slots.footer}
+    <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+      <slot name="footer" />
+    </div>
+  {/if}
 </div>
-
 <style>
-  .modern-card {
-    background: white;
-    border-radius: 12px;
-    border: 1px solid #f3f4f6;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    overflow: hidden;
-    transition: box-shadow 0.2s;
-  }
-  
-  .modern-card:hover {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  }
-  
-  .card-head {
-    padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid #e5e7eb;
-    background: linear-gradient(to bottom, #ffffff, #fafafa);
-  }
-  
-  .card-heading {
-    font-size: 1.125rem;
-    font-weight: 700;
-    color: #111827;
-    margin: 0 0 0.25rem 0;
-  }
-  
-  .card-subheading {
-    font-size: 0.875rem;
-    color: #6b7280;
-    margin: 0;
-  }
-  
-  .card-main {
-    color: #374151;
+  div {
+    transition-property: box-shadow, transform;
   }
 </style>

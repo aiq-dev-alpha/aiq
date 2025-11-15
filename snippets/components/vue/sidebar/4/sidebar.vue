@@ -8,7 +8,6 @@
         @click="handleToggle"
       />
     </Transition>
-
     <!-- Hamburger menu button -->
     <button
       class="menu-button"
@@ -22,7 +21,6 @@
         <span class="line"></span>
       </div>
     </button>
-
     <!-- Responsive Sidebar -->
     <Transition :name="isMobileView ? 'slide-mobile' : 'slide-desktop'">
       <aside
@@ -56,7 +54,6 @@
             </div>
           </slot>
         </header>
-
         <!-- Main Navigation -->
         <nav class="navigation-section">
           <div class="nav-title">Main Menu</div>
@@ -86,7 +83,6 @@
                   ❯
                 </span>
               </div>
-
               <!-- Submenu items -->
               <Transition name="submenu-expand">
                 <ul
@@ -112,7 +108,6 @@
             </li>
           </ul>
         </nav>
-
         <!-- Quick Actions -->
         <div class="quick-actions">
           <div class="nav-title">Quick Actions</div>
@@ -127,7 +122,6 @@
             </button>
           </div>
         </div>
-
         <!-- Footer -->
         <footer class="sidebar-footer-section">
           <slot name="footer">
@@ -150,10 +144,8 @@
     </Transition>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-
 // Interfaces
 interface SidebarTheme {
   primaryColor: string;
@@ -163,7 +155,6 @@ interface SidebarTheme {
   hoverColor: string;
   borderColor: string;
 }
-
 interface SidebarItem {
   id: string;
   label: string;
@@ -171,10 +162,8 @@ interface SidebarItem {
   route?: string;
   children?: SidebarItem[];
 }
-
 type VariantType = 'overlay' | 'push' | 'mini' | 'responsive' | 'drawer';
 type PositionType = 'left' | 'right';
-
 // Props
 const props = withDefaults(defineProps<{
   items: SidebarItem[];
@@ -189,7 +178,6 @@ const props = withDefaults(defineProps<{
   width: '320px',
   variant: 'responsive'
 });
-
 // Sunset Orange theme
 const defaultTheme: SidebarTheme = {
   primaryColor: '#F97316',
@@ -199,24 +187,20 @@ const defaultTheme: SidebarTheme = {
   hoverColor: '#7C2D12',
   borderColor: '#EA580C'
 };
-
 // Emits
 const emit = defineEmits<{
   'item-clicked': [item: SidebarItem];
   'toggle': [isOpen: boolean];
 }>();
-
 // State
 const activeItemId = ref<string | null>(null);
 const expandedItems = ref<Set<string>>(new Set());
 const isMobileView = ref(false);
-
 // Computed
 const mergedTheme = computed<SidebarTheme>(() => ({
   ...defaultTheme,
   ...props.theme
 }));
-
 const responsiveSidebarStyles = computed(() => ({
   width: props.width,
   backgroundColor: mergedTheme.value.backgroundColor,
@@ -224,17 +208,14 @@ const responsiveSidebarStyles = computed(() => ({
   borderColor: mergedTheme.value.borderColor,
   [props.position]: 0
 }));
-
 const menuButtonStyles = computed(() => ({
   backgroundColor: mergedTheme.value.primaryColor,
   borderColor: mergedTheme.value.borderColor
 }));
-
 // Methods
 const handleToggle = () => {
   emit('toggle', !props.isOpen);
 };
-
 const handleItemClick = (item: SidebarItem) => {
   if (item.children && item.children.length > 0) {
     // Toggle submenu
@@ -247,34 +228,28 @@ const handleItemClick = (item: SidebarItem) => {
     // Set active and emit
     activeItemId.value = item.id;
     emit('item-clicked', item);
-
     // Auto-close on mobile after selection
     if (isMobileView.value) {
       emit('toggle', false);
     }
   }
 };
-
 const checkMobileView = () => {
   isMobileView.value = window.innerWidth < 1024;
 };
-
 // Lifecycle
 onMounted(() => {
   checkMobileView();
   window.addEventListener('resize', checkMobileView);
 });
-
 onUnmounted(() => {
   window.removeEventListener('resize', checkMobileView);
 });
 </script>
-
 <style scoped>
 .responsive-sidebar-container {
   position: relative;
 }
-
 /* Backdrop */
 .sidebar-backdrop {
   position: fixed;
@@ -283,7 +258,6 @@ onUnmounted(() => {
   z-index: 998;
   backdrop-filter: blur(3px);
 }
-
 /* Menu button */
 .menu-button {
   position: fixed;
@@ -301,23 +275,19 @@ onUnmounted(() => {
   justify-content: center;
   box-shadow: 0 10px 25px rgba(249, 115, 22, 0.3);
 }
-
 .menu-button:hover {
   transform: scale(1.08) rotate(5deg);
   box-shadow: 0 15px 35px rgba(249, 115, 22, 0.5);
 }
-
 .menu-button:active {
   transform: scale(0.95);
 }
-
 .menu-lines {
   display: flex;
   flex-direction: column;
   gap: 6px;
   width: 26px;
 }
-
 .line {
   width: 100%;
   height: 3px;
@@ -325,20 +295,16 @@ onUnmounted(() => {
   border-radius: 3px;
   transition: all 0.35s ease;
 }
-
 .menu-open .line:nth-child(1) {
   transform: translateY(9px) rotate(45deg);
 }
-
 .menu-open .line:nth-child(2) {
   opacity: 0;
   transform: translateX(20px);
 }
-
 .menu-open .line:nth-child(3) {
   transform: translateY(-9px) rotate(-45deg);
 }
-
 /* Responsive Sidebar */
 .responsive-sidebar {
   position: fixed;
@@ -352,38 +318,32 @@ onUnmounted(() => {
   box-shadow: 6px 0 30px rgba(249, 115, 22, 0.25);
   background: linear-gradient(180deg, #9A3412 0%, #7C2D12 100%);
 }
-
 .side-left {
   left: 0;
   border-right: 3px solid;
 }
-
 .side-right {
   right: 0;
   border-left: 3px solid;
 }
-
 /* Header */
 .sidebar-header-section {
   padding: 2rem 1.5rem 1.5rem;
   border-bottom: 2px solid rgba(234, 88, 12, 0.4);
   background: linear-gradient(135deg, rgba(251, 146, 60, 0.15) 0%, transparent 100%);
 }
-
 .header-wrapper {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
 }
-
 .logo-container {
   display: flex;
   align-items: center;
   gap: 1rem;
   flex: 1;
 }
-
 .logo-badge {
   width: 3.5rem;
   height: 3.5rem;
@@ -396,11 +356,9 @@ onUnmounted(() => {
   box-shadow: 0 6px 16px rgba(249, 115, 22, 0.4);
   flex-shrink: 0;
 }
-
 .brand-info {
   flex: 1;
 }
-
 .brand-text {
   margin: 0;
   font-size: 1.75rem;
@@ -409,7 +367,6 @@ onUnmounted(() => {
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   line-height: 1.2;
 }
-
 .brand-tagline {
   margin: 0.25rem 0 0;
   font-size: 0.875rem;
@@ -417,7 +374,6 @@ onUnmounted(() => {
   opacity: 0.9;
   font-weight: 500;
 }
-
 .close-btn {
   width: 2.5rem;
   height: 2.5rem;
@@ -432,19 +388,16 @@ onUnmounted(() => {
   justify-content: center;
   transition: all 0.3s ease;
 }
-
 .close-btn:hover {
   background: rgba(249, 115, 22, 0.5);
   transform: rotate(90deg);
 }
-
 /* Navigation */
 .navigation-section {
   flex: 1;
   padding: 1.5rem 0;
   overflow-y: auto;
 }
-
 .nav-title {
   padding: 0.75rem 1.5rem;
   font-size: 0.75rem;
@@ -454,17 +407,14 @@ onUnmounted(() => {
   color: #FED7AA;
   opacity: 0.8;
 }
-
 .navigation-list {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-
 .navigation-item {
   margin: 0.375rem 0.75rem;
 }
-
 .nav-item-link {
   display: flex;
   align-items: center;
@@ -476,7 +426,6 @@ onUnmounted(() => {
   position: relative;
   overflow: hidden;
 }
-
 .nav-item-link::before {
   content: '';
   position: absolute;
@@ -485,31 +434,26 @@ onUnmounted(() => {
   opacity: 0;
   transition: opacity 0.3s ease;
 }
-
 .nav-item-link:hover::before {
   opacity: 1;
 }
-
 .nav-item-link:hover {
   background: rgba(124, 45, 18, 0.6);
   transform: translateX(6px);
   box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
 }
-
 .nav-item-link.is-active {
   background: linear-gradient(90deg, rgba(251, 146, 60, 0.4) 0%, rgba(251, 146, 60, 0.15) 100%);
   box-shadow: 0 4px 16px rgba(249, 115, 22, 0.3), inset 0 0 20px rgba(251, 146, 60, 0.2);
   border-left: 4px solid #FB923C;
   font-weight: 600;
 }
-
 .nav-item-content {
   display: flex;
   align-items: center;
   gap: 1rem;
   flex: 1;
 }
-
 .nav-item-icon {
   font-size: 1.5rem;
   width: 2rem;
@@ -517,24 +461,20 @@ onUnmounted(() => {
   flex-shrink: 0;
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
 }
-
 .nav-item-text {
   font-size: 1.0625rem;
   font-weight: 500;
   letter-spacing: 0.3px;
 }
-
 .expand-indicator {
   font-size: 0.875rem;
   transition: transform 0.3s ease;
   color: #FED7AA;
   font-weight: bold;
 }
-
 .expand-indicator.is-expanded {
   transform: rotate(90deg);
 }
-
 /* Submenu */
 .submenu-list {
   list-style: none;
@@ -545,11 +485,9 @@ onUnmounted(() => {
   border-left: 3px solid rgba(234, 88, 12, 0.5);
   margin-left: 1.5rem;
 }
-
 .submenu-item {
   margin: 0.25rem 0;
 }
-
 .submenu-item-link {
   display: flex;
   align-items: center;
@@ -559,44 +497,37 @@ onUnmounted(() => {
   transition: all 0.3s ease;
   border-radius: 8px;
 }
-
 .submenu-item-link:hover {
   background: rgba(124, 45, 18, 0.5);
   padding-left: 1.5rem;
 }
-
 .submenu-item-link.is-active {
   background: linear-gradient(90deg, rgba(251, 146, 60, 0.3) 0%, transparent 100%);
   border-left: 2px solid #FB923C;
   font-weight: 600;
 }
-
 .submenu-item-icon {
   font-size: 1.125rem;
   width: 1.5rem;
   text-align: center;
   flex-shrink: 0;
 }
-
 .submenu-item-text {
   font-size: 0.9375rem;
   font-weight: 500;
 }
-
 /* Quick Actions */
 .quick-actions {
   padding: 1rem 0.75rem;
   border-top: 2px solid rgba(234, 88, 12, 0.3);
   border-bottom: 2px solid rgba(234, 88, 12, 0.3);
 }
-
 .action-buttons {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
   padding: 0 0.75rem;
 }
-
 .action-btn {
   display: flex;
   flex-direction: column;
@@ -610,29 +541,24 @@ onUnmounted(() => {
   transition: all 0.3s ease;
   color: #FFEDD5;
 }
-
 .action-btn:hover {
   background: rgba(249, 115, 22, 0.3);
   transform: translateY(-3px);
   box-shadow: 0 6px 16px rgba(249, 115, 22, 0.3);
 }
-
 .action-icon {
   font-size: 1.5rem;
 }
-
 .action-text {
   font-size: 0.8125rem;
   font-weight: 600;
   text-align: center;
 }
-
 /* Footer */
 .sidebar-footer-section {
   padding: 1.5rem;
   background: linear-gradient(0deg, rgba(251, 146, 60, 0.1) 0%, transparent 100%);
 }
-
 .user-profile-card {
   display: flex;
   align-items: center;
@@ -642,12 +568,10 @@ onUnmounted(() => {
   border-radius: 14px;
   border: 2px solid rgba(234, 88, 12, 0.4);
 }
-
 .user-avatar-wrapper {
   position: relative;
   flex-shrink: 0;
 }
-
 .user-avatar {
   width: 3rem;
   height: 3rem;
@@ -659,7 +583,6 @@ onUnmounted(() => {
   font-size: 1.5rem;
   box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
 }
-
 .status-indicator {
   position: absolute;
   bottom: 0;
@@ -672,7 +595,6 @@ onUnmounted(() => {
   box-shadow: 0 0 10px #22C55E;
   animation: status-pulse 2s ease-in-out infinite;
 }
-
 @keyframes status-pulse {
   0%, 100% {
     opacity: 1;
@@ -683,12 +605,10 @@ onUnmounted(() => {
     transform: scale(0.9);
   }
 }
-
 .user-info {
   flex: 1;
   min-width: 0;
 }
-
 .user-name-text {
   margin: 0;
   font-size: 1rem;
@@ -698,7 +618,6 @@ onUnmounted(() => {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .user-role-text {
   margin: 0.25rem 0 0;
   font-size: 0.8125rem;
@@ -708,7 +627,6 @@ onUnmounted(() => {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .logout-btn {
   width: 2.25rem;
   height: 2.25rem;
@@ -724,86 +642,71 @@ onUnmounted(() => {
   transition: all 0.3s ease;
   flex-shrink: 0;
 }
-
 .logout-btn:hover {
   background: rgba(239, 68, 68, 0.4);
   border-color: #DC2626;
   transform: scale(1.1);
 }
-
 /* Transitions */
 .backdrop-fade-enter-active,
 .backdrop-fade-leave-active {
   transition: opacity 0.3s ease;
 }
-
 .backdrop-fade-enter-from,
 .backdrop-fade-leave-to {
   opacity: 0;
 }
-
 .slide-mobile-enter-active,
 .slide-mobile-leave-active {
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 .side-left.slide-mobile-enter-from,
 .side-left.slide-mobile-leave-to {
   transform: translateX(-100%);
 }
-
 .side-right.slide-mobile-enter-from,
 .side-right.slide-mobile-leave-to {
   transform: translateX(100%);
 }
-
 .slide-desktop-enter-active,
 .slide-desktop-leave-active {
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 .submenu-expand-enter-active,
 .submenu-expand-leave-active {
   transition: all 0.35s ease;
   overflow: hidden;
 }
-
 .submenu-expand-enter-from,
 .submenu-expand-leave-to {
   opacity: 0;
   max-height: 0;
   margin-top: 0;
 }
-
 .submenu-expand-enter-to,
 .submenu-expand-leave-from {
   opacity: 1;
   max-height: 700px;
 }
-
 /* Scrollbar */
 .navigation-section::-webkit-scrollbar,
 .responsive-sidebar::-webkit-scrollbar {
   width: 8px;
 }
-
 .navigation-section::-webkit-scrollbar-track,
 .responsive-sidebar::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.2);
   border-radius: 4px;
 }
-
 .navigation-section::-webkit-scrollbar-thumb,
 .responsive-sidebar::-webkit-scrollbar-thumb {
   background: rgba(234, 88, 12, 0.6);
   border-radius: 4px;
 }
-
 .navigation-section::-webkit-scrollbar-thumb:hover,
 .responsive-sidebar::-webkit-scrollbar-thumb:hover {
   background: rgba(251, 146, 60, 0.8);
 }
-
 /* Mobile responsive */
 @media (max-width: 1024px) {
   .responsive-sidebar.mobile-mode {
@@ -811,16 +714,13 @@ onUnmounted(() => {
     max-width: 380px;
   }
 }
-
 @media (min-width: 1024px) {
   .menu-button {
     display: none;
   }
-
   .close-btn {
     display: none;
   }
-
   .sidebar-backdrop {
     display: none;
   }
