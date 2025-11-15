@@ -1,52 +1,75 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
+  isOpen?: boolean;
+  onClose?: () => void;
+  title?: string;
+  children?: React.ReactNode;
+  theme?: { primary?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  position?: 'left' | 'right';
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  isOpen = true,
+  onClose,
+  title = 'Drawer',
+  children = 'Drawer content',
   theme = {},
   className = '',
-  onInteract
+  position = 'left'
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || '#06b6d4';
-  const background = theme.background || '#3b82f6';
-  const text = theme.text || '#1f2937';
-
+  const primary = theme.primary || '#f59e0b';
+  
+  if (!isOpen) return null;
+  
   return (
-  <div
-  className={className}
-  onClick={() => {
-  setState(s => ({ ...s, active: !s.active }));
-  onInteract?.('interact');
-  }}
-  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-  style={{
-  padding: '16px',
-  backgroundColor: state.active ? primary : background,
-  color: state.active ? '#fff' : text,
-  borderRadius: '8px',
-  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-  boxShadow: state.hovered
-  ? '0 8px 16px rgba(0,0,0,0.12)'
-  : '0 2px 4px rgba(0,0,0,0.06)',
-  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  cursor: 'pointer',
-  fontWeight: state.active ? 600 : 500,
-  userSelect: 'none'
-  }}
-  >
-  Drawer - minimal style
-  </div>
+    <>
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.6)',
+          zIndex: 999
+        }}
+        onClick={onClose}
+      />
+      <div
+        className={className}
+        style={{
+          position: 'fixed',
+          top: 0,
+          bottom: 0,
+          [position]: 0,
+          width: '280px',
+          maxWidth: '90vw',
+          backgroundColor: '#fff',
+          boxShadow: '-2px 0 16px rgba(0,0,0,0.12)',
+          zIndex: 1000,
+          padding: '20px',
+          overflowY: 'auto'
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+          <h2 style={{ margin: 0, color: primary, fontSize: '15px', fontWeight: '800' }}>
+            {title}
+          </h2>
+          <button
+            onClick={onClose}
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: '15px',
+              cursor: 'pointer',
+              color: '#6b7280',
+              lineHeight: '1.2'
+            }}
+          >
+            ×
+          </button>
+        </div>
+        <div>{children}</div>
+      </div>
+    </>
   );
 };

@@ -1,52 +1,54 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
+  value?: number;
+  max?: number;
+  onChange?: (value: number) => void;
+  theme?: { primary?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  readonly?: boolean;
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  value: controlledValue,
+  max = 5,
+  onChange,
   theme = {},
   className = '',
-  onInteract
+  readonly = false
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || 'hsl(0, 70%, 50%)';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
+  const [internalValue, setInternalValue] = useState(0);
+  const [hoveredValue, setHoveredValue] = useState(0);
+  const value = controlledValue !== undefined ? controlledValue : internalValue;
+  const primary = theme.primary || '#3b82f6';
+  
+  const handleClick = (newValue: number) => {
+    if (readonly) return;
+    if (controlledValue === undefined) setInternalValue(newValue);
+    onChange?.(newValue);
+  };
+  
   return (
-  <div
-  className={className}
-  onClick={() => {
-  setState(s => ({ ...s, active: !s.active }));
-  onInteract?.('interact');
-  }}
-  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-  style={{
-  padding: '16px',
-  backgroundColor: state.active ? primary : background,
-  color: state.active ? '#fff' : text,
-  borderRadius: '8px',
-  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-  boxShadow: state.hovered
-  ? '0 8px 16px rgba(0,0,0,0.12)'
-  : '0 2px 4px rgba(0,0,0,0.06)',
-  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  cursor: 'pointer',
-  fontWeight: state.active ? 600 : 500,
-  userSelect: 'none'
-  }}
-  >
-  Rating - minimal style
-  </div>
+    <div
+      className={className}
+      style={{ display: 'flex', gap: '6px', fontSize: '24px' }}
+      onMouseLeave={() => !readonly && setHoveredValue(0)}
+    >
+      {Array.from({ length: max }, (_, i) => i + 1).map(star => (
+        <span
+          key={star}
+          onClick={() => handleClick(star)}
+          onMouseEnter={() => !readonly && setHoveredValue(star)}
+          style={{
+            cursor: readonly ? 'default' : 'pointer',
+            color: star <= (hoveredValue || value) ? primary : '#d1d5db',
+            transition: 'all 0.2s',
+            transform: star === hoveredValue ? 'scale(1.1)' : 'scale(1)'
+          }}
+        >
+          ★
+        </span>
+      ))}
+    </div>
   );
 };

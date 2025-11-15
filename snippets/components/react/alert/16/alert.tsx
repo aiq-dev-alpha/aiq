@@ -1,52 +1,68 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
+  message?: string;
+  type?: 'info' | 'success' | 'warning' | 'error';
+  theme?: { primary?: string; background?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  dismissible?: boolean;
+  onDismiss?: () => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  message = 'This is an alert message',
+  type = 'info',
   theme = {},
   className = '',
-  onInteract
+  dismissible = false,
+  onDismiss
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
+  const colors = {
+    info: { bg: '#eff6ff', color: '#3b82f6', border: '#3b82f6' },
+    success: { bg: '#ecfdf5', color: '#10b981', border: '#10b981' },
+    warning: { bg: '#fffbeb', color: '#f59e0b', border: '#f59e0b' },
+    error: { bg: '#fef2f2', color: '#ef4444', border: '#ef4444' }
+  };
 
-  const primary = theme.primary || 'hsl(0, 70%, 50%)';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
+  const currentColor = colors[type];
+  const primary = theme.primary || currentColor.color;
+  const background = theme.background || currentColor.bg;
 
   return (
-  <div
-  className={className}
-  onClick={() => {
-  setState(s => ({ ...s, active: !s.active }));
-  onInteract?.('interact');
-  }}
-  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-  style={{
-  padding: '16px',
-  backgroundColor: state.active ? primary : background,
-  color: state.active ? '#fff' : text,
-  borderRadius: '8px',
-  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-  boxShadow: state.hovered
-  ? '0 8px 16px rgba(0,0,0,0.12)'
-  : '0 2px 4px rgba(0,0,0,0.06)',
-  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  cursor: 'pointer',
-  fontWeight: state.active ? 600 : 500,
-  userSelect: 'none'
-  }}
-  >
-  Alert - minimal style
-  </div>
+    <div
+      className={className}
+      style={{
+        padding: '8px 12px',
+        backgroundColor: background,
+        border: `2px solid ${primary}`,
+        borderRadius: '6px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '12px',
+        maxWidth: '600px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+      }}
+    >
+      <div style={{ color: primary, fontWeight: '500', flex: 1 }}>
+        {message}
+      </div>
+      {dismissible && (
+        <button
+          onClick={onDismiss}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: primary,
+            cursor: 'pointer',
+            fontSize: '20px',
+            padding: '0',
+            lineHeight: '1'
+          }}
+        >
+          ×
+        </button>
+      )}
+    </div>
   );
 };

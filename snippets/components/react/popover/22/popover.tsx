@@ -1,52 +1,59 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
+  trigger?: React.ReactNode;
+  content?: React.ReactNode;
+  theme?: { primary?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  position?: 'top' | 'bottom' | 'left' | 'right';
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  trigger = <button>Hover me</button>,
+  content = 'Popover content',
   theme = {},
   className = '',
-  onInteract
+  position = 'right'
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || '#f59e0b';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
+  const [isOpen, setIsOpen] = useState(false);
+  const primary = theme.primary || '#ec4899';
+  
+  const positions = {
+    top: { bottom: '100%', left: '50%', transform: 'translateX(-50%)', marginBottom: '7px' },
+    bottom: { top: '100%', left: '50%', transform: 'translateX(-50%)', marginTop: '9px' },
+    left: { right: '100%', top: '50%', transform: 'translateY(-50%)', marginRight: '9px' },
+    right: { left: '100%', top: '50%', transform: 'translateY(-50%)', marginLeft: '9px' }
+  };
+  
   return (
-  <div
-  className={className}
-  onClick={() => {
-  setState(s => ({ ...s, active: !s.active }));
-  onInteract?.('interact');
-  }}
-  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-  style={{
-  padding: '16px',
-  backgroundColor: state.active ? primary : background,
-  color: state.active ? '#fff' : text,
-  borderRadius: '8px',
-  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-  boxShadow: state.hovered
-  ? '0 8px 16px rgba(0,0,0,0.12)'
-  : '0 2px 4px rgba(0,0,0,0.06)',
-  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  cursor: 'pointer',
-  fontWeight: state.active ? 600 : 500,
-  userSelect: 'none'
-  }}
-  >
-  Popover - minimal style
-  </div>
+    <div
+      className={className}
+      style={{ position: 'relative', display: 'inline-block' }}
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={() => setIsOpen(false)}
+    >
+      {trigger}
+      {isOpen && (
+        <div
+          style={{
+            position: 'absolute',
+            ...positions[position],
+            backgroundColor: '#fff',
+            border: `1px solid #e5e7eb`,
+            borderRadius: '14px',
+            padding: '23px 36px',
+            boxShadow: '0 9px 21px rgba(0,0,0,0.2)',
+            zIndex: 1000,
+            minWidth: '150px',
+            maxWidth: '300px',
+            fontSize: '12px',
+            color: '#374151',
+            lineHeight: '1.5'
+          }}
+        >
+          {content}
+        </div>
+      )}
+    </div>
   );
 };

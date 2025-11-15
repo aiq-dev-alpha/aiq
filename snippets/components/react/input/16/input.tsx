@@ -1,52 +1,66 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
+  type?: string;
+  placeholder?: string;
+  value?: string;
+  onChange?: (value: string) => void;
+  theme?: { primary?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  label?: string;
+  error?: string;
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  type = 'text',
+  placeholder = 'Enter text',
+  value: controlledValue,
+  onChange,
   theme = {},
   className = '',
-  onInteract
+  label,
+  error
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || 'hsl(0, 70%, 50%)';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
+  const [internalValue, setInternalValue] = useState('');
+  const value = controlledValue !== undefined ? controlledValue : internalValue;
+  const primary = theme.primary || '#3b82f6';
+  
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    if (controlledValue === undefined) {
+      setInternalValue(newValue);
+    }
+    onChange?.(newValue);
+  };
+  
   return (
-  <div
-  className={className}
-  onClick={() => {
-  setState(s => ({ ...s, active: !s.active }));
-  onInteract?.('interact');
-  }}
-  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-  style={{
-  padding: '16px',
-  backgroundColor: state.active ? primary : background,
-  color: state.active ? '#fff' : text,
-  borderRadius: '8px',
-  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-  boxShadow: state.hovered
-  ? '0 8px 16px rgba(0,0,0,0.12)'
-  : '0 2px 4px rgba(0,0,0,0.06)',
-  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  cursor: 'pointer',
-  fontWeight: state.active ? 600 : 500,
-  userSelect: 'none'
-  }}
-  >
-  Input - minimal style
-  </div>
+    <div className={className} style={{ width: '100%', maxWidth: '400px' }}>
+      {label && (
+        <label style={{ display: 'block', marginBottom: '6px', color: '#374151', fontSize: '14px', fontWeight: '500' }}>
+          {label}
+        </label>
+      )}
+      <input
+        type={type}
+        value={value}
+        onChange={handleChange}
+        placeholder={placeholder}
+        style={{
+          width: '100%',
+          padding: '8px 12px',
+          border: `2px solid ${error ? '#ef4444' : primary}`,
+          borderRadius: '6px',
+          fontSize: '14px',
+          outline: 'none',
+          transition: 'all 0.2s',
+          boxShadow: 'none'
+        }}
+      />
+      {error && (
+        <span style={{ display: 'block', marginTop: '4px', color: '#ef4444', fontSize: '12px' }}>
+          {error}
+        </span>
+      )}
+    </div>
   );
 };

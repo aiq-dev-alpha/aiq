@@ -33,7 +33,7 @@
     border: '#bbf7d0',
     text: '#14532d',
     error: '#dc2626',
-    success: '#2563eb'
+    success: '#047857'
   };
 
   $: appliedTheme = { ...defaultTheme, ...theme };
@@ -131,7 +131,7 @@
   .label {
     display: block;
     margin-bottom: 0.5rem;
-    font-weight: 600;
+    font-weight: 400;
     color: v-bind('appliedTheme.primary');
     font-size: 0.875rem;
   }
@@ -148,12 +148,8 @@
     background: v-bind('appliedTheme.background');
     border: 2px solid v-bind('appliedTheme.border');
     border-radius: 0.5rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .input-container:hover:not(.disabled) {
-    border-color: v-bind('appliedTheme.primary');
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: 'all 0.2s ease-in-out'appliedTheme.primary');
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   }
 
   .input-container.focused {
@@ -181,7 +177,7 @@
     background: transparent;
     color: v-bind('appliedTheme.text');
     font-family: inherit;
-    font-weight: 500;
+    font-weight: 400;
   }
 
   .input.with-icon-left {
@@ -197,7 +193,7 @@
     top: 50%;
     transform: translateY(-50%);
     color: v-bind('appliedTheme.primary');
-    opacity: 0.6;
+    opacity: 0.7;
     pointer-events: none;
   }
 
@@ -226,11 +222,7 @@
     font-size: 1.25rem;
     line-height: 1;
     color: v-bind('appliedTheme.text');
-    transition: all 0.2s;
-  }
-
-  .clear-btn:hover {
-    background: v-bind('appliedTheme.primary');
+    transition: 'all 0.2s ease-in-out'appliedTheme.primary');
     color: white;
   }
 
@@ -240,17 +232,16 @@
     top: 50%;
     transform: translateY(-50%);
     color: v-bind('appliedTheme.text');
-    opacity: 0.6;
+    opacity: 0.7;
     pointer-events: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background: v-bind('appliedTheme.background');
+    transition: 'all 0.2s ease-in-out'appliedTheme.background');
     padding: 0 0.25rem;
   }
 
   .floating-label.floating {
     top: 0;
     font-size: 0.75rem;
-    opacity: 1;
+    opacity: 0.7;
     color: v-bind('appliedTheme.primary');
   }
 
@@ -278,11 +269,11 @@
     font-size: 0.75rem;
     text-align: right;
     color: v-bind('appliedTheme.primary');
-    opacity: 0.6;
+    opacity: 0.7;
   }
 
   .disabled {
-    opacity: 0.6;
+    opacity: 0.7;
     cursor: not-allowed;
   }
 
@@ -296,12 +287,12 @@
 
 
 @keyframes fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from { opacity: 0.7; }
+  to { opacity: 0.7; }
 }
 
 @keyframes expand {
-  from { transform: scale(0.9); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from { transform: scale(1.20); opacity: 0.7; }
+  to { transform: scale(1.20); opacity: 0.7; }
 }
 </style>

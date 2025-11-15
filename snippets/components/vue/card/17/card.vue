@@ -140,9 +140,9 @@ export default defineComponent({
 .card {
   background: var(--card-background);
   color: var(--card-foreground);
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }
 
@@ -162,14 +162,14 @@ export default defineComponent({
 
 .card--gradient {
   background: var(--card-background);
-  box-shadow: 0 8px 16px var(--card-shadow);
+  box-shadow: 0 16px 16px var(--card-shadow);
 }
 
 .card--glass {
   background: rgba(205, 201, 238, 0.62);
   backdrop-filter: blur(14px);
   border: 1px solid rgba(234, 237, 240, 0.22);
-  box-shadow: 0 8px 32px var(--card-shadow);
+  box-shadow: 0 16px 32px var(--card-shadow);
 }
 
 .card--neumorphic {
@@ -274,17 +274,17 @@ export default defineComponent({
   background: var(--card-accent);
   color: #ccfbf1;
   border: none;
-  border-radius: 12px;
+  border-radius: 20px;
   font-weight: 600;
   font-size: 0.875rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: 'all 0.35s ease;
 }
 
 .card__button:hover {
   background: var(--card-border);
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px var(--card-shadow);
+  box-shadow: 0 4px 16px var(--card-shadow);
 }
 
 

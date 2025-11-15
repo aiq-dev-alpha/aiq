@@ -1,52 +1,68 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
+  label?: string;
+  onDelete?: () => void;
+  theme?: { primary?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  variant?: 'filled' | 'outlined';
+  icon?: string;
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  label = 'Chip',
+  onDelete,
   theme = {},
   className = '',
-  onInteract
+  variant = 'filled',
+  icon
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || '#f59e0b';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
+  const primary = theme.primary || '#ef4444';
+  
+  const styles = variant === 'filled' ? {
+    backgroundColor: primary,
+    color: '#fff',
+    border: 'none'
+  } : {
+    backgroundColor: 'transparent',
+    color: primary,
+    border: `2px solid ${primary}`
+  };
+  
   return (
-  <div
-  className={className}
-  onClick={() => {
-  setState(s => ({ ...s, active: !s.active }));
-  onInteract?.('interact');
-  }}
-  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-  style={{
-  padding: '16px',
-  backgroundColor: state.active ? primary : background,
-  color: state.active ? '#fff' : text,
-  borderRadius: '8px',
-  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-  boxShadow: state.hovered
-  ? '0 8px 16px rgba(0,0,0,0.12)'
-  : '0 2px 4px rgba(0,0,0,0.06)',
-  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  cursor: 'pointer',
-  fontWeight: state.active ? 600 : 500,
-  userSelect: 'none'
-  }}
-  >
-  Chip - minimal style
-  </div>
+    <div
+      className={className}
+      style={{
+        ...styles,
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '19px',
+        padding: '21px 32px',
+        borderRadius: '31px',
+        fontSize: '17px',
+        fontWeight: '800',
+        lineHeight: '1.8'
+      }}
+    >
+      {icon && <span style={{ fontSize: '17px' }}> {icon}</span>}
+      <span>{label}</span>
+      {onDelete && (
+        <button
+          onClick={onDelete}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: 'inherit',
+            cursor: 'pointer',
+            fontSize: '17px',
+            padding: '0',
+            lineHeight: '1.8',
+            marginLeft: '9px'
+          }}
+        >
+          ×
+        </button>
+      )}
+    </div>
   );
 };

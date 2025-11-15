@@ -1,52 +1,100 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
+  min?: number;
+  max?: number;
+  value?: number;
+  onChange?: (value: number) => void;
+  theme?: { primary?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  label?: string;
+  showValue?: boolean;
+  step?: number;
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  min = 0,
+  max = 100,
+  value: controlledValue,
+  onChange,
   theme = {},
   className = '',
-  onInteract
+  label,
+  showValue = true,
+  step = 1
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || 'hsl(0, 70%, 50%)';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
+  const [internalValue, setInternalValue] = useState(50);
+  const value = controlledValue !== undefined ? controlledValue : internalValue;
+  const primary = theme.primary || '#b91c1c';
+  
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = Number(e.target.value);
+    if (controlledValue === undefined) setInternalValue(newValue);
+    onChange?.(newValue);
+  };
+  
+  const percentage = ((value - min) / (max - min)) * 100;
+  
   return (
-  <div
-  className={className}
-  onClick={() => {
-  setState(s => ({ ...s, active: !s.active }));
-  onInteract?.('interact');
-  }}
-  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-  style={{
-  padding: '16px',
-  backgroundColor: state.active ? primary : background,
-  color: state.active ? '#fff' : text,
-  borderRadius: '8px',
-  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-  boxShadow: state.hovered
-  ? '0 8px 16px rgba(0,0,0,0.12)'
-  : '0 2px 4px rgba(0,0,0,0.06)',
-  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  cursor: 'pointer',
-  fontWeight: state.active ? 600 : 500,
-  userSelect: 'none'
-  }}
-  >
-  Slider - minimal style
-  </div>
+    <div className={className} style={{ width: '100%', maxWidth: '450px' }}>
+      {(label || showValue) && (
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '24px', fontSize: '18px' }}>
+          {label && <span style={{ color: '#374151', fontWeight: '700' }}> {label}</span>}
+          {showValue && (
+            <span style={{ color: primary, fontWeight: '700', fontSize: '18px' }}>
+              {value}
+            </span>
+          )}
+        </div>
+      )}
+      <div style={{ position: 'relative', height: '12px' }}>
+        <div style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          backgroundColor: '#d1d5db',
+          borderRadius: '17px',
+          overflow: 'hidden'
+        }}>
+          <div style={{
+            width: `${percentage}%`,
+            height: '100%',
+            backgroundColor: primary,
+            borderRadius: '17px',
+            transition: 'width 0.3s ease'
+          }} />
+        </div>
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={value}
+          onChange={handleChange}
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            opacity: 0.9,
+            cursor: 'pointer',
+            top: 0,
+            left: 0
+          }}
+        />
+        <div style={{
+          position: 'absolute',
+          left: `${percentage}%`,
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '26px',
+          height: '26px',
+          backgroundColor: primary,
+          borderRadius: '50%',
+          border: '3px solid #fff',
+          boxShadow: '0 18px 32px rgba(0,0,0,0.28)',
+          pointerEvents: 'none'
+        }} />
+      </div>
+    </div>
   );
 };

@@ -140,9 +140,9 @@ export default defineComponent({
 .card {
   background: var(--card-background);
   color: var(--card-foreground);
-  border-radius: 18px;
+  border-radius: 4px;
   overflow: hidden;
-  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }
 
@@ -274,11 +274,11 @@ export default defineComponent({
   background: var(--card-accent);
   color: #ffffff;
   border: none;
-  border-radius: 10px;
+  border-radius: 4px;
   font-weight: 600;
   font-size: 0.875rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: 'all 0.3s ease;
 }
 
 .card__button:hover {

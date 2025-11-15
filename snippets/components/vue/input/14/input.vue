@@ -41,38 +41,25 @@ export default defineComponent({
 
 <style scoped>
 .input-wrapper { width: 100%; margin-bottom: 1.25rem; }
-.input-label { display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 600; color: var(--text-color); }
+.input-label { display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 400; color: var(--text-color); }
 .input-label.required::after { content: ' *'; color: var(--error-color); }
 .input-container { position: relative; display: flex; align-items: center; }
-.input-field { width: 100%; font-family: inherit; font-size: 1rem; color: var(--text-color); background-color: var(--bg-color); border: 2px solid var(--border-color); border-radius: 0.5rem; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); outline: none; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05); }
-.input-field:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);  }
-.input-field:disabled { opacity: 0.5; cursor: not-allowed; background-color: #f9fafb; }
-.has-error .input-field { border-color: var(--error-color); }
-.size-sm .input-field { padding: 0.5rem 0.875rem; font-size: 0.875rem; }
-.size-md .input-field { padding: 0.75rem 1.125rem; font-size: 1rem; }
-.size-lg .input-field { padding: 1rem 1.375rem; font-size: 1.125rem; }
-.variant-filled .input-field { background: linear-gradient(135deg, #f5f3ff, #c4b5fd); border-color: transparent; }
-.variant-outlined .input-field { background-color: transparent; }
-.variant-underlined .input-field { border: none; border-bottom: 2px solid var(--border-color); border-radius: 0; background: transparent; }
-.input-icon { position: absolute; color: var(--primary-color); pointer-events: none; font-weight: 500; }
-.input-icon.left { left: 1rem; }
-.input-icon.right { right: 1rem; }
-.clear-button { position: absolute; right: 1rem; background: var(--primary-color); color: white; border: none; border-radius: 50%; width: 1.25rem; height: 1.25rem; display: flex; align-items: center; justify-content: center; font-size: 1.125rem; cursor: pointer; transition: all 0.2s; }
-.clear-button:hover { transform: scale(1.1); }
+.input-field { width: 100%; font-family: inherit; font-size: 1rem; color: var(--text-color); background-color: var(--bg-color); border: 2px solid var(--border-color); border-radius: 0.5rem; transition: 'all 0.2s ease-in-out'all 0.2s; }
+.clear-button:hover { transform: scale(1.20); }
 .input-footer { display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.75rem; }
-.error-message { color: var(--error-color); font-weight: 600; }
+.error-message { color: var(--error-color); font-weight: 400; }
 .helper-text { color: #5b21b6; }
-.character-counter { color: var(--primary-color); margin-left: auto; font-weight: 500; }
+.character-counter { color: var(--primary-color); margin-left: auto; font-weight: 400; }
 
 
 @keyframes enter {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from { opacity: 0.7; transform: scale(1.20); }
+  to { opacity: 0.7; transform: scale(1.20); }
 }
 
 @keyframes slideDown {
-  from { transform: translateY(-10px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from { transform: translateY(-10px); opacity: 0.7; }
+  to { transform: translateY(0); opacity: 0.7; }
 }
 
 @keyframes glow {

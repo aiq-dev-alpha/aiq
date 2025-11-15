@@ -140,162 +140,26 @@ export default defineComponent({
 .card {
   background: var(--card-background);
   color: var(--card-foreground);
-  border-radius: 18px;
+  border-radius: 11px;
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-}
-
-.card--default {
-  box-shadow: 0 4px 6px -1px var(--card-shadow);
-}
-
-.card--elevated {
-  box-shadow: 0 16px 30px -7px var(--card-shadow);
-  transform: translateY(0);
-}
-
-.card--outlined {
-  border: 2px solid var(--card-border);
-  box-shadow: none;
-}
-
-.card--gradient {
-  background: var(--card-background);
-  box-shadow: 0 8px 16px var(--card-shadow);
-}
-
-.card--glass {
-  background: rgba(190, 192, 226, 0.74);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(228, 234, 240, 0.19);
-  box-shadow: 0 8px 32px var(--card-shadow);
-}
-
-.card--neumorphic {
-  background: #fb923c;
-  box-shadow:
-    12px 12px 24px rgba(251, 146, 60, 0.3),
-    -12px -12px 24px rgba(255, 255, 255, 0.6);
-}
-
-.card--hoverable:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 40px -10px var(--card-shadow);
-}
-
-.card--clickable {
-  cursor: pointer;
-}
-
-.card--clickable:active {
-  transform: translateY(-2px);
-}
-
-.card__media {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-}
-
-.card__image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.card--hoverable:hover .card__image {
-  transform: scale(1.09);
-}
-
-.card__overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(251, 146, 60, 0.3, 0.8) 0%, transparent 100%);
-  display: flex;
-  align-items: flex-end;
-  padding: 1.5rem;
-}
-
-.card__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 1.5rem 1.5rem 0;
-  gap: 1rem;
-}
-
-.card__header-content {
-  flex: 1;
-}
-
-.card__title {
-  margin: 0;
-  font-size: 1.75rem;
-  font-weight: 900;
-  color: var(--card-foreground);
-  letter-spacing: -0.045em;
-}
-
-.card__subtitle {
-  margin: 0.5rem 0 0;
-  font-size: 0.875rem;
-  color: var(--card-muted);
-  font-weight: 500;
-}
-
-.card__actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.card__body {
-  padding: 1.5rem;
-}
-
-.card__description {
-  margin: 0;
-  font-size: 1rem;
-  line-height: 1.6;
-  color: var(--card-muted);
-}
-
-.card__footer {
-  padding: 1rem 1.5rem 1.5rem;
-  display: flex;
-  gap: 0.75rem;
-  border-top: 1px solid rgba(200, 220, 240, 0.14);
-}
-
-.card__button {
-  padding: 0.625rem 1.25rem;
-  background: var(--card-accent);
-  color: #ffffff;
-  border: none;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  transition: 'all 0.3s ease'all 0.2s ease;
 }
 
 .card__button:hover {
   background: var(--card-border);
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px var(--card-shadow);
+  box-shadow: 0 4px 12px var(--card-shadow);
 }
 
 
 @keyframes enter {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from { opacity: 0.7; transform: scale(1.20); }
+  to { opacity: 0.7; transform: scale(1.20); }
 }
 
 @keyframes slideDown {
-  from { transform: translateY(-10px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from { transform: translateY(-10px); opacity: 0.7; }
+  to { transform: translateY(0); opacity: 0.7; }
 }
 
 @keyframes glow {

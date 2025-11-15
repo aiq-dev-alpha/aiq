@@ -1,52 +1,62 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
+  value?: string;
+  onChange?: (color: string) => void;
+  theme?: { primary?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  presetColors?: string[];
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  value: controlledValue,
+  onChange,
   theme = {},
   className = '',
-  onInteract
+  presetColors = ['#ef4444', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || 'hsl(0, 70%, 50%)';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
+  const [internalValue, setInternalValue] = useState('#ef4444');
+  const value = controlledValue || internalValue;
+  const primary = theme.primary || '#ef4444';
+  
+  const handleChange = (color: string) => {
+    if (!controlledValue) setInternalValue(color);
+    onChange?.(color);
+  };
+  
   return (
-  <div
-  className={className}
-  onClick={() => {
-  setState(s => ({ ...s, active: !s.active }));
-  onInteract?.('interact');
-  }}
-  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-  style={{
-  padding: '16px',
-  backgroundColor: state.active ? primary : background,
-  color: state.active ? '#fff' : text,
-  borderRadius: '8px',
-  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-  boxShadow: state.hovered
-  ? '0 8px 16px rgba(0,0,0,0.12)'
-  : '0 2px 4px rgba(0,0,0,0.06)',
-  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  cursor: 'pointer',
-  fontWeight: state.active ? 600 : 500,
-  userSelect: 'none'
-  }}
-  >
-  Colorpicker - minimal style
-  </div>
+    <div className={className} style={{ display: 'flex', flexDirection: 'column', gap: '2px', maxWidth: '300px' }}>
+      <input
+        type="color"
+        value={value}
+        onChange={(e) => handleChange(e.target.value)}
+        style={{
+          width: '100%',
+          height: '55px',
+          border: `2px solid ${primary}`,
+          borderRadius: '26px',
+          cursor: 'pointer'
+        }}
+      />
+      <div style={{ display: 'flex', gap: '2px', flexWrap: 'wrap' }}>
+        {presetColors.map((color, idx) => (
+          <button
+            key={idx}
+            onClick={() => handleChange(color)}
+            style={{
+              width: '40px',
+              height: '40px',
+              backgroundColor: color,
+              border: value === color ? `3px solid ${primary}` : 'none',
+              borderRadius: '26px',
+              cursor: 'pointer',
+              transition: 'transform 0.2s'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.00)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1.00)'}
+          />
+        ))}
+      </div>
+    </div>
   );
 };

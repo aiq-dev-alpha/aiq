@@ -1,52 +1,56 @@
-import React, { useState } from 'react';
+import React from 'react';
+
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
 
 export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
+  items?: BreadcrumbItem[];
+  theme?: { primary?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  separator?: string;
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  items = [
+    { label: 'Home', href: '/' },
+    { label: 'Category', href: '/category' },
+    { label: 'Page' }
+  ],
   theme = {},
   className = '',
-  onInteract
+  separator = '•'
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || 'hsl(0, 70%, 50%)';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
+  const primary = theme.primary || '#ef4444';
 
   return (
-  <div
-  className={className}
-  onClick={() => {
-  setState(s => ({ ...s, active: !s.active }));
-  onInteract?.('interact');
-  }}
-  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-  style={{
-  padding: '20px',
-  backgroundColor: state.active ? primary : background,
-  color: state.active ? '#fff' : text,
-  borderRadius: '12px',
-  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-  boxShadow: state.hovered
-  ? '0 8px 16px rgba(0,0,0,0.12)'
-  : '0 2px 4px rgba(0,0,0,0.06)',
-  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  cursor: 'pointer',
-  fontWeight: state.active ? 600 : 500,
-  userSelect: 'none'
-  }}
-  >
-  Breadcrumb - minimal style
-  </div>
+    <nav className={className} style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+      {items.map((item, idx) => (
+        <React.Fragment key={idx}>
+          {item.href ? (
+            <a
+              href={item.href}
+              style={{
+                color: primary,
+                textDecoration: 'none',
+                fontSize: '16px',
+                fontWeight: '300',
+                transition: 'opacity 0.2s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'}
+              onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+            >
+              {item.label}
+            </a>
+          ) : (
+            <span style={{ color: '#6b7280', fontSize: '16px' }}>{item.label}</span>
+          )}
+          {idx < items.length - 1 && (
+            <span style={{ color: '#9ca3af', fontSize: '16px' }}> {separator}</span>
+          )}
+        </React.Fragment>
+      ))}
+    </nav>
   );
 };

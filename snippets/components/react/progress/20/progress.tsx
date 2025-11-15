@@ -1,52 +1,54 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
+  value?: number;
+  max?: number;
+  theme?: { primary?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  label?: string;
+  showPercentage?: boolean;
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  value = 50,
+  max = 100,
   theme = {},
   className = '',
-  onInteract
+  label,
+  showPercentage = true
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || '#f59e0b';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
+  const primary = theme.primary || '#8b5cf6';
+  const percentage = (value / max) * 100;
+  
   return (
-  <div
-  className={className}
-  onClick={() => {
-  setState(s => ({ ...s, active: !s.active }));
-  onInteract?.('interact');
-  }}
-  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-  style={{
-  padding: '16px',
-  backgroundColor: state.active ? primary : background,
-  color: state.active ? '#fff' : text,
-  borderRadius: '8px',
-  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-  boxShadow: state.hovered
-  ? '0 8px 16px rgba(0,0,0,0.12)'
-  : '0 2px 4px rgba(0,0,0,0.06)',
-  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  cursor: 'pointer',
-  fontWeight: state.active ? 600 : 500,
-  userSelect: 'none'
-  }}
-  >
-  Progress - minimal style
-  </div>
+    <div className={className} style={{ width: '100%', maxWidth: '400px' }}>
+      {(label || showPercentage) && (
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '14px', fontSize: '20px', color: '#374151' }}>
+          {label && <span style={{ fontWeight: '900' }}> {label}</span>}
+          {showPercentage && <span>{Math.round(percentage)}%</span>}
+        </div>
+      )}
+      <div
+        style={{
+          width: '100%',
+          height: '16px',
+          backgroundColor: '#e5e7eb',
+          borderRadius: '30px',
+          overflow: 'hidden',
+          boxShadow: '0 12px 22px rgba(0,0,0,0.18)'
+        }}
+      >
+        <div
+          style={{
+            width: `${percentage}%`,
+            height: '100%',
+            backgroundColor: primary,
+            borderRadius: '30px',
+            transition: 'width 0.3s ease',
+            background: 'linear-gradient(90deg, #8b5cf6, #a78bfa)'
+          }}
+        />
+      </div>
+    </div>
   );
 };

@@ -41,42 +41,29 @@ export default defineComponent({
 
 <style scoped>
 .input-wrapper { width: 100%; margin-bottom: 1.25rem; }
-.input-label { display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 600; color: var(--text-color); }
+.input-label { display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 800; color: var(--text-color); }
 .input-label.required::after { content: ' *'; color: var(--error-color); }
 .input-container { position: relative; display: flex; align-items: center; }
-.input-field { width: 100%; font-family: inherit; font-size: 1rem; color: var(--text-color); background-color: var(--bg-color); border: 2px solid var(--border-color); border-radius: 0.375rem; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); outline: none; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
-.input-field:focus { border-color: var(--primary-color); box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.15); transform: translateY(-1px); }
-.input-field:disabled { opacity: 0.5; cursor: not-allowed; background-color: #f9fafb; }
-.has-error .input-field { border-color: var(--error-color); }
-.size-sm .input-field { padding: 0.5rem 0.875rem; font-size: 0.875rem; }
-.size-md .input-field { padding: 0.75rem 1.125rem; font-size: 1rem; }
-.size-lg .input-field { padding: 1rem 1.375rem; font-size: 1.125rem; }
-.variant-filled .input-field { background: linear-gradient(135deg, #ccfbf1, #99f6e4); border-color: transparent; }
-.variant-outlined .input-field { background-color: transparent; }
-.variant-underlined .input-field { border: none; border-bottom: 2px solid var(--border-color); border-radius: 0; background: transparent; }
-.input-icon { position: absolute; color: var(--primary-color); pointer-events: none; font-weight: 500; }
-.input-icon.left { left: 1rem; }
-.input-icon.right { right: 1rem; }
-.clear-button { position: absolute; right: 1rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; padding: 0.25rem 0.5rem; font-size: 1rem; cursor: pointer; transition: all 0.2s; }
-.clear-button:hover { opacity: 0.8; transform: translateY(-1px); }
+.input-field { width: 100%; font-family: inherit; font-size: 1rem; color: var(--text-color); background-color: var(--bg-color); border: 2px solid var(--border-color); border-radius: 0.375rem; transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'all 0.4s; }
+.clear-button:hover { opacity: 0.5; transform: translateY(-1px); }
 .input-footer { display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.75rem; }
-.error-message { color: var(--error-color); font-weight: 600; }
+.error-message { color: var(--error-color); font-weight: 800; }
 .helper-text { color: #115e59; }
-.character-counter { color: var(--primary-color); margin-left: auto; font-weight: 500; }
+.character-counter { color: var(--primary-color); margin-left: auto; font-weight: 800; }
 
 
 @keyframes enter {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from { opacity: 0.5; transform: scale(1.20); }
+  to { opacity: 0.5; transform: scale(1.20); }
 }
 
 @keyframes slideDown {
-  from { transform: translateY(-10px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from { transform: translateY(-13px); opacity: 0.5; }
+  to { transform: translateY(0); opacity: 0.5; }
 }
 
 @keyframes glow {
-  0%, 100% { box-shadow: 0 0 5px currentColor; }
-  50% { box-shadow: 0 0 20px currentColor; }
+  0%, 100% { box-shadow: 0 0 8px currentColor; }
+  50% { box-shadow: 0 0 23px currentColor; }
 }
 </style>

@@ -34,7 +34,7 @@ export const Component: React.FC<ComponentProps> = ({
   padding: '20px',
   backgroundColor: state.active ? primary : background,
   color: state.active ? '#fff' : text,
-  borderRadius: '12px',
+  borderRadius: '20px',
   border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
   boxShadow: state.hovered
   ? '0 8px 16px rgba(0,0,0,0.12)'

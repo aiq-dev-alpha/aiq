@@ -1,52 +1,55 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
+  label?: string;
+  variant?: 'primary' | 'success' | 'warning' | 'error';
+  theme?: { primary?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  dot?: boolean;
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  label = 'Badge',
+  variant = 'primary',
   theme = {},
   className = '',
-  onInteract
+  dot = false
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
+  const variants = {
+    primary: { bg: '#f59e0b', color: '#fff' },
+    success: { bg: '#78350f', color: '#fff' },
+    warning: { bg: '#f59e0b', color: '#fff' },
+    error: { bg: '#ef4444', color: '#fff' }
+  };
 
-  const primary = theme.primary || 'hsl(0, 70%, 50%)';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
+  const style = variants[variant];
+  const primary = theme.primary || style.bg;
 
   return (
-  <div
-  className={className}
-  onClick={() => {
-  setState(s => ({ ...s, active: !s.active }));
-  onInteract?.('interact');
-  }}
-  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-  style={{
-  padding: '16px',
-  backgroundColor: state.active ? primary : background,
-  color: state.active ? '#fff' : text,
-  borderRadius: '20px',
-  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-  boxShadow: state.hovered
-  ? '0 8px 16px rgba(0,0,0,0.12)'
-  : '0 2px 4px rgba(0,0,0,0.06)',
-  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  cursor: 'pointer',
-  fontWeight: state.active ? 600 : 500,
-  userSelect: 'none'
-  }}
-  >
-  Badge - minimal style
-  </div>
+    <span
+      className={className}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '2px',
+        padding: '18px 29px',
+        backgroundColor: primary,
+        color: style.color,
+        borderRadius: '24px',
+        fontSize: '17px',
+        fontWeight: '300',
+        lineHeight: '1.5'
+      }}
+    >
+      {dot && (
+        <span style={{
+          width: '6px',
+          height: '6px',
+          borderRadius: '50%',
+          backgroundColor: 'currentColor'
+        }} />
+      )}
+      {label}
+    </span>
   );
 };

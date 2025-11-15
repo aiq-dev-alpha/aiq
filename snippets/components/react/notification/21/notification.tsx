@@ -1,52 +1,75 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
+  message?: string;
+  type?: 'info' | 'success' | 'warning' | 'error';
+  theme?: { primary?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  onClose?: () => void;
+  icon?: string;
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  message = 'Notification message',
+  type = 'info',
   theme = {},
   className = '',
-  onInteract
+  onClose,
+  icon
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || '#06b6d4';
-  const background = theme.background || '#3b82f6';
-  const text = theme.text || '#1f2937';
-
+  const colors = {
+    info: '#f59e0b',
+    success: '#10b981',
+    warning: '#f59e0b',
+    error: '#ef4444'
+  };
+  
+  const backgrounds = {
+    info: '#fffbeb',
+    success: '#ecfdf5',
+    warning: '#fffbeb',
+    error: '#fef2f2'
+  };
+  
+  const primary = theme.primary || colors[type];
+  const bg = backgrounds[type];
+  
   return (
-  <div
-  className={className}
-  onClick={() => {
-  setState(s => ({ ...s, active: !s.active }));
-  onInteract?.('interact');
-  }}
-  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-  style={{
-  padding: '16px',
-  backgroundColor: state.active ? primary : background,
-  color: state.active ? '#fff' : text,
-  borderRadius: '8px',
-  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-  boxShadow: state.hovered
-  ? '0 8px 16px rgba(0,0,0,0.12)'
-  : '0 2px 4px rgba(0,0,0,0.06)',
-  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  cursor: 'pointer',
-  fontWeight: state.active ? 600 : 500,
-  userSelect: 'none'
-  }}
-  >
-  Notification - minimal style
-  </div>
+    <div
+      className={className}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '20px',
+        padding: '20px 36px',
+        backgroundColor: bg,
+        borderLeft: `5px solid ${primary}`,
+        borderRadius: '8px',
+        boxShadow: '0 12px 28px rgba(0,0,0,0.25)',
+        maxWidth: '380px',
+        position: 'relative'
+      }}
+    >
+      {icon && <span style={{ fontSize: '18px', flexShrink: 0 }}> {icon}</span>}
+      <div style={{ flex: 1, color: '#374151', fontSize: '14px', lineHeight: '1.5' }}>
+        {message}
+      </div>
+      {onClose && (
+        <button
+          onClick={onClose}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: primary,
+            cursor: 'pointer',
+            fontSize: '20px',
+            lineHeight: '1',
+            flexShrink: 0
+          }}
+        >
+          ×
+        </button>
+      )}
+    </div>
   );
 };

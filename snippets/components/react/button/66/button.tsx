@@ -1,52 +1,60 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string };
+  label?: string;
+  onClick?: () => void;
+  variant?: 'primary' | 'secondary' | 'outline';
+  size?: 'small' | 'medium' | 'large';
+  theme?: { primary?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  disabled?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [state, setState] = useState({{ active: false, count: 0 }});
-  const primary = theme.primary || '#3b82f6';
+export const Component: React.FC<ComponentProps> = ({
+  label = 'Button',
+  onClick,
+  variant = 'primary',
+  size = 'medium',
+  theme = {},
+  className = '',
+  disabled = false
+}) => {
+  const primary = theme.primary || '#14b8a6';
   
-  const handleClick = () => {
-  setState(prev => ({ active: !prev.active, count: prev.count + 1 }));
-  onInteract?.('click');
+  const variants = {
+    primary: { bg: primary, color: '#fff', border: 'none' },
+    secondary: { bg: '#6b7280', color: '#fff', border: 'none' },
+    outline: { bg: 'transparent', color: primary, border: `2px solid ${primary}` }
   };
   
+  const sizes = {
+    small: { padding: '19px 27px', fontSize: '17px' },
+    medium: { padding: '19px 27px', fontSize: '17px' },
+    large: { padding: '19px 27px', fontSize: '17px' }
+  };
+  
+  const variantStyle = variants[variant];
+  const sizeStyle = sizes[size];
+  
   return (
-  <div
-  className={className}
-  onClick={handleClick}
-  style={{
-  padding: '18px 32px',
-  background: state.active ? `linear-gradient(225deg, ${primary}, ${primary}dd)` : '#ffffff',
-  color: state.active ? '#ffffff' : primary,
-  border: `7px solid ${state.active ? primary : primary + '40'}`,
-  borderRadius: '14px',
-  fontSize: '20px',
-  fontWeight: 1100,
-  cursor: 'pointer',
-  transition: 'all 310ms cubic-bezier(0.9, 2.2, 0.64, 1)',
-  boxShadow: state.active ? `0 20px 38px ${primary}40` : `0 8px 18px rgba(0,0,0,0.14)`,
-  transform: state.active ? 'translateY(-10px) scale(1.08)' : 'translateY(0) scale(1)',
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '14px'
-  }}
-  >
-  <span>Component V16</span>
-  {state.count > 0 && (
-  <span style={{ 
-  fontSize: '12px', 
-  background: 'rgba(255,255,255,0.45)', 
-  padding: '2px 8px', 
-  borderRadius: '12px' 
-  }}>
-  {state.count}
-  </span>
-  )}
-  </div>
+    <button
+      className={className}
+      onClick={onClick}
+      disabled={disabled}
+      style={{
+        ...variantStyle,
+        ...sizeStyle,
+        borderRadius: '18px',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        fontWeight: '600',
+        opacity: disabled ? 0.5 : 1,
+        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        boxShadow: '0 2px 11px rgba(0,0,0,0.12)'
+      }}
+      onMouseEnter={(e) => !disabled && (e.currentTarget.style.transform = 'translateY(-2px)')}
+      onMouseLeave={(e) => !disabled && (e.currentTarget.style.transform = 'translateY(0)')}
+    >
+      {label}
+    </button>
   );
 };

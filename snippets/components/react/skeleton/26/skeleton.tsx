@@ -1,52 +1,53 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
+  variant?: 'text' | 'circular' | 'rectangular';
+  width?: string;
+  height?: string;
+  theme?: { primary?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  count?: number;
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  variant = 'text',
+  width = '100%',
+  height,
   theme = {},
   className = '',
-  onInteract
+  count = 1
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || 'hsl(0, 70%, 50%)';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
+  const baseColor = '#d1d5db';
+  const highlightColor = '#f3f4f6';
+  
+  const variants = {
+    text: { height: height || '23px', borderRadius: '19px' },
+    circular: { height: height || '64px', width: height || '64px', borderRadius: '50%' },
+    rectangular: { height: height || '140px', borderRadius: '19px' }
+  };
+  
+  const variantStyle = variants[variant];
+  
+  const skeletonStyle = {
+    width,
+    ...variantStyle,
+    backgroundColor: baseColor,
+    backgroundImage: `linear-gradient(90deg, ${baseColor} 0px, ${highlightColor} 40px, ${baseColor} 80px)`,
+    backgroundSize: '1000px',
+    animation: '1s ease-in-out infinite',
+    backgroundPosition: '-1000px'
+  };
+  
   return (
-  <div
-  className={className}
-  onClick={() => {
-  setState(s => ({ ...s, active: !s.active }));
-  onInteract?.('interact');
-  }}
-  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-  style={{
-  padding: '20px',
-  backgroundColor: state.active ? primary : background,
-  color: state.active ? '#fff' : text,
-  borderRadius: '12px',
-  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-  boxShadow: state.hovered
-  ? '0 8px 16px rgba(0,0,0,0.12)'
-  : '0 2px 4px rgba(0,0,0,0.06)',
-  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  cursor: 'pointer',
-  fontWeight: state.active ? 600 : 500,
-  userSelect: 'none'
-  }}
-  >
-  Skeleton - minimal style
-  </div>
+    <div className={className} style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+      {Array.from({ length: count }, (_, i) => (
+        <div key={i} style={skeletonStyle} />
+      ))}
+      <style>{`
+        @keyframes skeletonAnimation {
+          to { background-position: calc(1000px + 100%); }
+        }
+      `}</style>
+    </div>
   );
 };

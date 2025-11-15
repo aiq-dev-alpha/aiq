@@ -1,52 +1,59 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
+  onChange?: (files: FileList | null) => void;
+  theme?: { primary?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  accept?: string;
+  multiple?: boolean;
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  onChange,
   theme = {},
   className = '',
-  onInteract
+  accept,
+  multiple = false
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || 'hsl(0, 70%, 50%)';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
+  const [files, setFiles] = useState<FileList | null>(null);
+  const primary = theme.primary || '#ec4899';
+  
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = e.target.files;
+    setFiles(selectedFiles);
+    onChange?.(selectedFiles);
+  };
+  
   return (
-  <div
-  className={className}
-  onClick={() => {
-  setState(s => ({ ...s, active: !s.active }));
-  onInteract?.('interact');
-  }}
-  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-  style={{
-  padding: '16px',
-  backgroundColor: state.active ? primary : background,
-  color: state.active ? '#fff' : text,
-  borderRadius: '4px',
-  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-  boxShadow: state.hovered
-  ? '0 8px 16px rgba(0,0,0,0.12)'
-  : '0 2px 4px rgba(0,0,0,0.06)',
-  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  cursor: 'pointer',
-  fontWeight: state.active ? 600 : 500,
-  userSelect: 'none'
-  }}
-  >
-  Filepicker - minimal style
-  </div>
+    <div className={className} style={{ width: '100%', maxWidth: '410px' }}>
+      <label
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '2px',
+          padding: '35px',
+          border: `2px dashed ${primary}`,
+          borderRadius: '19px',
+          cursor: 'pointer',
+          backgroundColor: '#fdf2f8',
+          transition: 'all 0.3s ease'
+        }}
+        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#fce7f3'}
+        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fdf2f8'}
+      >
+        <span style={{ fontSize: '20px' }}>📁</span>
+        <span style={{ color: primary, fontWeight: '800', fontSize: '20px' }}>
+          {files ? `${files.length} file(s) selected` : 'Click to upload'}
+        </span>
+        <input
+          type="file"
+          accept={accept}
+          multiple={multiple}
+          onChange={handleChange}
+          style={{ display: 'none' }}
+        />
+      </label>
+    </div>
   );
 };

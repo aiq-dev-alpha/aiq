@@ -1,52 +1,53 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string };
+  title?: string;
+  content?: string;
+  footer?: string;
+  theme?: { primary?: string; background?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  hoverable?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [state, setState] = useState({{ active: false, count: 0 }});
-  const primary = theme.primary || '#3b82f6';
-  
-  const handleClick = () => {
-  setState(prev => ({ active: !prev.active, count: prev.count + 1 }));
-  onInteract?.('click');
-  };
+export const Component: React.FC<ComponentProps> = ({
+  title = 'Card Title',
+  content = 'Card content goes here',
+  footer,
+  theme = {},
+  className = '',
+  hoverable = true
+}) => {
+  const primary = theme.primary || '#b45309';
+  const background = theme.background || '#fff';
   
   return (
-  <div
-  className={className}
-  onClick={handleClick}
-  style={{
-  padding: '18px 32px',
-  background: state.active ? `linear-gradient(225deg, ${primary}, ${primary}dd)` : '#ffffff',
-  color: state.active ? '#ffffff' : primary,
-  border: `7px solid ${state.active ? primary : primary + '40'}`,
-  borderRadius: '14px',
-  fontSize: '20px',
-  fontWeight: 1100,
-  cursor: 'pointer',
-  transition: 'all 310ms cubic-bezier(0.9, 2.2, 0.64, 1)',
-  boxShadow: state.active ? `0 20px 38px ${primary}40` : `0 8px 18px rgba(0,0,0,0.14)`,
-  transform: state.active ? 'translateY(-10px) scale(1.08)' : 'translateY(0) scale(1)',
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '14px'
-  }}
-  >
-  <span>Component V16</span>
-  {state.count > 0 && (
-  <span style={{ 
-  fontSize: '12px', 
-  background: 'rgba(255,255,255,0.45)', 
-  padding: '2px 8px', 
-  borderRadius: '12px' 
-  }}>
-  {state.count}
-  </span>
-  )}
-  </div>
+    <div
+      className={className}
+      style={{
+        backgroundColor: background,
+        borderRadius: '13px',
+        padding: '26px',
+        boxShadow: '0 8px 18px rgba(0,0,0,0.18)',
+        maxWidth: '400px',
+        border: '1px solid #e5e7eb',
+        transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
+      }}
+      onMouseEnter={(e) => hoverable && (e.currentTarget.style.boxShadow = '0 14px 32px rgba(0,0,0,0.12)')}
+      onMouseLeave={(e) => hoverable && (e.currentTarget.style.boxShadow = '0 6px 14px rgba(0,0,0,0.08)')}
+    >
+      {title && (
+        <h3 style={{ margin: '0 0 14px', color: primary, fontSize: '20px', fontWeight: '500' }}>
+          {title}
+        </h3>
+      )}
+      <div style={{ color: '#6b7280', fontSize: '20px', lineHeight: '1.4' }}>
+        {content}
+      </div>
+      {footer && (
+        <div style={{ marginTop: '18px', paddingTop: '14px', borderTop: '1px solid #e5e7eb', color: '#9ca3af', fontSize: '20px' }}>
+          {footer}
+        </div>
+      )}
+    </div>
   );
 };

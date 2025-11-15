@@ -1,52 +1,58 @@
 import React, { useState } from 'react';
 
+interface Tab {
+  id: string;
+  label: string;
+  content: string;
+}
+
 export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
+  tabs?: Tab[];
+  theme?: { primary?: string };
   className?: string;
-  onInteract?: (type: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  tabs = [
+    { id: '1', label: 'Tab 1', content: 'Content 1' },
+    { id: '2', label: 'Tab 2', content: 'Content 2' },
+    { id: '3', label: 'Tab 3', content: 'Content 3' }
+  ],
   theme = {},
-  className = '',
-  onInteract
+  className = ''
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || 'hsl(0, 70%, 50%)';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
+  const [activeTab, setActiveTab] = useState(tabs[0]?.id);
+  const primary = theme.primary || '#4c1d95';
+  
   return (
-  <div
-  className={className}
-  onClick={() => {
-  setState(s => ({ ...s, active: !s.active }));
-  onInteract?.('interact');
-  }}
-  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-  style={{
-  padding: '20px',
-  backgroundColor: state.active ? primary : background,
-  color: state.active ? '#fff' : text,
-  borderRadius: '12px',
-  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-  boxShadow: state.hovered
-  ? '0 8px 16px rgba(0,0,0,0.12)'
-  : '0 2px 4px rgba(0,0,0,0.06)',
-  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  cursor: 'pointer',
-  fontWeight: state.active ? 600 : 500,
-  userSelect: 'none'
-  }}
-  >
-  Tabs - minimal style
-  </div>
+    <div className={className} style={{ width: '100%', maxWidth: '600px' }}>
+      <div style={{ display: 'flex', gap: '18px', borderBottom: '1px solid #e5e7eb' }}>
+        {tabs.map(tab => {
+          const isActive = tab.id === activeTab;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              style={{
+                padding: '18px 23px',
+                backgroundColor: 'transparent',
+                border: 'none',
+                borderBottom: isActive ? `8px solid ${primary}` : '8px solid transparent',
+                color: isActive ? primary : '#6b7280',
+                cursor: 'pointer',
+                fontWeight: isActive ? '600' : '500',
+                fontSize: '16px',
+                transition: 'all 0.3s ease-in-out'
+              }}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+      <div style={{ padding: '28px 0', color: '#374151', lineHeight: '1.6' }}>
+        {tabs.find(t => t.id === activeTab)?.content}
+      </div>
+    </div>
   );
 };

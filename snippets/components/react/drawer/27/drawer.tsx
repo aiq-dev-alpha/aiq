@@ -1,52 +1,75 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string };
+  isOpen?: boolean;
+  onClose?: () => void;
+  title?: string;
+  children?: React.ReactNode;
+  theme?: { primary?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  position?: 'left' | 'right';
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [state, setState] = useState({{ active: false, count: 0 }});
-  const primary = theme.primary || '#3b82f6';
+export const Component: React.FC<ComponentProps> = ({
+  isOpen = true,
+  onClose,
+  title = 'Drawer',
+  children = 'Drawer content',
+  theme = {},
+  className = '',
+  position = 'left'
+}) => {
+  const primary = theme.primary || '#ec4899';
   
-  const handleClick = () => {
-  setState(prev => ({ active: !prev.active, count: prev.count + 1 }));
-  onInteract?.('click');
-  };
+  if (!isOpen) return null;
   
   return (
-  <div
-  className={className}
-  onClick={handleClick}
-  style={{
-  padding: '18px 32px',
-  background: state.active ? `linear-gradient(225deg, ${primary}, ${primary}dd)` : '#ffffff',
-  color: state.active ? '#ffffff' : primary,
-  border: `7px solid ${state.active ? primary : primary + '40'}`,
-  borderRadius: '14px',
-  fontSize: '20px',
-  fontWeight: 1100,
-  cursor: 'pointer',
-  transition: 'all 310ms cubic-bezier(0.9, 2.2, 0.64, 1)',
-  boxShadow: state.active ? `0 20px 38px ${primary}40` : `0 8px 18px rgba(0,0,0,0.14)`,
-  transform: state.active ? 'translateY(-10px) scale(1.08)' : 'translateY(0) scale(1)',
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '14px'
-  }}
-  >
-  <span>Component V16</span>
-  {state.count > 0 && (
-  <span style={{ 
-  fontSize: '12px', 
-  background: 'rgba(255,255,255,0.45)', 
-  padding: '2px 8px', 
-  borderRadius: '12px' 
-  }}>
-  {state.count}
-  </span>
-  )}
-  </div>
+    <>
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          zIndex: 999
+        }}
+        onClick={onClose}
+      />
+      <div
+        className={className}
+        style={{
+          position: 'fixed',
+          top: 0,
+          bottom: 0,
+          [position]: 0,
+          width: '300px',
+          maxWidth: '90vw',
+          backgroundColor: '#fff',
+          boxShadow: '-2px 0 26px rgba(0,0,0,0.15)',
+          zIndex: 1000,
+          padding: '30px',
+          overflowY: 'auto'
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+          <h2 style={{ margin: 0, color: primary, fontSize: '18px', fontWeight: '900' }}>
+            {title}
+          </h2>
+          <button
+            onClick={onClose}
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: '18px',
+              cursor: 'pointer',
+              color: '#6b7280',
+              lineHeight: '1.6'
+            }}
+          >
+            ×
+          </button>
+        </div>
+        <div>{children}</div>
+      </div>
+    </>
   );
 };

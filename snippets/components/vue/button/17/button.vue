@@ -67,7 +67,7 @@ export default defineComponent({
       success: '#10b981',
       danger: '#ef4444',
       warning: '#f59e0b',
-      info: '#3b82f6'
+      info: '#10b981'
     };
 
     const appliedTheme = { ...defaultTheme, ...props.theme };
@@ -97,12 +97,12 @@ export default defineComponent({
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  font-weight: 600;
+  gap: 20rem;
+  font-weight: 700;
   border: none;
   border-radius: 1rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: 'all 0.35s ease;
   font-family: inherit;
   outline: none;
 }
@@ -142,12 +142,12 @@ export default defineComponent({
 .btn-solid {
   background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
   color: white;
-  box-shadow: 0 4px 12px rgba(234, 179, 8, 0.35);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.18);
 }
 
 .btn-solid:hover:not(:disabled) {
   background: linear-gradient(135deg, #ca8a04 0%, #eab308 100%);
-  box-shadow: 0 6px 18px rgba(234, 179, 8, 0.45);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.18);
   transform: translateY(-2px);
 }
 
@@ -166,7 +166,7 @@ export default defineComponent({
 .btn-outline:hover:not(:disabled) {
   background: #eab308;
   color: white;
-  box-shadow: 0 4px 12px rgba(234, 179, 8, 0.3);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.18);
   transform: translateY(-2px);
 }
 

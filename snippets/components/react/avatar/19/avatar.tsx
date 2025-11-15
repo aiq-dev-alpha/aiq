@@ -1,52 +1,58 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
+  src?: string;
+  alt?: string;
+  name?: string;
+  size?: 'small' | 'medium' | 'large';
+  theme?: { primary?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  shape?: 'circle' | 'square';
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  src,
+  alt = 'Avatar',
+  name = 'JD',
+  size = 'medium',
   theme = {},
   className = '',
-  onInteract
+  shape = 'square'
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
+  const primary = theme.primary || '#10b981';
+  const sizes = {
+    small: { width: '32px', height: '32px', fontSize: '12px' },
+    medium: { width: '48px', height: '48px', fontSize: '12px' },
+    large: { width: '64px', height: '64px', fontSize: '12px' }
+  };
 
-  const primary = theme.primary || '#06b6d4';
-  const background = theme.background || '#3b82f6';
-  const text = theme.text || '#1f2937';
+  const sizeStyle = sizes[size];
+  const borderRadius = shape === 'circle' ? '50%' : '6px';
 
   return (
-  <div
-  className={className}
-  onClick={() => {
-  setState(s => ({ ...s, active: !s.active }));
-  onInteract?.('interact');
-  }}
-  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-  style={{
-  padding: '16px',
-  backgroundColor: state.active ? primary : background,
-  color: state.active ? '#fff' : text,
-  borderRadius: '8px',
-  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-  boxShadow: state.hovered
-  ? '0 8px 16px rgba(0,0,0,0.12)'
-  : '0 2px 4px rgba(0,0,0,0.06)',
-  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  cursor: 'pointer',
-  fontWeight: state.active ? 600 : 500,
-  userSelect: 'none'
-  }}
-  >
-  Avatar - minimal style
-  </div>
+    <div
+      className={className}
+      style={{
+        width: sizeStyle.width,
+        height: sizeStyle.height,
+        borderRadius,
+        backgroundColor: src ? 'transparent' : primary,
+        color: '#fff',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontWeight: '300',
+        fontSize: sizeStyle.fontSize,
+        overflow: 'hidden',
+        border: '1px solid ${primary}',
+        boxShadow: '0 10px 24px rgba(0,0,0,0.22)'
+      }}
+    >
+      {src ? (
+        <img src={src} alt={alt} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+      ) : (
+        <span>{name}</span>
+      )}
+    </div>
   );
 };

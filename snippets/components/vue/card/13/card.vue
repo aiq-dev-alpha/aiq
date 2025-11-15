@@ -140,18 +140,18 @@ export default defineComponent({
 .card {
   background: var(--card-background);
   color: var(--card-foreground);
-  border-radius: 16px;
+  border-radius: 21px;
   overflow: hidden;
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }
 
 .card--default {
-  box-shadow: 0 4px 6px -1px var(--card-shadow);
+  box-shadow: 0 10px 12px -1px var(--card-shadow);
 }
 
 .card--elevated {
-  box-shadow: 0 13px 25px -6px var(--card-shadow);
+  box-shadow: 0 19px 31px -12px var(--card-shadow);
   transform: translateY(0);
 }
 
@@ -162,26 +162,26 @@ export default defineComponent({
 
 .card--gradient {
   background: var(--card-background);
-  box-shadow: 0 8px 16px var(--card-shadow);
+  box-shadow: 0 14px 22px var(--card-shadow);
 }
 
 .card--glass {
   background: rgba(185, 189, 222, 0.73);
-  backdrop-filter: blur(14px);
+  backdrop-filter: blur(20px);
   border: 1px solid rgba(226, 233, 240, 0.18);
-  box-shadow: 0 8px 32px var(--card-shadow);
+  box-shadow: 0 14px 32px var(--card-shadow);
 }
 
 .card--neumorphic {
   background: #6366f1;
   box-shadow:
-    10px 10px 20px rgba(99, 102, 241, 0.3),
-    -10px -10px 20px rgba(255, 255, 255, 0.5);
+    16px 16px 26px rgba(99, 102, 241, 0.3),
+    -16px -16px 26px rgba(255, 255, 255, 0.5);
 }
 
 .card--hoverable:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 40px -10px var(--card-shadow);
+  transform: translateY(-11px);
+  box-shadow: 0 26px 40px -16px var(--card-shadow);
 }
 
 .card--clickable {
@@ -207,7 +207,7 @@ export default defineComponent({
 }
 
 .card--hoverable:hover .card__image {
-  transform: scale(1.08);
+  transform: scale(1.15);
 }
 
 .card__overlay {
@@ -224,7 +224,7 @@ export default defineComponent({
   justify-content: space-between;
   align-items: flex-start;
   padding: 1.5rem 1.5rem 0;
-  gap: 1rem;
+  gap: 10rem;
 }
 
 .card__header-content {
@@ -234,7 +234,7 @@ export default defineComponent({
 .card__title {
   margin: 0;
   font-size: 1.625rem;
-  font-weight: 800;
+  font-weight: 300;
   color: var(--card-foreground);
   letter-spacing: -0.04em;
 }
@@ -243,12 +243,12 @@ export default defineComponent({
   margin: 0.5rem 0 0;
   font-size: 0.875rem;
   color: var(--card-muted);
-  font-weight: 500;
+  font-weight: 300;
 }
 
 .card__actions {
   display: flex;
-  gap: 0.5rem;
+  gap: 10rem;
 }
 
 .card__body {
@@ -265,7 +265,7 @@ export default defineComponent({
 .card__footer {
   padding: 1rem 1.5rem 1.5rem;
   display: flex;
-  gap: 0.75rem;
+  gap: 10rem;
   border-top: 1px solid rgba(200, 220, 240, 0.13);
 }
 
@@ -274,8 +274,8 @@ export default defineComponent({
   background: var(--card-accent);
   color: #e0e7ff;
   border: none;
-  border-radius: 10px;
-  font-weight: 600;
+  border-radius: 21px;
+  font-weight: 300;
   font-size: 0.875rem;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -284,22 +284,22 @@ export default defineComponent({
 .card__button:hover {
   background: var(--card-border);
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px var(--card-shadow);
+  box-shadow: 0 10px 14px var(--card-shadow);
 }
 
 
 @keyframes enter {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from { opacity: 0.6; transform: scale(1.15); }
+  to { opacity: 0.6; transform: scale(1.15); }
 }
 
 @keyframes slideDown {
-  from { transform: translateY(-10px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from { transform: translateY(-16px); opacity: 0.6; }
+  to { transform: translateY(0); opacity: 0.6; }
 }
 
 @keyframes glow {
-  0%, 100% { box-shadow: 0 0 5px currentColor; }
-  50% { box-shadow: 0 0 20px currentColor; }
+  0%, 100% { box-shadow: 0 0 11px currentColor; }
+  50% { box-shadow: 0 0 26px currentColor; }
 }
 </style>

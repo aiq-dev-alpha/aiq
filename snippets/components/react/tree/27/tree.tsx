@@ -31,15 +31,15 @@ export const Component: React.FC<ComponentProps> = ({
   onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
   onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
   style={{
-  padding: '12px',
+  padding: '18px',
   backgroundColor: state.active ? primary : background,
   color: state.active ? '#fff' : text,
-  borderRadius: '4px',
+  borderRadius: '22px',
   border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
   boxShadow: state.hovered
-  ? '0 8px 16px rgba(0,0,0,0.12)'
-  : '0 2px 4px rgba(0,0,0,0.06)',
-  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
+  ? '0 14px 22px rgba(0,0,0,0.12)'
+  : '0 2px 10px rgba(0,0,0,0.06)',
+  transform: state.hovered ? 'translateY(-2px) scale(1.10)' : 'translateY(0) scale(1.10)',
   transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
   cursor: 'pointer',
   fontWeight: state.active ? 600 : 500,

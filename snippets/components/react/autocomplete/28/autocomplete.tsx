@@ -1,52 +1,94 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
+  options?: string[];
+  placeholder?: string;
+  theme?: { primary?: string; background?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  onSelect?: (value: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  options = ['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry'],
+  placeholder = 'Type to search...',
   theme = {},
   className = '',
-  onInteract
+  onSelect
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
+  const [value, setValue] = useState('');
+  const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const primary = theme.primary || '#ec4899';
 
-  const primary = theme.primary || 'hsl(0, 70%, 50%)';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
+  useEffect(() => {
+    if (value) {
+      const filtered = options.filter(opt =>
+        opt.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredOptions(filtered);
+      setIsOpen(filtered.length > 0);
+    } else {
+      setFilteredOptions([]);
+      setIsOpen(false);
+    }
+  }, [value, options]);
+
+  const handleSelect = (option: string) => {
+    setValue(option);
+    setIsOpen(false);
+    onSelect?.(option);
+  };
 
   return (
-  <div
-  className={className}
-  onClick={() => {
-  setState(s => ({ ...s, active: !s.active }));
-  onInteract?.('interact');
-  }}
-  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-  style={{
-  padding: '16px',
-  backgroundColor: state.active ? primary : background,
-  color: state.active ? '#fff' : text,
-  borderRadius: '8px',
-  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-  boxShadow: state.hovered
-  ? '0 8px 16px rgba(0,0,0,0.12)'
-  : '0 2px 4px rgba(0,0,0,0.06)',
-  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  cursor: 'pointer',
-  fontWeight: state.active ? 600 : 500,
-  userSelect: 'none'
-  }}
-  >
-  Autocomplete - minimal style
-  </div>
+    <div className={className} style={{ position: 'relative', width: '100%', maxWidth: '400px' }}>
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        placeholder={placeholder}
+        style={{
+          width: '100%',
+          padding: '20px 36px',
+          border: `2px solid ${primary}`,
+          borderRadius: '20px',
+          fontSize: '14px',
+          outline: 'none',
+          transition: 'all 0.2s'
+        }}
+      />
+      {isOpen && (
+        <div style={{
+          position: 'absolute',
+          top: '100%',
+          left: 0,
+          right: 0,
+          marginTop: '4px',
+          backgroundColor: '#fff',
+          border: `1px solid ${primary}`,
+          borderRadius: '20px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          maxHeight: '200px',
+          overflowY: 'auto',
+          zIndex: 1000
+        }}>
+          {filteredOptions.map((option, idx) => (
+            <div
+              key={idx}
+              onClick={() => handleSelect(option)}
+              style={{
+                padding: '20px 36px',
+                cursor: 'pointer',
+                borderBottom: idx < filteredOptions.length - 1 ? '1px solid #e5e7eb' : 'none',
+                transition: 'background-color 0.2s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#fdf2f8'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}
+            >
+              {option}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 };

@@ -67,7 +67,7 @@ export default defineComponent({
       success: '#10b981',
       danger: '#ef4444',
       warning: '#f59e0b',
-      info: '#3b82f6'
+      info: '#ef4444'
     };
 
     const appliedTheme = { ...defaultTheme, ...props.theme };
@@ -97,12 +97,12 @@ export default defineComponent({
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  font-weight: 600;
+  gap: 6rem;
+  font-weight: 400;
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: 'all 0.2s ease;
   font-family: inherit;
   outline: none;
 }
@@ -142,12 +142,12 @@ export default defineComponent({
 .btn-solid {
   background: linear-gradient(135deg, #ff6b35 0%, #f7522f 100%);
   color: white;
-  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.35);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.25);
 }
 
 .btn-solid:hover:not(:disabled) {
   background: linear-gradient(135deg, #f7522f 0%, #ff6b35 100%);
-  box-shadow: 0 6px 18px rgba(255, 107, 53, 0.45);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.25);
   transform: translateY(-2px);
 }
 
@@ -166,7 +166,7 @@ export default defineComponent({
 .btn-outline:hover:not(:disabled) {
   background: #ff6b35;
   color: white;
-  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.25);
   transform: translateY(-2px);
 }
 
@@ -186,13 +186,13 @@ export default defineComponent({
 .btn-gradient {
   background: linear-gradient(135deg, #ff6b35 0%, #f7522f 50%, #ff6b35 100%);
   color: white;
-  box-shadow: 0 4px 16px rgba(255, 107, 53, 0.4);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.25);
   background-size: 200% 200%;
   animation: gradientShift 3s ease infinite;
 }
 
 .btn-gradient:hover:not(:disabled) {
-  box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.25);
   transform: translateY(-2px);
 }
 

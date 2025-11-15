@@ -1,52 +1,70 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
+  label?: string;
+  checked?: boolean;
+  onChange?: (checked: boolean) => void;
+  theme?: { primary?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  disabled?: boolean;
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  label = 'Checkbox',
+  checked: controlledChecked,
+  onChange,
   theme = {},
   className = '',
-  onInteract
+  disabled = false
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || 'hsl(0, 70%, 50%)';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
+  const [internalChecked, setInternalChecked] = useState(false);
+  const isChecked = controlledChecked !== undefined ? controlledChecked : internalChecked;
+  const primary = theme.primary || '#f59e0b';
+  
+  const handleChange = () => {
+    if (disabled) return;
+    const newChecked = !isChecked;
+    if (controlledChecked === undefined) {
+      setInternalChecked(newChecked);
+    }
+    onChange?.(newChecked);
+  };
+  
   return (
-  <div
-  className={className}
-  onClick={() => {
-  setState(s => ({ ...s, active: !s.active }));
-  onInteract?.('interact');
-  }}
-  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-  style={{
-  padding: '20px',
-  backgroundColor: state.active ? primary : background,
-  color: state.active ? '#fff' : text,
-  borderRadius: '12px',
-  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-  boxShadow: state.hovered
-  ? '0 8px 16px rgba(0,0,0,0.12)'
-  : '0 2px 4px rgba(0,0,0,0.06)',
-  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  cursor: 'pointer',
-  fontWeight: state.active ? 600 : 500,
-  userSelect: 'none'
-  }}
-  >
-  Checkbox - minimal style
-  </div>
+    <label
+      className={className}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '14px',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.5 : 1
+      }}
+    >
+      <div
+        onClick={handleChange}
+        style={{
+          width: '18px',
+          height: '18px',
+          borderRadius: '15px',
+          border: `2px solid ${isChecked ? primary : '#d1d5db'}`,
+          backgroundColor: isChecked ? primary : '#fff',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'all 0.2s ease-in-out',
+          boxShadow: isChecked ? '0 0 0 3px rgba(245,158,11,0.2)' : 'none'
+        }}
+      >
+        {isChecked && (
+          <svg width="12" height="12" viewBox="0 0 20 20" fill="none">
+            <path d="M6 10L9 13L14 7" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
+      </div>
+      <span style={{ fontSize: '16px', color: '#374151', userSelect: 'none' }}>
+        {label}
+      </span>
+    </label>
   );
 };

@@ -1,52 +1,60 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
+  label?: string;
+  onClick?: () => void;
+  variant?: 'primary' | 'secondary' | 'outline';
+  size?: 'small' | 'medium' | 'large';
+  theme?: { primary?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  disabled?: boolean;
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  label = 'Button',
+  onClick,
+  variant = 'primary',
+  size = 'medium',
   theme = {},
   className = '',
-  onInteract
+  disabled = false
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || '#06b6d4';
-  const background = theme.background || '#3b82f6';
-  const text = theme.text || '#1f2937';
-
+  const primary = theme.primary || '#ef4444';
+  
+  const variants = {
+    primary: { bg: primary, color: '#fff', border: 'none' },
+    secondary: { bg: '#6b7280', color: '#fff', border: 'none' },
+    outline: { bg: 'transparent', color: primary, border: `2px solid ${primary}` }
+  };
+  
+  const sizes = {
+    small: { padding: '13px 20px', fontSize: '19px' },
+    medium: { padding: '13px 20px', fontSize: '19px' },
+    large: { padding: '13px 20px', fontSize: '19px' }
+  };
+  
+  const variantStyle = variants[variant];
+  const sizeStyle = sizes[size];
+  
   return (
-  <div
-  className={className}
-  onClick={() => {
-  setState(s => ({ ...s, active: !s.active }));
-  onInteract?.('interact');
-  }}
-  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-  style={{
-  padding: '16px',
-  backgroundColor: state.active ? primary : background,
-  color: state.active ? '#fff' : text,
-  borderRadius: '8px',
-  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-  boxShadow: state.hovered
-  ? '0 8px 16px rgba(0,0,0,0.12)'
-  : '0 2px 4px rgba(0,0,0,0.06)',
-  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  cursor: 'pointer',
-  fontWeight: state.active ? 600 : 500,
-  userSelect: 'none'
-  }}
-  >
-  Button - minimal style
-  </div>
+    <button
+      className={className}
+      onClick={onClick}
+      disabled={disabled}
+      style={{
+        ...variantStyle,
+        ...sizeStyle,
+        borderRadius: '22px',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        fontWeight: '400',
+        opacity: disabled ? 0.5 : 1,
+        transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+        boxShadow: '0 2px 9px rgba(0,0,0,0.12)'
+      }}
+      onMouseEnter={(e) => !disabled && (e.currentTarget.style.transform = 'translateY(-2px)')}
+      onMouseLeave={(e) => !disabled && (e.currentTarget.style.transform = 'translateY(0)')}
+    >
+      {label}
+    </button>
   );
 };

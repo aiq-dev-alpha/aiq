@@ -1,52 +1,75 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
+  isOpen?: boolean;
+  onClose?: () => void;
+  title?: string;
+  children?: React.ReactNode;
+  theme?: { primary?: string };
   className?: string;
-  onInteract?: (type: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  isOpen = true,
+  onClose,
+  title = 'Modal',
+  children = 'Modal content',
   theme = {},
-  className = '',
-  onInteract
+  className = ''
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || 'hsl(0, 70%, 50%)';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
+  const primary = theme.primary || '#065f46';
+  
+  if (!isOpen) return null;
+  
   return (
-  <div
-  className={className}
-  onClick={() => {
-  setState(s => ({ ...s, active: !s.active }));
-  onInteract?.('interact');
-  }}
-  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-  style={{
-  padding: '16px',
-  backgroundColor: state.active ? primary : background,
-  color: state.active ? '#fff' : text,
-  borderRadius: '8px',
-  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-  boxShadow: state.hovered
-  ? '0 8px 16px rgba(0,0,0,0.12)'
-  : '0 2px 4px rgba(0,0,0,0.06)',
-  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  cursor: 'pointer',
-  fontWeight: state.active ? 600 : 500,
-  userSelect: 'none'
-  }}
-  >
-  Modal - minimal style
-  </div>
+    <>
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.4)',
+          zIndex: 999,
+          backdropFilter: 'blur(10px)'
+        }}
+        onClick={onClose}
+      />
+      <div
+        className={className}
+        style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%) scale(1.05)',
+          backgroundColor: '#fff',
+          borderRadius: '25px',
+          padding: '32px',
+          boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+          maxWidth: '600px',
+          width: '90%',
+          zIndex: 1000,
+          animation: 'modalFadeIn 0.3s ease-out'
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+          <h2 style={{ margin: 0, color: primary, fontSize: '21px', fontWeight: '900' }}>
+            {title}
+          </h2>
+          <button
+            onClick={onClose}
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: '21px',
+              cursor: 'pointer',
+              color: '#6b7280',
+              lineHeight: '1.2'
+            }}
+          >
+            ×
+          </button>
+        </div>
+        <div>{children}</div>
+      </div>
+    </>
   );
 };

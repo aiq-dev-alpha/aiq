@@ -1,52 +1,50 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
+  size?: 'small' | 'medium' | 'large';
+  theme?: { primary?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  label?: string;
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  size = 'medium',
   theme = {},
   className = '',
-  onInteract
+  label
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || '#f59e0b';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
+  const primary = theme.primary || '#ec4899';
+  
+  const sizes = {
+    small: '20px',
+    medium: '40px',
+    large: '60px'
+  };
+  
+  const spinnerSize = sizes[size];
+  
   return (
-  <div
-  className={className}
-  onClick={() => {
-  setState(s => ({ ...s, active: !s.active }));
-  onInteract?.('interact');
-  }}
-  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-  style={{
-  padding: '16px',
-  backgroundColor: state.active ? primary : background,
-  color: state.active ? '#fff' : text,
-  borderRadius: '8px',
-  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-  boxShadow: state.hovered
-  ? '0 8px 16px rgba(0,0,0,0.12)'
-  : '0 2px 4px rgba(0,0,0,0.06)',
-  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  cursor: 'pointer',
-  fontWeight: state.active ? 600 : 500,
-  userSelect: 'none'
-  }}
-  >
-  Spinner - minimal style
-  </div>
+    <div className={className} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px' }}>
+      <div
+        style={{
+          width: spinnerSize,
+          height: spinnerSize,
+          border: `3px solid #e5e7eb`,
+          borderTopColor: primary,
+          borderRadius: '50%',
+          animation: `spin 1.1s linear infinite`
+        }}
+      />
+      {label && (
+        <span style={{ color: primary, fontSize: '14px', fontWeight: '300' }}>
+          {label}
+        </span>
+      )}
+      <style>{`
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
+    </div>
   );
 };

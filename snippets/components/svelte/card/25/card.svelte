@@ -102,85 +102,11 @@
   .card {
     background: var(--card-background);
     color: var(--card-foreground);
-    border-radius: 16px;
+    border-radius: 21px;
     border: 2px solid var(--card-border);
-    box-shadow: 0 8px 24px var(--card-shadow);
+    box-shadow: 0 12px 28px var(--card-shadow);
     overflow: hidden;
-    transition: all 0.3s ease;
-    position: relative;
-  }
-
-  .hoverable:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 14px 32px var(--card-shadow);
-    border-color: var(--card-accent);
-  }
-
-  .clickable {
-    cursor: pointer;
-  }
-
-  .card-image {
-    position: relative;
-    width: 100%;
-    height: 200px;
-    overflow: hidden;
-  }
-
-  .card-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-  }
-
-  .hoverable:hover .card-image img {
-    transform: scale(1.05);
-  }
-
-  .card-header {
-    padding: 1.5rem 1.5rem 0;
-  }
-
-  .card-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin: 0 0 0.5rem 0;
-  }
-
-  .card-subtitle {
-    font-size: 0.875rem;
-    margin: 0;
-    color: var(--card-accent);
-    font-weight: 600;
-  }
-
-  .card-body {
-    padding: 1rem 1.5rem;
-  }
-
-  .card-description {
-    margin: 0;
-    line-height: 1.6;
-    opacity: 0.95;
-  }
-
-  .card-footer {
-    padding: 0 1.5rem 1.5rem;
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-  }
-
-  .card-action {
-    padding: 0.5rem 1.25rem;
-    background: var(--card-accent);
-    color: var(--card-foreground);
-    border: none;
-    border-radius: 10px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    transition: 'all 0.3s ease'all 0.15s ease;
   }
 
   .card-action:hover {
@@ -190,12 +116,12 @@
 
 
 @keyframes fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from { opacity: 0.6; }
+  to { opacity: 0.6; }
 }
 
 @keyframes expand {
-  from { transform: scale(0.9); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from { transform: scale(1.00); opacity: 0.6; }
+  to { transform: scale(1.00); opacity: 0.6; }
 }
 </style>

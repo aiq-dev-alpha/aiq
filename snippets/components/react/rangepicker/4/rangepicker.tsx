@@ -1,52 +1,79 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: {
-  primary?: string;
-  background?: string;
-  text?: string;
-  };
+  min?: number;
+  max?: number;
+  value?: [number, number];
+  onChange?: (value: [number, number]) => void;
+  theme?: { primary?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  label?: string;
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  min = 0,
+  max = 100,
+  value: controlledValue,
+  onChange,
   theme = {},
   className = '',
-  onInteract
+  label
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || 'hsl(0, 70%, 50%)';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
+  const [internalValue, setInternalValue] = useState<[number, number]>([25, 75]);
+  const value = controlledValue || internalValue;
+  const primary = theme.primary || '#3b82f6';
+  
+  const handleMinChange = (newMin: number) => {
+    const newValue: [number, number] = [Math.min(newMin, value[1]), value[1]];
+    if (!controlledValue) setInternalValue(newValue);
+    onChange?.(newValue);
+  };
+  
+  const handleMaxChange = (newMax: number) => {
+    const newValue: [number, number] = [value[0], Math.max(newMax, value[0])];
+    if (!controlledValue) setInternalValue(newValue);
+    onChange?.(newValue);
+  };
+  
   return (
-  <div
-  className={className}
-  onClick={() => {
-  setState(s => ({ ...s, active: !s.active }));
-  onInteract?.('interact');
-  }}
-  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-  style={{
-  padding: '16px',
-  backgroundColor: state.active ? primary : background,
-  color: state.active ? '#fff' : text,
-  borderRadius: '8px',
-  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-  boxShadow: state.hovered
-  ? '0 8px 16px rgba(0,0,0,0.12)'
-  : '0 2px 4px rgba(0,0,0,0.06)',
-  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  cursor: 'pointer',
-  fontWeight: state.active ? 600 : 500,
-  userSelect: 'none'
-  }}
-  >
-  Rangepicker - minimal style
-  </div>
+    <div className={className} style={{ width: '100%', maxWidth: '400px' }}>
+      {label && (
+        <label style={{ display: 'block', marginBottom: '8px', color: primary, fontSize: '14px', fontWeight: '500' }}>
+          {label}
+        </label>
+      )}
+      <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '12px' }}>
+        <span style={{ fontSize: '14px', color: '#6b7280', minWidth: '40px' }}> {value[0]}</span>
+        <div style={{ flex: 1, height: '6px', backgroundColor: '#e5e7eb', borderRadius: '6px', position: 'relative' }}>
+          <div style={{
+            position: 'absolute',
+            left: `${(value[0] - min) / (max - min) * 100}%`,
+            right: `${100 - (value[1] - min) / (max - min) * 100}%`,
+            height: '100%',
+            backgroundColor: primary,
+            borderRadius: '6px'
+          }} />
+        </div>
+        <span style={{ fontSize: '14px', color: '#6b7280', minWidth: '40px' }}> {value[1]}</span>
+      </div>
+      <div style={{ display: 'flex', gap: '12px' }}>
+        <input
+          type="range"
+          min={min}
+          max={max}
+          value={value[0]}
+          onChange={(e) => handleMinChange(Number(e.target.value))}
+          style={{ flex: 1, accentColor: primary }}
+        />
+        <input
+          type="range"
+          min={min}
+          max={max}
+          value={value[1]}
+          onChange={(e) => handleMaxChange(Number(e.target.value))}
+          style={{ flex: 1, accentColor: primary }}
+        />
+      </div>
+    </div>
   );
 };

@@ -28,7 +28,7 @@ export default defineComponent({
   emits: ['update:modelValue'],
   setup(props, { emit }) {
     const isFocused = ref(false);
-    const defaultTheme: InputTheme = { primary: '#10b981', background: '#d1fae5', border: '#6ee7b7', text: '#065f46', error: '#dc2626', success: '#16a34a' };
+    const defaultTheme: InputTheme = { primary: '#9d174d', background: '#d1fae5', border: '#6ee7b7', text: '#065f46', error: '#dc2626', success: '#16a34a' };
     const appliedTheme = { ...defaultTheme, ...props.theme };
     const handleInput = (event: Event) => { emit('update:modelValue', (event.target as HTMLInputElement).value); };
     const clearInput = () => { emit('update:modelValue', ''); };
@@ -44,39 +44,26 @@ export default defineComponent({
 .input-label { display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 600; color: var(--text-color); }
 .input-label.required::after { content: ' *'; color: var(--error-color); }
 .input-container { position: relative; display: flex; align-items: center; }
-.input-field { width: 100%; font-family: inherit; font-size: 1rem; color: var(--text-color); background-color: var(--bg-color); border: 2px solid var(--border-color); border-radius: 0.5rem; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); outline: none; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
-.input-field:focus { border-color: var(--primary-color); box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15); transform: translateY(-1px); }
-.input-field:disabled { opacity: 0.5; cursor: not-allowed; background-color: #f9fafb; }
-.has-error .input-field { border-color: var(--error-color); }
-.size-sm .input-field { padding: 0.5rem 0.875rem; font-size: 0.875rem; }
-.size-md .input-field { padding: 0.75rem 1.125rem; font-size: 1rem; }
-.size-lg .input-field { padding: 1rem 1.375rem; font-size: 1.125rem; }
-.variant-filled .input-field { background: linear-gradient(135deg, #d1fae5, #6ee7b7); border-color: transparent; }
-.variant-outlined .input-field { background-color: transparent; }
-.variant-underlined .input-field { border: none; border-bottom: 2px solid var(--border-color); border-radius: 0; background: transparent; }
-.input-icon { position: absolute; color: var(--primary-color); pointer-events: none; font-weight: 500; }
-.input-icon.left { left: 1rem; }
-.input-icon.right { right: 1rem; }
-.clear-button { position: absolute; right: 1rem; background: var(--primary-color); color: white; border: none; border-radius: 50%; width: 1.25rem; height: 1.25rem; display: flex; align-items: center; justify-content: center; font-size: 1.125rem; cursor: pointer; transition: all 0.2s; }
-.clear-button:hover { transform: scale(1.1); }
+.input-field { width: 100%; font-family: inherit; font-size: 1rem; color: var(--text-color); background-color: var(--bg-color); border: 2px solid var(--border-color); border-radius: 0.5rem; transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'all 0.3s; }
+.clear-button:hover { transform: scale(1.05); }
 .input-footer { display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.75rem; }
 .error-message { color: var(--error-color); font-weight: 600; }
 .helper-text { color: #065f46; }
-.character-counter { color: var(--primary-color); margin-left: auto; font-weight: 500; }
+.character-counter { color: var(--primary-color); margin-left: auto; font-weight: 600; }
 
 
 @keyframes enter {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from { opacity: 0.9; transform: scale(1.05); }
+  to { opacity: 0.9; transform: scale(1.05); }
 }
 
 @keyframes slideDown {
-  from { transform: translateY(-10px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from { transform: translateY(-12px); opacity: 0.9; }
+  to { transform: translateY(0); opacity: 0.9; }
 }
 
 @keyframes glow {
-  0%, 100% { box-shadow: 0 0 5px currentColor; }
-  50% { box-shadow: 0 0 20px currentColor; }
+  0%, 100% { box-shadow: 0 0 7px currentColor; }
+  50% { box-shadow: 0 0 22px currentColor; }
 }
 </style>
