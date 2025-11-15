@@ -1,50 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-export interface ButtonProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onHover?: (isHovered: boolean) => void;
+  onInteract?: (type: string) => void;
 }
 
-export const Button: React.FC<ButtonProps> = ({
-  theme = {},
-  className = '',
-  onHover
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [selected, setSelected] = useState(0);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const buttonStyle = (index: number): React.CSSProperties => ({
-    padding: '10px 20px',
-    backgroundColor: selected === index ? (theme.primary || '#3b82f6') : '#ffffff',
-    color: selected === index ? '#ffffff' : (theme.text || '#111827'),
-    border: \`1px solid \${theme.primary || '#3b82f6'}\`,
-    borderRadius: index === 0 ? '8px 0 0 8px' : index === 2 ? '0 8px 8px 0' : '0',
-    borderLeft: index === 0 ? \`1px solid \${theme.primary || '#3b82f6'}\` : 'none',
-    cursor: 'pointer',
-    fontWeight: 600,
-    transition: 'all 200ms ease',
-  });
-
-  const containerStyle: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transition: 'all 300ms ease',
-    display: 'inline-flex',
-  };
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [pulse, setPulse] = useState(false);
+  const primary = theme.primary || '#14b8a6';
 
   return (
-    <div className={className} style={containerStyle}>
-      <button style={buttonStyle(0)} onClick={() => setSelected(0)}>Left</button>
-      <button style={buttonStyle(1)} onClick={() => setSelected(1)}>Center</button>
-      <button style={buttonStyle(2)} onClick={() => setSelected(2)}>Right</button>
-    </div>
+    <button
+      className={className}
+      onClick={() => { setPulse(true); setTimeout(() => setPulse(false), 1000); onInteract?.('pulse'); }}
+      style={{
+        padding: '16px 36px',
+        background: primary,
+        color: '#fff',
+        border: 'none',
+        borderRadius: '12px',
+        fontSize: '16px',
+        fontWeight: 700,
+        cursor: 'pointer',
+        position: 'relative',
+        boxShadow: pulse ? `0 0 0 0 ${primary}` : `0 0 0 8px ${primary}00`,
+        animation: pulse ? 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1)' : 'none',
+        outline: 'none'
+      }}
+    >
+      Pulse Button
+      <style>{`
+        @keyframes pulse {
+          0% { box-shadow: 0 0 0 0 ${primary}80; }
+          100% { box-shadow: 0 0 0 20px ${primary}00; }
+        }
+      `}</style>
+    </button>
   );
 };

@@ -32,7 +32,7 @@ interface ButtonTheme {
     .btn {
       border: none;
       cursor: pointer;
-      transition: all 0.3s ease-out;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       font-family: inherit;
       outline: none;
       position: relative;
@@ -40,7 +40,7 @@ interface ButtonTheme {
     }
     .btn:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
     }
     .btn:active:not(:disabled) {
       transform: translateY(0);
@@ -103,6 +103,7 @@ export class ButtonComponent {
     primaryColor: '#14b8a6',
     secondaryColor: '#0d9488',
     backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
     textColor: '#0f172a',
     borderColor: '#cbd5e1',
     glowColor: 'rgba(20, 184, 166, 0.4)'

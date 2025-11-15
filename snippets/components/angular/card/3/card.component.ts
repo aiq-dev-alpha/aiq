@@ -118,7 +118,7 @@ interface CardTheme {
       font-size: 14px;
       font-weight: 700;
       background: rgba(255,255,255,0.95);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
     }
     .card-content {
       padding: 26px;
@@ -148,6 +148,26 @@ interface CardTheme {
       align-items: center;
       justify-content: space-between;
     }
+      .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
+    }
+  
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(-20px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes scaleIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
   `]
 })
 export class CardComponent {
@@ -172,6 +192,7 @@ export class CardComponent {
     primaryColor: '#ec4899',
     secondaryColor: '#f472b6',
     backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
     textColor: '#831843',
     borderColor: '#fce7f3',
     shadowColor: 'rgba(236, 72, 153, 0.25)',

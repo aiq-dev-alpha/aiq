@@ -33,7 +33,7 @@ interface ButtonTheme {
       position: relative;
       overflow: hidden;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       font-weight: 600;
       border: none;
       outline: none;
@@ -122,6 +122,7 @@ export class ButtonComponent {
     primaryColor: '#fb923c',
     secondaryColor: '#f97316',
     backgroundColor: '#fff7ed',
+        backdropFilter: 'blur(10px)',
     textColor: '#ffffff',
     borderColor: '#fb923c',
     accentColor: '#fdba74'

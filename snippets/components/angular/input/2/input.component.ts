@@ -250,6 +250,7 @@ export class InputComponent implements ControlValueAccessor {
     primaryColor: '#6366f1',
     secondaryColor: '#8b5cf6',
     backgroundColor: '#f8fafc',
+        backdropFilter: 'blur(10px)',
     textColor: '#1e293b',
     borderColor: '#cbd5e1',
     accentColor: '#ec4899',
@@ -302,11 +303,13 @@ export class InputComponent implements ControlValueAccessor {
       },
       outlined: {
         backgroundColor: 'transparent',
+        backdropFilter: 'blur(10px)',
         border: `2px solid ${this.hasError ? t.errorColor : this.showSuccess ? t.successColor : t.borderColor}`,
         borderRadius: '8px'
       },
       underlined: {
         backgroundColor: 'transparent',
+        backdropFilter: 'blur(10px)',
         borderBottom: `2px solid ${this.hasError ? t.errorColor : this.showSuccess ? t.successColor : t.borderColor}`,
         borderRadius: '0'
       }

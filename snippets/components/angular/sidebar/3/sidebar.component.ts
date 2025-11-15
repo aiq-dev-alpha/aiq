@@ -191,7 +191,7 @@ export interface SidebarTheme {
       align-items: center;
       padding: 0.875rem 1.5rem;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
     }
 
@@ -266,6 +266,22 @@ export interface SidebarTheme {
         max-width: 320px;
       }
     }
+  
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(-20px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes scaleIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
   `],
   animations: [
     trigger('slideAnimation', [
@@ -310,6 +326,7 @@ export class SidebarComponent {
   private defaultTheme: SidebarTheme = {
     primaryColor: '#3b82f6',
     backgroundColor: '#0f172a',
+        backdropFilter: 'blur(10px)',
     textColor: '#f1f5f9',
     activeColor: 'rgba(59, 130, 246, 0.2)',
     hoverColor: 'rgba(148, 163, 184, 0.1)',

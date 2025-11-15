@@ -1,48 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-interface SliderInputProps {
-  value: number;
-  onChange: (value: number) => void;
-  min?: number;
-  max?: number;
-  step?: number;
-  label?: string;
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
+  className?: string;
+  onInteract?: (type: string) => void;
 }
 
-export default function SliderInput({
-  value,
-  onChange,
-  min = 0,
-  max = 100,
-  step = 1,
-  label = 'Value'
-}: SliderInputProps) {
-  const percentage = ((value - min) / (max - min)) * 100;
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [value, setValue] = useState('');
+  const [focused, setFocused] = useState(false);
+  const primary = theme.primary || '#ec4899';
+  
   return (
-    <div className="w-full">
-      <div className="flex justify-between items-center mb-2">
-        <label className="text-sm font-medium text-gray-700">{label}</label>
-        <span className="text-sm font-semibold text-blue-600">{value}</span>
-      </div>
-      <div className="relative">
-        <input
-          type="range"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          onChange={(e) => onChange(Number(e.target.value))}
-          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-          style={{
-            background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${percentage}%, #e5e7eb ${percentage}%, #e5e7eb 100%)`
-          }}
-        />
-      </div>
-      <div className="flex justify-between mt-1">
-        <span className="text-xs text-gray-500">{min}</span>
-        <span className="text-xs text-gray-500">{max}</span>
-      </div>
+    <div className={className} style={{ width: '100%', maxWidth: '360px' }}>
+      <input
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        placeholder="Enter text..."
+        style={{
+          width: '100%',
+          padding: '14px 18px',
+          border: `2px solid ${focused ? primary : '#e5e7eb'}`,
+          borderRadius: '12px',
+          fontSize: '16px',
+          outline: 'none',
+          transition: 'all 250ms',
+          background: focused ? `${primary}05` : '#ffffff',
+          boxShadow: focused ? `0 0 0 4px ${primary}20` : 'none'
+        }}
+      />
     </div>
   );
-}
+};

@@ -1,39 +1,31 @@
 import 'package:flutter/material.dart';
 
 class CustomCarousel extends StatefulWidget {
-  final Color? backgroundColor;
-  final Color? textColor;
-  final Color? accentColor;
-  final EdgeInsetsGeometry? padding;
+  final Widget? child;
+  final VoidCallback? onTap;
+  final Color? color;
 
   const CustomCarousel({
     Key? key,
-    this.backgroundColor,
-    this.textColor,
-    this.accentColor,
-    this.padding,
+    this.child,
+    this.onTap,
+    this.color,
   }) : super(key: key);
 
   @override
   State<CustomCarousel> createState() => _CustomCarouselState();
 }
 
-class _CustomCarouselState extends State<CustomCarousel> with TickerProviderStateMixin {
+class _CustomCarouselState extends State<CustomCarousel> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-  bool _isHovered = false;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 760),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 0.95, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
-    );
-    _controller.forward();
   }
 
   @override
@@ -44,32 +36,29 @@ class _CustomCarouselState extends State<CustomCarousel> with TickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: ScaleTransition(
-        scale: _scaleAnimation,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          transform: Matrix4.identity()..translate(0.0, _isHovered ? -3.0 : 0.0),
-          padding: widget.padding ?? const EdgeInsets.all(26),
-          decoration: BoxDecoration(
-            color: widget.backgroundColor ?? Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: (widget.accentColor ?? Colors.blue).withOpacity(_isHovered ? 0.6 : 0.2),
-              width: _isHovered ? 2.0 : 1.0,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(_isHovered ? 0.15 : 0.08),
-                blurRadius: _isHovered ? 16.0 : 10.0,
-                offset: Offset(0, _isHovered ? 4.0 : 2.0),
-              ),
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              widget.color ?? Theme.of(context).primaryColor,
+              (widget.color ?? Theme.of(context).primaryColor).withOpacity(0.8),
             ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-          child: const Center(child: Text('Component')),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: (widget.color ?? Theme.of(context).primaryColor).withOpacity(0.3),
+              blurRadius: 15,
+              offset: const Offset(0, 5),
+            ),
+          ],
         ),
+        child: widget.child ?? const Text('Component', style: TextStyle(color: Colors.white)),
       ),
     );
   }

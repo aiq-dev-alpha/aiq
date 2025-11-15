@@ -1,39 +1,36 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 
-interface AutogrowInputProps {
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  minHeight?: number;
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
+  className?: string;
+  onInteract?: (type: string) => void;
 }
 
-export default function AutogrowInput({
-  value,
-  onChange,
-  placeholder = 'Enter text...',
-  minHeight = 42
-}: AutogrowInputProps) {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${Math.max(
-        textareaRef.current.scrollHeight,
-        minHeight
-      )}px`;
-    }
-  }, [value, minHeight]);
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [value, setValue] = useState('');
+  const [focused, setFocused] = useState(false);
+  const primary = theme.primary || '#a855f7';
+  
   return (
-    <textarea
-      ref={textareaRef}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder={placeholder}
-      rows={1}
-      style={{ minHeight: `${minHeight}px` }}
-      className="w-full px-4 py-2.5 text-base border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all resize-none overflow-hidden"
-    />
+    <div className={className} style={{ width: '100%', maxWidth: '360px' }}>
+      <input
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        placeholder="Enter text..."
+        style={{
+          width: '100%',
+          padding: '14px 18px',
+          border: `2px solid ${focused ? primary : '#e5e7eb'}`,
+          borderRadius: '12px',
+          fontSize: '16px',
+          outline: 'none',
+          transition: 'all 250ms',
+          background: focused ? `${primary}05` : '#ffffff',
+          boxShadow: focused ? `0 0 0 4px ${primary}20` : 'none'
+        }}
+      />
+    </div>
   );
-}
+};

@@ -91,7 +91,7 @@ interface CardTheme {
       border-radius: 50%
 20px
 4px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
       z-index: 5;
     }
     .badge {
@@ -134,6 +134,26 @@ interface CardTheme {
       gap: 12px;
       align-items: center;
     }
+      .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
+    }
+  
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(-20px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes scaleIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
   `]
 })
 export class CardComponent {
@@ -158,6 +178,7 @@ export class CardComponent {
     primaryColor: '#f59e0b',
     secondaryColor: '#fbbf24',
     backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
     textColor: '#78350f',
     borderColor: '#fef3c7',
     shadowColor: 'rgba(245, 158, 11, 0.2)',

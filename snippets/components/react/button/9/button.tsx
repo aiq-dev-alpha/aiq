@@ -1,61 +1,39 @@
 import React, { useState, useEffect } from 'react';
 
-export interface ButtonProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onHover?: (isHovered: boolean) => void;
+  onInteract?: (type: string) => void;
 }
 
-export const Button: React.FC<ButtonProps> = ({
-  theme = {},
-  className = '',
-  onHover
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isPressed, setIsPressed] = useState(false);
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [hue, setHue] = useState(0);
+  const primary = theme.primary || '#3b82f6';
 
   useEffect(() => {
-    setIsVisible(true);
+    const interval = setInterval(() => setHue(h => (h + 1) % 360), 50);
+    return () => clearInterval(interval);
   }, []);
 
-  const handleMouseEnter = () => {
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    onHover?.(false);
-    setIsPressed(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transition: 'all 150ms ease',
-    padding: '14px 28px',
-    backgroundColor: theme.background || '#e0e5ec',
-    color: theme.text || '#6b7280',
-    borderRadius: '12px',
-    border: 'none',
-    cursor: 'pointer',
-    fontWeight: 600,
-    boxShadow: isPressed
-      ? 'inset 4px 4px 8px rgba(163, 177, 198, 0.6), inset -4px -4px 8px rgba(255, 255, 255, 0.5)'
-      : '6px 6px 12px rgba(163, 177, 198, 0.6), -6px -6px 12px rgba(255, 255, 255, 0.5)',
-  };
-
   return (
-    <div
+    <button
       className={className}
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onMouseDown={() => setIsPressed(true)}
-      onMouseUp={() => setIsPressed(false)}
+      onClick={() => onInteract?.('rainbow')}
+      style={{
+        padding: '16px 32px',
+        background: `linear-gradient(135deg, hsl(${hue}, 70%, 60%), hsl(${(hue + 60) % 360}, 70%, 60%))`,
+        color: '#fff',
+        border: 'none',
+        borderRadius: '16px',
+        fontSize: '16px',
+        fontWeight: 700,
+        cursor: 'pointer',
+        boxShadow: `0 4px 12px hsl(${hue}, 70%, 60%, 0.4)`,
+        transition: 'box-shadow 200ms',
+        outline: 'none'
+      }}
     >
-      Neumorphism
-    </div>
+      Rainbow Button
+    </button>
   );
 };

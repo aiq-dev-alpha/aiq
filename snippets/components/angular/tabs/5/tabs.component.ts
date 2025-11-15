@@ -62,6 +62,7 @@ export class TabsComponent {
   private defaultTheme: TabsTheme = {
     primaryColor: '#ec4899',
     backgroundColor: '#fdf2f8',
+        backdropFilter: 'blur(10px)',
     textColor: '#9f1239',
     activeColor: '#be185d',
     borderColor: '#fce7f3',
@@ -88,6 +89,7 @@ export class TabsComponent {
       gap: '0',
       borderBottom: `3px solid ${this.appliedTheme.borderColor}`,
       backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
       padding: '0 1rem'
     };
   }
@@ -101,6 +103,7 @@ export class TabsComponent {
       padding: '1rem 1.75rem',
       border: 'none',
       backgroundColor: 'transparent',
+        backdropFilter: 'blur(10px)',
       color: isActive ? this.appliedTheme.activeColor : this.appliedTheme.textColor,
       cursor: isDisabled ? 'not-allowed' : 'pointer',
       fontSize: '0.975rem',
@@ -137,6 +140,7 @@ export class TabsComponent {
     return {
       padding: '2rem',
       backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
       color: '#374151',
       minHeight: '220px'
     };

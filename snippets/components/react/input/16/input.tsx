@@ -1,36 +1,36 @@
 import React, { useState } from 'react';
 
-interface UnderlineInputProps {
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  type?: string;
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
+  className?: string;
+  onInteract?: (type: string) => void;
 }
 
-export default function UnderlineInput({
-  value,
-  onChange,
-  placeholder = 'Enter text...',
-  type = 'text'
-}: UnderlineInputProps) {
-  const [isFocused, setIsFocused] = useState(false);
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [value, setValue] = useState('');
+  const [focused, setFocused] = useState(false);
+  const primary = theme.primary || '#6366f1';
+  
   return (
-    <div className="relative w-full">
+    <div className={className} style={{ width: '100%', maxWidth: '360px' }}>
       <input
-        type={type}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        placeholder={placeholder}
-        className="w-full px-2 py-2 text-base bg-transparent border-b-2 border-gray-300 outline-none transition-colors duration-300 focus:border-blue-500"
-      />
-      <div
-        className={`absolute bottom-0 left-0 h-0.5 bg-blue-500 transition-all duration-300 ${
-          isFocused ? 'w-full' : 'w-0'
-        }`}
+        onChange={(e) => setValue(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        placeholder="Enter text..."
+        style={{
+          width: '100%',
+          padding: '14px 18px',
+          border: `2px solid ${focused ? primary : '#e5e7eb'}`,
+          borderRadius: '9px',
+          fontSize: '16px',
+          outline: 'none',
+          transition: 'all 250ms',
+          background: focused ? `${primary}05` : '#ffffff',
+          boxShadow: focused ? `0 0 0 4px ${primary}20` : 'none'
+        }}
       />
     </div>
   );
-}
+};

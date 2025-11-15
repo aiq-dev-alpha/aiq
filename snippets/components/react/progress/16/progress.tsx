@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
   theme?: {
@@ -7,58 +7,46 @@ export interface ComponentProps {
     text?: string;
   };
   className?: string;
-  onHover?: (isHovered: boolean) => void;
+  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ 
-  theme = {}, 
+export const Component: React.FC<ComponentProps> = ({
+  theme = {},
   className = '',
-  onHover
+  onInteract
 }) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+  const [state, setState] = useState({ active: false, hovered: false });
 
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-8px) scale(1.1)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(28px) scale(0.95)',
-    transition: `all 730ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '20px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '12px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 6px 24px rgba(0,0,0,0.12)' 
-      : '0 4px 12px rgba(0,0,0,0.10)',
-    cursor: 'pointer',
-  };
+  const primary = theme.primary || 'hsl(255, 70%, 50%)';
+  const background = theme.background || '#ffffff';
+  const text = theme.text || '#1f2937';
 
   return (
-    <div 
-      className={className} 
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+    <div
+      className={className}
+      onClick={() => {
+        setState(s => ({ ...s, active: !s.active }));
+        onInteract?.('interact');
+      }}
+      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
+      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
+      style={{
+        padding: '30px',
+        backgroundColor: state.active ? primary : background,
+        color: state.active ? '#fff' : text,
+        borderRadius: '14px',
+        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
+        boxShadow: state.hovered
+          ? '0 8px 16px rgba(0,0,0,0.12)'
+          : '0 2px 4px rgba(0,0,0,0.06)',
+        transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
+        transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
+        cursor: 'pointer',
+        fontWeight: state.active ? 600 : 500,
+        userSelect: 'none'
+      }}
     >
-      Component
+      Progress - neumorphic style
     </div>
   );
 };

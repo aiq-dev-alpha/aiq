@@ -133,6 +133,7 @@ export class TableComponent {
     primaryColor: '#10b981',
     secondaryColor: '#059669',
     backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
     textColor: '#111827',
     borderColor: '#d1d5db',
     headerBgColor: '#10b981',
@@ -204,6 +205,7 @@ export class TableComponent {
     return {
       padding: '20px',
       backgroundColor: '#f9fafb',
+        backdropFilter: 'blur(10px)',
       borderBottom: `2px solid ${this.appliedTheme.borderColor}`
     };
   }
@@ -333,6 +335,7 @@ export class TableComponent {
       alignItems: 'center',
       padding: '20px',
       backgroundColor: '#f9fafb',
+        backdropFilter: 'blur(10px)',
       borderTop: `2px solid ${this.appliedTheme.borderColor}`
     };
   }
@@ -399,6 +402,7 @@ export class TableComponent {
       border: 'none',
       borderRadius: '6px',
       backgroundColor: '#dc2626',
+        backdropFilter: 'blur(10px)',
       color: '#ffffff',
       cursor: 'pointer',
       fontSize: '13px',
@@ -408,7 +412,8 @@ export class TableComponent {
 
   get expandedRowStyles() {
     return {
-      backgroundColor: '#f3f4f6'
+      backgroundColor: '#f3f4f6',
+        backdropFilter: 'blur(10px)'
     };
   }
 

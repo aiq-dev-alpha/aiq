@@ -1,59 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-export interface ButtonProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onHover?: (isHovered: boolean) => void;
+  onInteract?: (type: string) => void;
 }
 
-export const Button: React.FC<ButtonProps> = ({
-  theme = {},
-  className = '',
-  onHover
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transition: 'all 300ms ease',
-    padding: '12px 24px',
-    backgroundColor: isHovered ? '#f59e0bdd' : (theme.primary || '#f59e0b'),
-    color: '#ffffff',
-    borderRadius: '12px',
-    border: 'none',
-    cursor: 'pointer',
-    fontWeight: 600,
-    transform: isHovered ? 'scale(1.05)' : 'scale(1)',
-    boxShadow: isHovered ? '0 6px 20px rgba(0, 0, 0, 0.2)' : '0 2px 8px rgba(0, 0, 0, 0.1)',
-  };
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [morphed, setMorphed] = useState(false);
+  const primary = theme.primary || '#0891b2';
   return (
-    <div
-      className={className}
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      Badge Button
-    </div>
+    <button className={className} onClick={() => { setMorphed(!morphed); onInteract?.('morph'); }}
+      style={{ padding: morphed ? '8px 16px' : '16px 48px', background: primary, color: '#fff',
+        border: 'none', borderRadius: morphed ? '50%' : '12px', fontSize: '14px', fontWeight: 700,
+        cursor: 'pointer', transition: 'all 500ms cubic-bezier(0.68, -0.55, 0.265, 1.55)', outline: 'none' }}>
+      {morphed ? '●' : 'Morph'}
+    </button>
   );
 };

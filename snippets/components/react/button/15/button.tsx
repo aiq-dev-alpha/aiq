@@ -1,65 +1,60 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-export interface ButtonProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onHover?: (isHovered: boolean) => void;
+  onInteract?: (type: string) => void;
 }
 
-export const Button: React.FC<ButtonProps> = ({
-  theme = {},
-  className = '',
-  onHover
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [progress, setProgress] = useState(0);
+  const primary = theme.primary || '#a855f7';
 
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
-    width: '56px',
-    height: '56px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: theme.primary || '#3b82f6',
-    color: '#ffffff',
-    borderRadius: '50%',
-    border: 'none',
-    cursor: 'pointer',
-    fontSize: '24px',
-    boxShadow: isHovered
-      ? '0 8px 24px rgba(59, 130, 246, 0.5)'
-      : '0 4px 12px rgba(0, 0, 0, 0.3)',
-    transform: isHovered ? 'scale(1.1) rotate(90deg)' : 'scale(1) rotate(0deg)',
+  const handleClick = () => {
+    setProgress(0);
+    const interval = setInterval(() => {
+      setProgress(p => {
+        if (p >= 100) {
+          clearInterval(interval);
+          return 100;
+        }
+        return p + 5;
+      });
+    }, 30);
+    onInteract?.('progress');
   };
 
   return (
-    <div
+    <button
       className={className}
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onClick={handleClick}
+      style={{
+        position: 'relative',
+        padding: '14px 32px',
+        background: '#fff',
+        color: primary,
+        border: `2px solid ${primary}`,
+        borderRadius: '10px',
+        fontSize: '16px',
+        fontWeight: 700,
+        cursor: 'pointer',
+        overflow: 'hidden',
+        outline: 'none'
+      }}
     >
-      +
-    </div>
+      <div style={{
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        height: '100%',
+        width: `${progress}%`,
+        background: `${primary}30`,
+        transition: 'width 100ms linear',
+        pointerEvents: 'none'
+      }} />
+      <span style={{ position: 'relative', zIndex: 1 }}>
+        {progress === 100 ? 'Complete!' : 'Progress Button'}
+      </span>
+    </button>
   );
 };

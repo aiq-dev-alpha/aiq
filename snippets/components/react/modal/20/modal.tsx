@@ -1,64 +1,50 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-export interface ModalProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onHover?: (isHovered: boolean) => void;
+  onInteract?: (type: string) => void;
 }
 
-export const Modal: React.FC<ModalProps> = ({ 
-  theme = {}, 
-  className = '',
-  onHover
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-6px) scale(1.1)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(14px) scale(0.95)',
-    transition: `all 250ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '24px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '16px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 10px 28px rgba(0,0,0,0.16)' 
-      : '0 3px 16px rgba(0,0,0,0.8)',
-    cursor: 'pointer',
-  };
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [active, setActive] = useState(false);
+  const [count, setCount] = useState(0);
+  const primary = theme.primary || '#3b82f6';
+  
   return (
-    <div 
-      className={className} 
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+    <div
+      className={className}
+      onClick={() => { setActive(!active); setCount(c => c + 1); onInteract?.('interact'); }}
+      style={{
+        padding: '16px 28px',
+        background: active ? `linear-gradient(435deg, ${primary}, ${primary}dd)` : '#ffffff',
+        color: active ? '#ffffff' : primary,
+        border: `2px solid ${active ? primary : primary + '40'}`,
+        borderRadius: '14px',
+        fontSize: '17px',
+        fontWeight: 800,
+        cursor: 'pointer',
+        transition: 'all 400ms cubic-bezier(0.2, 1.6, 0.64, 1)',
+        boxShadow: active ? `0 10px 28px ${primary}40` : `0 2px 12px rgba(0,0,0,0.6)`,
+        transform: active ? 'translateY(-4px) scale(1.04)' : 'translateY(0) scale(1)',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '8px',
+        position: 'relative',
+        overflow: 'hidden'
+      }}
     >
-      Component
+      <span>Modal V20</span>
+      {count > 0 && (
+        <span style={{ 
+          fontSize: '12px', 
+          background: 'rgba(255,255,255,0.2)', 
+          padding: '2px 8px', 
+          borderRadius: '12px' 
+        }}>
+          {count}
+        </span>
+      )}
     </div>
   );
 };

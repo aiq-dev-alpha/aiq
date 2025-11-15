@@ -25,6 +25,7 @@ export class ComponentComponent {
     primaryColor: '#3b82f6',
     secondaryColor: '#8b5cf6',
     backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
     textColor: '#111827',
     borderColor: '#e5e7eb'
   };
@@ -47,6 +48,7 @@ export class ComponentComponent {
       },
       outlined: {
         backgroundColor: 'transparent',
+        backdropFilter: 'blur(10px)',
         border: `2px solid ${this.appliedTheme.primaryColor}`
       },
       filled: {

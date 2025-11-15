@@ -68,6 +68,7 @@ export class TabsComponent {
   private defaultTheme: TabsTheme = {
     primaryColor: '#3b82f6',
     backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
     textColor: '#64748b',
     activeColor: '#1e40af',
     borderColor: '#e2e8f0',
@@ -104,6 +105,7 @@ export class TabsComponent {
       padding: '0.75rem 1.5rem',
       border: 'none',
       backgroundColor: 'transparent',
+        backdropFilter: 'blur(10px)',
       color: isActive ? this.appliedTheme.activeColor : this.appliedTheme.textColor,
       cursor: isDisabled ? 'not-allowed' : 'pointer',
       fontSize: '0.95rem',

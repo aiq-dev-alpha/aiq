@@ -312,4 +312,20 @@ export default defineComponent({
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(167, 139, 250, 0.3);
 }
+
+
+@keyframes enter {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 5px currentColor; }
+  50% { box-shadow: 0 0 20px currentColor; }
+}
 </style>

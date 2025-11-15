@@ -1,95 +1,91 @@
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatefulWidget {
-  final Color? backgroundColor;
-  final Color? textColor;
-  final Color? accentColor;
-  final EdgeInsetsGeometry? padding;
-  final VoidCallback? onTap;
+  final String text;
+  final VoidCallback? onPressed;
+  final IconData? icon;
+  final Color? color;
 
   const CustomButton({
     Key? key,
-    this.backgroundColor,
-    this.textColor,
-    this.accentColor,
-    this.padding,
-    this.onTap,
+    this.text = 'Button',
+    this.onPressed,
+    this.icon,
+    this.color,
   }) : super(key: key);
 
   @override
   State<CustomButton> createState() => _CustomButtonState();
 }
 
-class _CustomButtonState extends State<CustomButton> with TickerProviderStateMixin {
+class _CustomButtonState extends State<CustomButton> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late AnimationController _hoverController;
   late Animation<double> _scaleAnimation;
-  bool _isHovered = false;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 940),
+      duration: const Duration(milliseconds: 150),
       vsync: this,
     );
-    _hoverController = AnimationController(
-      duration: const Duration(milliseconds: 226),
-      vsync: this,
-    );
-    _scaleAnimation = Tween<double>(begin: 0.94, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
-    );
-    _controller.forward();
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(_controller);
   }
 
   @override
   void dispose() {
     _controller.dispose();
-    _hoverController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() {
-        _isHovered = true;
-        _hoverController.forward();
-      }),
-      onExit: (_) => setState(() {
-        _isHovered = false;
-        _hoverController.reverse();
-      }),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: ScaleTransition(
-          scale: _scaleAnimation,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 226),
-            transform: Matrix4.identity()
-              ..translate(0.0, _isHovered ? -4.0 : 0.0),
-            padding: widget.padding ?? const EdgeInsets.all(32),
-            decoration: BoxDecoration(
-              color: widget.backgroundColor ?? Colors.white,
-              borderRadius: BorderRadius.circular(22),
-              border: Border.all(
-                color: (widget.accentColor ?? Theme.of(context).primaryColor).withOpacity(
-                  _isHovered ? 0.8 : 0.3
-                ),
-                width: _isHovered ? 2.0 : 1.0,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(_isHovered ? 0.14 : 0.6),
-                  blurRadius: _isHovered ? 21.0 : 10.0,
-                  offset: Offset(0, _isHovered ? 6.0 : 4.0),
-                ),
+    return GestureDetector(
+      onTapDown: (_) => _controller.forward(),
+      onTapUp: (_) {
+        _controller.reverse();
+        widget.onPressed?.call();
+      },
+      onTapCancel: () => _controller.reverse(),
+      child: ScaleTransition(
+        scale: _scaleAnimation,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                widget.color ?? Theme.of(context).primaryColor,
+                (widget.color ?? Theme.of(context).primaryColor).withOpacity(0.7),
               ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            child: const Center(
-              child: Text('Component', style: TextStyle(fontWeight: FontWeight.w600)),
-            ),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: (widget.color ?? Theme.of(context).primaryColor).withOpacity(0.4),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (widget.icon != null) ...[
+                Icon(widget.icon, color: Colors.white, size: 22),
+                const SizedBox(width: 10),
+              ],
+              Text(
+                widget.text,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
           ),
         ),
       ),

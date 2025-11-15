@@ -1,59 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-export interface ButtonProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onHover?: (isHovered: boolean) => void;
+  onInteract?: (type: string) => void;
 }
 
-export const Button: React.FC<ButtonProps> = ({
-  theme = {},
-  className = '',
-  onHover
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transition: 'all 300ms ease',
-    padding: '12px 24px',
-    backgroundColor: isHovered ? '#10b981dd' : (theme.primary || '#10b981'),
-    color: '#ffffff',
-    borderRadius: '12px',
-    border: 'none',
-    cursor: 'pointer',
-    fontWeight: 600,
-    transform: isHovered ? 'scale(1.05)' : 'scale(1)',
-    boxShadow: isHovered ? '0 6px 20px rgba(0, 0, 0, 0.2)' : '0 2px 8px rgba(0, 0, 0, 0.1)',
-  };
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [state, setState] = useState(false);
+  const primary = theme.primary || '#7c3aed';
+  
   return (
-    <div
+    <button
       className={className}
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onClick={() => { setState(!state); onInteract?.('rubber'); }}
+      style={{
+        padding: '14px 32px',
+        background: primary,
+        color: '#fff',
+        border: 'none',
+        borderRadius: '10px',
+        fontSize: '16px',
+        fontWeight: 700,
+        cursor: 'pointer',
+        transition: 'all 300ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+        transform: state ? 'scale(1.05)' : 'scale(1)',
+        outline: 'none'
+      }}
     >
-      Badge Button
-    </div>
+      Rubber
+    </button>
   );
 };

@@ -1,41 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-interface MaskedInputProps {
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
+  className?: string;
+  onInteract?: (type: string) => void;
 }
 
-export default function MaskedInput({
-  value,
-  onChange,
-  placeholder = '(555) 555-5555'
-}: MaskedInputProps) {
-  const formatPhoneNumber = (input: string) => {
-    const cleaned = input.replace(/\D/g, '');
-    const limited = cleaned.slice(0, 10);
-
-    if (limited.length <= 3) {
-      return limited;
-    } else if (limited.length <= 6) {
-      return `(${limited.slice(0, 3)}) ${limited.slice(3)}`;
-    } else {
-      return `(${limited.slice(0, 3)}) ${limited.slice(3, 6)}-${limited.slice(6)}`;
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatPhoneNumber(e.target.value);
-    onChange(formatted);
-  };
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [value, setValue] = useState('');
+  const [focused, setFocused] = useState(false);
+  const primary = theme.primary || '#8b5cf6';
+  
   return (
-    <input
-      type="text"
-      value={value}
-      onChange={handleChange}
-      placeholder={placeholder}
-      className="w-full px-4 py-2.5 text-base border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
-    />
+    <div className={className} style={{ width: '100%', maxWidth: '360px' }}>
+      <input
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        placeholder="Enter text..."
+        style={{
+          width: '100%',
+          padding: '14px 18px',
+          border: `2px solid ${focused ? primary : '#e5e7eb'}`,
+          borderRadius: '10px',
+          fontSize: '16px',
+          outline: 'none',
+          transition: 'all 250ms',
+          background: focused ? `${primary}05` : '#ffffff',
+          boxShadow: focused ? `0 0 0 4px ${primary}20` : 'none'
+        }}
+      />
+    </div>
   );
-}
+};

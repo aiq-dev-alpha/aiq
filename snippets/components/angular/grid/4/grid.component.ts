@@ -58,6 +58,10 @@ interface GridTheme {
     .item-tag { display: inline-block; padding: 0.375rem 1rem; background: rgba(255,255,255,0.2); border-radius: 2rem; font-size: 0.75rem; font-weight: 600; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.3); }
     .skeleton { animation: pulse 2s ease-in-out infinite; border-radius: 1.25rem; background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%); min-height: 300px; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+      .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
+    }
   `]
 })
 export class GridComponent {

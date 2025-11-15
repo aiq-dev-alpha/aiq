@@ -145,6 +145,7 @@ export class InputComponent implements ControlValueAccessor {
     primaryColor: '#3b82f6',
     secondaryColor: '#8b5cf6',
     backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
     textColor: '#0f172a',
     borderColor: '#e2e8f0',
     focusColor: '#3b82f6',

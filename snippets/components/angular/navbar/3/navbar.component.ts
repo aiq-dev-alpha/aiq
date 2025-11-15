@@ -121,10 +121,10 @@ interface MenuItem {
   `,
   styles: [`
     nav {
-      transition: all 0.4s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     nav.scrolled {
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
     }
     .navbar-inner {
       display: flex;
@@ -150,7 +150,7 @@ interface MenuItem {
       justify-content: center;
       border-radius: 14px;
       font-size: 1.75rem;
-      transition: all 0.3s;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .brand-logo:hover {
       transform: scale(1.1) rotate(-5deg);
@@ -186,7 +186,7 @@ interface MenuItem {
       padding: 0.75rem 1.25rem;
       border-radius: 0.625rem;
       text-decoration: none;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
     }
@@ -224,7 +224,7 @@ interface MenuItem {
       padding: 0.625rem 1rem;
       border-radius: 0.5rem;
       text-decoration: none;
-      transition: all 0.2s;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .dropdown-item:hover {
       transform: translateX(4px);
@@ -240,7 +240,7 @@ interface MenuItem {
       align-items: center;
       border-radius: 2rem;
       overflow: hidden;
-      transition: all 0.3s;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .search-btn {
       position: absolute;
@@ -259,7 +259,7 @@ interface MenuItem {
       padding: 0.625rem;
       border-radius: 0.75rem;
       font-size: 1.25rem;
-      transition: all 0.3s;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .icon-btn:hover {
       transform: scale(1.1);
@@ -297,7 +297,7 @@ interface MenuItem {
       cursor: pointer;
       padding: 0.5rem 1rem;
       border-radius: 3rem;
-      transition: all 0.3s;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .user-btn:hover {
       transform: translateY(-2px);
@@ -380,6 +380,7 @@ export class NavbarComponent {
     primaryColor: '#10b981',
     secondaryColor: '#06b6d4',
     backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
     textColor: '#111827',
     borderColor: '#e5e7eb',
     accentColor: '#ef4444'
@@ -418,11 +419,13 @@ export class NavbarComponent {
       },
       transparent: {
         backgroundColor: 'rgba(255, 255, 255, 0.85)',
+        backdropFilter: 'blur(10px)',
         backdropFilter: 'blur(8px)',
         borderBottom: '1px solid rgba(0, 0, 0, 0.08)'
       },
       blur: {
         backgroundColor: 'rgba(255, 255, 255, 0.7)',
+        backdropFilter: 'blur(10px)',
         backdropFilter: 'blur(16px) saturate(180%)',
         borderBottom: 'none',
         boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)'
@@ -507,7 +510,8 @@ export class NavbarComponent {
   get dropdownItemStyles() {
     return {
       color: this.appliedTheme.textColor,
-      backgroundColor: 'transparent'
+      backgroundColor: 'transparent',
+        backdropFilter: 'blur(10px)'
     };
   }
 
@@ -534,6 +538,7 @@ export class NavbarComponent {
       padding: '0.625rem 1rem 0.625rem 2.5rem',
       border: 'none',
       backgroundColor: 'transparent',
+        backdropFilter: 'blur(10px)',
       color: this.variant === 'gradient' ? '#ffffff' : this.appliedTheme.textColor,
       outline: 'none'
     };
@@ -581,6 +586,7 @@ export class NavbarComponent {
       width: '28px',
       height: '3px',
       backgroundColor: 'currentColor',
+        backdropFilter: 'blur(10px)',
       borderRadius: '2px',
       transition: 'all 0.3s'
     };

@@ -1,159 +1,20 @@
+// Morphing Shape Button - Changes shape on interaction
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
-interface ButtonTheme {
-  primaryColor: string;
-  secondaryColor: string;
-  backgroundColor: string;
-  textColor: string;
-  borderColor: string;
-  accentColor: string;
-}
 
 @Component({
   selector: 'app-button',
-  template: `
-    <button
-      [ngClass]="['btn', 'btn-' + variant, 'btn-' + size]"
-      [ngStyle]="buttonStyles"
-      [disabled]="disabled || loading"
-      [attr.aria-label]="ariaLabel"
-      [attr.aria-busy]="loading"
-      (click)="handleClick($event)"
-      class="float-button">
-      <span *ngIf="loading" class="spinner infinity-spinner"></span>
-      <span *ngIf="!loading && iconLeft" class="icon-left">{{ iconLeft }}</span>
-      <span class="btn-content">
-        <ng-content></ng-content>
-      </span>
-      <span *ngIf="!loading && iconRight" class="icon-right">{{ iconRight }}</span>
-    </button>
-  `,
+  template: `<button class="morph-btn" [class.active]="isActive" (click)="handleClick()" (mousedown)="isActive=true" (mouseup)="isActive=false" (mouseleave)="isActive=false" [disabled]="disabled"><ng-content></ng-content></button>`,
   styles: [`
-    .float-button {
-      position: relative;
-      overflow: hidden;
-      cursor: pointer;
-      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      font-weight: 600;
-      border: none;
-      outline: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      box-shadow: 0 5px 20px #ea580c66;
-    }
-
-    .float-button:hover:not(:disabled) {
-      box-shadow: 0 8px 35px #ea580c99;
-      transform: translateY(-2px) scale(1.02);
-      animation: floatAnim 0.5s ease;
-    }
-
-    .float-button:active:not(:disabled) {
-      transform: translateY(0) scale(0.98);
-    }
-
-    .float-button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    @keyframes floatAnim {
-      0%, 100% { transform: translateY(-2px) scale(1.02); }
-      50% { transform: translateY(-4px) scale(1.04) rotate(1deg); }
-    }
-
-    .infinity-spinner {
-      width: 1em;
-      height: 1em;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-top-color: currentColor;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .btn-content {
-      display: flex;
-      align-items: center;
-    }
-
-    .btn-sm {
-      padding: 0.5rem 1.5rem;
-      font-size: 0.875rem;
-      border-radius: 0.625rem;
-    }
-
-    .btn-md {
-      padding: 0.75rem 2rem;
-      font-size: 1rem;
-      border-radius: 0.875rem;
-    }
-
-    .btn-lg {
-      padding: 1rem 2.5rem;
-      font-size: 1.125rem;
-      border-radius: 1.125rem;
-    }
+    .morph-btn { padding: 14px 28px; font-size: 15px; font-weight: 600; border: 3px solid #10b981; background: transparent; color: #10b981; cursor: pointer; border-radius: 8px; transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); position: relative; overflow: hidden; }
+    .morph-btn::before { content: ''; position: absolute; inset: 0; background: #10b981; transform: scale(0); transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); border-radius: 50%; }
+    .morph-btn.active { border-radius: 50px; }
+    .morph-btn.active::before { transform: scale(1); border-radius: 8px; }
+    .morph-btn.active { color: white; }
   `]
 })
 export class ButtonComponent {
-  @Input() theme: Partial<ButtonTheme> = {};
-  @Input() variant: 'default' | 'outlined' | 'filled' | 'float' = 'default';
-  @Input() size: 'sm' | 'md' | 'lg' = 'md';
-  @Input() disabled: boolean = false;
-  @Input() loading: boolean = false;
-  @Input() iconLeft: string = '';
-  @Input() iconRight: string = '';
-  @Input() ariaLabel: string = '';
-  @Output() clicked = new EventEmitter<MouseEvent>();
-
-  private defaultTheme: ButtonTheme = {
-    primaryColor: '#ea580c',
-    secondaryColor: '#c2410c',
-    backgroundColor: '#fff7ed',
-    textColor: '#ffffff',
-    borderColor: '#ea580c',
-    accentColor: '#fb923c'
-  };
-
-  get appliedTheme(): ButtonTheme {
-    return { ...this.defaultTheme, ...this.theme };
-  }
-
-  get buttonStyles() {
-    const variantStyles = {
-      default: {
-        background: `linear-gradient(135deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})`,
-        color: this.appliedTheme.textColor,
-        border: 'none'
-      },
-      outlined: {
-        background: 'transparent',
-        color: this.appliedTheme.primaryColor,
-        border: `2px solid ${this.appliedTheme.primaryColor}`
-      },
-      filled: {
-        background: this.appliedTheme.primaryColor,
-        color: this.appliedTheme.textColor,
-        border: 'none'
-      },
-      float: {
-        background: `linear-gradient(90deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.accentColor})`,
-        color: this.appliedTheme.textColor,
-        border: 'none'
-      }
-    };
-
-    return variantStyles[this.variant];
-  }
-
-  handleClick(event: MouseEvent): void {
-    if (!this.disabled && !this.loading) {
-      this.clicked.emit(event);
-    }
-  }
+  @Input() disabled = false;
+  @Output() clicked = new EventEmitter<void>();
+  isActive = false;
+  handleClick(): void { if (!this.disabled) this.clicked.emit(); }
 }

@@ -60,6 +60,7 @@ export class TabsComponent {
   private defaultTheme: TabsTheme = {
     primaryColor: '#14b8a6',
     backgroundColor: '#0f172a',
+        backdropFilter: 'blur(10px)',
     textColor: '#94a3b8',
     activeColor: '#5eead4',
     borderColor: '#1e293b',

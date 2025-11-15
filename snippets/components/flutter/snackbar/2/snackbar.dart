@@ -1,26 +1,47 @@
 import 'package:flutter/material.dart';
 
-class CustomSnackbar {
-  static void show(
-    BuildContext context, {
-    required String message,
-    Duration duration = const Duration(seconds: 3),
-    Color? backgroundColor,
-  }) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: duration,
-        backgroundColor: backgroundColor,
+class CustomWidget extends StatefulWidget {
+  final Widget? child;
+  final VoidCallback? onTap;
+  final Color? borderColor;
+
+  const CustomWidget({
+    Key? key,
+    this.child,
+    this.onTap,
+    this.borderColor,
+  }) : super(key: key);
+
+  @override
+  State<CustomWidget> createState() => _CustomWidgetState();
+}
+
+class _CustomWidgetState extends State<CustomWidget> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            color: _isHovered
+                ? (widget.borderColor ?? Theme.of(context).primaryColor).withOpacity(0.1)
+                : Colors.transparent,
+            border: Border.all(
+              color: widget.borderColor ?? Theme.of(context).primaryColor,
+              width: 2,
+            ),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: widget.child ?? const Text('Component'),
+        ),
       ),
     );
-  }
-
-  static void showSuccess(BuildContext context, String message) {
-    show(context, message: message, backgroundColor: const Color(0xFF4CAF50));
-  }
-
-  static void showError(BuildContext context, String message) {
-    show(context, message: message, backgroundColor: const Color(0xFFF44336));
   }
 }

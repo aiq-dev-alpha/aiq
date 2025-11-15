@@ -84,7 +84,7 @@ interface PanelTheme {
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
       cursor: pointer;
       display: flex;
       align-items: center;

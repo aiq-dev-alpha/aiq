@@ -139,6 +139,22 @@ interface TableRow {
   `,
   styles: [`
     .table-container { width: 100%; }
+  
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(-20px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes scaleIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
   `]
 })
 export class TableComponent {
@@ -173,6 +189,7 @@ export class TableComponent {
     primaryColor: '#2563eb',
     secondaryColor: '#3b82f6',
     backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
     textColor: '#1f2937',
     borderColor: '#e5e7eb',
     headerBgColor: '#f3f4f6',
@@ -449,6 +466,7 @@ export class TableComponent {
       border: 'none',
       borderRadius: '4px',
       backgroundColor: '#ef4444',
+        backdropFilter: 'blur(10px)',
       color: '#ffffff',
       cursor: 'pointer',
       fontSize: '12px'
@@ -457,7 +475,8 @@ export class TableComponent {
 
   get expandedRowStyles() {
     return {
-      backgroundColor: '#f9fafb'
+      backgroundColor: '#f9fafb',
+        backdropFilter: 'blur(10px)'
     };
   }
 

@@ -1,35 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-interface HelperTextInputProps {
-  value: string;
-  onChange: (value: string) => void;
-  label: string;
-  helperText: string;
-  placeholder?: string;
-  type?: string;
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
+  className?: string;
+  onInteract?: (type: string) => void;
 }
 
-export default function HelperTextInput({
-  value,
-  onChange,
-  label,
-  helperText,
-  placeholder = 'Enter text...',
-  type = 'text'
-}: HelperTextInputProps) {
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [value, setValue] = useState('');
+  const [focused, setFocused] = useState(false);
+  const primary = theme.primary || '#f59e0b';
+  
   return (
-    <div className="w-full">
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        {label}
-      </label>
+    <div className={className} style={{ width: '100%', maxWidth: '360px' }}>
       <input
-        type={type}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className="w-full px-4 py-2.5 text-base border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+        onChange={(e) => setValue(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        placeholder="Enter text..."
+        style={{
+          width: '100%',
+          padding: '14px 18px',
+          border: `2px solid ${focused ? primary : '#e5e7eb'}`,
+          borderRadius: '11px',
+          fontSize: '16px',
+          outline: 'none',
+          transition: 'all 250ms',
+          background: focused ? `${primary}05` : '#ffffff',
+          boxShadow: focused ? `0 0 0 4px ${primary}20` : 'none'
+        }}
       />
-      <p className="mt-1 text-sm text-gray-500 px-1">{helperText}</p>
     </div>
   );
-}
+};

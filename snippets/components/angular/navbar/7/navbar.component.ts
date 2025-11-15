@@ -63,7 +63,7 @@ interface MenuItem {
   `,
   styles: [`
     nav { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-    nav.scrolled { box-shadow: 0 6px 24px rgba(0,0,0,0.12); backdrop-filter: blur(8px); }
+    nav.scrolled { box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05); backdrop-filter: blur(8px); }
     .container { display: flex; align-items: center; justify-content: space-between; max-width: 1420px; margin: 0 auto; padding: 1.25rem 2.5rem; gap: 2rem; }
     .brand { display: flex; align-items: center; gap: 1rem; cursor: pointer; font-weight: 700; }
     .icon { font-size: 2rem; transition: transform 0.3s ease; }

@@ -1,71 +1,88 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-export interface ButtonProps {
+export interface ComponentProps {
   theme?: {
     primary?: string;
     background?: string;
     text?: string;
   };
   className?: string;
-  onHover?: (isHovered: boolean) => void;
+  onInteract?: (type: string) => void;
 }
 
-export const Button: React.FC<ButtonProps> = ({
+export const Component: React.FC<ComponentProps> = ({
   theme = {},
   className = '',
-  onHover
+  onInteract
 }) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
+  const primary = theme.primary || '#8b5cf6';
+  const background = theme.background || '#ffffff';
+  const text = theme.text || '#1f2937';
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const buttonStyles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transition: 'all 300ms ease',
-    padding: '12px 24px',
-    backgroundColor: 'transparent',
-    color: theme.text || '#111827',
-    border: 'none',
-    cursor: 'pointer',
-    fontWeight: 500,
-    position: 'relative',
-    overflow: 'hidden',
-  };
-
-  const underlineStyles: React.CSSProperties = {
-    position: 'absolute',
-    bottom: '8px',
-    left: '24px',
-    right: '24px',
-    height: '2px',
-    backgroundColor: theme.primary || '#3b82f6',
-    transform: isHovered ? 'scaleX(1)' : 'scaleX(0)',
-    transformOrigin: 'left',
-    transition: 'transform 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+  const handleClick = () => {
+    setLoading(true);
+    onInteract?.('loading');
+    setTimeout(() => setLoading(false), 2000);
   };
 
   return (
-    <div
+    <button
       className={className}
-      style={buttonStyles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onClick={handleClick}
+      disabled={loading}
+      style={{
+        position: 'relative',
+        padding: '14px 32px',
+        background: `linear-gradient(135deg, ${primary}, ${primary}dd)`,
+        color: '#ffffff',
+        border: 'none',
+        borderRadius: '12px',
+        fontSize: '15px',
+        fontWeight: 700,
+        cursor: loading ? 'not-allowed' : 'pointer',
+        opacity: loading ? 0.7 : 1,
+        transition: 'all 300ms ease',
+        minWidth: '140px',
+        outline: 'none'
+      }}
     >
-      Ghost Button
-      <div style={underlineStyles} />
-    </div>
+      {loading ? (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+          <div style={{
+            width: '6px',
+            height: '6px',
+            borderRadius: '50%',
+            backgroundColor: '#fff',
+            animation: 'bounce 1.4s infinite ease-in-out both',
+            animationDelay: '-0.32s'
+          }} />
+          <div style={{
+            width: '6px',
+            height: '6px',
+            borderRadius: '50%',
+            backgroundColor: '#fff',
+            animation: 'bounce 1.4s infinite ease-in-out both',
+            animationDelay: '-0.16s'
+          }} />
+          <div style={{
+            width: '6px',
+            height: '6px',
+            borderRadius: '50%',
+            backgroundColor: '#fff',
+            animation: 'bounce 1.4s infinite ease-in-out both'
+          }} />
+          <style>{`
+            @keyframes bounce {
+              0%, 80%, 100% { transform: scale(0); }
+              40% { transform: scale(1); }
+            }
+          `}</style>
+        </div>
+      ) : (
+        'Loading Button'
+      )}
+    </button>
   );
 };

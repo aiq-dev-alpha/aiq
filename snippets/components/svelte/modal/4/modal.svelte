@@ -175,4 +175,15 @@
     background: rgba(255, 255, 255, 0.4);
     transform: translateY(-3px);
   }
+
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes expand {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
 </style>

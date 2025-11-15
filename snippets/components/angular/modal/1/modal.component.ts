@@ -128,6 +128,7 @@ export class ModalComponent {
   private defaultTheme: ModalTheme = {
     primaryColor: '#3b82f6',
     backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
     overlayColor: 'rgba(0, 0, 0, 0.5)',
     textColor: '#0f172a',
     borderColor: '#e2e8f0'

@@ -70,6 +70,10 @@
 </button>
 
 <style>
+  * {
+    transition: all 0.25s ease-out;
+  }
+
   .btn {
     position: relative;
     display: inline-flex;

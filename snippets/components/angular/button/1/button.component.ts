@@ -84,6 +84,7 @@ export class ButtonComponent {
     primaryColor: '#3b82f6',
     secondaryColor: '#8b5cf6',
     backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
     textColor: '#0f172a',
     borderColor: '#e2e8f0',
     shadowColor: 'rgba(59, 130, 246, 0.2)'

@@ -100,6 +100,7 @@ export class ListComponent {
     primaryColor: '#0ea5e9',
     secondaryColor: '#06b6d4',
     backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
     textColor: '#0f172a',
     borderColor: '#e0f2fe',
     hoverColor: '#f0f9ff'

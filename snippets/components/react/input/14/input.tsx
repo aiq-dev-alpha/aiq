@@ -1,32 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-interface PrefixInputProps {
-  value: string;
-  onChange: (value: string) => void;
-  prefix: string;
-  placeholder?: string;
-  type?: string;
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
+  className?: string;
+  onInteract?: (type: string) => void;
 }
 
-export default function PrefixInput({
-  value,
-  onChange,
-  prefix,
-  placeholder = '0.00',
-  type = 'text'
-}: PrefixInputProps) {
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [value, setValue] = useState('');
+  const [focused, setFocused] = useState(false);
+  const primary = theme.primary || '#ec4899';
+  
   return (
-    <div className="relative w-full">
-      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 font-medium pointer-events-none">
-        {prefix}
-      </div>
+    <div className={className} style={{ width: '100%', maxWidth: '360px' }}>
       <input
-        type={type}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className="w-full pl-10 pr-4 py-2.5 text-base border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+        onChange={(e) => setValue(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        placeholder="Enter text..."
+        style={{
+          width: '100%',
+          padding: '14px 18px',
+          border: `2px solid ${focused ? primary : '#e5e7eb'}`,
+          borderRadius: '12px',
+          fontSize: '16px',
+          outline: 'none',
+          transition: 'all 250ms',
+          background: focused ? `${primary}05` : '#ffffff',
+          boxShadow: focused ? `0 0 0 4px ${primary}20` : 'none'
+        }}
       />
     </div>
   );
-}
+};

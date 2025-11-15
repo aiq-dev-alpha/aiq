@@ -1,50 +1,55 @@
-// Variant 23: Minimal card (clean, simple)
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-export interface CardProps {
-  theme?: { primary?: string; background?: string; text?: string };
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onHover?: (isHovered: boolean) => void;
+  onInteract?: (type: string) => void;
 }
 
-export const Card: React.FC<CardProps> = ({ theme = {}, className = '', onHover }) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => { setIsVisible(true); }, []);
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [hovered, setHovered] = useState(false);
+  const primary = theme.primary || '#84cc16';
+  const text = theme.text || '#1f2937';
+  
   return (
     <div
       className={className}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onClick={() => onInteract?.('background_shift')}
       style={{
-        opacity: isVisible ? 1 : 0,
-        transform: isVisible ? 'translateY(0)' : 'translateY(10px)',
-        transition: 'all 250ms cubic-bezier(0.4, 0, 0.2, 1)',
-        padding: '40px',
-        backgroundColor: theme.background || '#ffffff',
-        borderRadius: '8px',
-        border: `1px solid ${isHovered ? (theme.text || '#111827') : '#f3f4f6'}`,
+        width: '340px',
+        padding: '28px',
+        background: '#ffffff',
+        border: `2px solid ${hovered ? primary : '#e5e7eb'}`,
+        borderRadius: '14px',
         cursor: 'pointer',
-        width: '300px',
+        transition: 'all 300ms ease',
+        boxShadow: hovered ? `0 12px 32px ${primary}30` : '0 4px 16px rgba(0,0,0,0.08)',
+        transform: hovered ? 'translateY(-6px)' : 'translateY(0)'
       }}
-      onMouseEnter={() => { setIsHovered(true); onHover?.(true); }}
-      onMouseLeave={() => { setIsHovered(false); onHover?.(false); }}
     >
-      <h3 style={{
-        fontSize: '14px',
-        fontWeight: '500',
-        color: theme.primary || '#3b82f6',
-        marginBottom: '8px',
-        textTransform: 'uppercase' as const,
-        letterSpacing: '2px',
-      }}>
-        Minimalist
-      </h3>
-      <h2 style={{ fontSize: '24px', fontWeight: 'normal', color: theme.text || '#111827', marginBottom: '16px', lineHeight: '1.4' }}>
-        Less is More
-      </h2>
-      <p style={{ fontSize: '15px', color: '#6b7280', lineHeight: '1.7' }}>
-        Clean, simple design that focuses on content and clarity.
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+        <div style={{
+          width: '48px',
+          height: '48px',
+          borderRadius: '12px',
+          background: `${primary}20`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '24px',
+          fontWeight: 700,
+          color: primary
+        }}>
+          B
+        </div>
+        <h3 style={{ margin: 0, color: text, fontSize: '20px', fontWeight: 700 }}>
+          Background Shift
+        </h3>
+      </div>
+      <p style={{ margin: 0, color: '#64748b', fontSize: '15px', lineHeight: 1.7 }}>
+        This is a background shift component with custom styling and hover effects.
       </p>
     </div>
   );

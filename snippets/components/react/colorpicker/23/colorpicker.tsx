@@ -1,64 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onHover?: (isHovered: boolean) => void;
+  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ 
-  theme = {}, 
-  className = '',
-  onHover
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-9px) scale(1.2)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(17px) scale(0.95)',
-    transition: `all 340ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '27px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '19px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 13px 31px rgba(0,0,0,0.19)' 
-      : '0 6px 19px rgba(0,0,0,0.11)',
-    cursor: 'pointer',
-  };
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [state, setState] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const primary = theme.primary || '#22c55e';
+  const bg = theme.background || '#ffffff';
+  
   return (
-    <div 
-      className={className} 
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+    <div
+      className={className}
+      onClick={() => { setState(!state); onInteract?.('colorpicker_click'); }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        padding: '26px 41px',
+        background: state ? primary : bg,
+        color: state ? '#ffffff' : primary,
+        border: `2px solid ${hovered ? primary : primary + '50'}`,
+        borderRadius: '15px',
+        fontSize: '17px',
+        fontWeight: 800,
+        cursor: 'pointer',
+        transition: 'all 480ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+        transform: hovered ? 'translateY(-5px) scale(1.42)' : 'translateY(0) scale(1)',
+        boxShadow: hovered ? `0 15px 27px ${primary}33` : '0 2px 8px rgba(0,0,0,0.08)',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '8px',
+        userSelect: 'none'
+      }}
     >
-      Component
+      <span>Colorpicker 23</span>
+      {state && <span style={{ fontSize: '12px', opacity: 0.9 }}>✓</span>}
     </div>
   );
 };

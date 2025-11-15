@@ -1,64 +1,49 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onHover?: (isHovered: boolean) => void;
+  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ 
-  theme = {}, 
-  className = '',
-  onHover
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-5px) scale(1.2)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(25px) scale(0.95)',
-    transition: `all 640ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '31px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '23px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 11px 21px rgba(0,0,0,0.17)' 
-      : '0 6px 17px rgba(0,0,0,0.7)',
-    cursor: 'pointer',
-  };
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [visible, setVisible] = useState(true);
+  const primary = theme.primary || '#f59e0b';
+  
+  if (!visible) return null;
+  
   return (
-    <div 
-      className={className} 
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+    <div
+      className={className}
+      style={{
+        padding: '16px 20px',
+        background: `${primary}15`,
+        border: `2px solid ${primary}40`,
+        borderRadius: '11px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '12px',
+        maxWidth: '500px'
+      }}
     >
-      Component
+      <div style={{ color: primary, fontSize: '15px', fontWeight: 600, flex: 1 }}>
+        Alert message variant 13
+      </div>
+      <button
+        onClick={() => { setVisible(false); onInteract?.('close'); }}
+        style={{
+          background: 'none',
+          border: 'none',
+          color: primary,
+          fontSize: '20px',
+          cursor: 'pointer',
+          padding: '0 4px',
+          lineHeight: 1
+        }}
+      >
+        ×
+      </button>
     </div>
   );
 };

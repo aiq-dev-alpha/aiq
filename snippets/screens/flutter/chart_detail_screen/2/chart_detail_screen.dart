@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Screen extends StatefulWidget {
+class Screen extends StatefulWidget {1
   final Color? backgroundColor;
   final Color? textColor;
   final Color? accentColor;

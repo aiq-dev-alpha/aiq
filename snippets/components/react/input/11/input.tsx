@@ -1,38 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-interface CharacterCounterInputProps {
-  value: string;
-  onChange: (value: string) => void;
-  maxLength: number;
-  placeholder?: string;
-  type?: string;
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
+  className?: string;
+  onInteract?: (type: string) => void;
 }
 
-export default function CharacterCounterInput({
-  value,
-  onChange,
-  maxLength,
-  placeholder = 'Enter text...',
-  type = 'text'
-}: CharacterCounterInputProps) {
-  const remaining = maxLength - value.length;
-  const isNearLimit = remaining <= maxLength * 0.2;
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [value, setValue] = useState('');
+  const [focused, setFocused] = useState(false);
+  const primary = theme.primary || '#10b981';
+  
   return (
-    <div className="w-full">
+    <div className={className} style={{ width: '100%', maxWidth: '360px' }}>
       <input
-        type={type}
         value={value}
-        onChange={(e) => onChange(e.target.value.slice(0, maxLength))}
-        placeholder={placeholder}
-        maxLength={maxLength}
-        className="w-full px-4 py-2.5 text-base border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+        onChange={(e) => setValue(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        placeholder="Enter text..."
+        style={{
+          width: '100%',
+          padding: '14px 18px',
+          border: `2px solid ${focused ? primary : '#e5e7eb'}`,
+          borderRadius: '9px',
+          fontSize: '16px',
+          outline: 'none',
+          transition: 'all 250ms',
+          background: focused ? `${primary}05` : '#ffffff',
+          boxShadow: focused ? `0 0 0 4px ${primary}20` : 'none'
+        }}
       />
-      <div className="flex justify-end mt-1 px-1">
-        <span className={`text-sm ${isNearLimit ? 'text-orange-500' : 'text-gray-500'}`}>
-          {value.length} / {maxLength}
-        </span>
-      </div>
     </div>
   );
-}
+};

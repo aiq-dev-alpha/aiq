@@ -58,6 +58,10 @@ interface GridTheme {
     .item-text { font-size: 0.9375rem; line-height: 1.5; margin: 0; }
     .skeleton { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; border-radius: 0.5rem; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+      .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
+    }
   `]
 })
 export class GridComponent {
@@ -72,6 +76,7 @@ export class GridComponent {
   private defaultTheme: GridTheme = {
     primaryColor: '#f59e0b',
     backgroundColor: '#fffbeb',
+        backdropFilter: 'blur(10px)',
     cardColor: '#fef3c7',
     textColor: '#78350f',
     borderColor: '#fcd34d',

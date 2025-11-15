@@ -42,7 +42,7 @@ interface ListTheme {
     .list-item {
       padding: 18px 20px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       align-items: center;
       gap: 14px;
@@ -95,6 +95,7 @@ export class ListComponent {
     primaryColor: '#6366f1',
     secondaryColor: '#4f46e5',
     backgroundColor: '#eef2ff',
+        backdropFilter: 'blur(10px)',
     textColor: '#312e81',
     borderColor: '#c7d2fe',
     hoverColor: '#e0e7ff'

@@ -189,4 +189,15 @@
     background: rgba(254, 249, 215, 0.8);
     transform: scale(1.08);
   }
+
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes expand {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
 </style>

@@ -1,57 +1,55 @@
-// Variant 21: Feature card with icon
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-export interface CardProps {
-  theme?: { primary?: string; background?: string; text?: string };
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onHover?: (isHovered: boolean) => void;
+  onInteract?: (type: string) => void;
 }
 
-export const Card: React.FC<CardProps> = ({ theme = {}, className = '', onHover }) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => { setIsVisible(true); }, []);
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [hovered, setHovered] = useState(false);
+  const primary = theme.primary || '#4f46e5';
+  const text = theme.text || '#1f2937';
+  
   return (
     <div
       className={className}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onClick={() => onInteract?.('hover_scale')}
       style={{
-        opacity: isVisible ? 1 : 0,
-        transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
-        transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
-        padding: '32px',
-        backgroundColor: theme.background || '#ffffff',
-        borderRadius: '16px',
-        border: `2px solid ${isHovered ? (theme.primary || '#3b82f6') : '#f3f4f6'}`,
-        boxShadow: isHovered ? `0 12px 24px ${theme.primary || '#3b82f6'}20` : '0 4px 12px rgba(0,0,0,0.05)',
+        width: '340px',
+        padding: '28px',
+        background: '#ffffff',
+        border: `2px solid ${hovered ? primary : '#e5e7eb'}`,
+        borderRadius: '14px',
         cursor: 'pointer',
-        width: '280px',
-        textAlign: 'center' as const,
+        transition: 'all 300ms ease',
+        boxShadow: hovered ? `0 12px 32px ${primary}30` : '0 4px 16px rgba(0,0,0,0.08)',
+        transform: hovered ? 'translateY(-6px)' : 'translateY(0)'
       }}
-      onMouseEnter={() => { setIsHovered(true); onHover?.(true); }}
-      onMouseLeave={() => { setIsHovered(false); onHover?.(false); }}
     >
-      <div style={{
-        width: '80px',
-        height: '80px',
-        margin: '0 auto 20px',
-        borderRadius: '20px',
-        background: `linear-gradient(135deg, ${theme.primary || '#3b82f6'}15, ${theme.primary || '#3b82f6'}05)`,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '40px',
-        transition: 'transform 300ms ease',
-        transform: isHovered ? 'scale(1.1) rotate(5deg)' : 'scale(1)',
-      }}>
-        ⚡
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+        <div style={{
+          width: '48px',
+          height: '48px',
+          borderRadius: '12px',
+          background: `${primary}20`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '24px',
+          fontWeight: 700,
+          color: primary
+        }}>
+          H
+        </div>
+        <h3 style={{ margin: 0, color: text, fontSize: '20px', fontWeight: 700 }}>
+          Hover Scale
+        </h3>
       </div>
-      <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: theme.text || '#111827', marginBottom: '12px' }}>
-        Lightning Fast
-      </h3>
-      <p style={{ fontSize: '14px', color: '#6b7280', lineHeight: '1.6' }}>
-        Experience blazing fast performance with optimized code and efficient algorithms.
+      <p style={{ margin: 0, color: '#64748b', fontSize: '15px', lineHeight: 1.7 }}>
+        This is a hover scale component with custom styling and hover effects.
       </p>
     </div>
   );

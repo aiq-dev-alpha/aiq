@@ -1,59 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-export interface ButtonProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onHover?: (isHovered: boolean) => void;
+  onInteract?: (type: string) => void;
 }
 
-export const Button: React.FC<ButtonProps> = ({
-  theme = {},
-  className = '',
-  onHover
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transition: 'all 300ms ease',
-    padding: '16px 32px',
-    backgroundColor: isHovered ? '#ec4899dd' : (theme.primary || '#ec4899'),
-    color: '#ffffff',
-    borderRadius: '16px',
-    border: 'none',
-    cursor: 'pointer',
-    fontWeight: 600,
-    transform: isHovered ? 'scale(1.05)' : 'scale(1)',
-    boxShadow: isHovered ? '0 6px 20px rgba(0, 0, 0, 0.2)' : '0 2px 8px rgba(0, 0, 0, 0.1)',
-  };
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [state, setState] = useState(false);
+  const primary = theme.primary || '#6366f1';
+  
   return (
-    <div
+    <button
       className={className}
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onClick={() => { setState(!state); onInteract?.('border_pulse'); }}
+      style={{
+        padding: '14px 32px',
+        background: primary,
+        color: '#fff',
+        border: 'none',
+        borderRadius: '10px',
+        fontSize: '16px',
+        fontWeight: 700,
+        cursor: 'pointer',
+        transition: 'all 350ms cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+        transform: 'scale(state ? 1.05 : 1)',
+        outline: 'none'
+      }}
     >
-      Compact
-    </div>
+      Border Pulse
+    </button>
   );
 };

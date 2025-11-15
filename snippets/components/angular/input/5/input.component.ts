@@ -1,425 +1,79 @@
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
-interface InputTheme {
-  primaryColor: string;
-  secondaryColor: string;
-  backgroundColor: string;
-  textColor: string;
-  borderColor: string;
-  accentColor: string;
-  errorColor: string;
-  successColor: string;
-}
-
+// Cyberpunk Neon Style
 @Component({
   selector: 'app-input',
   template: `
-    <div class="input-wrapper" [ngStyle]="wrapperStyles">
-      <label *ngIf="label" [for]="inputId" class="label" [ngStyle]="labelStyles" [class.floated]="isFocused || value">
-        {{ label }}
-        <span *ngIf="required" class="required">*</span>
-      </label>
-      <div class="input-container" [ngStyle]="containerStyles" [class.focused]="isFocused" [class.error]="hasError" [class.success]="showSuccess">
-        <div class="animated-border"></div>
-        <span *ngIf="leftIcon" class="left-icon" [ngStyle]="iconStyles">{{ leftIcon }}</span>
-        <input
-          #inputElement
-          [id]="inputId"
-          [type]="inputType"
-          [placeholder]="placeholder"
-          [disabled]="disabled"
-          [readonly]="readonly"
-          [value]="value"
-          [maxlength]="maxLength"
-          [ngStyle]="inputStyles"
-          (input)="onInput($event)"
-          (focus)="onFocus()"
-          (blur)="onBlur()"
-          [attr.aria-label]="ariaLabel || label"
-          [attr.aria-invalid]="hasError"
-          [attr.aria-describedby]="helperTextId"
-          [attr.aria-required]="required"
-          class="input-field"
-        />
-        <span *ngIf="rightIcon" class="right-icon" [ngStyle]="iconStyles">{{ rightIcon }}</span>
-        <button *ngIf="showClearButton && value && !disabled && !readonly" type="button" class="clear-button" (click)="clearInput()" [ngStyle]="clearButtonStyles" aria-label="Clear input">
-          ✕
-        </button>
-        <span *ngIf="showCharCounter && maxLength" class="char-counter" [ngStyle]="charCounterStyles">
-          {{ value.length }}/{{ maxLength }}
-        </span>
-      </div>
-      <div *ngIf="helperText && !hasError" [id]="helperTextId" class="helper-text" [ngStyle]="helperStyles">
-        {{ helperText }}
-      </div>
-      <div *ngIf="hasError && errorMessage" [id]="helperTextId" class="error-text" [ngStyle]="errorStyles">
-        {{ errorMessage }}
-      </div>
-      <div *ngIf="showSuccess && successMessage" class="success-text" [ngStyle]="successStyles">
-        {{ successMessage }}
-      </div>
+    <div class="cyber-input">
+      <div class="scanline"></div>
+      <input
+        [type]="type"
+        [placeholder]="placeholder"
+        [value]="value"
+        (input)="onInput($event)"
+        class="cyber-field"
+      />
+      <div class="corner tl"></div>
+      <div class="corner tr"></div>
+      <div class="corner bl"></div>
+      <div class="corner br"></div>
     </div>
   `,
   styles: [`
-    .input-wrapper {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      width: 100%;
+    .cyber-input {
       position: relative;
+      background: linear-gradient(90deg, #0a0e1a 0%, #151b2d 100%);
+      border: 2px solid #00ff9f;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+      padding: 14px 20px;
+      overflow: hidden;
     }
-    .label {
-      font-weight: 500;
-      font-size: 14px;
-      letter-spacing: 0.5px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      transform-origin: left top;
-    }
-    .label.floated {
-      transform: translateY(-8px) scale(0.85);
-      font-weight: 600;
-    }
-    .required {
-      color: #ef4444;
-      margin-left: 3px;
-    }
-    .input-container {
-      position: relative;
-      overflow: visible;
-      border-radius: 20px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .animated-border {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #8b5cf6, #a78bfa);
-      transform: scaleX(0);
-      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      border-radius: 20px;
-    }
-    .input-container.focused .animated-border {
-      transform: scaleX(1);
-      animation: shimmer 1.5s ease-in-out infinite;
-    }
-    .input-container.error .animated-border {
-      background: linear-gradient(90deg, #ef4444, #ef4444dd);
-      transform: scaleX(1);
-    }
-    .input-container.success .animated-border {
-      background: linear-gradient(90deg, #10b981, #10b981dd);
-      transform: scaleX(1);
-    }
-    .input-field {
+    .cyber-field {
       width: 100%;
       border: none;
       outline: none;
-      font-family: inherit;
       background: transparent;
-      transition: all 0.3s ease;
-      font-weight: 400;
+      color: #00ff9f;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      text-shadow: 0 0 10px rgba(0, 255, 159, 0.5);
     }
-    .input-field::placeholder {
-      opacity: 0.5;
-      transition: opacity 0.3s;
+    .scanline {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 45%, rgba(0, 255, 159, 0.03) 50%, transparent 55%);
+      animation: scan 4s linear infinite;
+      pointer-events: none;
     }
-    .input-field:focus::placeholder {
-      opacity: 0.7;
+    @keyframes scan {
+      0%, 100% { transform: translateY(-100%); }
+      50% { transform: translateY(100%); }
     }
-    .input-field:disabled {
-      cursor: not-allowed;
-      opacity: 0.5;
+    .corner {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border: 2px solid #ff006e;
+      box-shadow: 0 0 8px rgba(255, 0, 110, 0.8);
     }
-    .input-field:read-only {
-      cursor: default;
-      opacity: 0.8;
-      background: rgba(0, 0, 0, 0.02);
-    }
-    .left-icon, .right-icon {
-      display: flex;
-      align-items: center;
-      opacity: 0.6;
-      transition: all 0.3s;
-      flex-shrink: 0;
-      font-size: 18px;
-    }
-    .input-container.focused .left-icon,
-    .input-container.focused .right-icon {
-      opacity: 1;
-      transform: scale(1.15);
-    }
-    .clear-button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      opacity: 0.5;
-      transition: all 0.2s;
-      padding: 4px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      width: 20px;
-      height: 20px;
-    }
-    .clear-button:hover {
-      opacity: 1;
-      background: rgba(0, 0, 0, 0.08);
-      transform: rotate(90deg);
-    }
-    .char-counter {
-      font-size: 11px;
-      opacity: 0.6;
-      white-space: nowrap;
-      flex-shrink: 0;
-      font-weight: 500;
-    }
-    .helper-text, .error-text, .success-text {
-      font-size: 12px;
-      opacity: 0.9;
-      transition: all 0.2s;
-      padding-left: 4px;
-    }
-    .error-text {
-      animation: shake 0.4s;
-    }
-    .success-text {
-      animation: slideIn 0.3s;
-    }
-    @keyframes shimmer {
-      0%, 100% { opacity: 1; transform: scaleX(1); }
-      50% { opacity: 0.8; transform: scaleX(1.02); }
-    }
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
-    }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(-4px); }
-      to { opacity: 0.9; transform: translateY(0); }
-    }
+    .corner.tl { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+    .corner.tr { top: -2px; right: -2px; border-left: none; border-bottom: none; }
+    .corner.bl { bottom: -2px; left: -2px; border-right: none; border-top: none; }
+    .corner.br { bottom: -2px; right: -2px; border-left: none; border-top: none; }
   `],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => InputComponent),
-      multi: true
-    }
-  ]
+  providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => InputComponent), multi: true }]
 })
 export class InputComponent implements ControlValueAccessor {
-  @Input() theme: Partial<InputTheme> = {};
-  @Input() type: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' = 'text';
-  @Input() variant: 'default' | 'filled' | 'outlined' | 'underlined' = 'default';
-  @Input() label?: string;
-  @Input() placeholder: string = '';
-  @Input() helperText?: string;
-  @Input() errorMessage?: string;
-  @Input() successMessage?: string;
-  @Input() disabled = false;
-  @Input() readonly = false;
-  @Input() required = false;
-  @Input() leftIcon?: string;
-  @Input() rightIcon?: string;
-  @Input() ariaLabel?: string;
-  @Input() size: 'sm' | 'md' | 'lg' = 'md';
-  @Input() showClearButton = true;
-  @Input() showCharCounter = false;
-  @Input() maxLength?: number;
-  @Input() formControl?: FormControl;
+  @Input() type = 'text';
+  @Input() placeholder = 'ENTER DATA...';
   @Output() valueChange = new EventEmitter<string>();
-  @Output() focus = new EventEmitter<void>();
-  @Output() blur = new EventEmitter<void>();
-  @Output() clear = new EventEmitter<void>();
-
-  value: string = '';
-  isFocused = false;
-  inputId = `input-${Math.random().toString(36).substr(2, 9)}`;
-  helperTextId = `helper-${this.inputId}`;
-  inputType: string = this.type;
-
-  private onChange: (value: string) => void = () => {};
-  private onTouched: () => void = () => {};
-
-  private defaultTheme: InputTheme = {
-    primaryColor: '#8b5cf6',
-    secondaryColor: '#a78bfa',
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    textColor: '#1f2937',
-    borderColor: 'rgba(255,255,255,0.2)',
-    accentColor: '#ec4899',
-    errorColor: '#ef4444',
-    successColor: '#10b981'
-  };
-
-  get appliedTheme(): InputTheme {
-    return { ...this.defaultTheme, ...this.theme };
-  }
-
-  get hasError(): boolean {
-    return !!this.errorMessage || (this.formControl ? this.formControl.invalid && this.formControl.touched : false);
-  }
-
-  get showSuccess(): boolean {
-    return !!this.successMessage || (this.formControl ? this.formControl.valid && this.formControl.touched && !!this.value : false);
-  }
-
-  get wrapperStyles() {
-    return {
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
-    };
-  }
-
-  get labelStyles() {
-    const t = this.appliedTheme;
-    return {
-      color: this.hasError ? t.errorColor : this.isFocused ? t.primaryColor : t.textColor
-    };
-  }
-
-  get containerStyles() {
-    const t = this.appliedTheme;
-    const sizeMap = {
-      sm: { padding: '5px 10px', gap: '6px' },
-      md: { padding: '10px 16px', gap: '10px' },
-      lg: { padding: '14px 20px', gap: '14px' }
-    };
-
-    const variantStyles = {
-      default: {
-        backgroundColor: t.backgroundColor,
-        borderBottom: `2px solid ${this.hasError ? t.errorColor : this.showSuccess ? t.successColor : t.borderColor}`,
-      },
-      filled: {
-        backgroundColor: t.backgroundColor,
-        border: `1px solid ${this.hasError ? t.errorColor : this.showSuccess ? t.successColor : t.borderColor}`,
-        borderRadius: '20px'
-      },
-      outlined: {
-        backgroundColor: 'transparent',
-        border: `2px solid ${this.hasError ? t.errorColor : this.showSuccess ? t.successColor : t.borderColor}`,
-        borderRadius: '20px'
-      },
-      underlined: {
-        backgroundColor: 'transparent',
-        borderBottom: `2px solid ${this.hasError ? t.errorColor : this.showSuccess ? t.successColor : t.borderColor}`,
-        borderRadius: '0'
-      }
-    };
-
-    return {
-      ...sizeMap[this.size],
-      ...variantStyles[this.variant],
-      display: 'flex',
-      alignItems: 'center',
-      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-      boxShadow: this.isFocused ? '0 4px 12px #8b5cf640' : '0 1px 3px rgba(0,0,0,0.1)'
-    };
-  }
-
-  get inputStyles() {
-    const t = this.appliedTheme;
-    const sizeMap = {
-      sm: { fontSize: '14px' },
-      md: { fontSize: '16px' },
-      lg: { fontSize: '18px' }
-    };
-
-    return {
-      ...sizeMap[this.size],
-      color: t.textColor
-    };
-  }
-
-  get iconStyles() {
-    const t = this.appliedTheme;
-    return {
-      color: this.hasError ? t.errorColor : this.showSuccess ? t.successColor : t.primaryColor
-    };
-  }
-
-  get helperStyles() {
-    const t = this.appliedTheme;
-    return {
-      color: t.textColor
-    };
-  }
-
-  get errorStyles() {
-    const t = this.appliedTheme;
-    return {
-      color: t.errorColor,
-      fontWeight: '500'
-    };
-  }
-
-  get successStyles() {
-    const t = this.appliedTheme;
-    return {
-      color: t.successColor,
-      fontWeight: '500'
-    };
-  }
-
-  get clearButtonStyles() {
-    const t = this.appliedTheme;
-    return {
-      color: t.textColor
-    };
-  }
-
-  get charCounterStyles() {
-    const t = this.appliedTheme;
-    const isAtLimit = this.maxLength && this.value.length === this.maxLength;
-    return {
-      color: isAtLimit ? t.errorColor : t.textColor,
-      fontWeight: isAtLimit ? '600' : '400'
-    };
-  }
-
-  onInput(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-    this.value = value;
-    this.onChange(value);
-    this.valueChange.emit(value);
-  }
-
-  onFocus(): void {
-    this.isFocused = true;
-    this.focus.emit();
-  }
-
-  onBlur(): void {
-    this.isFocused = false;
-    this.onTouched();
-    this.blur.emit();
-  }
-
-  clearInput(): void {
-    this.value = '';
-    this.onChange('');
-    this.valueChange.emit('');
-    this.clear.emit();
-  }
-
-  writeValue(value: string): void {
-    this.value = value || '';
-  }
-
-  registerOnChange(fn: (value: string) => void): void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
-  }
+  value = '';
+  private onChange: any = () => {};
+  private onTouched: any = () => {};
+  onInput(e: Event): void { this.value = (e.target as HTMLInputElement).value; this.onChange(this.value); this.valueChange.emit(this.value); }
+  writeValue(value: string): void { this.value = value || ''; }
+  registerOnChange(fn: any): void { this.onChange = fn; }
+  registerOnTouched(fn: any): void { this.onTouched = fn; }
+  setDisabledState(isDisabled: boolean): void {}
 }

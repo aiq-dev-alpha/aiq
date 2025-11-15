@@ -1,210 +1,78 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { trigger, state, style, transition, animate } from '@angular/animations';
 
-interface PanelTheme {
+interface Theme {
   primaryColor: string;
   backgroundColor: string;
+  textColor: string;
   borderColor: string;
-  headerColor: string;
-  shadowColor: string;
 }
 
 @Component({
   selector: 'app-panel',
   template: `
-    <div class="panel-container" [ngStyle]="panelStyles">
-      
-      <div class="panel-header" [ngStyle]="headerStyles" (click)="toggle()">
-        
-        <div class="header-content">
-          <h3 class="panel-title" [ngStyle]="titleStyles">{{ title }}</h3>
-          <p *ngIf="subtitle" class="panel-subtitle">{{ subtitle }}</p>
-        </div>
-        <div class="header-actions">
-          <ng-content select="[header-actions]"></ng-content>
-          <button *ngIf="collapsible" class="collapse-btn" [ngStyle]="buttonStyles">
-            <span [style.transform]="collapsed ? 'rotate(0deg)' : 'rotate(180deg)'" style="display: inline-block; transition: transform 0.3s ease;">
-              &#10095;
-            </span>
-          </button>
-        </div>
-      </div>
-      <div class="panel-body" [@flipExpand]="collapsed ? 'collapsed' : 'expanded'" [ngStyle]="bodyStyles">
-        <div *ngIf="loading" class="loading-overlay" [ngStyle]="loadingStyles">
-          <div class="spinner"></div>
-        </div>
-        <ng-content></ng-content>
-      </div>
+    <div
+      [ngStyle]="styles"
+      (click)="handleClick()"
+      (mouseenter)="hovered = true"
+      (mouseleave)="hovered = false"
+      class="panel-container">
+      <ng-content></ng-content>
+      <span *ngIf="active" class="indicator">✓</span>
     </div>
   `,
   styles: [`
     .panel-container {
-      border-radius: 24px;
-      overflow: hidden;
-      transition: all 0.3s ease;
-      position: relative;
-    }
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 2.0rem 2.25rem;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 340ms cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
       position: relative;
-      
     }
-    
-    .header-content {
-      flex: 1;
-      
+    .indicator {
+      margin-left: 8px;
+      opacity: 0.8;
+      font-size: 14px;
     }
-    .panel-title {
-      margin: 0;
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #ffffff;
-    }
-    .panel-subtitle {
-      margin: 0.5rem 0 0 0;
-      font-size: 0.875rem;
-      color: rgba(255,255,255,0.85);
-    }
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      
-    }
-    .collapse-btn {
-      background: rgba(255, 255, 255, 0.25);
-      border: 1px solid rgba(255,255,255,0.3);
-      color: #ffffff;
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-    }
-    .collapse-btn:hover {
-      background: rgba(255, 255, 255, 0.35);
-      transform: scale(1.05);
-    }
-    .panel-body {
-      padding: 3.0rem;
-      position: relative;
-      
-    }
-    .loading-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255, 255, 255, 0.9);
-      z-index: 10;
-    }
-    .spinner {
-      width: 48px;
-      height: 48px;
-      border: 4px solid #f3f4f6;
-      border-top-color: '#14b8a6';
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    
-  `],
-  animations: [
-    trigger('flipExpand', [
-      state('collapsed', style({
-        height: '0',
-        padding: '0 2rem',
-        overflow: 'hidden',
-        opacity: 0,
-        transform: 'perspective(500px) rotateX(-15deg)'
-      })),
-      state('expanded', style({
-        height: '*',
-        padding: '*',
-        overflow: 'visible',
-        opacity: 1,
-        transform: 'perspective(500px) rotateX(0deg)'
-      })),
-      transition('collapsed <=> expanded', animate('450ms cubic-bezier(0.4, 0, 0.2, 1)'))
-    ])
-  ]
+  `]
 })
 export class PanelComponent {
-  @Input() theme: Partial<PanelTheme> = {};
-  @Input() title: string = 'Panel Title';
-  @Input() subtitle: string = '';
-  @Input() collapsible: boolean = true;
-  @Input() collapsed: boolean = false;
-  @Input() variant: 'default' | 'bordered' | 'elevated' | 'flat' | 'gradient' = 'flat';
-  @Input() headerActions: boolean = false;
-  @Input() loading: boolean = false;
-  @Output() toggled = new EventEmitter<boolean>();
+  @Input() theme: Partial<Theme> = {};
+  @Input() variant = 'default';
+  @Output() interact = new EventEmitter<string>();
 
-  private defaultTheme: PanelTheme = {
-    primaryColor: '#14b8a6',
-    backgroundColor: '#f0fdfa',
-    borderColor: '#99f6e4',
-    headerColor: '#0d9488',
-    shadowColor: 'rgba(20, 184, 166, 0.25)'
+  active = false;
+  hovered = false;
+
+  private defaultTheme: Theme = {
+    primaryColor: '#a855f7',
+    backgroundColor: '#ffffff',
+    textColor: '#1f2937',
+    borderColor: '#e5e7eb'
   };
 
-  get appliedTheme(): PanelTheme {
+  get appliedTheme(): Theme {
     return { ...this.defaultTheme, ...this.theme };
   }
 
-  toggle() {
-    if (this.collapsible) {
-      this.collapsed = !this.collapsed;
-      this.toggled.emit(this.collapsed);
-    }
-  }
-
-  get panelStyles() {
+  get styles() {
+    const t = this.appliedTheme;
     return {
-      background: `linear-gradient(135deg, ${this.appliedTheme.backgroundColor} 0%, ${this.appliedTheme.headerColor}15 100%)`,
-      border: 'none',
-      boxShadow: `0 8px 32px ${this.appliedTheme.shadowColor}`
+      padding: '13px 29px',
+      background: this.active ? t.primaryColor : t.backgroundColor,
+      color: this.active ? '#ffffff' : t.textColor,
+      border: `3px solid ${this.hovered ? t.primaryColor : t.borderColor}`,
+      borderRadius: '11px',
+      fontSize: '15px',
+      fontWeight: 500,
+      boxShadow: this.hovered ? `0 9px 25px ${t.primaryColor}40` : '0 2px 8px rgba(0,0,0,0.08)',
+      transform: this.hovered ? 'translateY(-3px)' : 'translateY(0)',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '8px'
     };
   }
 
-  get headerStyles() {
-    return {
-      background: 'rgba(255, 255, 255, 0.1)',
-      borderBottom: `1px solid rgba(255, 255, 255, 0.2)`
-    };
-  }
-
-  get bodyStyles() {
-    return {
-      backgroundColor: this.appliedTheme.backgroundColor
-    };
-  }
-
-  get titleStyles() {
-    return {};
-  }
-
-  get buttonStyles() {
-    return {};
-  }
-
-  get loadingStyles() {
-    return {
-      backgroundColor: 'rgba(255, 255, 255, 0.9)'
-    };
+  handleClick(): void {
+    this.active = !this.active;
+    this.interact.emit('panel_v9');
   }
 }

@@ -1,152 +1,78 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
-interface ButtonTheme {
+interface Theme {
   primaryColor: string;
-  secondaryColor: string;
   backgroundColor: string;
   textColor: string;
   borderColor: string;
-  accentColor: string;
 }
 
 @Component({
   selector: 'app-button',
   template: `
-    <button
-      [ngClass]="['btn', 'btn-' + variant, 'btn-' + size]"
-      [ngStyle]="buttonStyles"
-      [disabled]="disabled || loading"
-      [attr.aria-label]="ariaLabel"
-      [attr.aria-busy]="loading"
-      (click)="handleClick($event)"
-      class="skew-button">
-      <span *ngIf="loading" class="spinner hexagon-spinner"></span>
-      <span *ngIf="!loading && iconLeft" class="icon-left">{{ iconLeft }}</span>
-      <span class="btn-content">
-        <ng-content></ng-content>
-      </span>
-      <span *ngIf="!loading && iconRight" class="icon-right">{{ iconRight }}</span>
-    </button>
+    <div
+      [ngStyle]="styles"
+      (click)="handleClick()"
+      (mouseenter)="hovered = true"
+      (mouseleave)="hovered = false"
+      class="button-container">
+      <ng-content></ng-content>
+      <span *ngIf="active" class="indicator">✓</span>
+    </div>
   `,
   styles: [`
-    .skew-button {
-      position: relative;
-      overflow: hidden;
+    .button-container {
       cursor: pointer;
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      font-weight: 600;
-      border: none;
-      outline: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      box-shadow: 0 5px 20px rgba(217, 70, 239, 0.4);
+      transition: all 440ms cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+      position: relative;
     }
-
-    .skew-button:hover:not(:disabled) {
-      transform: skewX(-5deg) scale(1.05);
-      box-shadow: 0 8px 35px rgba(217, 70, 239, 0.6);
-    }
-
-    .skew-button:active:not(:disabled) {
-      transform: skewX(0deg) scale(0.98);
-    }
-
-    .skew-button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .hexagon-spinner {
-      width: 1em;
-      height: 1em;
-      background: currentColor;
-      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-      animation: hexagonSpin 1.5s linear infinite;
-    }
-
-    @keyframes hexagonSpin {
-      to { transform: rotate(360deg); }
-    }
-
-    .btn-content {
-      display: flex;
-      align-items: center;
-    }
-
-    .btn-sm {
-      padding: 0.5rem 1.5rem;
-      font-size: 0.875rem;
-      border-radius: 0.5rem;
-    }
-
-    .btn-md {
-      padding: 0.75rem 2rem;
-      font-size: 1rem;
-      border-radius: 0.75rem;
-    }
-
-    .btn-lg {
-      padding: 1rem 2.5rem;
-      font-size: 1.125rem;
-      border-radius: 1rem;
+    .indicator {
+      margin-left: 8px;
+      opacity: 0.8;
+      font-size: 14px;
     }
   `]
 })
 export class ButtonComponent {
-  @Input() theme: Partial<ButtonTheme> = {};
-  @Input() variant: 'default' | 'outlined' | 'filled' | 'skewed' = 'default';
-  @Input() size: 'sm' | 'md' | 'lg' = 'md';
-  @Input() disabled: boolean = false;
-  @Input() loading: boolean = false;
-  @Input() iconLeft: string = '';
-  @Input() iconRight: string = '';
-  @Input() ariaLabel: string = '';
-  @Output() clicked = new EventEmitter<MouseEvent>();
+  @Input() theme: Partial<Theme> = {};
+  @Input() variant = 'default';
+  @Output() interact = new EventEmitter<string>();
 
-  private defaultTheme: ButtonTheme = {
-    primaryColor: '#d946ef',
-    secondaryColor: '#c026d3',
-    backgroundColor: '#fdf4ff',
-    textColor: '#ffffff',
-    borderColor: '#d946ef',
-    accentColor: '#e879f9'
+  active = false;
+  hovered = false;
+
+  private defaultTheme: Theme = {
+    primaryColor: '#a855f7',
+    backgroundColor: '#ffffff',
+    textColor: '#1f2937',
+    borderColor: '#e5e7eb'
   };
 
-  get appliedTheme(): ButtonTheme {
+  get appliedTheme(): Theme {
     return { ...this.defaultTheme, ...this.theme };
   }
 
-  get buttonStyles() {
-    const variantStyles = {
-      default: {
-        background: `linear-gradient(135deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})`,
-        color: this.appliedTheme.textColor,
-        border: 'none'
-      },
-      outlined: {
-        background: 'transparent',
-        color: this.appliedTheme.primaryColor,
-        border: `2px solid ${this.appliedTheme.primaryColor}`
-      },
-      filled: {
-        background: this.appliedTheme.primaryColor,
-        color: this.appliedTheme.textColor,
-        border: 'none'
-      },
-      skewed: {
-        background: `linear-gradient(120deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.accentColor})`,
-        color: this.appliedTheme.textColor,
-        border: 'none'
-      }
+  get styles() {
+    const t = this.appliedTheme;
+    return {
+      padding: '15px 29px',
+      background: this.active ? t.primaryColor : t.backgroundColor,
+      color: this.active ? '#ffffff' : t.textColor,
+      border: `3px solid ${this.hovered ? t.primaryColor : t.borderColor}`,
+      borderRadius: '9px',
+      fontSize: '17px',
+      fontWeight: 600,
+      boxShadow: this.hovered ? `0 11px 23px ${t.primaryColor}40` : '0 2px 8px rgba(0,0,0,0.08)',
+      transform: this.hovered ? 'translateY(-5px)' : 'translateY(0)',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '8px'
     };
-
-    return variantStyles[this.variant];
   }
 
-  handleClick(event: MouseEvent): void {
-    if (!this.disabled && !this.loading) {
-      this.clicked.emit(event);
-    }
+  handleClick(): void {
+    this.active = !this.active;
+    this.interact.emit('button_v19');
   }
 }

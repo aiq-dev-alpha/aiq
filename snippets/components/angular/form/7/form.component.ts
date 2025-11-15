@@ -1,282 +1,78 @@
-import { Component, Input } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
-interface FormTheme {
+interface Theme {
   primaryColor: string;
-  secondaryColor: string;
   backgroundColor: string;
   textColor: string;
   borderColor: string;
-  errorColor: string;
-  successColor: string;
 }
 
 @Component({
   selector: 'app-form',
   template: `
-    <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" [ngStyle]="formStyles">
-      <div class="form-header" [ngStyle]="headerStyles">
-        <h2 [ngStyle]="titleStyles">{{ title }}</h2>
-        <p [ngStyle]="descriptionStyles">{{ description }}</p>
-      </div>
-
-      <div class="form-fields" [ngStyle]="fieldsContainerStyles">
-        <div class="field-group" *ngFor="let field of fields" [ngStyle]="fieldGroupStyles">
-          <label [for]="field.name" [ngStyle]="labelStyles">
-            {{ field.label }}
-            <span *ngIf="field.required" [ngStyle]="requiredStyles">*</span>
-          </label>
-          <input
-            [id]="field.name"
-            [type]="field.type || 'text'"
-            [formControlName]="field.name"
-            [ngStyle]="getInputStyles(field.name)"
-            [attr.aria-describedby]="field.name + '-error'"
-            [attr.aria-invalid]="isFieldInvalid(field.name)"
-          />
-          <div
-            *ngIf="isFieldInvalid(field.name)"
-            [id]="field.name + '-error'"
-            role="alert"
-            [ngStyle]="errorStyles"
-          >
-            {{ getErrorMessage(field.name) }}
-          </div>
-        </div>
-      </div>
-
-      <div *ngIf="showSuccess" [ngStyle]="successStyles" role="status">
-        {{ successMessage }}
-      </div>
-
-      <div class="form-actions" [ngStyle]="actionsStyles">
-        <button type="submit" [disabled]="isSubmitting || formGroup.invalid" [ngStyle]="submitButtonStyles">
-          {{ isSubmitting ? 'Submitting...' : submitButtonText }}
-        </button>
-        <button type="button" (click)="onReset()" [ngStyle]="resetButtonStyles">
-          {{ resetButtonText }}
-        </button>
-      </div>
-    </form>
-  `
+    <div
+      [ngStyle]="styles"
+      (click)="handleClick()"
+      (mouseenter)="hovered = true"
+      (mouseleave)="hovered = false"
+      class="form-container">
+      <ng-content></ng-content>
+      <span *ngIf="active" class="indicator">✓</span>
+    </div>
+  `,
+  styles: [`
+    .form-container {
+      cursor: pointer;
+      transition: all 320ms cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+      position: relative;
+    }
+    .indicator {
+      margin-left: 8px;
+      opacity: 0.8;
+      font-size: 14px;
+    }
+  `]
 })
 export class FormComponent {
-  @Input() theme: Partial<FormTheme> = {};
-  @Input() title: string = 'Newsletter Signup';
-  @Input() description: string = 'Subscribe to our updates';
-  @Input() fields: any[] = [
-    { name: 'email', label: 'Email Address', type: 'email', required: true },
-    { name: 'frequency', label: 'Frequency', required: true }
-  ];
-  @Input() submitButtonText: string = 'Subscribe';
-  @Input() resetButtonText: string = 'Cancel';
-  @Input() successMessage: string = 'Successfully subscribed!';
+  @Input() theme: Partial<Theme> = {};
+  @Input() variant = 'default';
+  @Output() interact = new EventEmitter<string>();
 
-  formGroup: FormGroup;
-  isSubmitting: boolean = false;
-  showSuccess: boolean = false;
+  active = false;
+  hovered = false;
 
-  private defaultTheme: FormTheme = {
-    primaryColor: '#ec4899',
-    secondaryColor: '#db2777',
-    backgroundColor: '#fdf2f8',
-    textColor: '#831843',
-    borderColor: '#f9a8d4',
-    errorColor: '#c026d3',
-    successColor: '#0891b2'
+  private defaultTheme: Theme = {
+    primaryColor: '#ef4444',
+    backgroundColor: '#ffffff',
+    textColor: '#1f2937',
+    borderColor: '#e5e7eb'
   };
 
-  constructor(private fb: FormBuilder) {
-    this.formGroup = this.fb.group({});
-  }
-
-  ngOnInit() {
-    this.initializeForm();
-  }
-
-  get appliedTheme(): FormTheme {
+  get appliedTheme(): Theme {
     return { ...this.defaultTheme, ...this.theme };
   }
 
-  initializeForm() {
-    const group: any = {};
-    this.fields.forEach(field => {
-      const validators = [];
-      if (field.required) validators.push(Validators.required);
-      if (field.type === 'email') validators.push(Validators.email);
-      group[field.name] = ['', validators];
-    });
-    this.formGroup = this.fb.group(group);
-  }
-
-  isFieldInvalid(fieldName: string): boolean {
-    const field = this.formGroup.get(fieldName);
-    return !!(field && field.invalid && field.touched);
-  }
-
-  getErrorMessage(fieldName: string): string {
-    const field = this.formGroup.get(fieldName);
-    if (field?.errors?.['required']) return 'This field is required';
-    if (field?.errors?.['email']) return 'Please enter a valid email';
-    return 'Invalid input';
-  }
-
-  onSubmit() {
-    if (this.formGroup.valid) {
-      this.isSubmitting = true;
-      setTimeout(() => {
-        this.isSubmitting = false;
-        this.showSuccess = true;
-        setTimeout(() => this.showSuccess = false, 3000);
-      }, 1000);
-    }
-  }
-
-  onReset() {
-    this.formGroup.reset();
-    this.showSuccess = false;
-  }
-
-  get formStyles() {
+  get styles() {
+    const t = this.appliedTheme;
     return {
-      backgroundColor: this.appliedTheme.backgroundColor,
-      padding: '2rem',
-      borderRadius: '0.5rem',
-      border: `2px solid ${this.appliedTheme.borderColor}`,
-      maxWidth: '500px',
-      margin: '0 auto',
-      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+      padding: '19px 27px',
+      background: this.active ? t.primaryColor : t.backgroundColor,
+      color: this.active ? '#ffffff' : t.textColor,
+      border: `3px solid ${this.hovered ? t.primaryColor : t.borderColor}`,
+      borderRadius: '9px',
+      fontSize: '17px',
+      fontWeight: 600,
+      boxShadow: this.hovered ? `0 15px 23px ${t.primaryColor}40` : '0 2px 8px rgba(0,0,0,0.08)',
+      transform: this.hovered ? 'translateY(-5px)' : 'translateY(0)',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '8px'
     };
   }
 
-  get headerStyles() {
-    return {
-      marginBottom: '1.5rem',
-      textAlign: 'center'
-    };
-  }
-
-  get titleStyles() {
-    return {
-      color: this.appliedTheme.primaryColor,
-      fontSize: '1.5rem',
-      fontWeight: '700',
-      margin: '0 0 0.5rem 0'
-    };
-  }
-
-  get descriptionStyles() {
-    return {
-      color: this.appliedTheme.textColor,
-      fontSize: '0.875rem',
-      margin: '0',
-      opacity: '0.8'
-    };
-  }
-
-  get fieldsContainerStyles() {
-    return {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '1rem'
-    };
-  }
-
-  get fieldGroupStyles() {
-    return {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '0.5rem'
-    };
-  }
-
-  get labelStyles() {
-    return {
-      color: this.appliedTheme.textColor,
-      fontSize: '0.875rem',
-      fontWeight: '600'
-    };
-  }
-
-  get requiredStyles() {
-    return {
-      color: this.appliedTheme.errorColor,
-      marginLeft: '0.25rem'
-    };
-  }
-
-  getInputStyles(fieldName: string) {
-    const isInvalid = this.isFieldInvalid(fieldName);
-    return {
-      padding: '0.75rem',
-      border: `2px solid ${isInvalid ? this.appliedTheme.errorColor : this.appliedTheme.borderColor}`,
-      borderRadius: '0.5rem',
-      fontSize: '1rem',
-      color: this.appliedTheme.textColor,
-      backgroundColor: '#ffffff',
-      outline: 'none',
-      transition: 'border-color 0.2s'
-    };
-  }
-
-  get errorStyles() {
-    return {
-      color: this.appliedTheme.errorColor,
-      fontSize: '0.75rem',
-      marginTop: '0.25rem'
-    };
-  }
-
-  get successStyles() {
-    return {
-      backgroundColor: `${this.appliedTheme.successColor}20`,
-      color: this.appliedTheme.successColor,
-      padding: '0.875rem',
-      borderRadius: '0.5rem',
-      marginTop: '1rem',
-      textAlign: 'center',
-      fontSize: '0.875rem',
-      fontWeight: '600',
-      border: `2px solid ${this.appliedTheme.successColor}`
-    };
-  }
-
-  get actionsStyles() {
-    return {
-      display: 'flex',
-      gap: '1rem',
-      marginTop: '1.5rem'
-    };
-  }
-
-  get submitButtonStyles() {
-    return {
-      flex: '1',
-      padding: '0.875rem',
-      backgroundColor: this.appliedTheme.primaryColor,
-      color: '#ffffff',
-      border: 'none',
-      borderRadius: '0.5rem',
-      fontSize: '1rem',
-      fontWeight: '600',
-      cursor: this.isSubmitting || this.formGroup.invalid ? 'not-allowed' : 'pointer',
-      opacity: this.isSubmitting || this.formGroup.invalid ? '0.6' : '1',
-      transition: 'opacity 0.2s'
-    };
-  }
-
-  get resetButtonStyles() {
-    return {
-      flex: '1',
-      padding: '0.875rem',
-      backgroundColor: 'transparent',
-      color: this.appliedTheme.textColor,
-      border: `2px solid ${this.appliedTheme.borderColor}`,
-      borderRadius: '0.5rem',
-      fontSize: '1rem',
-      fontWeight: '600',
-      cursor: 'pointer',
-      transition: 'all 0.2s'
-    };
+  handleClick(): void {
+    this.active = !this.active;
+    this.interact.emit('form_v7');
   }
 }

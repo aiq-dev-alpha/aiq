@@ -169,6 +169,7 @@ export class PanelComponent {
   private defaultTheme: PanelTheme = {
     primaryColor: '#8b5cf6',
     backgroundColor: '#faf5ff',
+        backdropFilter: 'blur(10px)',
     borderColor: '#c4b5fd',
     headerColor: '#a78bfa',
     shadowColor: 'rgba(139, 92, 246, 0.25)'
@@ -216,7 +217,8 @@ export class PanelComponent {
 
   get loadingStyles() {
     return {
-      backgroundColor: 'rgba(255, 255, 255, 0.9)'
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        backdropFilter: 'blur(10px)'
     };
   }
 }

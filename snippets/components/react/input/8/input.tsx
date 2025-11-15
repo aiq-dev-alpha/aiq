@@ -1,33 +1,36 @@
 import React, { useState } from 'react';
 
-interface GradientBorderInputProps {
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  type?: string;
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
+  className?: string;
+  onInteract?: (type: string) => void;
 }
 
-export default function GradientBorderInput({
-  value,
-  onChange,
-  placeholder = 'Enter text...',
-  type = 'text'
-}: GradientBorderInputProps) {
-  const [isFocused, setIsFocused] = useState(false);
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [value, setValue] = useState('');
+  const [focused, setFocused] = useState(false);
+  const primary = theme.primary || '#22c55e';
+  
   return (
-    <div className="relative w-full p-0.5 rounded-lg bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500">
+    <div className={className} style={{ width: '100%', maxWidth: '360px' }}>
       <input
-        type={type}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        placeholder={placeholder}
-        className={`w-full px-4 py-2.5 text-base bg-white rounded-lg outline-none transition-all duration-300 ${
-          isFocused ? 'shadow-lg' : ''
-        }`}
+        onChange={(e) => setValue(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        placeholder="Enter text..."
+        style={{
+          width: '100%',
+          padding: '14px 18px',
+          border: `2px solid ${focused ? primary : '#e5e7eb'}`,
+          borderRadius: '11px',
+          fontSize: '16px',
+          outline: 'none',
+          transition: 'all 250ms',
+          background: focused ? `${primary}05` : '#ffffff',
+          boxShadow: focused ? `0 0 0 4px ${primary}20` : 'none'
+        }}
       />
     </div>
   );
-}
+};

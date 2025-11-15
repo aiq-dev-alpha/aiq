@@ -1,84 +1,65 @@
 import 'package:flutter/material.dart';
 
-class SnackbarConfig {
-  final Color backgroundColor;
-  final Color textColor;
-  final Duration duration;
-  final SnackBarBehavior behavior;
+class CustomWidget extends StatefulWidget {
+  final Widget? child;
+  final VoidCallback? onTap;
+  final Color? color;
 
-  const SnackbarConfig({
-    this.backgroundColor = const Color(0xFF323232),
-    this.textColor = Colors.white,
-    this.duration = const Duration(seconds: 3),
-    this.behavior = SnackBarBehavior.floating,
-  });
+  const CustomWidget({
+    Key? key,
+    this.child,
+    this.onTap,
+    this.color,
+  }) : super(key: key);
+
+  @override
+  State<CustomWidget> createState() => _CustomWidgetState();
 }
 
-class CustomSnackbar {
-  static void show(
-    BuildContext context, {
-    required String message,
-    SnackbarConfig? config,
-    IconData? icon,
-    String? actionLabel,
-    VoidCallback? onAction,
-  }) {
-    final effectiveConfig = config ?? const SnackbarConfig();
+class _CustomWidgetState extends State<CustomWidget> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            if (icon != null) ...[
-              Icon(icon, color: effectiveConfig.textColor),
-              const SizedBox(width: 12),
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              widget.color ?? Theme.of(context).primaryColor,
+              (widget.color ?? Theme.of(context).primaryColor).withOpacity(0.8),
             ],
-            Expanded(
-              child: Text(
-                message,
-                style: TextStyle(color: effectiveConfig.textColor),
-              ),
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: (widget.color ?? Theme.of(context).primaryColor).withOpacity(0.3),
+              blurRadius: 15,
+              offset: const Offset(0, 5),
             ),
           ],
         ),
-        backgroundColor: effectiveConfig.backgroundColor,
-        duration: effectiveConfig.duration,
-        behavior: effectiveConfig.behavior,
-        action: actionLabel != null
-            ? SnackBarAction(
-                label: actionLabel,
-                textColor: effectiveConfig.textColor,
-                onPressed: onAction ?? () {},
-              )
-            : null,
+        child: widget.child ?? const Text('Component', style: TextStyle(color: Colors.white)),
       ),
-    );
-  }
-
-  static void showSuccess(BuildContext context, String message) {
-    show(
-      context,
-      message: message,
-      config: const SnackbarConfig(backgroundColor: Color(0xFF4CAF50)),
-      icon: Icons.check_circle,
-    );
-  }
-
-  static void showError(BuildContext context, String message) {
-    show(
-      context,
-      message: message,
-      config: const SnackbarConfig(backgroundColor: Color(0xFFF44336)),
-      icon: Icons.error,
-    );
-  }
-
-  static void showWarning(BuildContext context, String message) {
-    show(
-      context,
-      message: message,
-      config: const SnackbarConfig(backgroundColor: Color(0xFFFF9800)),
-      icon: Icons.warning,
     );
   }
 }

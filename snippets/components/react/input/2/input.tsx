@@ -1,44 +1,36 @@
 import React, { useState } from 'react';
 
-interface FloatingLabelInputProps {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  type?: string;
-  placeholder?: string;
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
+  className?: string;
+  onInteract?: (type: string) => void;
 }
 
-export default function FloatingLabelInput({
-  label,
-  value,
-  onChange,
-  type = 'text',
-  placeholder = ''
-}: FloatingLabelInputProps) {
-  const [isFocused, setIsFocused] = useState(false);
-  const hasValue = value.length > 0;
-  const isFloating = isFocused || hasValue;
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [value, setValue] = useState('');
+  const [focused, setFocused] = useState(false);
+  const primary = theme.primary || '#8b5cf6';
+  
   return (
-    <div className="relative w-full">
+    <div className={className} style={{ width: '100%', maxWidth: '360px' }}>
       <input
-        type={type}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        placeholder={isFloating ? placeholder : ''}
-        className="w-full px-4 pt-6 pb-2 text-base border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition-all duration-200"
+        onChange={(e) => setValue(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        placeholder="Enter text..."
+        style={{
+          width: '100%',
+          padding: '14px 18px',
+          border: `2px solid ${focused ? primary : '#e5e7eb'}`,
+          borderRadius: '10px',
+          fontSize: '16px',
+          outline: 'none',
+          transition: 'all 250ms',
+          background: focused ? `${primary}05` : '#ffffff',
+          boxShadow: focused ? `0 0 0 4px ${primary}20` : 'none'
+        }}
       />
-      <label
-        className={`absolute left-4 transition-all duration-200 pointer-events-none ${
-          isFloating
-            ? 'top-1.5 text-xs text-blue-500'
-            : 'top-1/2 -translate-y-1/2 text-base text-gray-500'
-        }`}
-      >
-        {label}
-      </label>
     </div>
   );
-}
+};

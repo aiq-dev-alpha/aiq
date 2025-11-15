@@ -133,7 +133,7 @@ interface OnboardingPage {
       height: 8px;
       border-radius: 4px;
       background: rgba(255, 255, 255, 0.4);
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .indicator.active {
@@ -147,6 +147,22 @@ interface OnboardingPage {
       margin: 0;
       height: 56px;
       font-weight: 600;
+    }
+  
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(-20px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes scaleIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
   `]
 })

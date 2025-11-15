@@ -42,8 +42,8 @@ interface GridTheme {
   styles: [`
     .grid-container { width: 100%; min-height: 100vh; }
     .grid-wrapper { display: grid; width: 100%; }
-    .grid-item { cursor: pointer; transition: all 0.3s ease; border-radius: 1rem; overflow: hidden; }
-    .grid-item:hover { transform: scale(1.05); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+    .grid-item { cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 1rem; overflow: hidden; }
+    .grid-item:hover { transform: scale(1.05); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05); }
     .item-image { width: 100%; height: 180px; object-fit: cover; }
     .item-content { padding: 1.5rem; }
     .item-title { font-size: 1.25rem; font-weight: 700; margin: 0 0 0.75rem 0; }
@@ -51,6 +51,10 @@ interface GridTheme {
     .item-meta { font-size: 0.875rem; opacity: 0.7; }
     .skeleton { animation: pulse 2s ease-in-out infinite; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; min-height: 250px; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+      .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
+    }
   `]
 })
 export class GridComponent {
@@ -65,6 +69,7 @@ export class GridComponent {
   private defaultTheme: GridTheme = {
     primaryColor: '#dc2626',
     backgroundColor: '#fef2f2',
+        backdropFilter: 'blur(10px)',
     cardColor: '#ffffff',
     textColor: '#1f2937',
     borderColor: '#e5e7eb',

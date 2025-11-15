@@ -1,50 +1,36 @@
 import React, { useState } from 'react';
 
-interface InlineEditInputProps {
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
+  className?: string;
+  onInteract?: (type: string) => void;
 }
 
-export default function InlineEditInput({
-  value,
-  onChange,
-  placeholder = 'Click to edit...'
-}: InlineEditInputProps) {
-  const [isEditing, setIsEditing] = useState(false);
-
-  const handleBlur = () => {
-    setIsEditing(false);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      setIsEditing(false);
-    } else if (e.key === 'Escape') {
-      setIsEditing(false);
-    }
-  };
-
-  if (isEditing) {
-    return (
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onBlur={handleBlur}
-        onKeyDown={handleKeyDown}
-        autoFocus
-        className="w-full px-2 py-1 text-base border-2 border-blue-500 rounded focus:outline-none"
-      />
-    );
-  }
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [value, setValue] = useState('');
+  const [focused, setFocused] = useState(false);
+  const primary = theme.primary || '#10b981';
+  
   return (
-    <div
-      onClick={() => setIsEditing(true)}
-      className="w-full px-2 py-1 text-base cursor-text hover:bg-gray-50 rounded transition-colors min-h-[34px] flex items-center"
-    >
-      {value || <span className="text-gray-400">{placeholder}</span>}
+    <div className={className} style={{ width: '100%', maxWidth: '360px' }}>
+      <input
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        placeholder="Enter text..."
+        style={{
+          width: '100%',
+          padding: '14px 18px',
+          border: `2px solid ${focused ? primary : '#e5e7eb'}`,
+          borderRadius: '9px',
+          fontSize: '16px',
+          outline: 'none',
+          transition: 'all 250ms',
+          background: focused ? `${primary}05` : '#ffffff',
+          boxShadow: focused ? `0 0 0 4px ${primary}20` : 'none'
+        }}
+      />
     </div>
   );
-}
+};

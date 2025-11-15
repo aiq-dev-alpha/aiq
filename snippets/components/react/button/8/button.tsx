@@ -1,63 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-export interface ButtonProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onHover?: (isHovered: boolean) => void;
+  onInteract?: (type: string) => void;
 }
 
-export const Button: React.FC<ButtonProps> = ({ 
-  theme = {}, 
-  className = '',
-  onHover
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transition: 'all 300ms ease',
-    padding: '14px 28px',
-    background: 'rgba(255, 255, 255, 0.2)',
-    backdropFilter: 'blur(10px)',
-    WebkitBackdropFilter: 'blur(10px)',
-    color: theme.text || '#111827',
-    borderRadius: '12px',
-    border: '1px solid rgba(255, 255, 255, 0.3)',
-    cursor: 'pointer',
-    fontWeight: 600,
-    boxShadow: isHovered
-      ? '0 8px 32px rgba(0, 0, 0, 0.2)'
-      : '0 4px 16px rgba(0, 0, 0, 0.1)',
-    transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
-  };
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [angle, setAngle] = useState(0);
+  const primary = theme.primary || '#8b5cf6';
 
   return (
-    <div
+    <button
       className={className}
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onClick={() => { setAngle(a => a + 15); onInteract?.('rotate'); }}
+      style={{
+        padding: '14px 28px',
+        background: `linear-gradient(${angle}deg, ${primary}, #a78bfa, ${primary})`,
+        backgroundSize: '200% 200%',
+        color: '#fff',
+        border: 'none',
+        borderRadius: '10px',
+        fontSize: '15px',
+        fontWeight: 600,
+        cursor: 'pointer',
+        transform: `rotate(${angle}deg)`,
+        transition: 'transform 600ms cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+        outline: 'none'
+      }}
     >
-      Glassmorphism
-    </div>
+      Spinning Button
+    </button>
   );
 };

@@ -1,96 +1,56 @@
-// Variant 25: Image gallery card (multiple images)
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-export interface CardProps {
-  theme?: { primary?: string; background?: string; text?: string };
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onHover?: (isHovered: boolean) => void;
+  onInteract?: (type: string) => void;
 }
 
-export const Card: React.FC<CardProps> = ({ theme = {}, className = '', onHover }) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-  const [activeImg, setActiveImg] = useState(0);
-
-  useEffect(() => { setIsVisible(true); }, []);
-
-  const images = [
-    'https://images.unsplash.com/photo-1682687220742-aba13b6e50ba',
-    'https://images.unsplash.com/photo-1682687221038-404cb8830901',
-    'https://images.unsplash.com/photo-1682687220063-4742bd7fd538',
-  ];
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [hovered, setHovered] = useState(false);
+  const primary = theme.primary || '#10b981';
+  const text = theme.text || '#1f2937';
+  
   return (
     <div
       className={className}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onClick={() => onInteract?.('dot_pattern')}
       style={{
-        opacity: isVisible ? 1 : 0,
-        transform: isVisible ? 'scale(1)' : 'scale(0.95)',
-        transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
-        backgroundColor: theme.background || '#ffffff',
-        borderRadius: '16px',
-        overflow: 'hidden',
-        boxShadow: isHovered ? '0 16px 32px rgba(0,0,0,0.15)' : '0 6px 16px rgba(0,0,0,0.08)',
-        cursor: 'pointer',
         width: '340px',
+        padding: '28px',
+        background: '#ffffff',
+        border: `2px solid ${hovered ? primary : '#e5e7eb'}`,
+        borderRadius: '14px',
+        cursor: 'pointer',
+        transition: 'all 300ms ease',
+        boxShadow: hovered ? `0 12px 32px ${primary}30` : '0 4px 16px rgba(0,0,0,0.08)',
+        transform: hovered ? 'translateY(-6px)' : 'translateY(0)'
       }}
-      onMouseEnter={() => { setIsHovered(true); onHover?.(true); }}
-      onMouseLeave={() => { setIsHovered(false); onHover?.(false); }}
     >
-      <div style={{ position: 'relative' as const, height: '240px', backgroundColor: '#f3f4f6' }}>
-        {images.map((img, i) => (
-          <img
-            key={i}
-            src={img}
-            alt={`Gallery ${i + 1}`}
-            style={{
-              position: 'absolute' as const,
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover' as const,
-              opacity: activeImg === i ? 1 : 0,
-              transition: 'opacity 500ms ease',
-            }}
-          />
-        ))}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
         <div style={{
-          position: 'absolute' as const,
-          bottom: '16px',
-          left: '50%',
-          transform: 'translateX(-50%)',
+          width: '48px',
+          height: '48px',
+          borderRadius: '12px',
+          background: `${primary}20`,
           display: 'flex',
-          gap: '8px',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '24px',
+          fontWeight: 700,
+          color: primary
         }}>
-          {images.map((_, i) => (
-            <button
-              key={i}
-              onClick={(e) => { e.stopPropagation(); setActiveImg(i); }}
-              style={{
-                width: '8px',
-                height: '8px',
-                borderRadius: '50%',
-                border: 'none',
-                backgroundColor: activeImg === i ? '#ffffff' : 'rgba(255,255,255,0.5)',
-                cursor: 'pointer',
-                transition: 'all 200ms ease',
-              }}
-            />
-          ))}
+          D
         </div>
-      </div>
-      <div style={{ padding: '20px' }}>
-        <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: theme.text || '#111827', marginBottom: '8px' }}>
-          Photo Gallery
+        <h3 style={{ margin: 0, color: text, fontSize: '20px', fontWeight: 700 }}>
+          Dot Pattern
         </h3>
-        <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '12px' }}>
-          Browse through our collection of stunning images
-        </p>
-        <div style={{ fontSize: '13px', color: theme.primary || '#3b82f6', fontWeight: '600' }}>
-          {activeImg + 1} / {images.length}
-        </div>
       </div>
+      <p style={{ margin: 0, color: '#64748b', fontSize: '15px', lineHeight: 1.7 }}>
+        This is a dot pattern component with custom styling and hover effects.
+      </p>
     </div>
   );
 };

@@ -1,62 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-export interface ButtonProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onHover?: (isHovered: boolean) => void;
+  onInteract?: (type: string) => void;
 }
 
-export const Button: React.FC<ButtonProps> = ({
-  theme = {},
-  className = '',
-  onHover
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transition: 'all 300ms ease',
-    width: '100%',
-    padding: '16px',
-    backgroundColor: theme.primary || '#3b82f6',
-    color: '#ffffff',
-    borderRadius: '8px',
-    border: 'none',
-    cursor: 'pointer',
-    fontWeight: 600,
-    fontSize: '16px',
-    textAlign: 'center',
-    transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
-    boxShadow: isHovered ? '0 8px 16px rgba(59, 130, 246, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.1)',
-  };
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [flip, setFlip] = useState(false);
+  const primary = theme.primary || '#6366f1';
+  const secondary = theme.background || '#e0e7ff';
 
   return (
-    <div
-      className={className}
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      Full Width Block
+    <div style={{ perspective: '1000px', display: 'inline-block' }} className={className}>
+      <button
+        onClick={() => { setFlip(!flip); onInteract?.('flip'); }}
+        style={{
+          width: '160px',
+          height: '60px',
+          background: flip ? secondary : primary,
+          color: flip ? primary : '#fff',
+          border: `2px solid ${primary}`,
+          borderRadius: '12px',
+          fontSize: '16px',
+          fontWeight: 600,
+          cursor: 'pointer',
+          transform: flip ? 'rotateY(180deg)' : 'rotateY(0)',
+          transition: 'transform 600ms',
+          transformStyle: 'preserve-3d',
+          outline: 'none'
+        }}
+      >
+        <div style={{ transform: flip ? 'rotateY(180deg)' : 'rotateY(0)' }}>
+          {flip ? 'Flipped!' : 'Flip Me'}
+        </div>
+      </button>
     </div>
   );
 };

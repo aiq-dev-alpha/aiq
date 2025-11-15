@@ -1,144 +1,22 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-
-interface ListItem {
-  id: string | number;
-  content: string;
-  icon?: string;
-  metadata?: any;
-}
-
-interface ListTheme {
-  primaryColor: string;
-  secondaryColor: string;
-  backgroundColor: string;
-  textColor: string;
-  borderColor: string;
-  hoverColor: string;
-}
+// Kanban Board Style List
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-list',
-  template: `
-    <div class="list-container" [ngStyle]="containerStyles">
-      <div *ngIf="loading" class="skeleton-loader">
-        <div *ngFor="let item of [1,2,3,4,5]" class="skeleton-item swing-glow"></div>
-      </div>
-      <div *ngIf="!loading" class="list-items">
-        <div *ngFor="let item of items"
-             class="list-item purple-swing"
-             [class.selected]="isSelected(item)"
-             [ngStyle]="getItemStyles(item)"
-             (click)="onItemClick(item)">
-          <span *ngIf="item.icon" class="item-icon">{{ item.icon }}</span>
-          <span class="item-content">{{ item.content }}</span>
-          <span *ngIf="item.metadata" class="item-metadata">{{ item.metadata }}</span>
-        </div>
-      </div>
-    </div>
-  `,
+  template: `<div class="kanban-list"><div class="kanban-column" *ngFor="let column of columns"><div class="column-header">{{ column.title }}</div><div class="column-items"><div class="kanban-item" *ngFor="let item of column.items"><ng-content></ng-content></div></div></div></div>`,
   styles: [`
-    .list-container { width: 100%; }
-    .list-items { display: flex; flex-direction: column; gap: 15px; }
-    .list-item {
-      padding: 18px 20px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(139, 92, 246, 0.03));
-      border: 1px solid #e9d5ff;
-    }
-    .purple-swing:hover {
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.1));
-      box-shadow: 0 16px 23px rgba(139, 92, 246, 0.3);
-      transform: translateY(-2px) scale(1.00);
-      border-color: #8b5cf6;
-    }
-    .item-icon { font-size: 1.5999999999999999rem; flex-shrink: 0; color: #8b5cf6; }
-    .item-content { flex: 1; font-weight: 500; }
-    .item-metadata { font-size: 0.875rem; opacity: 0.75; }
-    .selected {
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.15));
-      border-color: #8b5cf6;
-      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.4);
-    }
-    .skeleton-loader { display: flex; flex-direction: column; gap: 12px; }
-    .skeleton-item {
-      height: 78px;
-      border-radius: 12px;
-      background: linear-gradient(90deg, #f3e8ff, #e9d5ff, #f3e8ff);
-      background-size: 200% 100%;
-    }
-    @keyframes swing-glow {
-      0% { background-position: -200% 0; opacity: 0.6; }
-      50% { opacity: 1; }
-      100% { background-position: 200% 0; opacity: 0.6; }
-    }
-    .swing-glow { animation: swing-glow 1.8s ease-in-out infinite; }
+    .kanban-list { display: flex; gap: 16px; overflow-x: auto; padding: 16px; }
+    .kanban-column { flex: 0 0 300px; background: #f3f4f6; border-radius: 8px; padding: 12px; }
+    .column-header { font-weight: 600; padding: 8px 12px; margin-bottom: 12px; background: white; border-radius: 6px; }
+    .column-items { display: flex; flex-direction: column; gap: 8px; }
+    .kanban-item { background: white; border-radius: 6px; padding: 12px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); cursor: move; transition: transform 0.2s; }
+    .kanban-item:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); }
   `]
 })
 export class ListComponent {
-  @Input() items: ListItem[] = [];
-  @Input() theme: Partial<ListTheme> = {};
-  @Input() variant: 'default' | 'bordered' | 'striped' | 'card' | 'compact' | 'detailed' = 'default';
-  @Input() selectable: boolean = false;
-  @Input() multiSelect: boolean = false;
-  @Input() loading: boolean = false;
-  @Output() itemClicked = new EventEmitter<ListItem>();
-  @Output() selectionChanged = new EventEmitter<ListItem[]>();
-
-  selectedItems: Set<string | number> = new Set();
-
-  private defaultTheme: ListTheme = {
-    primaryColor: '#8b5cf6',
-    secondaryColor: '#7c3aed',
-    backgroundColor: '#faf5ff',
-    textColor: '#581c87',
-    borderColor: '#e9d5ff',
-    hoverColor: '#f3e8ff'
-  };
-
-  get appliedTheme(): ListTheme {
-    return { ...this.defaultTheme, ...this.theme };
-  }
-
-  get containerStyles() {
-    return {
-      backgroundColor: this.appliedTheme.backgroundColor,
-      color: this.appliedTheme.textColor,
-      padding: '19px',
-      borderRadius: '22px'
-    };
-  }
-
-  getItemStyles(item: ListItem) {
-    return {
-      color: this.appliedTheme.textColor
-    };
-  }
-
-  isSelected(item: ListItem): boolean {
-    return this.selectedItems.has(item.id);
-  }
-
-  onItemClick(item: ListItem) {
-    this.itemClicked.emit(item);
-    if (this.selectable) {
-      if (this.multiSelect) {
-        if (this.selectedItems.has(item.id)) {
-          this.selectedItems.delete(item.id);
-        } else {
-          this.selectedItems.add(item.id);
-        }
-      } else {
-        this.selectedItems.clear();
-        this.selectedItems.add(item.id);
-      }
-      this.selectionChanged.emit(Array.from(this.selectedItems).map(id =>
-        this.items.find(i => i.id === id)!
-      ));
-    }
-  }
+  columns = [
+    { title: 'To Do', items: [1, 2, 3] },
+    { title: 'In Progress', items: [4, 5] },
+    { title: 'Done', items: [6] }
+  ];
 }

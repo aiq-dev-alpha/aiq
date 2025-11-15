@@ -1,69 +1,52 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-export interface ButtonProps {
+export interface ComponentProps {
   theme?: {
     primary?: string;
     background?: string;
     text?: string;
   };
   className?: string;
-  onHover?: (isHovered: boolean) => void;
+  onInteract?: (type: string) => void;
 }
 
-export const Button: React.FC<ButtonProps> = ({
+export const Component: React.FC<ComponentProps> = ({
   theme = {},
   className = '',
-  onHover
+  onInteract
 }) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+  const [glowIntensity, setGlowIntensity] = useState(0);
 
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transition: 'all 300ms ease',
-    padding: '12px 32px',
-    backgroundColor: theme.primary || '#3b82f6',
-    color: '#ffffff',
-    borderRadius: '50px',
-    border: 'none',
-    cursor: 'pointer',
-    fontWeight: 600,
-    animation: isHovered ? 'pulse 1.5s infinite' : 'none',
-    boxShadow: isHovered ? '0 0 0 8px rgba(59, 130, 246, 0.2)' : 'none',
-  };
+  const primary = theme.primary || '#ec4899';
+  const background = theme.background || '#1f2937';
+  const text = theme.text || '#ffffff';
 
   return (
-    <>
-      <style>
-        {`
-          @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-          }
-        `}
-      </style>
-      <div
-        className={className}
-        style={styles}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        Pill Pulse
-      </div>
-    </>
+    <button
+      className={className}
+      onClick={() => onInteract?.('neon')}
+      onMouseEnter={() => setGlowIntensity(1)}
+      onMouseLeave={() => setGlowIntensity(0)}
+      style={{
+        padding: '14px 32px',
+        background: background,
+        color: primary,
+        border: `2px solid ${primary}`,
+        borderRadius: '6px',
+        fontSize: '16px',
+        fontWeight: 700,
+        cursor: 'pointer',
+        textTransform: 'uppercase',
+        letterSpacing: '2px',
+        boxShadow: glowIntensity
+          ? `0 0 10px ${primary}, 0 0 20px ${primary}, 0 0 40px ${primary}, inset 0 0 10px ${primary}40`
+          : `0 0 5px ${primary}80, inset 0 0 5px ${primary}20`,
+        transition: 'all 300ms ease',
+        outline: 'none',
+        textShadow: glowIntensity ? `0 0 10px ${primary}` : 'none'
+      }}
+    >
+      Neon Glow
+    </button>
   );
 };

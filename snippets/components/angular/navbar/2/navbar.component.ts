@@ -99,7 +99,7 @@ interface MenuItem {
     }
     nav.scrolled {
       transform: translateY(0);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
     }
     .navbar-container {
       display: flex;
@@ -295,6 +295,7 @@ export class NavbarComponent {
     primaryColor: '#6366f1',
     secondaryColor: '#ec4899',
     backgroundColor: '#0f172a',
+        backdropFilter: 'blur(10px)',
     textColor: '#f1f5f9',
     borderColor: '#1e293b',
     accentColor: '#f59e0b'
@@ -325,10 +326,12 @@ export class NavbarComponent {
       },
       transparent: {
         backgroundColor: 'rgba(15, 23, 42, 0.7)',
+        backdropFilter: 'blur(10px)',
         backdropFilter: 'blur(12px)'
       },
       blur: {
         backgroundColor: 'rgba(15, 23, 42, 0.5)',
+        backdropFilter: 'blur(10px)',
         backdropFilter: 'blur(24px) saturate(150%)'
       },
       gradient: {

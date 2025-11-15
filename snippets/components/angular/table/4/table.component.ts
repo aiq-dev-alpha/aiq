@@ -112,6 +112,7 @@ export class TableComponent {
     primaryColor: '#8b5cf6',
     secondaryColor: '#7c3aed',
     backgroundColor: '#faf5ff',
+        backdropFilter: 'blur(10px)',
     textColor: '#1f2937',
     borderColor: '#c4b5fd',
     headerBgColor: '#e9d5ff',
@@ -191,7 +192,8 @@ export class TableComponent {
       border: `2px solid ${this.appliedTheme.primaryColor}`,
       borderRadius: '4px',
       fontSize: '15px',
-      backgroundColor: '#ffffff'
+      backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)'
     };
   }
 
@@ -334,6 +336,7 @@ export class TableComponent {
       border: `2px solid ${this.appliedTheme.primaryColor}`,
       borderRadius: '4px',
       backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
       color: this.appliedTheme.primaryColor,
       cursor: 'pointer',
       fontSize: '15px',
@@ -362,6 +365,7 @@ export class TableComponent {
       border: `1px solid ${this.appliedTheme.primaryColor}`,
       borderRadius: '3px',
       backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
       color: this.appliedTheme.primaryColor,
       cursor: 'pointer',
       fontSize: '12px'
@@ -374,6 +378,7 @@ export class TableComponent {
       border: '1px solid #dc2626',
       borderRadius: '3px',
       backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
       color: '#dc2626',
       cursor: 'pointer',
       fontSize: '12px'
@@ -382,7 +387,8 @@ export class TableComponent {
 
   get expandedRowStyles() {
     return {
-      backgroundColor: '#ffffff'
+      backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)'
     };
   }
 

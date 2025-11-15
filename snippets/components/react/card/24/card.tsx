@@ -1,50 +1,56 @@
-// Variant 24: Gradient border card
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-export interface CardProps {
-  theme?: { primary?: string; background?: string; text?: string };
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onHover?: (isHovered: boolean) => void;
+  onInteract?: (type: string) => void;
 }
 
-export const Card: React.FC<CardProps> = ({ theme = {}, className = '', onHover }) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => { setIsVisible(true); }, []);
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [hovered, setHovered] = useState(false);
+  const primary = theme.primary || '#f59e0b';
+  const text = theme.text || '#1f2937';
+  
   return (
     <div
       className={className}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onClick={() => onInteract?.('corner_fold')}
       style={{
-        opacity: isVisible ? 1 : 0,
-        transform: isVisible ? 'scale(1)' : 'scale(0.95)',
-        transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
-        padding: isHovered ? '3px' : '2px',
-        borderRadius: '20px',
+        width: '340px',
+        padding: '28px',
+        background: '#ffffff',
+        border: `2px solid ${hovered ? primary : '#e5e7eb'}`,
+        borderRadius: '14px',
         cursor: 'pointer',
-        width: '320px',
+        transition: 'all 300ms ease',
+        boxShadow: hovered ? `0 12px 32px ${primary}30` : '0 4px 16px rgba(0,0,0,0.08)',
+        transform: hovered ? 'translateY(-6px)' : 'translateY(0)'
       }}
-      onMouseEnter={() => { setIsHovered(true); onHover?.(true); }}
-      onMouseLeave={() => { setIsHovered(false); onHover?.(false); }}
     >
-      <div style={{
-        backgroundColor: theme.background || '#ffffff',
-        borderRadius: '18px',
-        padding: '32px',
-        height: '100%',
-      }}>
-        <h3 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '12px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-          Gradient Border
-        </h3>
-        <p style={{ fontSize: '15px', color: '#6b7280', lineHeight: '1.6', marginBottom: '20px' }}>
-          A stunning card with animated gradient border that catches the eye.
-        </p>
-        <div style={{ fontSize: '13px', color: '#9ca3af' }}>
-          Hover to see the effect intensify
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+        <div style={{
+          width: '48px',
+          height: '48px',
+          borderRadius: '12px',
+          background: `${primary}20`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '24px',
+          fontWeight: 700,
+          color: primary
+        }}>
+          C
         </div>
+        <h3 style={{ margin: 0, color: text, fontSize: '20px', fontWeight: 700 }}>
+          Corner Fold
+        </h3>
       </div>
+      <p style={{ margin: 0, color: '#64748b', fontSize: '15px', lineHeight: 1.7 }}>
+        This is a corner fold component with custom styling and hover effects.
+      </p>
     </div>
   );
 };

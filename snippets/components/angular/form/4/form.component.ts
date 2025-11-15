@@ -82,6 +82,7 @@ export class FormComponent {
     primaryColor: '#8b5cf6',
     secondaryColor: '#7c3aed',
     backgroundColor: '#faf5ff',
+        backdropFilter: 'blur(10px)',
     textColor: '#1e1b4b',
     borderColor: '#c4b5fd',
     errorColor: '#f43f5e',
@@ -222,6 +223,7 @@ export class FormComponent {
       fontSize: '1rem',
       color: this.appliedTheme.textColor,
       backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
       outline: 'none',
       transition: 'border-color 0.2s',
       boxSizing: 'border-box'
@@ -289,6 +291,7 @@ export class FormComponent {
       width: '100%',
       padding: '1rem',
       backgroundColor: 'transparent',
+        backdropFilter: 'blur(10px)',
       color: this.appliedTheme.primaryColor,
       border: `2px solid ${this.appliedTheme.primaryColor}`,
       borderRadius: '0.5rem',

@@ -60,15 +60,15 @@ interface MenuItem {
     </nav>
   `,
   styles: [`
-    nav { transition: all 0.3s; }
-    nav.scrolled { box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+    nav { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    nav.scrolled { box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05); }
     .container { display: flex; align-items: center; justify-content: space-between; max-width: 1300px; margin: 0 auto; padding: 1rem 2rem; }
     .brand { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; }
     .icon { font-size: 1.75rem; transition: transform 0.3s; }
     .icon:hover { transform: rotate(180deg); }
     .name { font-size: 1.5rem; font-weight: 800; }
     .menu { display: flex; gap: 0.5rem; flex: 1; justify-content: center; }
-    .menu a { padding: 0.75rem 1.25rem; border-radius: 0.5rem; text-decoration: none; transition: all 0.25s; }
+    .menu a { padding: 0.75rem 1.25rem; border-radius: 0.5rem; text-decoration: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     .menu a:hover { transform: translateY(-2px); }
     .menu a.active { font-weight: 600; }
     .actions { display: flex; gap: 1rem; align-items: center; }
@@ -79,6 +79,22 @@ interface MenuItem {
     .toggle { display: none; flex-direction: column; gap: 0.25rem; }
     .toggle span { width: 24px; height: 2px; background: currentColor; }
     @media (max-width: 768px) { .menu, .actions { display: none; } .toggle { display: flex; } }
+  
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(-20px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes scaleIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
   `]
 })
 export class NavbarComponent {
@@ -99,6 +115,7 @@ export class NavbarComponent {
     primaryColor: '#f59e0b',
     secondaryColor: '#ef4444',
     backgroundColor: '#fef3c7',
+        backdropFilter: 'blur(10px)',
     textColor: '#78350f',
     borderColor: '#fcd34d',
     accentColor: '#dc2626'

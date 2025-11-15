@@ -1,59 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-export interface ButtonProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onHover?: (isHovered: boolean) => void;
+  onInteract?: (type: string) => void;
 }
 
-export const Button: React.FC<ButtonProps> = ({
-  theme = {},
-  className = '',
-  onHover
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transition: 'all 300ms ease',
-    padding: '16px 32px',
-    backgroundColor: isHovered ? '#8b5cf6dd' : (theme.primary || '#8b5cf6'),
-    color: '#ffffff',
-    borderRadius: '16px',
-    border: 'none',
-    cursor: 'pointer',
-    fontWeight: 600,
-    transform: isHovered ? 'scale(1.05)' : 'scale(1)',
-    boxShadow: isHovered ? '0 6px 20px rgba(0, 0, 0, 0.2)' : '0 2px 8px rgba(0, 0, 0, 0.1)',
-  };
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [active, setActive] = useState(false);
+  const primary = theme.primary || '#0891b2';
+  
   return (
-    <div
+    <button
       className={className}
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onClick={() => { setActive(!active); onInteract?.('invert'); }}
+      style={{
+        padding: '14px 32px',
+        background: active ? `linear-gradient(135deg, ${primary}, ${primary}dd)` : primary,
+        color: '#fff',
+        border: 'none',
+        borderRadius: '10px',
+        fontSize: '16px',
+        fontWeight: 700,
+        cursor: 'pointer',
+        transition: 'all 300ms ease',
+        boxShadow: active ? `0 8px 24px ${primary}60` : `0 2px 8px ${primary}40`,
+        transform: active ? 'translateY(-4px)' : 'translateY(0)',
+        outline: 'none'
+      }}
     >
-      Compact
-    </div>
+      Invert
+    </button>
   );
 };

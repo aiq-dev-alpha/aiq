@@ -1,39 +1,35 @@
 import 'package:flutter/material.dart';
 
 class CustomComponent extends StatefulWidget {
-  final Color? backgroundColor;
-  final Color? textColor;
-  final Color? accentColor;
-  final EdgeInsetsGeometry? padding;
+  final String text;
+  final VoidCallback? onPressed;
+  final IconData? icon;
+  final Color? color;
 
   const CustomComponent({
     Key? key,
-    this.backgroundColor,
-    this.textColor,
-    this.accentColor,
-    this.padding,
+    this.text = 'Button',
+    this.onPressed,
+    this.icon,
+    this.color,
   }) : super(key: key);
 
   @override
   State<CustomComponent> createState() => _CustomComponentState();
 }
 
-class _CustomComponentState extends State<CustomComponent> with TickerProviderStateMixin {
+class _CustomComponentState extends State<CustomComponent> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
-  bool _isHovered = false;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 760),
+      duration: const Duration(milliseconds: 150),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 0.95, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
-    );
-    _controller.forward();
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(_controller);
   }
 
   @override
@@ -44,31 +40,53 @@ class _CustomComponentState extends State<CustomComponent> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
+    return GestureDetector(
+      onTapDown: (_) => _controller.forward(),
+      onTapUp: (_) {
+        _controller.reverse();
+        widget.onPressed?.call();
+      },
+      onTapCancel: () => _controller.reverse(),
       child: ScaleTransition(
         scale: _scaleAnimation,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          transform: Matrix4.identity()..translate(0.0, _isHovered ? -3.0 : 0.0),
-          padding: widget.padding ?? const EdgeInsets.all(26),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
           decoration: BoxDecoration(
-            color: widget.backgroundColor ?? Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: (widget.accentColor ?? Colors.blue).withOpacity(_isHovered ? 0.6 : 0.2),
-              width: _isHovered ? 2.0 : 1.0,
+            gradient: LinearGradient(
+              colors: [
+                widget.color ?? Theme.of(context).primaryColor,
+                (widget.color ?? Theme.of(context).primaryColor).withOpacity(0.7),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
+            borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(_isHovered ? 0.15 : 0.08),
-                blurRadius: _isHovered ? 16.0 : 10.0,
-                offset: Offset(0, _isHovered ? 4.0 : 2.0),
+                color: (widget.color ?? Theme.of(context).primaryColor).withOpacity(0.4),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
               ),
             ],
           ),
-          child: const Center(child: Text('Component')),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (widget.icon != null) ...[
+                Icon(widget.icon, color: Colors.white, size: 22),
+                const SizedBox(width: 10),
+              ],
+              Text(
+                widget.text,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

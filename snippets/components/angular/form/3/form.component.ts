@@ -82,6 +82,7 @@ export class FormComponent {
     primaryColor: '#10b981',
     secondaryColor: '#059669',
     backgroundColor: '#f9fafb',
+        backdropFilter: 'blur(10px)',
     textColor: '#1f2937',
     borderColor: '#d1d5db',
     errorColor: '#dc2626',
@@ -220,6 +221,7 @@ export class FormComponent {
       fontSize: '1rem',
       color: this.appliedTheme.textColor,
       backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
       outline: 'none',
       transition: 'all 0.2s',
       boxShadow: isInvalid ? `0 0 0 3px ${this.appliedTheme.errorColor}20` : 'none'
@@ -279,6 +281,7 @@ export class FormComponent {
     return {
       padding: '0.875rem 2rem',
       backgroundColor: 'transparent',
+        backdropFilter: 'blur(10px)',
       color: this.appliedTheme.textColor,
       border: `2px solid ${this.appliedTheme.borderColor}`,
       borderRadius: '0.5rem',

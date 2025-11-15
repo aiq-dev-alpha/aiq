@@ -1,69 +1,36 @@
-import React, { useState, DragEvent } from 'react';
+import React, { useState } from 'react';
 
-interface FileInputProps {
-  onFileSelect: (file: File | null) => void;
-  accept?: string;
+export interface ComponentProps {
+  theme?: { primary?: string; background?: string; text?: string; };
+  className?: string;
+  onInteract?: (type: string) => void;
 }
 
-export default function FileInput({
-  onFileSelect,
-  accept = '*'
-}: FileInputProps) {
-  const [isDragging, setIsDragging] = useState(false);
-  const [fileName, setFileName] = useState<string>('');
-
-  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      setFileName(file.name);
-      onFileSelect(file);
-    }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    if (file) {
-      setFileName(file.name);
-      onFileSelect(file);
-    }
-  };
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [value, setValue] = useState('');
+  const [focused, setFocused] = useState(false);
+  const primary = theme.primary || '#22c55e';
+  
   return (
-    <div
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
-      className={`relative w-full p-8 border-2 border-dashed rounded-lg transition-all ${
-        isDragging
-          ? 'border-blue-500 bg-blue-50'
-          : 'border-gray-300 hover:border-gray-400'
-      }`}
-    >
+    <div className={className} style={{ width: '100%', maxWidth: '360px' }}>
       <input
-        type="file"
-        onChange={handleFileChange}
-        accept={accept}
-        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        placeholder="Enter text..."
+        style={{
+          width: '100%',
+          padding: '14px 18px',
+          border: `2px solid ${focused ? primary : '#e5e7eb'}`,
+          borderRadius: '11px',
+          fontSize: '16px',
+          outline: 'none',
+          transition: 'all 250ms',
+          background: focused ? `${primary}05` : '#ffffff',
+          boxShadow: focused ? `0 0 0 4px ${primary}20` : 'none'
+        }}
       />
-      <div className="text-center">
-        <svg className="mx-auto w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-        </svg>
-        <p className="mt-2 text-sm text-gray-600">
-          {fileName || 'Drag and drop your file here, or click to browse'}
-        </p>
-      </div>
     </div>
   );
-}
+};

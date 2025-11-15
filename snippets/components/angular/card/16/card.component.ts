@@ -134,6 +134,26 @@ type CardPattern = 'default' | 'image-top' | 'image-left' | 'overlay' | 'minimal
       border-top: 1px solid currentColor;
       opacity: 0.1;
     }
+      .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
+    }
+  
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(-20px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes scaleIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
   `]
 })
 export class CardComponent {
@@ -150,6 +170,7 @@ export class CardComponent {
 
   private defaultAppearance: CardAppearance = {
     backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
     borderColor: '#e5e7eb',
     textColor: '#0f172a',
     accentColor: '#3b82f6',

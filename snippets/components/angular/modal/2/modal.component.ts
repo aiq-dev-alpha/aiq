@@ -101,6 +101,22 @@ type ModalPosition = 'center' | 'top' | 'bottom' | 'left' | 'right';
       outline: 2px solid currentColor;
       outline-offset: 2px;
     }
+  
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(-20px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes scaleIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
   `]
 })
 export class ModalComponent implements OnInit, OnDestroy {
@@ -122,6 +138,7 @@ export class ModalComponent implements OnInit, OnDestroy {
     primaryColor: '#3b82f6',
     secondaryColor: '#8b5cf6',
     backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
     textColor: '#1f2937',
     borderColor: '#e5e7eb',
     overlayColor: 'rgba(0, 0, 0, 0.5)'
@@ -198,7 +215,8 @@ export class ModalComponent implements OnInit, OnDestroy {
       display: 'flex',
       justifyContent: 'flex-end',
       gap: '0.75rem',
-      backgroundColor: '#f9fafb'
+      backgroundColor: '#f9fafb',
+        backdropFilter: 'blur(10px)'
     };
   }
 

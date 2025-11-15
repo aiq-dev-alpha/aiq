@@ -1,94 +1,59 @@
 import 'package:flutter/material.dart';
 
 class CustomComponent extends StatefulWidget {
+  final String text;
+  final VoidCallback? onPressed;
   final Color? backgroundColor;
-  final Color? textColor;
-  final Color? accentColor;
-  final EdgeInsetsGeometry? padding;
-  final VoidCallback? onTap;
+  final bool elevated;
 
   const CustomComponent({
     Key? key,
+    this.text = 'Button',
+    this.onPressed,
     this.backgroundColor,
-    this.textColor,
-    this.accentColor,
-    this.padding,
-    this.onTap,
+    this.elevated = true,
   }) : super(key: key);
 
   @override
   State<CustomComponent> createState() => _CustomComponentState();
 }
 
-class _CustomComponentState extends State<CustomComponent> with TickerProviderStateMixin {
-  late AnimationController _controller;
-  late AnimationController _hoverController;
-  late Animation<double> _scaleAnimation;
+class _CustomComponentState extends State<CustomComponent> {
   bool _isHovered = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 940),
-      vsync: this,
-    );
-    _hoverController = AnimationController(
-      duration: const Duration(milliseconds: 226),
-      vsync: this,
-    );
-    _scaleAnimation = Tween<double>(begin: 0.94, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
-    );
-    _controller.forward();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    _hoverController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      onEnter: (_) => setState(() {
-        _isHovered = true;
-        _hoverController.forward();
-      }),
-      onExit: (_) => setState(() {
-        _isHovered = false;
-        _hoverController.reverse();
-      }),
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
       child: GestureDetector(
-        onTap: widget.onTap,
-        child: ScaleTransition(
-          scale: _scaleAnimation,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 226),
-            transform: Matrix4.identity()
-              ..translate(0.0, _isHovered ? -4.0 : 0.0),
-            padding: widget.padding ?? const EdgeInsets.all(32),
-            decoration: BoxDecoration(
-              color: widget.backgroundColor ?? Colors.white,
-              borderRadius: BorderRadius.circular(22),
-              border: Border.all(
-                color: (widget.accentColor ?? Theme.of(context).primaryColor).withOpacity(
-                  _isHovered ? 0.8 : 0.3
-                ),
-                width: _isHovered ? 2.0 : 1.0,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(_isHovered ? 0.14 : 0.6),
-                  blurRadius: _isHovered ? 21.0 : 10.0,
-                  offset: Offset(0, _isHovered ? 6.0 : 4.0),
-                ),
-              ],
-            ),
-            child: const Center(
-              child: Text('Component', style: TextStyle(fontWeight: FontWeight.w600)),
+        onTap: widget.onPressed,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 280),
+          curve: Curves.easeInOutCubic,
+          transform: Matrix4.translationValues(0, _isHovered ? -4 : 0, 0),
+          padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 15),
+          decoration: BoxDecoration(
+            color: widget.backgroundColor ?? Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: widget.elevated
+                ? [
+                    BoxShadow(
+                      color: (widget.backgroundColor ?? Theme.of(context).primaryColor)
+                          .withOpacity(_isHovered ? 0.6 : 0.35),
+                      blurRadius: _isHovered ? 24 : 12,
+                      offset: Offset(0, _isHovered ? 10 : 5),
+                    ),
+                  ]
+                : [],
+          ),
+          child: Text(
+            widget.text,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.2,
             ),
           ),
         ),

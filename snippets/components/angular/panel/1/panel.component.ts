@@ -39,7 +39,7 @@ interface PanelTheme {
     .panel-container {
       border-radius: 12px;
       overflow: hidden;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .panel-header {
       display: flex;
@@ -47,7 +47,7 @@ interface PanelTheme {
       align-items: center;
       padding: 1.25rem 1.5rem;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .panel-header:hover {
       opacity: 0.9;
@@ -83,7 +83,7 @@ interface PanelTheme {
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .collapse-btn:hover {
       background: rgba(255, 255, 255, 0.3);
@@ -148,6 +148,7 @@ export class PanelComponent {
   private defaultTheme: PanelTheme = {
     primaryColor: '#3b82f6',
     backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
     borderColor: '#e5e7eb',
     headerColor: '#1e40af',
     shadowColor: 'rgba(59, 130, 246, 0.3)'
@@ -204,7 +205,8 @@ export class PanelComponent {
 
   get loadingStyles() {
     return {
-      backgroundColor: 'rgba(255, 255, 255, 0.9)'
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        backdropFilter: 'blur(10px)'
     };
   }
 }

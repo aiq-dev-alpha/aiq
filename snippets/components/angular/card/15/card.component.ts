@@ -57,7 +57,7 @@ type LayoutStyle = 'vertical' | 'horizontal' | 'compact' | 'feature';
     .card {
       position: relative;
       display: flex;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       font-family: system-ui, -apple-system, sans-serif;
     }
     .card.vertical {
@@ -129,6 +129,26 @@ type LayoutStyle = 'vertical' | 'horizontal' | 'compact' | 'feature';
       gap: 0.75rem;
       align-items: center;
       flex-wrap: wrap;
+    }
+      .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
+    }
+  
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(-20px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes scaleIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
   `]
 })

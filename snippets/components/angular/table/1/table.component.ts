@@ -58,7 +58,7 @@ interface TableTheme {
     .table-container {
       overflow-x: auto;
       border-radius: 12px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
     }
     .table {
       width: 100%;
@@ -99,6 +99,22 @@ interface TableTheme {
       border-bottom: 1px solid;
       font-size: 14px;
     }
+  
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(-20px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes scaleIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
   `]
 })
 export class TableComponent {
@@ -117,6 +133,7 @@ export class TableComponent {
   private defaultTheme: TableTheme = {
     primaryColor: '#3b82f6',
     backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
     headerColor: '#f8fafc',
     textColor: '#0f172a',
     borderColor: '#e2e8f0',

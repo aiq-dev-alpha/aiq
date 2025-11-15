@@ -112,7 +112,7 @@ interface MenuItem {
       transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     }
     nav.scrolled {
-      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
     }
     .nav-content {
       display: flex;
@@ -370,6 +370,7 @@ export class NavbarComponent {
     primaryColor: '#8b5cf6',
     secondaryColor: '#ec4899',
     backgroundColor: '#1f2937',
+        backdropFilter: 'blur(10px)',
     textColor: '#f9fafb',
     borderColor: '#374151',
     accentColor: '#f59e0b'
@@ -409,10 +410,12 @@ export class NavbarComponent {
       transparent: {
         backgroundColor: 'rgba(31, 41, 55, 0.75)',
         backdropFilter: 'blur(10px)',
+        backdropFilter: 'blur(10px)',
         borderBottom: `1px solid ${this.appliedTheme.borderColor}40`
       },
       blur: {
         backgroundColor: 'rgba(31, 41, 55, 0.6)',
+        backdropFilter: 'blur(10px)',
         backdropFilter: 'blur(20px) saturate(180%)',
         borderBottom: 'none'
       },

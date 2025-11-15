@@ -1,64 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onHover?: (isHovered: boolean) => void;
+  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ 
-  theme = {}, 
-  className = '',
-  onHover
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover?.(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    onHover?.(false);
-  };
-
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transform: isVisible 
-      ? isHovered 
-        ? 'translateY(-4px) scale(1.1)'
-        : 'translateY(0) scale(1)'
-      : 'translateY(18px) scale(0.95)',
-    transition: `all 370ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '28px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '20px',
-    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
-    boxShadow: isHovered 
-      ? '0 6px 20px rgba(0,0,0,0.12)' 
-      : '0 7px 12px rgba(0,0,0,0.6)',
-    cursor: 'pointer',
-  };
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [active, setActive] = useState(false);
+  const primary = theme.primary || '#ec4899';
+  
   return (
-    <div 
-      className={className} 
-      style={styles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+    <div
+      className={className}
+      onClick={() => { setActive(!active); onInteract?.('autocomplete'); }}
+      style={{
+        padding: '12px 20px',
+        background: active ? primary : `${primary}20`,
+        color: active ? '#ffffff' : primary,
+        border: `2px solid ${active ? primary : primary + '40'}`,
+        borderRadius: '11px',
+        fontSize: '14px',
+        fontWeight: 600,
+        cursor: 'pointer',
+        transition: 'all 280ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+        display: 'inline-block',
+        userSelect: 'none'
+      }}
     >
-      Component
+      Autocomplete 24
     </div>
   );
 };

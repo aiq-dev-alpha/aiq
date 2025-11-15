@@ -112,6 +112,7 @@ export class TableComponent {
     primaryColor: '#f59e0b',
     secondaryColor: '#f97316',
     backgroundColor: '#fffbeb',
+        backdropFilter: 'blur(10px)',
     textColor: '#78350f',
     borderColor: '#fde68a',
     headerBgColor: '#fef3c7',
@@ -363,6 +364,7 @@ export class TableComponent {
       border: 'none',
       borderRadius: '4px',
       backgroundColor: '#ef4444',
+        backdropFilter: 'blur(10px)',
       color: '#ffffff',
       cursor: 'pointer',
       fontSize: '12px'
@@ -371,7 +373,8 @@ export class TableComponent {
 
   get expandedRowStyles() {
     return {
-      backgroundColor: '#f9fafb'
+      backgroundColor: '#f9fafb',
+        backdropFilter: 'blur(10px)'
     };
   }
 

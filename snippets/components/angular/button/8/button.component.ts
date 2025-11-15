@@ -55,7 +55,7 @@ interface ButtonTheme {
     }
     .btn:hover:not(:disabled) {
       transform: perspective(500px) rotateX(5deg) translateY(-3px);
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
     }
     .btn:active:not(:disabled) {
       transform: perspective(500px) rotateX(2deg) translateY(-1px);
@@ -119,6 +119,7 @@ export class ButtonComponent {
     primaryColor: '#10b981',
     secondaryColor: '#059669',
     backgroundColor: '#d1fae5',
+        backdropFilter: 'blur(10px)',
     textColor: '#065f46',
     borderColor: '#6ee7b7',
     accentColor: '#34d399'

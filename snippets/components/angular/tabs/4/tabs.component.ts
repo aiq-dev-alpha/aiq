@@ -62,6 +62,7 @@ export class TabsComponent {
   private defaultTheme: TabsTheme = {
     primaryColor: '#f59e0b',
     backgroundColor: '#fffbeb',
+        backdropFilter: 'blur(10px)',
     textColor: '#92400e',
     activeColor: '#d97706',
     borderColor: '#fde68a',
@@ -142,6 +143,7 @@ export class TabsComponent {
       flex: 1,
       padding: '2rem',
       backgroundColor: '#ffffff',
+        backdropFilter: 'blur(10px)',
       color: '#374151',
       minHeight: '300px',
       borderRadius: '0.5rem',

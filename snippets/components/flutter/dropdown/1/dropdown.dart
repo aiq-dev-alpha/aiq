@@ -1,96 +1,65 @@
 import 'package:flutter/material.dart';
 
-class DropdownConfig {
-  final Color borderColor;
-  final Color fillColor;
-  final Color textColor;
-  final double borderRadius;
-  final EdgeInsets padding;
+class CustomWidget extends StatefulWidget {
+  final Widget? child;
+  final VoidCallback? onTap;
+  final Color? color;
 
-  const DropdownConfig({
-    this.borderColor = const Color(0xFFE0E0E0),
-    this.fillColor = Colors.white,
-    this.textColor = Colors.black87,
-    this.borderRadius = 8.0,
-    this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-  });
-}
-
-class CustomDropdown<T> extends StatelessWidget {
-  final T? value;
-  final List<DropdownItem<T>> items;
-  final ValueChanged<T?>? onChanged;
-  final String? hint;
-  final DropdownConfig? config;
-
-  const CustomDropdown({
+  const CustomWidget({
     Key? key,
-    required this.items,
-    this.value,
-    this.onChanged,
-    this.hint,
-    this.config,
+    this.child,
+    this.onTap,
+    this.color,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final effectiveConfig = config ?? const DropdownConfig();
+  State<CustomWidget> createState() => _CustomWidgetState();
+}
 
-    return Container(
-      decoration: BoxDecoration(
-        color: effectiveConfig.fillColor,
-        borderRadius: BorderRadius.circular(effectiveConfig.borderRadius),
-        border: Border.all(color: effectiveConfig.borderColor),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<T>(
-          value: value,
-          isExpanded: true,
-          hint: hint != null
-              ? Padding(
-                  padding: effectiveConfig.padding,
-                  child: Text(hint!, style: TextStyle(color: Colors.grey[600])),
-                )
-              : null,
-          items: items
-              .map((item) => DropdownMenuItem<T>(
-                    value: item.value,
-                    child: Padding(
-                      padding: effectiveConfig.padding,
-                      child: Row(
-                        children: [
-                          if (item.icon != null) ...[
-                            Icon(item.icon, size: 20, color: effectiveConfig.textColor),
-                            const SizedBox(width: 12),
-                          ],
-                          Text(
-                            item.label,
-                            style: TextStyle(color: effectiveConfig.textColor),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ))
-              .toList(),
-          onChanged: onChanged,
-          icon: Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: Icon(Icons.arrow_drop_down, color: effectiveConfig.textColor),
+class _CustomWidgetState extends State<CustomWidget> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              widget.color ?? Theme.of(context).primaryColor,
+              (widget.color ?? Theme.of(context).primaryColor).withOpacity(0.8),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: (widget.color ?? Theme.of(context).primaryColor).withOpacity(0.3),
+              blurRadius: 15,
+              offset: const Offset(0, 5),
+            ),
+          ],
         ),
+        child: widget.child ?? const Text('Component', style: TextStyle(color: Colors.white)),
       ),
     );
   }
-}
-
-class DropdownItem<T> {
-  final T value;
-  final String label;
-  final IconData? icon;
-
-  DropdownItem({
-    required this.value,
-    required this.label,
-    this.icon,
-  });
 }

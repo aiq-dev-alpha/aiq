@@ -1,144 +1,78 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
-interface ListItem {
-  id: string | number;
-  content: string;
-  icon?: string;
-  metadata?: any;
-}
-
-interface ListTheme {
+interface Theme {
   primaryColor: string;
-  secondaryColor: string;
   backgroundColor: string;
   textColor: string;
   borderColor: string;
-  hoverColor: string;
 }
 
 @Component({
   selector: 'app-list',
   template: `
-    <div class="list-container" [ngStyle]="containerStyles">
-      <div *ngIf="loading" class="skeleton-loader">
-        <div *ngFor="let item of [1,2,3,4,5]" class="skeleton-item bounce-in"></div>
-      </div>
-      <div *ngIf="!loading" class="list-items">
-        <div *ngFor="let item of items"
-             class="list-item lime-bounce"
-             [class.selected]="isSelected(item)"
-             [ngStyle]="getItemStyles(item)"
-             (click)="onItemClick(item)">
-          <span *ngIf="item.icon" class="item-icon">{{ item.icon }}</span>
-          <span class="item-content">{{ item.content }}</span>
-          <span *ngIf="item.metadata" class="item-metadata">{{ item.metadata }}</span>
-        </div>
-      </div>
+    <div
+      [ngStyle]="styles"
+      (click)="handleClick()"
+      (mouseenter)="hovered = true"
+      (mouseleave)="hovered = false"
+      class="list-container">
+      <ng-content></ng-content>
+      <span *ngIf="active" class="indicator">✓</span>
     </div>
   `,
   styles: [`
-    .list-container { width: 100%; }
-    .list-items { display: flex; flex-direction: column; gap: 12px; }
-    .list-item {
-      padding: 18px 24px;
+    .list-container {
       cursor: pointer;
-      transition: all 0.4s ease;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, rgba(132, 204, 22, 0.05), rgba(132, 204, 22, 0.03));
-      border: 1px solid #d9f99d;
+      transition: all 350ms cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+      position: relative;
     }
-    .lime-bounce:hover {
-      background: linear-gradient(135deg, rgba(132, 204, 22, 0.15), rgba(132, 204, 22, 0.1));
-      box-shadow: 0 8px 30px rgba(132, 204, 22, 0.3);
-      transform: translateY(-3px) scale(1.01);
-      border-color: #84cc16;
+    .indicator {
+      margin-left: 8px;
+      opacity: 0.8;
+      font-size: 14px;
     }
-    .item-icon { font-size: 1.5999999999999999rem; flex-shrink: 0; color: #84cc16; }
-    .item-content { flex: 1; font-weight: 600; }
-    .item-metadata { font-size: 0.875rem; opacity: 0.75; }
-    .selected {
-      background: linear-gradient(135deg, rgba(132, 204, 22, 0.2), rgba(132, 204, 22, 0.15));
-      border-color: #84cc16;
-      box-shadow: 0 0 0 3px rgba(132, 204, 22, 0.4);
-    }
-    .skeleton-loader { display: flex; flex-direction: column; gap: 12px; }
-    .skeleton-item {
-      height: 70px;
-      border-radius: 12px;
-      background: linear-gradient(90deg, #ecfccb, #d9f99d, #ecfccb);
-      background-size: 200% 100%;
-    }
-    @keyframes bounce-in {
-      0% { background-position: -200% 0; opacity: 0.6; }
-      50% { opacity: 1; }
-      100% { background-position: 200% 0; opacity: 0.6; }
-    }
-    .bounce-in { animation: bounce-in 1.5s ease-in-out infinite; }
   `]
 })
 export class ListComponent {
-  @Input() items: ListItem[] = [];
-  @Input() theme: Partial<ListTheme> = {};
-  @Input() variant: 'default' | 'bordered' | 'striped' | 'card' | 'compact' | 'detailed' = 'default';
-  @Input() selectable: boolean = false;
-  @Input() multiSelect: boolean = false;
-  @Input() loading: boolean = false;
-  @Output() itemClicked = new EventEmitter<ListItem>();
-  @Output() selectionChanged = new EventEmitter<ListItem[]>();
+  @Input() theme: Partial<Theme> = {};
+  @Input() variant = 'default';
+  @Output() interact = new EventEmitter<string>();
 
-  selectedItems: Set<string | number> = new Set();
+  active = false;
+  hovered = false;
 
-  private defaultTheme: ListTheme = {
-    primaryColor: '#84cc16',
-    secondaryColor: '#65a30d',
-    backgroundColor: '#f7fee7',
-    textColor: '#365314',
-    borderColor: '#d9f99d',
-    hoverColor: '#ecfccb'
+  private defaultTheme: Theme = {
+    primaryColor: '#3b82f6',
+    backgroundColor: '#ffffff',
+    textColor: '#1f2937',
+    borderColor: '#e5e7eb'
   };
 
-  get appliedTheme(): ListTheme {
+  get appliedTheme(): Theme {
     return { ...this.defaultTheme, ...this.theme };
   }
 
-  get containerStyles() {
+  get styles() {
+    const t = this.appliedTheme;
     return {
-      backgroundColor: this.appliedTheme.backgroundColor,
-      color: this.appliedTheme.textColor,
-      padding: '16px',
-      borderRadius: '14px'
+      padding: '14px 20px',
+      background: this.active ? t.primaryColor : t.backgroundColor,
+      color: this.active ? '#ffffff' : t.textColor,
+      border: `2px solid ${this.hovered ? t.primaryColor : t.borderColor}`,
+      borderRadius: '12px',
+      fontSize: '16px',
+      fontWeight: 600,
+      boxShadow: this.hovered ? `0 10px 26px ${t.primaryColor}40` : '0 2px 8px rgba(0,0,0,0.08)',
+      transform: this.hovered ? 'translateY(-4px)' : 'translateY(0)',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '8px'
     };
   }
 
-  getItemStyles(item: ListItem) {
-    return {
-      color: this.appliedTheme.textColor
-    };
-  }
-
-  isSelected(item: ListItem): boolean {
-    return this.selectedItems.has(item.id);
-  }
-
-  onItemClick(item: ListItem) {
-    this.itemClicked.emit(item);
-    if (this.selectable) {
-      if (this.multiSelect) {
-        if (this.selectedItems.has(item.id)) {
-          this.selectedItems.delete(item.id);
-        } else {
-          this.selectedItems.add(item.id);
-        }
-      } else {
-        this.selectedItems.clear();
-        this.selectedItems.add(item.id);
-      }
-      this.selectionChanged.emit(Array.from(this.selectedItems).map(id =>
-        this.items.find(i => i.id === id)!
-      ));
-    }
+  handleClick(): void {
+    this.active = !this.active;
+    this.interact.emit('list_v10');
   }
 }
