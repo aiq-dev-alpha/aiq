@@ -1,51 +1,91 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+  label?: string;
+  placeholder?: string;
+  value?: string;
+  onChange?: (value: string) => void;
+  error?: string;
+  helperText?: string;
+  required?: boolean;
+  disabled?: boolean;
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
-  onInteract?: (type: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  label = 'Input Label',
+  placeholder = 'Enter text...',
+  value: controlledValue,
+  onChange,
+  error,
+  helperText,
+  required = false,
+  disabled = false,
   theme = {},
-  className = '',
-  onInteract
+  className = ''
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
+  const [internalValue, setInternalValue] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
   const primary = theme.primary || '#ec4899';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
+  const value = controlledValue !== undefined ? controlledValue : internalValue;
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setInternalValue(newValue);
+    onChange?.(newValue);
+  };
+
+  const borderColor = error ? '#ef4444' : isFocused ? primary : '#d1d5db';
 
   return (
-    <div
-      className={className}
-      onClick={() => {
-        setState(s => ({ ...s, active: !s.active }));
-        onInteract?.('interact');
-      }}
-      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-      style={{
-        padding: '16px 32px',
-        backgroundColor: state.active ? primary : background,
-        color: state.active ? '#fff' : text,
-        borderRadius: '16px',
-        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-        boxShadow: state.hovered ? '0 2px 4px rgba(0,0,0,0.08)' : '0 10px 20px rgba(0,0,0,0.18)',
-        transform: state.hovered ? 'rotate(1deg) scale(1.02)' : 'translateY(0) scale(1)',
-        transition: `all 350ms cubic-bezier(0.4, 0, 0.2, 1)`,
-        cursor: 'pointer',
-        fontSize: '18px',
-        fontWeight: 400,
-        userSelect: 'none' as const
-      }}
-    >
-      input - variant 5
+    <div className={className} style={{ width: '100%' }}>
+      {label && (
+        <label
+          style={{
+            display: 'block',
+            fontSize: '14px',
+            fontWeight: '500',
+            color: '#374151',
+            marginBottom: '6px'
+          }}
+        >
+          {label}
+          {required && <span style={{ color: '#ef4444', marginLeft: '4px' }}>*</span>}
+        </label>
+      )}
+      <input
+        type="text"
+        value={value}
+        onChange={handleChange}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        placeholder={placeholder}
+        disabled={disabled}
+        style={{
+          width: '100%',
+          padding: '10px 14px',
+          fontSize: '15px',
+          color: '#1f2937',
+          backgroundColor: disabled ? '#f9fafb' : '#fff',
+          border: `2px solid ${borderColor}`,
+          borderRadius: '8px',
+          outline: 'none',
+          transition: 'all 0.2s ease',
+          cursor: disabled ? 'not-allowed' : 'text'
+        }}
+      />
+      {(error || helperText) && (
+        <div
+          style={{
+            fontSize: '13px',
+            color: error ? '#ef4444' : '#6b7280',
+            marginTop: '6px'
+          }}
+        >
+          {error || helperText}
+        </div>
+      )}
     </div>
   );
 };

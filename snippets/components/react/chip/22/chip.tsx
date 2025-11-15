@@ -1,47 +1,51 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  label?: string;
+  selected?: boolean;
+  onToggle?: (selected: boolean) => void;
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
-  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [selected, setSelected] = useState(false);
-  const primary = theme.primary || '#84cc16';
+export const Component: React.FC<ComponentProps> = ({
+  label = 'Choice',
+  selected: initialSelected = false,
+  onToggle,
+  theme = {},
+  className = ''
+}) => {
+  const [selected, setSelected] = useState(initialSelected);
+  const primary = theme.primary || '#8b5cf6';
+
+  const handleClick = () => {
+    const newSelected = !selected;
+    setSelected(newSelected);
+    onToggle?.(newSelected);
+  };
 
   return (
-    <div
+    <button
       className={className}
-      onClick={() => { setSelected(!selected); onInteract?.('select'); }}
+      onClick={handleClick}
       style={{
-        padding: '18px 24px',
-        backgroundColor: selected ? `${primary}15` : '#ffffff',
-        border: `2px solid ${selected ? primary : '#e5e7eb'}`,
-        borderRadius: '20px',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '8px',
+        padding: '8px 16px',
+        backgroundColor: selected ? primary : '#fff',
+        color: selected ? '#fff' : '#374151',
+        border: selected ? 'none' : '1px solid #d1d5db',
+        borderRadius: '24px',
+        fontSize: '14px',
+        fontWeight: '500',
         cursor: 'pointer',
-        transition: 'all 200ms ease',
-        position: 'relative'
+        transition: 'all 0.2s',
+        boxShadow: selected ? '0 2px 8px rgba(0,0,0,0.15)' : 'none'
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <div style={{
-          width: '24px',
-          height: '24px',
-          borderRadius: '50%',
-          border: `2px solid ${selected ? primary : '#d1d5db'}`,
-          backgroundColor: selected ? primary : 'transparent',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'all 200ms'
-        }}>
-          {selected && <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#fff' }} />}
-        </div>
-        <span style={{ fontSize: '15px', fontWeight: 500, color: selected ? primary : '#1f2937' }}>
-          Option {idx}
-        </span>
-      </div>
-    </div>
+      {selected && <span style={{ fontSize: '16px' }}>✓</span>}
+      <span>{label}</span>
+    </button>
   );
 };

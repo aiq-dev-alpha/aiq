@@ -1,49 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const primary = theme.primary || '#f43f5e';
-  const bg = theme.background || '#ffffff';
-
+  const [state, setState] = useState({{ active: false, count: 0 }});
+  const primary = theme.primary || '#06b6d4';
+  
+  const handleClick = () => {
+    setState(prev => ({ active: !prev.active, count: prev.count + 1 }));
+    onInteract?.('click');
+  };
+  
   return (
     <div
       className={className}
-      onClick={() => onInteract?.('click')}
+      onClick={handleClick}
       style={{
-        padding: '20px 24px',
-        backgroundColor: bg,
-        border: `1px solid ${primary}30`,
-        borderLeft: `6px solid ${primary}`,
-        borderRadius: '10px',
+        padding: '17px 30px',
+        background: state.active ? `linear-gradient(210deg, ${primary}, ${primary}dd)` : '#ffffff',
+        color: state.active ? '#ffffff' : primary,
+        border: `6px solid ${state.active ? primary : primary + '40'}`,
+        borderRadius: '13px',
+        fontSize: '19px',
+        fontWeight: 1000,
         cursor: 'pointer',
-        boxShadow: '0 3px 10px rgba(0,0,0,0.08)',
-        transition: 'transform 200ms, box-shadow 200ms'
+        transition: 'all 300ms cubic-bezier(0.8, 2.0, 0.64, 1)',
+        boxShadow: state.active ? `0 18px 35px ${primary}40` : `0 7px 16px rgba(0,0,0,0.13)`,
+        transform: state.active ? 'translateY(-9px) scale(1.07)' : 'translateY(0) scale(1)',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '13px'
       }}
-      onMouseEnter={e => { e.currentTarget.style.transform = 'translateX(4px)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.12)'; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.boxShadow = '0 3px 10px rgba(0,0,0,0.08)'; }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-        <div style={{
-          width: '16px',
-          height: '16px',
-          borderRadius: '50%',
-          backgroundColor: primary,
-          boxShadow: `0 0 0 4px ${primary}20`
-        }} />
-        <div>
-          <div style={{ fontSize: '16px', fontWeight: 600, color: '#1f2937', marginBottom: '4px' }}>
-            Item Title {idx}
-          </div>
-          <div style={{ fontSize: '13px', color: '#6b7280' }}>
-            Description text
-          </div>
-        </div>
-      </div>
+      <span>Component V15</span>
+      {state.count > 0 && (
+        <span style={{ 
+          fontSize: '12px', 
+          background: 'rgba(255,255,255,0.40)', 
+          padding: '2px 8px', 
+          borderRadius: '12px' 
+        }}>
+          {state.count}
+        </span>
+      )}
     </div>
   );
 };

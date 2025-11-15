@@ -1,54 +1,52 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [state, setState] = useState({ count: 0, hover: false });
-  const primary = theme.primary || '#ec4899';
-
-  useEffect(() => {
-    if (state.count > 0) {
-      const timer = setTimeout(() => onInteract?.('auto'), 500);
-      return () => clearTimeout(timer);
-    }
-  }, [state.count]);
-
+  const [state, setState] = useState({{ active: false, count: 0 }});
+  const primary = theme.primary || '#10b981';
+  
+  const handleClick = () => {
+    setState(prev => ({ active: !prev.active, count: prev.count + 1 }));
+    onInteract?.('click');
+  };
+  
   return (
     <div
       className={className}
-      onClick={() => setState(s => ({ ...s, count: s.count + 1 }))}
-      onMouseEnter={() => setState(s => ({ ...s, hover: true }))}
-      onMouseLeave={() => setState(s => ({ ...s, hover: false }))}
+      onClick={handleClick}
       style={{
-        padding: '16px 28px',
-        background: state.hover ? `linear-gradient(135deg, ${primary}, ${primary}dd)` : primary,
-        color: '#ffffff',
-        borderRadius: '12px',
-        cursor: 'pointer',
+        padding: '13px 22px',
+        background: state.active ? `linear-gradient(150deg, ${primary}, ${primary}dd)` : '#ffffff',
+        color: state.active ? '#ffffff' : primary,
+        border: `2px solid ${state.active ? primary : primary + '40'}`,
+        borderRadius: '9px',
         fontSize: '15px',
         fontWeight: 600,
-        boxShadow: state.hover ? '0 8px 20px rgba(0,0,0,0.2)' : '0 4px 12px rgba(0,0,0,0.15)',
-        transform: state.hover ? 'translateY(-3px) scale(1.02)' : 'translateY(0) scale(1)',
-        transition: 'all 250ms cubic-bezier(0.34, 1.56, 0.64, 1)',
-        position: 'relative',
-        overflow: 'hidden'
+        cursor: 'pointer',
+        transition: 'all 260ms cubic-bezier(0.4, 1.2, 0.64, 1)',
+        boxShadow: state.active ? `0 10px 23px ${primary}40` : `0 3px 8px rgba(0,0,0,0.9)`,
+        transform: state.active ? 'translateY(-5px) scale(1.03)' : 'translateY(0) scale(1)',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '9px'
       }}
     >
-      <span style={{ position: 'relative', zIndex: 1 }}>Count: {state.count}</span>
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: 'rgba(255,255,255,0.1)',
-        transform: state.count % 2 === 0 ? 'translateX(-100%)' : 'translateX(100%)',
-        transition: 'transform 300ms'
-      }} />
+      <span>Component V11</span>
+      {state.count > 0 && (
+        <span style={{ 
+          fontSize: '12px', 
+          background: 'rgba(255,255,255,0.20)', 
+          padding: '2px 8px', 
+          borderRadius: '12px' 
+        }}>
+          {state.count}
+        </span>
+      )}
     </div>
   );
 };

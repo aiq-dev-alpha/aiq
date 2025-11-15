@@ -1,49 +1,72 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  avatars?: { src: string; name: string }[];
+  maxVisible?: number;
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
-  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [loading, setLoading] = useState(false);
-  const primary = theme.primary || '#f59e0b';
-
-  const handleClick = () => {
-    setLoading(true);
-    onInteract?.('loading');
-    setTimeout(() => setLoading(false), 2000);
-  };
+export const Component: React.FC<ComponentProps> = ({
+  avatars = [
+    { src: '', name: 'User 1' },
+    { src: '', name: 'User 2' },
+    { src: '', name: 'User 3' },
+    { src: '', name: 'User 4' }
+  ],
+  maxVisible = 3,
+  theme = {},
+  className = ''
+}) => {
+  const primary = theme.primary || '#6366f1';
+  const extra = avatars.length - maxVisible;
+  const visible = avatars.slice(0, maxVisible);
 
   return (
-    <button
-      className={className}
-      onClick={handleClick}
-      disabled={loading}
-      style={{
-        padding: '16px 36px',
-        background: loading ? '#9ca3af' : `linear-gradient(to right, ${primary}, ${primary}cc)`,
-        color: '#ffffff',
-        border: 'none',
-        borderRadius: '8px',
-        cursor: loading ? 'not-allowed' : 'pointer',
-        fontSize: '15px',
-        fontWeight: 600,
-        minWidth: '140px',
-        position: 'relative',
-        overflow: 'hidden',
-        transition: 'background 300ms'
-      }}
-    >
-      {loading ? (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-          <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#fff', animation: 'pulse 1.2s infinite' }} />
-          <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#fff', animation: 'pulse 1.2s infinite 0.2s' }} />
-          <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#fff', animation: 'pulse 1.2s infinite 0.4s' }} />
-          <style>{'@keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }'}</style>
+    <div className={className} style={{ display: 'flex', alignItems: 'center' }}>
+      {visible.map((avatar, i) => (
+        <div
+          key={i}
+          style={{
+            width: '48px',
+            height: '48px',
+            borderRadius: '50%',
+            backgroundColor: primary,
+            color: '#fff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '14px',
+            fontWeight: '600',
+            marginLeft: i > 0 ? '-12px' : '0',
+            border: '3px solid #fff',
+            position: 'relative',
+            zIndex: visible.length - i
+          }}
+        >
+          {avatar.name.charAt(0)}
         </div>
-      ) : 'Submit'}
-    </button>
+      ))}
+      {extra > 0 && (
+        <div
+          style={{
+            width: '48px',
+            height: '48px',
+            borderRadius: '50%',
+            backgroundColor: '#e5e7eb',
+            color: '#374151',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '14px',
+            fontWeight: '600',
+            marginLeft: '-12px',
+            border: '3px solid #fff'
+          }}
+        >
+          +{extra}
+        </div>
+      )}
+    </div>
   );
 };

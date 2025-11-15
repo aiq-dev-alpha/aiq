@@ -1,49 +1,55 @@
 import React from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  status?: 'success' | 'warning' | 'error' | 'info';
+  label?: string;
+  icon?: boolean;
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
-  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const primary = theme.primary || '#d946ef';
-  const bg = theme.background || '#ffffff';
+export const Component: React.FC<ComponentProps> = ({
+  status = 'info',
+  label = 'Status',
+  icon = true,
+  theme = {},
+  className = ''
+}) => {
+  const colors = {
+    success: { bg: '#d1fae5', text: '#065f46', icon: '#10b981' },
+    warning: { bg: '#fef3c7', text: '#92400e', icon: '#f59e0b' },
+    error: { bg: '#fee2e2', text: '#991b1b', icon: '#ef4444' },
+    info: { bg: '#dbeafe', text: '#1e40af', icon: '#3b82f6' }
+  };
+
+  const config = colors[status];
 
   return (
     <div
       className={className}
-      onClick={() => onInteract?.('click')}
       style={{
-        padding: '20px 24px',
-        backgroundColor: bg,
-        border: `1px solid ${primary}30`,
-        borderLeft: `6px solid ${primary}`,
-        borderRadius: '32px',
-        cursor: 'pointer',
-        boxShadow: '0 3px 10px rgba(0,0,0,0.08)',
-        transition: 'transform 200ms, box-shadow 200ms'
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '6px',
+        padding: '6px 14px',
+        backgroundColor: config.bg,
+        borderRadius: '6px',
+        fontSize: '13px',
+        color: config.text,
+        fontWeight: '600'
       }}
-      onMouseEnter={e => { e.currentTarget.style.transform = 'translateX(4px)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.12)'; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.boxShadow = '0 3px 10px rgba(0,0,0,0.08)'; }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-        <div style={{
-          width: '16px',
-          height: '16px',
-          borderRadius: '50%',
-          backgroundColor: primary,
-          boxShadow: `0 0 0 4px ${primary}20`
-        }} />
-        <div>
-          <div style={{ fontSize: '16px', fontWeight: 600, color: '#1f2937', marginBottom: '4px' }}>
-            Item Title {idx}
-          </div>
-          <div style={{ fontSize: '13px', color: '#6b7280' }}>
-            Description text
-          </div>
-        </div>
-      </div>
+      {icon && (
+        <div
+          style={{
+            width: '8px',
+            height: '8px',
+            borderRadius: '50%',
+            backgroundColor: config.icon
+          }}
+        />
+      )}
+      <span>{label}</span>
     </div>
   );
 };

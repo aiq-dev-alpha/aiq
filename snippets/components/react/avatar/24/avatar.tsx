@@ -1,49 +1,59 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  name?: string;
+  src?: string;
+  status?: 'online' | 'offline' | 'away' | 'busy';
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
-  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const primary = theme.primary || '#d946ef';
-  const bg = theme.background || '#ffffff';
+export const Component: React.FC<ComponentProps> = ({
+  name = 'User',
+  src = '',
+  status = 'online',
+  theme = {},
+  className = ''
+}) => {
+  const primary = theme.primary || '#10b981';
+  const statusColors = {
+    online: '#10b981',
+    offline: '#6b7280',
+    away: '#f59e0b',
+    busy: '#ef4444'
+  };
 
   return (
-    <div
-      className={className}
-      onClick={() => onInteract?.('click')}
-      style={{
-        padding: '20px 24px',
-        backgroundColor: bg,
-        border: `1px solid ${primary}30`,
-        borderLeft: `6px solid ${primary}`,
-        borderRadius: '32px',
-        cursor: 'pointer',
-        boxShadow: '0 3px 10px rgba(0,0,0,0.08)',
-        transition: 'transform 200ms, box-shadow 200ms'
-      }}
-      onMouseEnter={e => { e.currentTarget.style.transform = 'translateX(4px)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.12)'; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.boxShadow = '0 3px 10px rgba(0,0,0,0.08)'; }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-        <div style={{
-          width: '16px',
-          height: '16px',
+    <div className={className} style={{ position: 'relative', display: 'inline-block' }}>
+      <div
+        style={{
+          width: '64px',
+          height: '64px',
           borderRadius: '50%',
           backgroundColor: primary,
-          boxShadow: `0 0 0 4px ${primary}20`
-        }} />
-        <div>
-          <div style={{ fontSize: '16px', fontWeight: 600, color: '#1f2937', marginBottom: '4px' }}>
-            Item Title {idx}
-          </div>
-          <div style={{ fontSize: '13px', color: '#6b7280' }}>
-            Description text
-          </div>
-        </div>
+          color: '#fff',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '24px',
+          fontWeight: '600',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+        }}
+      >
+        {name.charAt(0).toUpperCase()}
       </div>
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '2px',
+          right: '2px',
+          width: '18px',
+          height: '18px',
+          borderRadius: '50%',
+          backgroundColor: statusColors[status],
+          border: '3px solid #fff'
+        }}
+      />
     </div>
   );
 };

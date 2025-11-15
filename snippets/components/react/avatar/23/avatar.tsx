@@ -1,46 +1,43 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  name?: string;
+  src?: string;
+  size?: number;
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
-  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [selected, setSelected] = useState(false);
-  const primary = theme.primary || '#22c55e';
+export const Component: React.FC<ComponentProps> = ({
+  name = 'User',
+  src = '',
+  size = 80,
+  theme = {},
+  className = ''
+}) => {
+  const primary = theme.primary || '#8b5cf6';
 
   return (
-    <div
-      className={className}
-      onClick={() => { setSelected(!selected); onInteract?.('select'); }}
-      style={{
-        padding: '18px 24px',
-        backgroundColor: selected ? `${primary}15` : '#ffffff',
-        border: `2px solid ${selected ? primary : '#e5e7eb'}`,
-        borderRadius: '20px',
-        cursor: 'pointer',
-        transition: 'all 200ms ease',
-        position: 'relative'
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <div style={{
-          width: '24px',
-          height: '24px',
-          borderRadius: '50%',
-          border: `2px solid ${selected ? primary : '#d1d5db'}`,
-          backgroundColor: selected ? primary : 'transparent',
+    <div className={className}>
+      <div
+        style={{
+          width: `${size}px`,
+          height: `${size}px`,
+          clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
+          backgroundColor: primary,
+          color: '#fff',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          transition: 'all 200ms'
-        }}>
-          {selected && <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#fff' }} />}
-        </div>
-        <span style={{ fontSize: '15px', fontWeight: 500, color: selected ? primary : '#1f2937' }}>
-          Option {idx}
-        </span>
+          fontSize: `${size * 0.35}px`,
+          fontWeight: '700',
+          position: 'relative',
+          transition: 'transform 0.3s ease'
+        }}
+        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1) rotate(15deg)'}
+        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1) rotate(0deg)'}
+      >
+        {name.charAt(0).toUpperCase()}
       </div>
     </div>
   );

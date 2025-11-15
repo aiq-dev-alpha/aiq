@@ -1,49 +1,71 @@
 import React from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  name?: string;
+  label?: string;
+  onRemove?: () => void;
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
-  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const primary = theme.primary || '#f59e0b';
-  const bg = theme.background || '#ffffff';
+export const Component: React.FC<ComponentProps> = ({
+  name = 'User',
+  label,
+  onRemove,
+  theme = {},
+  className = ''
+}) => {
+  const primary = theme.primary || '#06b6d4';
 
   return (
     <div
       className={className}
-      onClick={() => onInteract?.('click')}
       style={{
-        padding: '20px 24px',
-        backgroundColor: bg,
-        border: `1px solid ${primary}30`,
-        borderLeft: `6px solid ${primary}`,
-        borderRadius: '32px',
-        cursor: 'pointer',
-        boxShadow: '0 3px 10px rgba(0,0,0,0.08)',
-        transition: 'transform 200ms, box-shadow 200ms'
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '8px',
+        padding: '4px 12px 4px 4px',
+        backgroundColor: '#f3f4f6',
+        borderRadius: '24px',
+        fontSize: '14px',
+        color: '#374151'
       }}
-      onMouseEnter={e => { e.currentTarget.style.transform = 'translateX(4px)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.12)'; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.boxShadow = '0 3px 10px rgba(0,0,0,0.08)'; }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-        <div style={{
-          width: '16px',
-          height: '16px',
+      <div
+        style={{
+          width: '28px',
+          height: '28px',
           borderRadius: '50%',
           backgroundColor: primary,
-          boxShadow: `0 0 0 4px ${primary}20`
-        }} />
-        <div>
-          <div style={{ fontSize: '16px', fontWeight: 600, color: '#1f2937', marginBottom: '4px' }}>
-            Item Title {idx}
-          </div>
-          <div style={{ fontSize: '13px', color: '#6b7280' }}>
-            Description text
-          </div>
-        </div>
+          color: '#fff',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '12px',
+          fontWeight: '600'
+        }}
+      >
+        {name.charAt(0).toUpperCase()}
       </div>
+      <span style={{ fontWeight: '500' }}>{label || name}</span>
+      {onRemove && (
+        <button
+          onClick={onRemove}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: '#6b7280',
+            cursor: 'pointer',
+            padding: '0',
+            display: 'flex',
+            alignItems: 'center',
+            fontSize: '18px',
+            lineHeight: '1'
+          }}
+        >
+          ×
+        </button>
+      )}
     </div>
   );
 };

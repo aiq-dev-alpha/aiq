@@ -1,49 +1,72 @@
 import React from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  avatars?: { src: string; name: string }[];
+  maxVisible?: number;
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
-  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const primary = theme.primary || '#3b82f6';
-  const bg = theme.background || '#ffffff';
+export const Component: React.FC<ComponentProps> = ({
+  avatars = [
+    { src: '', name: 'User 1' },
+    { src: '', name: 'User 2' },
+    { src: '', name: 'User 3' },
+    { src: '', name: 'User 4' }
+  ],
+  maxVisible = 3,
+  theme = {},
+  className = ''
+}) => {
+  const primary = theme.primary || '#6366f1';
+  const extra = avatars.length - maxVisible;
+  const visible = avatars.slice(0, maxVisible);
 
   return (
-    <div
-      className={className}
-      onClick={() => onInteract?.('click')}
-      style={{
-        padding: '20px 24px',
-        backgroundColor: bg,
-        border: `1px solid ${primary}30`,
-        borderLeft: `6px solid ${primary}`,
-        borderRadius: '10px',
-        cursor: 'pointer',
-        boxShadow: '0 3px 10px rgba(0,0,0,0.08)',
-        transition: 'transform 200ms, box-shadow 200ms'
-      }}
-      onMouseEnter={e => { e.currentTarget.style.transform = 'translateX(4px)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.12)'; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.boxShadow = '0 3px 10px rgba(0,0,0,0.08)'; }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-        <div style={{
-          width: '16px',
-          height: '16px',
-          borderRadius: '50%',
-          backgroundColor: primary,
-          boxShadow: `0 0 0 4px ${primary}20`
-        }} />
-        <div>
-          <div style={{ fontSize: '16px', fontWeight: 600, color: '#1f2937', marginBottom: '4px' }}>
-            Item Title {idx}
-          </div>
-          <div style={{ fontSize: '13px', color: '#6b7280' }}>
-            Description text
-          </div>
+    <div className={className} style={{ display: 'flex', alignItems: 'center' }}>
+      {visible.map((avatar, i) => (
+        <div
+          key={i}
+          style={{
+            width: '48px',
+            height: '48px',
+            borderRadius: '50%',
+            backgroundColor: primary,
+            color: '#fff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '14px',
+            fontWeight: '600',
+            marginLeft: i > 0 ? '-12px' : '0',
+            border: '3px solid #fff',
+            position: 'relative',
+            zIndex: visible.length - i
+          }}
+        >
+          {avatar.name.charAt(0)}
         </div>
-      </div>
+      ))}
+      {extra > 0 && (
+        <div
+          style={{
+            width: '48px',
+            height: '48px',
+            borderRadius: '50%',
+            backgroundColor: '#e5e7eb',
+            color: '#374151',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '14px',
+            fontWeight: '600',
+            marginLeft: '-12px',
+            border: '3px solid #fff'
+          }}
+        >
+          +{extra}
+        </div>
+      )}
     </div>
   );
 };

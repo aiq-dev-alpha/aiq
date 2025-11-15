@@ -1,47 +1,55 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  status?: 'success' | 'warning' | 'error' | 'info';
+  label?: string;
+  icon?: boolean;
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
-  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [selected, setSelected] = useState(false);
-  const primary = theme.primary || '#f97316';
+export const Component: React.FC<ComponentProps> = ({
+  status = 'info',
+  label = 'Status',
+  icon = true,
+  theme = {},
+  className = ''
+}) => {
+  const colors = {
+    success: { bg: '#d1fae5', text: '#065f46', icon: '#10b981' },
+    warning: { bg: '#fef3c7', text: '#92400e', icon: '#f59e0b' },
+    error: { bg: '#fee2e2', text: '#991b1b', icon: '#ef4444' },
+    info: { bg: '#dbeafe', text: '#1e40af', icon: '#3b82f6' }
+  };
+
+  const config = colors[status];
 
   return (
     <div
       className={className}
-      onClick={() => { setSelected(!selected); onInteract?.('select'); }}
       style={{
-        padding: '18px 24px',
-        backgroundColor: selected ? `${primary}15` : '#ffffff',
-        border: `2px solid ${selected ? primary : '#e5e7eb'}`,
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '6px',
+        padding: '6px 14px',
+        backgroundColor: config.bg,
         borderRadius: '6px',
-        cursor: 'pointer',
-        transition: 'all 200ms ease',
-        position: 'relative'
+        fontSize: '13px',
+        color: config.text,
+        fontWeight: '600'
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <div style={{
-          width: '24px',
-          height: '24px',
-          borderRadius: '50%',
-          border: `2px solid ${selected ? primary : '#d1d5db'}`,
-          backgroundColor: selected ? primary : 'transparent',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'all 200ms'
-        }}>
-          {selected && <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#fff' }} />}
-        </div>
-        <span style={{ fontSize: '15px', fontWeight: 500, color: selected ? primary : '#1f2937' }}>
-          Option {idx}
-        </span>
-      </div>
+      {icon && (
+        <div
+          style={{
+            width: '8px',
+            height: '8px',
+            borderRadius: '50%',
+            backgroundColor: config.icon
+          }}
+        />
+      )}
+      <span>{label}</span>
     </div>
   );
 };

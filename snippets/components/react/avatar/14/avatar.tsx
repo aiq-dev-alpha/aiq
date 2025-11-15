@@ -1,49 +1,59 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  name?: string;
+  src?: string;
+  status?: 'online' | 'offline' | 'away' | 'busy';
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
-  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [loading, setLoading] = useState(false);
-  const primary = theme.primary || '#06b6d4';
-
-  const handleClick = () => {
-    setLoading(true);
-    onInteract?.('loading');
-    setTimeout(() => setLoading(false), 2000);
+export const Component: React.FC<ComponentProps> = ({
+  name = 'User',
+  src = '',
+  status = 'online',
+  theme = {},
+  className = ''
+}) => {
+  const primary = theme.primary || '#10b981';
+  const statusColors = {
+    online: '#10b981',
+    offline: '#6b7280',
+    away: '#f59e0b',
+    busy: '#ef4444'
   };
 
   return (
-    <button
-      className={className}
-      onClick={handleClick}
-      disabled={loading}
-      style={{
-        padding: '16px 36px',
-        background: loading ? '#9ca3af' : `linear-gradient(to right, ${primary}, ${primary}cc)`,
-        color: '#ffffff',
-        border: 'none',
-        borderRadius: '24px',
-        cursor: loading ? 'not-allowed' : 'pointer',
-        fontSize: '15px',
-        fontWeight: 600,
-        minWidth: '140px',
-        position: 'relative',
-        overflow: 'hidden',
-        transition: 'background 300ms'
-      }}
-    >
-      {loading ? (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-          <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#fff', animation: 'pulse 1.2s infinite' }} />
-          <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#fff', animation: 'pulse 1.2s infinite 0.2s' }} />
-          <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#fff', animation: 'pulse 1.2s infinite 0.4s' }} />
-          <style>{'@keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }'}</style>
-        </div>
-      ) : 'Submit'}
-    </button>
+    <div className={className} style={{ position: 'relative', display: 'inline-block' }}>
+      <div
+        style={{
+          width: '64px',
+          height: '64px',
+          borderRadius: '50%',
+          backgroundColor: primary,
+          color: '#fff',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '24px',
+          fontWeight: '600',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+        }}
+      >
+        {name.charAt(0).toUpperCase()}
+      </div>
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '2px',
+          right: '2px',
+          width: '18px',
+          height: '18px',
+          borderRadius: '50%',
+          backgroundColor: statusColors[status],
+          border: '3px solid #fff'
+        }}
+      />
+    </div>
   );
 };

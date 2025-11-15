@@ -1,49 +1,64 @@
 import React from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  name?: string;
+  badge?: string | number;
+  badgeColor?: string;
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
-  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const primary = theme.primary || '#ec4899';
-  const bg = theme.background || '#ffffff';
+export const Component: React.FC<ComponentProps> = ({
+  name = 'User',
+  badge,
+  badgeColor = '#ef4444',
+  theme = {},
+  className = ''
+}) => {
+  const primary = theme.primary || '#3b82f6';
 
   return (
-    <div
-      className={className}
-      onClick={() => onInteract?.('click')}
-      style={{
-        padding: '20px 24px',
-        backgroundColor: bg,
-        border: `1px solid ${primary}30`,
-        borderLeft: `6px solid ${primary}`,
-        borderRadius: '32px',
-        cursor: 'pointer',
-        boxShadow: '0 3px 10px rgba(0,0,0,0.08)',
-        transition: 'transform 200ms, box-shadow 200ms'
-      }}
-      onMouseEnter={e => { e.currentTarget.style.transform = 'translateX(4px)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.12)'; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.boxShadow = '0 3px 10px rgba(0,0,0,0.08)'; }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-        <div style={{
-          width: '16px',
-          height: '16px',
-          borderRadius: '50%',
+    <div className={className} style={{ position: 'relative', display: 'inline-block' }}>
+      <div
+        style={{
+          width: '56px',
+          height: '56px',
+          borderRadius: '16px',
           backgroundColor: primary,
-          boxShadow: `0 0 0 4px ${primary}20`
-        }} />
-        <div>
-          <div style={{ fontSize: '16px', fontWeight: 600, color: '#1f2937', marginBottom: '4px' }}>
-            Item Title {idx}
-          </div>
-          <div style={{ fontSize: '13px', color: '#6b7280' }}>
-            Description text
-          </div>
-        </div>
+          color: '#fff',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '20px',
+          fontWeight: '600',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+        }}
+      >
+        {name.charAt(0).toUpperCase()}
       </div>
+      {badge && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '-6px',
+            right: '-6px',
+            minWidth: '24px',
+            height: '24px',
+            borderRadius: '12px',
+            backgroundColor: badgeColor,
+            color: '#fff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '12px',
+            fontWeight: '700',
+            padding: '0 6px',
+            border: '2px solid #fff'
+          }}
+        >
+          {badge}
+        </div>
+      )}
     </div>
   );
 };

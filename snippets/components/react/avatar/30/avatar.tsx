@@ -1,49 +1,80 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  name?: string;
+  email?: string;
+  role?: string;
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
-  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const primary = theme.primary || '#0ea5e9';
-  const bg = theme.background || '#ffffff';
+export const Component: React.FC<ComponentProps> = ({
+  name = 'John Doe',
+  email = 'john@example.com',
+  role = 'Developer',
+  theme = {},
+  className = ''
+}) => {
+  const [showCard, setShowCard] = useState(false);
+  const primary = theme.primary || '#06b6d4';
 
   return (
     <div
       className={className}
-      onClick={() => onInteract?.('click')}
-      style={{
-        padding: '20px 24px',
-        backgroundColor: bg,
-        border: `1px solid ${primary}30`,
-        borderLeft: `6px solid ${primary}`,
-        borderRadius: '32px',
-        cursor: 'pointer',
-        boxShadow: '0 3px 10px rgba(0,0,0,0.08)',
-        transition: 'transform 200ms, box-shadow 200ms'
-      }}
-      onMouseEnter={e => { e.currentTarget.style.transform = 'translateX(4px)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.12)'; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.boxShadow = '0 3px 10px rgba(0,0,0,0.08)'; }}
+      style={{ position: 'relative', display: 'inline-block' }}
+      onMouseEnter={() => setShowCard(true)}
+      onMouseLeave={() => setShowCard(false)}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-        <div style={{
-          width: '16px',
-          height: '16px',
+      <div
+        style={{
+          width: '52px',
+          height: '52px',
           borderRadius: '50%',
           backgroundColor: primary,
-          boxShadow: `0 0 0 4px ${primary}20`
-        }} />
-        <div>
-          <div style={{ fontSize: '16px', fontWeight: 600, color: '#1f2937', marginBottom: '4px' }}>
-            Item Title {idx}
-          </div>
-          <div style={{ fontSize: '13px', color: '#6b7280' }}>
-            Description text
+          color: '#fff',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '18px',
+          fontWeight: '600',
+          cursor: 'pointer',
+          transition: 'transform 0.2s',
+          transform: showCard ? 'scale(1.1)' : 'scale(1)'
+        }}
+      >
+        {name.charAt(0).toUpperCase()}
+      </div>
+      {showCard && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '60px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            backgroundColor: '#fff',
+            borderRadius: '12px',
+            padding: '16px',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+            minWidth: '200px',
+            zIndex: 10
+          }}
+        >
+          <div style={{ fontWeight: '600', fontSize: '16px', marginBottom: '4px' }}>{name}</div>
+          <div style={{ fontSize: '14px', color: '#6b7280', marginBottom: '8px' }}>{email}</div>
+          <div
+            style={{
+              fontSize: '12px',
+              color: primary,
+              backgroundColor: `${primary}20`,
+              padding: '4px 8px',
+              borderRadius: '6px',
+              display: 'inline-block'
+            }}
+          >
+            {role}
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

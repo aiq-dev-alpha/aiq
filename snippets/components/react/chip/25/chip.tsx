@@ -1,47 +1,69 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  label?: string;
+  pulse?: boolean;
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
-  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [selected, setSelected] = useState(false);
-  const primary = theme.primary || '#06b6d4';
+export const Component: React.FC<ComponentProps> = ({
+  label = 'Live',
+  pulse = true,
+  theme = {},
+  className = ''
+}) => {
+  const primary = theme.primary || '#ef4444';
 
   return (
     <div
       className={className}
-      onClick={() => { setSelected(!selected); onInteract?.('select'); }}
       style={{
-        padding: '18px 24px',
-        backgroundColor: selected ? `${primary}15` : '#ffffff',
-        border: `2px solid ${selected ? primary : '#e5e7eb'}`,
-        borderRadius: '6px',
-        cursor: 'pointer',
-        transition: 'all 200ms ease',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '8px',
+        padding: '6px 14px',
+        backgroundColor: `${primary}20`,
+        borderRadius: '20px',
+        fontSize: '13px',
+        color: primary,
+        fontWeight: '600',
         position: 'relative'
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <div style={{
-          width: '24px',
-          height: '24px',
-          borderRadius: '50%',
-          border: `2px solid ${selected ? primary : '#d1d5db'}`,
-          backgroundColor: selected ? primary : 'transparent',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'all 200ms'
-        }}>
-          {selected && <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#fff' }} />}
-        </div>
-        <span style={{ fontSize: '15px', fontWeight: 500, color: selected ? primary : '#1f2937' }}>
-          Option {idx}
-        </span>
-      </div>
+      {pulse && (
+        <>
+          <div
+            style={{
+              width: '8px',
+              height: '8px',
+              borderRadius: '50%',
+              backgroundColor: primary,
+              position: 'relative'
+            }}
+          />
+          <style>
+            {`
+              @keyframes pulse {
+                0%, 100% { opacity: 1; transform: scale(1); }
+                50% { opacity: 0.5; transform: scale(1.2); }
+              }
+              @keyframes pulse::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                border-radius: 50%;
+                background: inherit;
+                animation: pulse 2s ease-in-out infinite;
+              }
+            `}
+          </style>
+        </>
+      )}
+      <span>{label}</span>
     </div>
   );
 };

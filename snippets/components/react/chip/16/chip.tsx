@@ -1,47 +1,75 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  label?: string;
+  count?: number;
+  onRemove?: () => void;
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
-  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [selected, setSelected] = useState(false);
-  const primary = theme.primary || '#d946ef';
+export const Component: React.FC<ComponentProps> = ({
+  label = 'Filter',
+  count = 0,
+  onRemove,
+  theme = {},
+  className = ''
+}) => {
+  const [isActive, setIsActive] = useState(true);
+  const primary = theme.primary || '#3b82f6';
+
+  if (!isActive) return null;
 
   return (
     <div
       className={className}
-      onClick={() => { setSelected(!selected); onInteract?.('select'); }}
       style={{
-        padding: '18px 24px',
-        backgroundColor: selected ? `${primary}15` : '#ffffff',
-        border: `2px solid ${selected ? primary : '#e5e7eb'}`,
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '8px',
+        padding: '6px 12px',
+        backgroundColor: `${primary}15`,
+        border: `1px solid ${primary}`,
         borderRadius: '20px',
-        cursor: 'pointer',
-        transition: 'all 200ms ease',
-        position: 'relative'
+        fontSize: '14px',
+        color: primary,
+        fontWeight: '500'
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <div style={{
-          width: '24px',
-          height: '24px',
-          borderRadius: '50%',
-          border: `2px solid ${selected ? primary : '#d1d5db'}`,
-          backgroundColor: selected ? primary : 'transparent',
+      <span>{label}</span>
+      {count > 0 && (
+        <span
+          style={{
+            backgroundColor: primary,
+            color: '#fff',
+            borderRadius: '10px',
+            padding: '2px 6px',
+            fontSize: '12px',
+            fontWeight: '600'
+          }}
+        >
+          {count}
+        </span>
+      )}
+      <button
+        onClick={() => {
+          setIsActive(false);
+          onRemove?.();
+        }}
+        style={{
+          background: 'none',
+          border: 'none',
+          color: primary,
+          cursor: 'pointer',
+          padding: '0',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'all 200ms'
-        }}>
-          {selected && <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#fff' }} />}
-        </div>
-        <span style={{ fontSize: '15px', fontWeight: 500, color: selected ? primary : '#1f2937' }}>
-          Option {idx}
-        </span>
-      </div>
+          fontSize: '18px',
+          lineHeight: '1'
+        }}
+      >
+        ×
+      </button>
     </div>
   );
 };

@@ -1,49 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  name?: string;
+  src?: string;
+  size?: number;
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
-  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [loading, setLoading] = useState(false);
-  const primary = theme.primary || '#a855f7';
-
-  const handleClick = () => {
-    setLoading(true);
-    onInteract?.('loading');
-    setTimeout(() => setLoading(false), 2000);
-  };
+export const Component: React.FC<ComponentProps> = ({
+  name = 'User',
+  src = '',
+  size = 80,
+  theme = {},
+  className = ''
+}) => {
+  const primary = theme.primary || '#8b5cf6';
 
   return (
-    <button
-      className={className}
-      onClick={handleClick}
-      disabled={loading}
-      style={{
-        padding: '16px 36px',
-        background: loading ? '#9ca3af' : `linear-gradient(to right, ${primary}, ${primary}cc)`,
-        color: '#ffffff',
-        border: 'none',
-        borderRadius: '24px',
-        cursor: loading ? 'not-allowed' : 'pointer',
-        fontSize: '15px',
-        fontWeight: 600,
-        minWidth: '140px',
-        position: 'relative',
-        overflow: 'hidden',
-        transition: 'background 300ms'
-      }}
-    >
-      {loading ? (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-          <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#fff', animation: 'pulse 1.2s infinite' }} />
-          <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#fff', animation: 'pulse 1.2s infinite 0.2s' }} />
-          <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#fff', animation: 'pulse 1.2s infinite 0.4s' }} />
-          <style>{'@keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }'}</style>
-        </div>
-      ) : 'Submit'}
-    </button>
+    <div className={className}>
+      <div
+        style={{
+          width: `${size}px`,
+          height: `${size}px`,
+          clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
+          backgroundColor: primary,
+          color: '#fff',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: `${size * 0.35}px`,
+          fontWeight: '700',
+          position: 'relative',
+          transition: 'transform 0.3s ease'
+        }}
+        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1) rotate(15deg)'}
+        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1) rotate(0deg)'}
+      >
+        {name.charAt(0).toUpperCase()}
+      </div>
+    </div>
   );
 };

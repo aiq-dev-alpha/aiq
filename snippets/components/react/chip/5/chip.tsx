@@ -1,51 +1,83 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+  label?: string;
+  selected?: boolean;
+  onSelect?: (selected: boolean) => void;
+  onRemove?: () => void;
+  removable?: boolean;
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
-  onInteract?: (type: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
+  label = 'Chip',
+  selected: initialSelected = false,
+  onSelect,
+  onRemove,
+  removable = true,
   theme = {},
-  className = '',
-  onInteract
+  className = ''
 }) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
+  const [selected, setSelected] = useState(initialSelected);
+  const [isHovered, setIsHovered] = useState(false);
   const primary = theme.primary || '#ec4899';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
+
+  const handleClick = () => {
+    if (!removable || isHovered) return;
+    const newSelected = !selected;
+    setSelected(newSelected);
+    onSelect?.(newSelected);
+  };
+
+  const handleRemove = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onRemove?.();
+  };
 
   return (
     <div
       className={className}
-      onClick={() => {
-        setState(s => ({ ...s, active: !s.active }));
-        onInteract?.('interact');
-      }}
-      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
+      onClick={handleClick}
       style={{
-        padding: '16px 32px',
-        backgroundColor: state.active ? primary : background,
-        color: state.active ? '#fff' : text,
-        borderRadius: '16px',
-        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-        boxShadow: state.hovered ? '0 2px 4px rgba(0,0,0,0.08)' : '0 10px 20px rgba(0,0,0,0.18)',
-        transform: state.hovered ? 'rotate(1deg) scale(1.02)' : 'translateY(0) scale(1)',
-        transition: `all 350ms cubic-bezier(0.4, 0, 0.2, 1)`,
-        cursor: 'pointer',
-        fontSize: '18px',
-        fontWeight: 400,
-        userSelect: 'none' as const
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '8px',
+        padding: removable ? '6px 12px 6px 14px' : '8px 16px',
+        backgroundColor: selected ? primary : '#f3f4f6',
+        color: selected ? '#fff' : '#374151',
+        borderRadius: '20px',
+        fontSize: '14px',
+        fontWeight: '500',
+        cursor: removable ? 'default' : 'pointer',
+        transition: 'all 0.2s ease',
+        boxShadow: selected ? `0 2px 8px ${primary}40` : '0 1px 3px rgba(0,0,0,0.1)',
+        border: selected ? `1px solid ${primary}` : '1px solid #e5e7eb'
       }}
     >
-      chip - variant 5
+      <span>{label}</span>
+      {removable && (
+        <button
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          onClick={handleRemove}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: 'inherit',
+            cursor: 'pointer',
+            padding: '0',
+            display: 'flex',
+            alignItems: 'center',
+            fontSize: '18px',
+            lineHeight: '1',
+            opacity: isHovered ? 1 : 0.6,
+            transition: 'opacity 0.2s'
+          }}
+        >
+          ×
+        </button>
+      )}
     </div>
   );
 };

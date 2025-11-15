@@ -1,47 +1,71 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  name?: string;
+  label?: string;
+  onRemove?: () => void;
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
-  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [selected, setSelected] = useState(false);
-  const primary = theme.primary || '#eab308';
+export const Component: React.FC<ComponentProps> = ({
+  name = 'User',
+  label,
+  onRemove,
+  theme = {},
+  className = ''
+}) => {
+  const primary = theme.primary || '#06b6d4';
 
   return (
     <div
       className={className}
-      onClick={() => { setSelected(!selected); onInteract?.('select'); }}
       style={{
-        padding: '18px 24px',
-        backgroundColor: selected ? `${primary}15` : '#ffffff',
-        border: `2px solid ${selected ? primary : '#e5e7eb'}`,
-        borderRadius: '6px',
-        cursor: 'pointer',
-        transition: 'all 200ms ease',
-        position: 'relative'
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '8px',
+        padding: '4px 12px 4px 4px',
+        backgroundColor: '#f3f4f6',
+        borderRadius: '24px',
+        fontSize: '14px',
+        color: '#374151'
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <div style={{
-          width: '24px',
-          height: '24px',
+      <div
+        style={{
+          width: '28px',
+          height: '28px',
           borderRadius: '50%',
-          border: `2px solid ${selected ? primary : '#d1d5db'}`,
-          backgroundColor: selected ? primary : 'transparent',
+          backgroundColor: primary,
+          color: '#fff',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          transition: 'all 200ms'
-        }}>
-          {selected && <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#fff' }} />}
-        </div>
-        <span style={{ fontSize: '15px', fontWeight: 500, color: selected ? primary : '#1f2937' }}>
-          Option {idx}
-        </span>
+          fontSize: '12px',
+          fontWeight: '600'
+        }}
+      >
+        {name.charAt(0).toUpperCase()}
       </div>
+      <span style={{ fontWeight: '500' }}>{label || name}</span>
+      {onRemove && (
+        <button
+          onClick={onRemove}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: '#6b7280',
+            cursor: 'pointer',
+            padding: '0',
+            display: 'flex',
+            alignItems: 'center',
+            fontSize: '18px',
+            lineHeight: '1'
+          }}
+        >
+          ×
+        </button>
+      )}
     </div>
   );
 };

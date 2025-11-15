@@ -1,47 +1,72 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  avatars?: { src: string; name: string }[];
+  maxVisible?: number;
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
-  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [selected, setSelected] = useState(false);
-  const primary = theme.primary || '#ef4444';
+export const Component: React.FC<ComponentProps> = ({
+  avatars = [
+    { src: '', name: 'User 1' },
+    { src: '', name: 'User 2' },
+    { src: '', name: 'User 3' },
+    { src: '', name: 'User 4' }
+  ],
+  maxVisible = 3,
+  theme = {},
+  className = ''
+}) => {
+  const primary = theme.primary || '#6366f1';
+  const extra = avatars.length - maxVisible;
+  const visible = avatars.slice(0, maxVisible);
 
   return (
-    <div
-      className={className}
-      onClick={() => { setSelected(!selected); onInteract?.('select'); }}
-      style={{
-        padding: '18px 24px',
-        backgroundColor: selected ? `${primary}15` : '#ffffff',
-        border: `2px solid ${selected ? primary : '#e5e7eb'}`,
-        borderRadius: '20px',
-        cursor: 'pointer',
-        transition: 'all 200ms ease',
-        position: 'relative'
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <div style={{
-          width: '24px',
-          height: '24px',
-          borderRadius: '50%',
-          border: `2px solid ${selected ? primary : '#d1d5db'}`,
-          backgroundColor: selected ? primary : 'transparent',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'all 200ms'
-        }}>
-          {selected && <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#fff' }} />}
+    <div className={className} style={{ display: 'flex', alignItems: 'center' }}>
+      {visible.map((avatar, i) => (
+        <div
+          key={i}
+          style={{
+            width: '48px',
+            height: '48px',
+            borderRadius: '50%',
+            backgroundColor: primary,
+            color: '#fff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '14px',
+            fontWeight: '600',
+            marginLeft: i > 0 ? '-12px' : '0',
+            border: '3px solid #fff',
+            position: 'relative',
+            zIndex: visible.length - i
+          }}
+        >
+          {avatar.name.charAt(0)}
         </div>
-        <span style={{ fontSize: '15px', fontWeight: 500, color: selected ? primary : '#1f2937' }}>
-          Option {idx}
-        </span>
-      </div>
+      ))}
+      {extra > 0 && (
+        <div
+          style={{
+            width: '48px',
+            height: '48px',
+            borderRadius: '50%',
+            backgroundColor: '#e5e7eb',
+            color: '#374151',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '14px',
+            fontWeight: '600',
+            marginLeft: '-12px',
+            border: '3px solid #fff'
+          }}
+        >
+          +{extra}
+        </div>
+      )}
     </div>
   );
 };

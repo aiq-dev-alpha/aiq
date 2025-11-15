@@ -1,41 +1,52 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [pressed, setPressed] = useState(false);
+  const [state, setState] = useState({{ active: false, count: 0 }});
   const primary = theme.primary || '#ef4444';
-  const bg = theme.background || '#ffffff';
-
+  
+  const handleClick = () => {
+    setState(prev => ({ active: !prev.active, count: prev.count + 1 }));
+    onInteract?.('click');
+  };
+  
   return (
-    <button
+    <div
       className={className}
-      onMouseDown={() => setPressed(true)}
-      onMouseUp={() => setPressed(false)}
-      onMouseLeave={() => setPressed(false)}
-      onClick={() => onInteract?.('click')}
+      onClick={handleClick}
       style={{
-        padding: '14px 32px',
-        backgroundColor: 'transparent',
-        color: primary,
-        border: `3px solid ${primary}`,
-        borderRadius: '4px',
+        padding: '16px 28px',
+        background: state.active ? `linear-gradient(195deg, ${primary}, ${primary}dd)` : '#ffffff',
+        color: state.active ? '#ffffff' : primary,
+        border: `5px solid ${state.active ? primary : primary + '40'}`,
+        borderRadius: '12px',
+        fontSize: '18px',
+        fontWeight: 900,
         cursor: 'pointer',
-        fontSize: '16px',
-        fontWeight: 700,
-        transform: pressed ? 'scale(0.94)' : 'scale(1)',
-        boxShadow: pressed ? 'inset 0 4px 8px rgba(0,0,0,0.2)' : 'none',
-        transition: 'all 120ms ease',
-        letterSpacing: '0.5px',
-        textTransform: 'uppercase',
-        outline: 'none'
+        transition: 'all 290ms cubic-bezier(0.7, 1.8, 0.64, 1)',
+        boxShadow: state.active ? `0 16px 32px ${primary}40` : `0 6px 14px rgba(0,0,0,0.12)`,
+        transform: state.active ? 'translateY(-8px) scale(1.06)' : 'translateY(0) scale(1)',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '12px'
       }}
     >
-      Press Me
-    </button>
+      <span>Component V14</span>
+      {state.count > 0 && (
+        <span style={{ 
+          fontSize: '12px', 
+          background: 'rgba(255,255,255,0.35)', 
+          padding: '2px 8px', 
+          borderRadius: '12px' 
+        }}>
+          {state.count}
+        </span>
+      )}
+    </div>
   );
 };

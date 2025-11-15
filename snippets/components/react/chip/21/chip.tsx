@@ -1,49 +1,51 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  label?: string;
+  selected?: boolean;
+  onToggle?: (selected: boolean) => void;
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
-  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const primary = theme.primary || '#f43f5e';
-  const bg = theme.background || '#ffffff';
+export const Component: React.FC<ComponentProps> = ({
+  label = 'Choice',
+  selected: initialSelected = false,
+  onToggle,
+  theme = {},
+  className = ''
+}) => {
+  const [selected, setSelected] = useState(initialSelected);
+  const primary = theme.primary || '#8b5cf6';
+
+  const handleClick = () => {
+    const newSelected = !selected;
+    setSelected(newSelected);
+    onToggle?.(newSelected);
+  };
 
   return (
-    <div
+    <button
       className={className}
-      onClick={() => onInteract?.('click')}
+      onClick={handleClick}
       style={{
-        padding: '20px 24px',
-        backgroundColor: bg,
-        border: `1px solid ${primary}30`,
-        borderLeft: `6px solid ${primary}`,
-        borderRadius: '10px',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '8px',
+        padding: '8px 16px',
+        backgroundColor: selected ? primary : '#fff',
+        color: selected ? '#fff' : '#374151',
+        border: selected ? 'none' : '1px solid #d1d5db',
+        borderRadius: '24px',
+        fontSize: '14px',
+        fontWeight: '500',
         cursor: 'pointer',
-        boxShadow: '0 3px 10px rgba(0,0,0,0.08)',
-        transition: 'transform 200ms, box-shadow 200ms'
+        transition: 'all 0.2s',
+        boxShadow: selected ? '0 2px 8px rgba(0,0,0,0.15)' : 'none'
       }}
-      onMouseEnter={e => { e.currentTarget.style.transform = 'translateX(4px)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.12)'; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.boxShadow = '0 3px 10px rgba(0,0,0,0.08)'; }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-        <div style={{
-          width: '16px',
-          height: '16px',
-          borderRadius: '50%',
-          backgroundColor: primary,
-          boxShadow: `0 0 0 4px ${primary}20`
-        }} />
-        <div>
-          <div style={{ fontSize: '16px', fontWeight: 600, color: '#1f2937', marginBottom: '4px' }}>
-            Item Title {idx}
-          </div>
-          <div style={{ fontSize: '13px', color: '#6b7280' }}>
-            Description text
-          </div>
-        </div>
-      </div>
-    </div>
+      {selected && <span style={{ fontSize: '16px' }}>✓</span>}
+      <span>{label}</span>
+    </button>
   );
 };

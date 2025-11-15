@@ -1,47 +1,52 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [selected, setSelected] = useState(false);
-  const primary = theme.primary || '#84cc16';
-
+  const [state, setState] = useState({{ active: false, count: 0 }});
+  const primary = theme.primary || '#10b981';
+  
+  const handleClick = () => {
+    setState(prev => ({ active: !prev.active, count: prev.count + 1 }));
+    onInteract?.('click');
+  };
+  
   return (
     <div
       className={className}
-      onClick={() => { setSelected(!selected); onInteract?.('select'); }}
+      onClick={handleClick}
       style={{
-        padding: '18px 24px',
-        backgroundColor: selected ? `${primary}15` : '#ffffff',
-        border: `2px solid ${selected ? primary : '#e5e7eb'}`,
-        borderRadius: '20px',
+        padding: '19px 34px',
+        background: state.active ? `linear-gradient(240deg, ${primary}, ${primary}dd)` : '#ffffff',
+        color: state.active ? '#ffffff' : primary,
+        border: `8px solid ${state.active ? primary : primary + '40'}`,
+        borderRadius: '15px',
+        fontSize: '21px',
+        fontWeight: 1200,
         cursor: 'pointer',
-        transition: 'all 200ms ease',
-        position: 'relative'
+        transition: 'all 320ms cubic-bezier(0.10, 2.4000000000000004, 0.64, 1)',
+        boxShadow: state.active ? `0 22px 41px ${primary}40` : `0 9px 20px rgba(0,0,0,0.15)`,
+        transform: state.active ? 'translateY(-11px) scale(1.09)' : 'translateY(0) scale(1)',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '15px'
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <div style={{
-          width: '24px',
-          height: '24px',
-          borderRadius: '50%',
-          border: `2px solid ${selected ? primary : '#d1d5db'}`,
-          backgroundColor: selected ? primary : 'transparent',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'all 200ms'
+      <span>Component V17</span>
+      {state.count > 0 && (
+        <span style={{ 
+          fontSize: '12px', 
+          background: 'rgba(255,255,255,0.50)', 
+          padding: '2px 8px', 
+          borderRadius: '12px' 
         }}>
-          {selected && <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#fff' }} />}
-        </div>
-        <span style={{ fontSize: '15px', fontWeight: 500, color: selected ? primary : '#1f2937' }}>
-          Option {idx}
+          {state.count}
         </span>
-      </div>
+      )}
     </div>
   );
 };
