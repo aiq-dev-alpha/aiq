@@ -403,13 +403,11 @@ export class NavbarComponent {
   },
   transparent: {
   backgroundColor: 'rgba(255, 255, 255, 0.85)',
-  backdropFilter: 'blur(10px)',
   backdropFilter: 'blur(8px)',
   borderBottom: '1px solid rgba(0, 0, 0, 0.08)'
   },
   blur: {
   backgroundColor: 'rgba(255, 255, 255, 0.7)',
-  backdropFilter: 'blur(10px)',
   backdropFilter: 'blur(16px) saturate(180%)',
   borderBottom: 'none',
   boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)'
