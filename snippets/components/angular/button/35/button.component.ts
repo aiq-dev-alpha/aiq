@@ -104,8 +104,8 @@ export class ButtonComponent {
       surface: '#f9fafb',
       accent: '#818cf8'
     },
-    radius: '8px',
-    shadow: '0 4px 6px rgba(99, 102, 241, 0.2)'
+    radius: '10px',
+    shadow: '0 4px 12px rgba(99, 102, 241, 0.25)'
   };
 
   get brand(): BrandTheme {

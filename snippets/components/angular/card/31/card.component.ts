@@ -48,8 +48,12 @@ type CardSize = 'sm' | 'md' | 'lg' | 'xl';
       display: flex;
       flex-direction: column;
     }
-    .card-container:hover {
-      transform: translateY(-4px);
+    .card-container.hoverable:hover {
+      transform: translateY(-6px) scale(1.02);
+      filter: brightness(1.02);
+    }
+    .card-container.clickable {
+      cursor: pointer;
     }
     .card-header {
       display: flex;
@@ -62,9 +66,10 @@ type CardSize = 'sm' | 'md' | 'lg' | 'xl';
     }
     .card-title {
       margin: 0;
-      font-size: 1.25rem;
-      font-weight: 600;
-      line-height: 1.4;
+      font-size: 1.375rem;
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
     }
     .card-subtitle {
       margin: 0.25rem 0 0;
@@ -134,28 +139,29 @@ export class CardComponent {
       elevated: {
         background: t.background,
         border: 'none',
-        boxShadow: `0 4px 6px -1px ${t.shadow}, 0 2px 4px -1px ${t.shadow}`
+        boxShadow: `0 10px 30px -5px ${t.shadow}, 0 4px 6px -2px ${t.shadow}`
       },
       outlined: {
         background: t.background,
-        border: `1px solid ${t.border}`,
+        border: `2px solid ${t.border}`,
         boxShadow: 'none'
       },
       filled: {
-        background: `${t.accentColor}10`,
-        border: 'none',
+        background: `linear-gradient(135deg, ${t.accentColor}12, ${t.accentColor}08)`,
+        border: `1px solid ${t.accentColor}20`,
         boxShadow: 'none'
       },
       glass: {
-        background: `${t.background}cc`,
-        backdropFilter: 'blur(10px)',
-        border: `1px solid ${t.border}80`,
-        boxShadow: `0 8px 32px ${t.shadow}`
+        background: `${t.background}e6`,
+        backdropFilter: 'blur(20px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+        border: `1px solid ${t.border}60`,
+        boxShadow: `0 8px 32px ${t.shadow}, inset 0 1px 0 rgba(255, 255, 255, 0.5)`
       },
       gradient: {
-        background: `linear-gradient(135deg, ${t.background}, ${t.accentColor}20)`,
-        border: 'none',
-        boxShadow: `0 4px 12px ${t.shadow}`
+        background: `linear-gradient(135deg, ${t.background} 0%, ${t.accentColor}18 100%)`,
+        border: `1px solid ${t.accentColor}20`,
+        boxShadow: `0 4px 20px ${t.shadow}`
       }
     };
 

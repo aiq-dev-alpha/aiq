@@ -50,35 +50,37 @@ export const Button: React.FC<ButtonProps> = ({
 
   const feelStyles: Record<string, CSSProperties> = {
     flat: {
-      background: scheme.base,
+      background: `linear-gradient(180deg, ${scheme.light}, ${scheme.base})`,
       color: '#ffffff',
       border: 'none',
       boxShadow: 'none'
     },
     raised: {
-      background: scheme.base,
+      background: `linear-gradient(135deg, ${scheme.base}, ${scheme.dark})`,
       color: '#ffffff',
       border: 'none',
-      boxShadow: '0 4px 8px rgba(0,0,0,0.12)'
+      boxShadow: `0 4px 12px ${scheme.base}40, 0 2px 4px ${scheme.base}30`
     },
     outlined: {
       background: 'transparent',
       color: scheme.base,
       border: `2px solid ${scheme.base}`,
-      boxShadow: 'none'
+      boxShadow: 'none',
+      position: 'relative'
     },
     tonal: {
-      background: `${scheme.base}18`,
+      background: `linear-gradient(135deg, ${scheme.base}20, ${scheme.base}15)`,
       color: scheme.dark,
-      border: 'none',
+      border: `1px solid ${scheme.base}30`,
       boxShadow: 'none'
     },
     glass: {
-      background: `${scheme.base}dd`,
-      backdropFilter: 'blur(12px)',
+      background: `linear-gradient(135deg, ${scheme.base}e6, ${scheme.light}cc)`,
+      backdropFilter: 'blur(16px) saturate(180%)',
+      WebkitBackdropFilter: 'blur(16px) saturate(180%)',
       color: '#ffffff',
-      border: `1px solid ${scheme.light}40`,
-      boxShadow: '0 8px 16px rgba(0,0,0,0.1)'
+      border: `1px solid ${scheme.light}50`,
+      boxShadow: `0 8px 24px ${scheme.base}30, inset 0 1px 0 rgba(255,255,255,0.2)`
     }
   };
 
@@ -108,10 +110,18 @@ export const Button: React.FC<ButtonProps> = ({
       onMouseEnter={(e) => {
         if (!disabled && !loading) {
           e.currentTarget.style.transform = `scale(${motionConfig.scale})`;
+          e.currentTarget.style.filter = 'brightness(1.1)';
+          if (feel === 'raised') {
+            e.currentTarget.style.boxShadow = `0 6px 20px ${scheme.base}50, 0 3px 8px ${scheme.base}40`;
+          }
         }
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = 'scale(1)';
+        e.currentTarget.style.filter = 'none';
+        if (feel === 'raised') {
+          e.currentTarget.style.boxShadow = `0 4px 12px ${scheme.base}40, 0 2px 4px ${scheme.base}30`;
+        }
       }}
       {...props}>
       {loading ? (

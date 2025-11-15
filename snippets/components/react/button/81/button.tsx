@@ -21,7 +21,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const baseColors: ColorSet = {
   main: '#6366f1',
   light: '#818cf8',
-  dark: '#4f46e5',
+  dark: '#4338ca',
   text: '#ffffff'
 };
 

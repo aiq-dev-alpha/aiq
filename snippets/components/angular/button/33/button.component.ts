@@ -95,10 +95,10 @@ export class ButtonComponent {
   @Output() clicked = new EventEmitter<MouseEvent>();
 
   private defaultTheme: StyleTheme = {
-    primary: '#8b5cf6',
+    primary: '#7c3aed',
     secondary: '#a78bfa',
     text: '#ffffff',
-    shadow: 'rgba(139, 92, 246, 0.3)'
+    shadow: 'rgba(124, 58, 237, 0.3)'
   };
 
   private defaultAnimation: AnimationConfig = {

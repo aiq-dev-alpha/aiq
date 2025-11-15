@@ -41,7 +41,7 @@ export class ButtonComponent {
   @Input() rounded = true;
   @Output() click = new EventEmitter<MouseEvent>();
 
-  private base: ColorPalette = { primary: '#6366f1', secondary: '#a78bfa', tertiary: '#c4b5fd', surface: '#ffffff', onSurface: '#111827' };
+  private base: ColorPalette = { primary: '#6366f1', secondary: '#a78bfa', tertiary: '#c4b5fd', surface: '#ffffff', onSurface: '#0f172a' };
 
   get colors(): ColorPalette {
     return { ...this.base, ...this.palette };

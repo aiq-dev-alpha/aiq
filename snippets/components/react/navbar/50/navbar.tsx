@@ -31,10 +31,10 @@ interface NavbarProps {
 
 const defaultTheme: NavTheme = {
   background: '#ffffff',
-  text: '#111827',
+  text: '#0f172a',
   accent: '#3b82f6',
-  border: '#e5e7eb',
-  hover: '#f3f4f6'
+  border: '#e2e8f0',
+  hover: '#f1f5f9'
 };
 
 export const Navbar: React.FC<NavbarProps> = ({

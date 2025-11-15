@@ -148,24 +148,24 @@ export class CardComponent {
   private defaults: DesignSystem = {
     colors: {
       surface: '#ffffff',
-      onSurface: '#1f2937',
+      onSurface: '#0f172a',
       primary: '#3b82f6',
       secondary: '#8b5cf6'
     },
     spacing: {
       xs: '8px',
       sm: '12px',
-      md: '16px',
-      lg: '24px'
+      md: '18px',
+      lg: '26px'
     },
     typography: {
-      headingSize: '1.5rem',
-      bodySize: '0.875rem',
-      captionSize: '0.75rem'
+      headingSize: '1.625rem',
+      bodySize: '0.9375rem',
+      captionSize: '0.8125rem'
     },
     effects: {
-      elevation: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-      radius: '16px'
+      elevation: '0 10px 20px -3px rgba(0, 0, 0, 0.12), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+      radius: '18px'
     }
   };
 

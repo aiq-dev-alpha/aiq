@@ -148,8 +148,8 @@ export class InputComponent implements ControlValueAccessor {
   private defaultTheme: InputTheme = {
     background: '#ffffff',
     border: '#d1d5db',
-    text: '#111827',
-    label: '#374151',
+    text: '#0f172a',
+    label: '#334155',
     focus: '#3b82f6',
     error: '#ef4444',
     success: '#10b981'

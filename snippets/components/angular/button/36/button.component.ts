@@ -49,7 +49,7 @@ export class ButtonComponent {
   private basePalette: BrandPalette = {
     light: '#a78bfa',
     main: '#8b5cf6',
-    dark: '#7c3aed',
+    dark: '#6d28d9',
     contrast: '#ffffff'
   };
 

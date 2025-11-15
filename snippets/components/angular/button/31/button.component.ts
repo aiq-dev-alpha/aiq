@@ -37,15 +37,33 @@ type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
       overflow: hidden;
       font-family: inherit;
     }
+    button::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+    button:active::before {
+      width: 300px;
+      height: 300px;
+    }
     button:disabled {
       cursor: not-allowed;
-      opacity: 0.6;
+      opacity: 0.5;
+      filter: grayscale(0.4);
     }
     button:hover:not(:disabled) {
-      transform: translateY(-2px);
+      transform: translateY(-3px);
+      filter: brightness(1.05);
     }
     button:active:not(:disabled) {
-      transform: translateY(0);
+      transform: translateY(-1px);
     }
     .pulse {
       animation: pulse 2s infinite;
@@ -116,28 +134,33 @@ export class ButtonComponent {
 
     const styleMap = {
       glass: {
-        background: `linear-gradient(135deg, ${t.primaryColor}cc, ${t.secondaryColor}cc)`,
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.2)',
-        boxShadow: `0 8px 32px ${t.shadowColor}`
+        background: `linear-gradient(135deg, ${t.primaryColor}dd, ${t.secondaryColor}dd)`,
+        backdropFilter: 'blur(16px) saturate(180%)',
+        border: '1px solid rgba(255, 255, 255, 0.18)',
+        boxShadow: `0 8px 32px ${t.shadowColor}, inset 0 1px 0 rgba(255, 255, 255, 0.3)`,
+        WebkitBackdropFilter: 'blur(16px) saturate(180%)'
       },
       neumorphic: {
-        background: '#e0e5ec',
-        color: '#666',
-        boxShadow: '8px 8px 16px #a3b1c6, -8px -8px 16px #ffffff',
-        border: 'none'
+        background: 'linear-gradient(145deg, #f0f0f0, #cacaca)',
+        color: '#444',
+        boxShadow: '10px 10px 20px #a3a3a3, -10px -10px 20px #ffffff',
+        border: '1px solid #e0e0e0'
       },
       brutalist: {
         background: t.primaryColor,
-        border: '3px solid #000',
-        boxShadow: '6px 6px 0 #000',
-        borderRadius: '0'
+        border: '4px solid #000',
+        boxShadow: '8px 8px 0 #000',
+        borderRadius: '0',
+        textTransform: 'uppercase',
+        letterSpacing: '2px'
       },
       minimal: {
         background: 'transparent',
         color: t.primaryColor,
-        border: `1px solid ${t.primaryColor}`,
-        boxShadow: 'none'
+        border: `2px solid ${t.primaryColor}`,
+        boxShadow: 'none',
+        position: 'relative',
+        overflow: 'hidden'
       }
     };
 

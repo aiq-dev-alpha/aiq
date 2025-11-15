@@ -104,8 +104,8 @@ export default defineComponent({
 
     const defaultTheme: CardTheme = {
       background: '#ffffff',
-      foreground: '#111827',
-      border: '#e5e7eb',
+      foreground: '#0f172a',
+      border: '#e2e8f0',
       accent: '#3b82f6',
       shadow: 'rgba(0, 0, 0, 0.1)'
     };

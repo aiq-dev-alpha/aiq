@@ -107,26 +107,32 @@ export class ButtonComponent {
         color: c.foreground,
         border: 'none',
         backgroundSize: '200% 200%',
-        animation: this.isHovered ? 'gradient-shift 3s ease infinite' : 'none'
+        backgroundPosition: this.isHovered ? 'right center' : 'left center',
+        transition: 'background-position 0.5s ease'
       },
       'outlined-thick': {
-        background: 'transparent',
+        background: this.isHovered ? `${c.background}15` : 'transparent',
         color: c.background,
         border: `3px solid ${c.background}`,
-        fontWeight: '700'
+        fontWeight: '700',
+        transition: 'all 0.3s ease'
       },
       'soft-shadow': {
         background: c.background,
         color: c.foreground,
         border: 'none',
-        boxShadow: `0 4px 14px ${c.background}66`
+        boxShadow: this.isHovered ? `0 8px 20px ${c.background}80` : `0 4px 14px ${c.background}66`,
+        transition: 'box-shadow 0.3s ease'
       },
       'neon-glow': {
-        background: '#000',
+        background: '#0a0a0a',
         color: c.accent,
         border: `2px solid ${c.accent}`,
-        boxShadow: `0 0 20px ${c.accent}80, inset 0 0 20px ${c.accent}40`,
-        textShadow: `0 0 10px ${c.accent}`
+        boxShadow: this.isHovered
+          ? `0 0 30px ${c.accent}, inset 0 0 30px ${c.accent}60`
+          : `0 0 20px ${c.accent}80, inset 0 0 20px ${c.accent}40`,
+        textShadow: `0 0 10px ${c.accent}`,
+        transition: 'all 0.3s ease'
       }
     };
     return variants[this.visualStyle];

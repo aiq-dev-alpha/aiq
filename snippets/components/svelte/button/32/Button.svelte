@@ -15,7 +15,7 @@
   const variants = {
     primary: { base: '#3b82f6', contrast: '#fff' },
     secondary: { base: '#8b5cf6', contrast: '#fff' },
-    accent: { base: '#f59e0b', contrast: '#fff' }
+    accent: { base: '#10b981', contrast: '#fff' }
   };
 
   const v = variants[variant];

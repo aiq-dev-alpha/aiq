@@ -98,16 +98,17 @@ export default defineComponent({
       const t = appliedTheme.value;
       return {
         solid: {
-          background: t.primary,
+          background: `linear-gradient(180deg, ${t.primary}, ${t.secondary})`,
           color: '#ffffff',
           border: 'none',
-          boxShadow: `0 4px 6px ${t.shadow}`
+          boxShadow: `0 4px 12px ${t.shadow}`
         },
         outline: {
           background: 'transparent',
           color: t.primary,
           border: `2px solid ${t.primary}`,
-          boxShadow: 'none'
+          boxShadow: 'none',
+          position: 'relative'
         },
         ghost: {
           background: 'transparent',
@@ -116,9 +117,9 @@ export default defineComponent({
           boxShadow: 'none'
         },
         soft: {
-          background: `${t.primary}20`,
+          background: `linear-gradient(135deg, ${t.primary}22, ${t.primary}18)`,
           color: t.primary,
-          border: 'none',
+          border: `1px solid ${t.primary}30`,
           boxShadow: 'none'
         },
         link: {
@@ -126,7 +127,8 @@ export default defineComponent({
           color: t.primary,
           border: 'none',
           boxShadow: 'none',
-          textDecoration: 'underline'
+          textDecoration: 'underline',
+          textUnderlineOffset: '3px'
         }
       };
     });
@@ -174,12 +176,24 @@ export default defineComponent({
 button {
   position: relative;
 }
+button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.2);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+button:hover:not(:disabled)::before {
+  opacity: 1;
+}
 button:hover:not(:disabled) {
-  filter: brightness(1.05);
-  transform: translateY(-1px);
+  filter: brightness(1.08);
+  transform: translateY(-2px);
 }
 button:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translateY(-1px);
+  filter: brightness(0.95);
 }
 .spinner {
   width: 14px;

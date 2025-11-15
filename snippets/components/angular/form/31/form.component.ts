@@ -103,8 +103,8 @@ export class FormComponent {
   private defaultTheme: FormTheme = {
     inputBackground: '#ffffff',
     inputBorder: '#d1d5db',
-    inputText: '#111827',
-    labelColor: '#374151',
+    inputText: '#0f172a',
+    labelColor: '#334155',
     errorColor: '#ef4444',
     focusColor: '#3b82f6'
   };

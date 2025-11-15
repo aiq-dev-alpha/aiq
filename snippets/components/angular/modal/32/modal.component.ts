@@ -186,15 +186,15 @@ export class ModalComponent {
 
   private defaultConfig: DialogConfig = {
     backdrop: {
-      color: 'rgba(0, 0, 0, 0.6)',
-      blur: '8px',
+      color: 'rgba(0, 0, 0, 0.65)',
+      blur: '10px',
       opacity: 1
     },
     content: {
       background: '#ffffff',
-      textColor: '#1f2937',
-      borderRadius: '12px',
-      shadow: '0 25px 50px rgba(0, 0, 0, 0.25)'
+      textColor: '#0f172a',
+      borderRadius: '16px',
+      shadow: '0 25px 50px rgba(0, 0, 0, 0.3)'
     }
   };
 

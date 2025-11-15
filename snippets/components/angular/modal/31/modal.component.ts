@@ -106,9 +106,10 @@ type ModalAnimation = 'fade' | 'slide-up' | 'slide-down' | 'zoom' | 'flip';
     }
     .modal-title {
       margin: 0;
-      font-size: 1.5rem;
+      font-size: 1.625rem;
       font-weight: 700;
-      line-height: 1.3;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
     }
     .modal-subtitle {
       margin: 0.5rem 0 0;
@@ -123,9 +124,16 @@ type ModalAnimation = 'fade' | 'slide-up' | 'slide-down' | 'zoom' | 'flip';
       border-radius: 50%;
       transition: all 0.2s;
       line-height: 1;
+      color: inherit;
+      opacity: 0.6;
     }
     .close-button:hover {
-      background: rgba(0, 0, 0, 0.1);
+      background: rgba(0, 0, 0, 0.08);
+      opacity: 1;
+      transform: scale(1.1);
+    }
+    .close-button:active {
+      transform: scale(0.95);
     }
     .close-icon {
       font-size: 1.5rem;
@@ -177,7 +185,8 @@ export class ModalComponent {
   get overlayStyles(): Record<string, string> {
     return {
       backgroundColor: this.appliedTheme.overlayColor,
-      backdropFilter: 'blur(4px)'
+      backdropFilter: 'blur(8px) saturate(120%)',
+      WebkitBackdropFilter: 'blur(8px) saturate(120%)'
     };
   }
 
@@ -195,8 +204,9 @@ export class ModalComponent {
       ...sizeMap[this.size],
       backgroundColor: t.backgroundColor,
       color: t.textColor,
-      borderRadius: '16px',
-      boxShadow: `0 20px 25px ${t.shadowColor}`
+      borderRadius: '20px',
+      boxShadow: `0 25px 50px -12px ${t.shadowColor}, 0 0 0 1px ${t.borderColor}40`,
+      border: `1px solid ${t.borderColor}50`
     };
   }
 

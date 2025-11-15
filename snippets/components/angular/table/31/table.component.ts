@@ -155,11 +155,11 @@ export class TableComponent {
 
   private defaultTheme: TableTheme = {
     background: '#ffffff',
-    headerBackground: '#f9fafb',
-    headerText: '#111827',
-    rowText: '#374151',
-    border: '#e5e7eb',
-    hoverBackground: '#f3f4f6',
+    headerBackground: '#f8fafc',
+    headerText: '#0f172a',
+    rowText: '#334155',
+    border: '#e2e8f0',
+    hoverBackground: '#f1f5f9',
     selectedBackground: '#dbeafe'
   };
 

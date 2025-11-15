@@ -60,14 +60,15 @@ export const Input: React.FC<InputProps> = ({
   const variantMap: Record<string, CSSProperties> = {
     outlined: {
       border: `2px solid ${error ? appliedTheme.error : success ? appliedTheme.success : isFocused ? appliedTheme.primary : appliedTheme.border}`,
-      borderRadius: '10px',
-      background: appliedTheme.background
+      borderRadius: '12px',
+      background: appliedTheme.background,
+      boxShadow: isFocused ? `0 0 0 3px ${appliedTheme.primary}20` : 'none'
     },
     filled: {
       border: 'none',
       borderBottom: `2px solid ${error ? appliedTheme.error : success ? appliedTheme.success : isFocused ? appliedTheme.primary : appliedTheme.border}`,
-      borderRadius: '10px 10px 0 0',
-      background: `${appliedTheme.border}40`
+      borderRadius: '12px 12px 0 0',
+      background: isFocused ? `${appliedTheme.border}50` : `${appliedTheme.border}40`
     },
     underlined: {
       border: 'none',
@@ -77,7 +78,7 @@ export const Input: React.FC<InputProps> = ({
     },
     flushed: {
       border: 'none',
-      borderBottom: `1px solid ${error ? appliedTheme.error : success ? appliedTheme.success : isFocused ? appliedTheme.primary : appliedTheme.border}`,
+      borderBottom: `2px solid ${error ? appliedTheme.error : success ? appliedTheme.success : isFocused ? appliedTheme.primary : appliedTheme.border}`,
       borderRadius: '0',
       background: 'transparent',
       padding: '8px 0'
@@ -95,8 +96,9 @@ export const Input: React.FC<InputProps> = ({
   const labelStyle: CSSProperties = {
     fontSize: '14px',
     fontWeight: 600,
-    color: appliedTheme.text,
-    marginBottom: '2px'
+    color: error ? appliedTheme.error : success ? appliedTheme.success : appliedTheme.text,
+    marginBottom: '4px',
+    transition: 'color 0.2s ease'
   };
 
   const containerStyle: CSSProperties = {
@@ -121,8 +123,12 @@ export const Input: React.FC<InputProps> = ({
 
   const messageStyle: CSSProperties = {
     fontSize: '12px',
-    marginTop: '2px',
-    color: error ? appliedTheme.error : success ? appliedTheme.success : appliedTheme.placeholder
+    marginTop: '4px',
+    color: error ? appliedTheme.error : success ? appliedTheme.success : appliedTheme.placeholder,
+    fontWeight: error || success ? 500 : 400,
+    display: 'flex',
+    alignItems: 'center',
+    gap: '4px'
   };
 
   return (

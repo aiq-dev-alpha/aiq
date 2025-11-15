@@ -141,16 +141,16 @@ export class FormComponent {
     },
     spacing: {
       field: '1.5rem',
-      input: '0.75rem 1rem'
+      input: '0.875rem 1.125rem'
     },
     typography: {
       labelSize: '0.875rem',
-      inputSize: '1rem',
-      helperSize: '0.75rem'
+      inputSize: '0.9375rem',
+      helperSize: '0.8125rem'
     },
     borders: {
-      radius: '8px',
-      width: '1px',
+      radius: '10px',
+      width: '1.5px',
       style: 'solid'
     }
   };

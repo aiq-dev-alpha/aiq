@@ -39,11 +39,11 @@ const emit = defineEmits<{
 }>();
 
 const colors = {
-  primary: { base: '#3b82f6', light: '#60a5fa', dark: '#2563eb' },
-  secondary: { base: '#8b5cf6', light: '#a78bfa', dark: '#7c3aed' },
-  success: { base: '#10b981', light: '#34d399', dark: '#059669' },
-  danger: { base: '#ef4444', light: '#f87171', dark: '#dc2626' },
-  warning: { base: '#f59e0b', light: '#fbbf24', dark: '#d97706' }
+  primary: { base: '#3b82f6', light: '#60a5fa', dark: '#1d4ed8' },
+  secondary: { base: '#8b5cf6', light: '#a78bfa', dark: '#6d28d9' },
+  success: { base: '#10b981', light: '#34d399', dark: '#047857' },
+  danger: { base: '#ef4444', light: '#f87171', dark: '#b91c1c' },
+  warning: { base: '#f59e0b', light: '#fbbf24', dark: '#b45309' }
 };
 
 const btnStyle = computed(() => {

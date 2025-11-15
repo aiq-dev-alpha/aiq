@@ -151,7 +151,7 @@ export class CardComponent {
   private defaultAppearance: CardAppearance = {
     backgroundColor: '#ffffff',
     borderColor: '#e5e7eb',
-    textColor: '#111827',
+    textColor: '#0f172a',
     accentColor: '#3b82f6',
     shadowIntensity: 'medium'
   };

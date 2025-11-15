@@ -27,10 +27,10 @@ interface ModalProps {
 }
 
 const defaultTheme: ModalTheme = {
-  overlay: 'rgba(0, 0, 0, 0.6)',
+  overlay: 'rgba(0, 0, 0, 0.65)',
   background: '#ffffff',
-  text: '#111827',
-  border: '#e5e7eb',
+  text: '#0f172a',
+  border: '#e2e8f0',
   shadow: 'rgba(0, 0, 0, 0.3)'
 };
 

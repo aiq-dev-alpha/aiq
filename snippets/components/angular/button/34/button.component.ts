@@ -84,10 +84,10 @@ export class ButtonComponent {
   @Output() buttonClicked = new EventEmitter<MouseEvent>();
 
   private defaultTokens: DesignTokens = {
-    spacing: { xs: '4px', sm: '8px', md: '12px', lg: '16px', xl: '20px' },
+    spacing: { xs: '6px', sm: '10px', md: '14px', lg: '18px', xl: '22px' },
     colors: { primary: '#10b981', secondary: '#3b82f6', accent: '#f59e0b', text: '#ffffff' },
-    typography: { size: '14px', weight: '600', family: 'Inter, system-ui, sans-serif' },
-    effects: { shadow: '0 2px 8px rgba(0,0,0,0.1)', blur: '8px', glow: '0 0 16px' }
+    typography: { size: '14px', weight: '600', family: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif' },
+    effects: { shadow: '0 4px 12px rgba(0,0,0,0.12)', blur: '10px', glow: '0 0 20px' }
   };
 
   get designTokens(): DesignTokens {
