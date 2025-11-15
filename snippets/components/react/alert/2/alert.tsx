@@ -13,37 +13,37 @@ export const Component: React.FC<ComponentProps> = ({ theme = {}, className = ''
   if (!visible) return null;
   
   return (
-    <div
-      className={className}
-      style={{
-        padding: '16px 20px',
-        background: `${primary}15`,
-        border: `2px solid ${primary}40`,
-        borderRadius: '12px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: '12px',
-        maxWidth: '500px'
-      }}
-    >
-      <div style={{ color: primary, fontSize: '15px', fontWeight: 600, flex: 1 }}>
-        Alert message variant 2
-      </div>
-      <button
-        onClick={() => { setVisible(false); onInteract?.('close'); }}
-        style={{
-          background: 'none',
-          border: 'none',
-          color: primary,
-          fontSize: '20px',
-          cursor: 'pointer',
-          padding: '0 4px',
-          lineHeight: 1
-        }}
-      >
-        ×
-      </button>
-    </div>
+  <div
+  className={className}
+  style={{
+  padding: '16px 20px',
+  background: `${primary}15`,
+  border: `2px solid ${primary}40`,
+  borderRadius: '12px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: '12px',
+  maxWidth: '500px'
+  }}
+  >
+  <div style={{ color: primary, fontSize: '15px', fontWeight: 600, flex: 1 }}>
+  Alert message variant 2
+  </div>
+  <button
+  onClick={() => { setVisible(false); onInteract?.('close'); }}
+  style={{
+  background: 'none',
+  border: 'none',
+  color: primary,
+  fontSize: '20px',
+  cursor: 'pointer',
+  padding: '0 4px',
+  lineHeight: 1
+  }}
+  >
+  ×
+  </button>
+  </div>
   );
 };

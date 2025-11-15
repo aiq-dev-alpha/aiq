@@ -10,8 +10,8 @@ export const Component: React.FC<ComponentProps> = ({ theme = {}, className = ''
   const [active, setActive] = useState(false);
   const primary = theme.primary || '#a855f7';
   return (
-    <button className={className} onClick={() => { setActive(!active); onInteract?.('toggle'); }} style={{ padding: '12px 24px', backgroundColor: active ? primary : '#f3f4f6', color: active ? '#fff' : '#1f2937', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: 600, transition: 'all 200ms', boxShadow: active ? `0 0 0 3px ${primary}40` : 'none' }}>
-      {active ? 'Active' : 'Inactive'}
-    </button>
+  <button className={className} onClick={() => { setActive(!active); onInteract?.('toggle'); }} style={{ padding: '12px 24px', backgroundColor: active ? primary : '#f3f4f6', color: active ? '#fff' : '#1f2937', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: 600, transition: 'all 200ms', boxShadow: active ? `0 0 0 3px ${primary}40` : 'none' }}>
+  {active ? 'Active' : 'Inactive'}
+  </button>
   );
 };

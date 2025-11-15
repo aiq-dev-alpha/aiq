@@ -1,72 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  avatars?: { src: string; name: string }[];
-  maxVisible?: number;
-  theme?: { primary?: string; background?: string; text?: string };
+  theme?: {
+  primary?: string;
+  background?: string;
+  text?: string;
+  };
   className?: string;
+  onInteract?: (type: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  avatars = [
-    { src: '', name: 'User 1' },
-    { src: '', name: 'User 2' },
-    { src: '', name: 'User 3' },
-    { src: '', name: 'User 4' }
-  ],
-  maxVisible = 3,
   theme = {},
-  className = ''
+  className = '',
+  onInteract
 }) => {
-  const primary = theme.primary || '#6366f1';
-  const extra = avatars.length - maxVisible;
-  const visible = avatars.slice(0, maxVisible);
+  const [state, setState] = useState({ active: false, hovered: false });
+
+  const primary = theme.primary || '#06b6d4';
+  const background = theme.background || '#3b82f6';
+  const text = theme.text || '#1f2937';
 
   return (
-    <div className={className} style={{ display: 'flex', alignItems: 'center' }}>
-      {visible.map((avatar, i) => (
-        <div
-          key={i}
-          style={{
-            width: '48px',
-            height: '48px',
-            borderRadius: '50%',
-            backgroundColor: primary,
-            color: '#fff',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '14px',
-            fontWeight: '600',
-            marginLeft: i > 0 ? '-12px' : '0',
-            border: '3px solid #fff',
-            position: 'relative',
-            zIndex: visible.length - i
-          }}
-        >
-          {avatar.name.charAt(0)}
-        </div>
-      ))}
-      {extra > 0 && (
-        <div
-          style={{
-            width: '48px',
-            height: '48px',
-            borderRadius: '50%',
-            backgroundColor: '#e5e7eb',
-            color: '#374151',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '14px',
-            fontWeight: '600',
-            marginLeft: '-12px',
-            border: '3px solid #fff'
-          }}
-        >
-          +{extra}
-        </div>
-      )}
-    </div>
+  <div
+  className={className}
+  onClick={() => {
+  setState(s => ({ ...s, active: !s.active }));
+  onInteract?.('interact');
+  }}
+  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
+  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
+  style={{
+  padding: '16px',
+  backgroundColor: state.active ? primary : background,
+  color: state.active ? '#fff' : text,
+  borderRadius: '8px',
+  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
+  boxShadow: state.hovered
+  ? '0 8px 16px rgba(0,0,0,0.12)'
+  : '0 2px 4px rgba(0,0,0,0.06)',
+  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
+  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
+  cursor: 'pointer',
+  fontWeight: state.active ? 600 : 500,
+  userSelect: 'none'
+  }}
+  >
+  Avatar - minimal style
+  </div>
   );
 };

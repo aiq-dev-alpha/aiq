@@ -12,45 +12,45 @@ export const Component: React.FC<ComponentProps> = ({ theme = {}, className = ''
   const text = theme.text || '#1f2937';
   
   return (
-    <div
-      className={className}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onClick={() => onInteract?.('hover_scale')}
-      style={{
-        width: '340px',
-        padding: '28px',
-        background: '#ffffff',
-        border: `2px solid ${hovered ? primary : '#e5e7eb'}`,
-        borderRadius: '14px',
-        cursor: 'pointer',
-        transition: 'all 300ms ease',
-        boxShadow: hovered ? `0 12px 32px ${primary}30` : '0 4px 16px rgba(0,0,0,0.08)',
-        transform: hovered ? 'translateY(-6px)' : 'translateY(0)'
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-        <div style={{
-          width: '48px',
-          height: '48px',
-          borderRadius: '12px',
-          background: `${primary}20`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '24px',
-          fontWeight: 700,
-          color: primary
-        }}>
-          H
-        </div>
-        <h3 style={{ margin: 0, color: text, fontSize: '20px', fontWeight: 700 }}>
-          Hover Scale
-        </h3>
-      </div>
-      <p style={{ margin: 0, color: '#64748b', fontSize: '15px', lineHeight: 1.7 }}>
-        This is a hover scale component with custom styling and hover effects.
-      </p>
-    </div>
+  <div
+  className={className}
+  onMouseEnter={() => setHovered(true)}
+  onMouseLeave={() => setHovered(false)}
+  onClick={() => onInteract?.('hover_scale')}
+  style={{
+  width: '340px',
+  padding: '28px',
+  background: '#ffffff',
+  border: `2px solid ${hovered ? primary : '#e5e7eb'}`,
+  borderRadius: '14px',
+  cursor: 'pointer',
+  transition: 'all 300ms ease',
+  boxShadow: hovered ? `0 12px 32px ${primary}30` : '0 4px 16px rgba(0,0,0,0.08)',
+  transform: hovered ? 'translateY(-6px)' : 'translateY(0)'
+  }}
+  >
+  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+  <div style={{
+  width: '48px',
+  height: '48px',
+  borderRadius: '12px',
+  background: `${primary}20`,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontSize: '24px',
+  fontWeight: 700,
+  color: primary
+  }}>
+  H
+  </div>
+  <h3 style={{ margin: 0, color: text, fontSize: '20px', fontWeight: 700 }}>
+  Hover Scale
+  </h3>
+  </div>
+  <p style={{ margin: 0, color: '#64748b', fontSize: '15px', lineHeight: 1.7 }}>
+  This is a hover scale component with custom styling and hover effects.
+  </p>
+  </div>
   );
 };

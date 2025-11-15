@@ -10,28 +10,28 @@ interface Theme {
 @Component({
   selector: 'app-form',
   template: `
-    <div
-      [ngStyle]="styles"
-      (click)="handleClick()"
-      (mouseenter)="hovered = true"
-      (mouseleave)="hovered = false"
-      class="form-container">
-      <ng-content></ng-content>
-      <span *ngIf="active" class="indicator">✓</span>
-    </div>
+  <div
+  [ngStyle]="styles"
+  (click)="handleClick()"
+  (mouseenter)="hovered = true"
+  (mouseleave)="hovered = false"
+  class="form-container">
+  <ng-content></ng-content>
+  <span *ngIf="active" class="indicator">✓</span>
+  </div>
   `,
   styles: [`
-    .form-container {
-      cursor: pointer;
-      transition: all 320ms cubic-bezier(0.4, 0, 0.2, 1);
-      user-select: none;
-      position: relative;
-    }
-    .indicator {
-      margin-left: 8px;
-      opacity: 0.8;
-      font-size: 14px;
-    }
+  .form-container {
+  cursor: pointer;
+  transition: all 320ms cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  position: relative;
+  }
+  .indicator {
+  margin-left: 8px;
+  opacity: 0.8;
+  font-size: 14px;
+  }
   `]
 })
 export class FormComponent {
@@ -43,36 +43,36 @@ export class FormComponent {
   hovered = false;
 
   private defaultTheme: Theme = {
-    primaryColor: '#ef4444',
-    backgroundColor: '#ffffff',
-    textColor: '#1f2937',
-    borderColor: '#e5e7eb'
+  primaryColor: '#ef4444',
+  backgroundColor: '#ffffff',
+  textColor: '#1f2937',
+  borderColor: '#e5e7eb'
   };
 
   get appliedTheme(): Theme {
-    return { ...this.defaultTheme, ...this.theme };
+  return { ...this.defaultTheme, ...this.theme };
   }
 
   get styles() {
-    const t = this.appliedTheme;
-    return {
-      padding: '19px 27px',
-      background: this.active ? t.primaryColor : t.backgroundColor,
-      color: this.active ? '#ffffff' : t.textColor,
-      border: `3px solid ${this.hovered ? t.primaryColor : t.borderColor}`,
-      borderRadius: '9px',
-      fontSize: '17px',
-      fontWeight: 600,
-      boxShadow: this.hovered ? `0 15px 23px ${t.primaryColor}40` : '0 2px 8px rgba(0,0,0,0.08)',
-      transform: this.hovered ? 'translateY(-5px)' : 'translateY(0)',
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '8px'
-    };
+  const t = this.appliedTheme;
+  return {
+  padding: '19px 27px',
+  background: this.active ? t.primaryColor : t.backgroundColor,
+  color: this.active ? '#ffffff' : t.textColor,
+  border: `3px solid ${this.hovered ? t.primaryColor : t.borderColor}`,
+  borderRadius: '9px',
+  fontSize: '17px',
+  fontWeight: 600,
+  boxShadow: this.hovered ? `0 15px 23px ${t.primaryColor}40` : '0 2px 8px rgba(0,0,0,0.08)',
+  transform: this.hovered ? 'translateY(-5px)' : 'translateY(0)',
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '8px'
+  };
   }
 
   handleClick(): void {
-    this.active = !this.active;
-    this.interact.emit('form_v7');
+  this.active = !this.active;
+  this.interact.emit('form_v7');
   }
 }

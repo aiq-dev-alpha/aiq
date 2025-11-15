@@ -1,57 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  variant?: 'default' | 'success' | 'warning' | 'error';
-  position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
-  theme?: { primary?: string; background?: string; text?: string };
+  theme?: {
+  primary?: string;
+  background?: string;
+  text?: string;
+  };
   className?: string;
-  children?: React.ReactNode;
+  onInteract?: (type: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  variant = 'default',
-  position = 'top-right',
   theme = {},
   className = '',
-  children
+  onInteract
 }) => {
-  const colors = {
-    default: theme.primary || '#3b82f6',
-    success: '#10b981',
-    warning: '#f59e0b',
-    error: '#ef4444'
-  };
+  const [state, setState] = useState({ active: false, hovered: false });
 
-  const positions = {
-    'top-right': { top: '0', right: '0' },
-    'top-left': { top: '0', left: '0' },
-    'bottom-right': { bottom: '0', right: '0' },
-    'bottom-left': { bottom: '0', left: '0' }
-  };
+  const primary = theme.primary || 'hsl(0, 70%, 50%)';
+  const background = theme.background || '#ffffff';
+  const text = theme.text || '#1f2937';
 
   return (
-    <div className={className} style={{ position: 'relative', display: 'inline-block' }}>
-      {children || (
-        <div
-          style={{
-            width: '48px',
-            height: '48px',
-            borderRadius: '50%',
-            backgroundColor: '#f3f4f6'
-          }}
-        />
-      )}
-      <div
-        style={{
-          position: 'absolute',
-          ...positions[position],
-          width: '12px',
-          height: '12px',
-          borderRadius: '50%',
-          backgroundColor: colors[variant],
-          border: '2px solid #fff'
-        }}
-      />
-    </div>
+  <div
+  className={className}
+  onClick={() => {
+  setState(s => ({ ...s, active: !s.active }));
+  onInteract?.('interact');
+  }}
+  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
+  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
+  style={{
+  padding: '16px',
+  backgroundColor: state.active ? primary : background,
+  color: state.active ? '#fff' : text,
+  borderRadius: '4px',
+  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
+  boxShadow: state.hovered
+  ? '0 8px 16px rgba(0,0,0,0.12)'
+  : '0 2px 4px rgba(0,0,0,0.06)',
+  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
+  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
+  cursor: 'pointer',
+  fontWeight: state.active ? 600 : 500,
+  userSelect: 'none'
+  }}
+  >
+  Badge - minimal style
+  </div>
   );
 };

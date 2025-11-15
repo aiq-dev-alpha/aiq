@@ -1,69 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  label?: string;
-  pulse?: boolean;
-  theme?: { primary?: string; background?: string; text?: string };
+  theme?: {
+  primary?: string;
+  background?: string;
+  text?: string;
+  };
   className?: string;
+  onInteract?: (type: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  label = 'Live',
-  pulse = true,
   theme = {},
-  className = ''
+  className = '',
+  onInteract
 }) => {
-  const primary = theme.primary || '#ef4444';
+  const [state, setState] = useState({ active: false, hovered: false });
+
+  const primary = theme.primary || 'hsl(0, 70%, 50%)';
+  const background = theme.background || '#ffffff';
+  const text = theme.text || '#1f2937';
 
   return (
-    <div
-      className={className}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '8px',
-        padding: '6px 14px',
-        backgroundColor: `${primary}20`,
-        borderRadius: '20px',
-        fontSize: '13px',
-        color: primary,
-        fontWeight: '600',
-        position: 'relative'
-      }}
-    >
-      {pulse && (
-        <>
-          <div
-            style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              backgroundColor: primary,
-              position: 'relative'
-            }}
-          />
-          <style>
-            {`
-              @keyframes pulse {
-                0%, 100% { opacity: 1; transform: scale(1); }
-                50% { opacity: 0.5; transform: scale(1.2); }
-              }
-              @keyframes pulse::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                border-radius: 50%;
-                background: inherit;
-                animation: pulse 2s ease-in-out infinite;
-              }
-            `}
-          </style>
-        </>
-      )}
-      <span>{label}</span>
-    </div>
+  <div
+  className={className}
+  onClick={() => {
+  setState(s => ({ ...s, active: !s.active }));
+  onInteract?.('interact');
+  }}
+  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
+  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
+  style={{
+  padding: '16px',
+  backgroundColor: state.active ? primary : background,
+  color: state.active ? '#fff' : text,
+  borderRadius: '8px',
+  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
+  boxShadow: state.hovered
+  ? '0 8px 16px rgba(0,0,0,0.12)'
+  : '0 2px 4px rgba(0,0,0,0.06)',
+  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
+  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
+  cursor: 'pointer',
+  fontWeight: state.active ? 600 : 500,
+  userSelect: 'none'
+  }}
+  >
+  Chip - minimal style
+  </div>
   );
 };

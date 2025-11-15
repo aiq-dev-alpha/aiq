@@ -12,25 +12,25 @@ export const Component: React.FC<ComponentProps> = ({ theme = {}, className = ''
   const primary = theme.primary || '#8b5cf6';
   
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '360px' }}>
-      <input
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
-        placeholder="Enter text..."
-        style={{
-          width: '100%',
-          padding: '14px 18px',
-          border: `2px solid ${focused ? primary : '#e5e7eb'}`,
-          borderRadius: '10px',
-          fontSize: '16px',
-          outline: 'none',
-          transition: 'all 250ms',
-          background: focused ? `${primary}05` : '#ffffff',
-          boxShadow: focused ? `0 0 0 4px ${primary}20` : 'none'
-        }}
-      />
-    </div>
+  <div className={className} style={{ width: '100%', maxWidth: '360px' }}>
+  <input
+  value={value}
+  onChange={(e) => setValue(e.target.value)}
+  onFocus={() => setFocused(true)}
+  onBlur={() => setFocused(false)}
+  placeholder="Enter text..."
+  style={{
+  width: '100%',
+  padding: '14px 18px',
+  border: `2px solid ${focused ? primary : '#e5e7eb'}`,
+  borderRadius: '10px',
+  fontSize: '16px',
+  outline: 'none',
+  transition: 'all 250ms',
+  background: focused ? `${primary}05` : '#ffffff',
+  boxShadow: focused ? `0 0 0 4px ${primary}20` : 'none'
+  }}
+  />
+  </div>
   );
 };

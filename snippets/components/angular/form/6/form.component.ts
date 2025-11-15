@@ -14,50 +14,50 @@ interface FormTheme {
 @Component({
   selector: 'app-form',
   template: `
-    <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" [ngStyle]="formStyles">
-      <div class="form-header" [ngStyle]="headerStyles">
-        <h2 [ngStyle]="titleStyles">{{ title }}</h2>
-        <p [ngStyle]="descriptionStyles">{{ description }}</p>
-      </div>
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" [ngStyle]="formStyles">
+  <div class="form-header" [ngStyle]="headerStyles">
+  <h2 [ngStyle]="titleStyles">{{ title }}</h2>
+  <p [ngStyle]="descriptionStyles">{{ description }}</p>
+  </div>
 
-      <div class="form-fields" [ngStyle]="fieldsContainerStyles">
-        <div class="field-group" *ngFor="let field of fields" [ngStyle]="fieldGroupStyles">
-          <label [for]="field.name" [ngStyle]="labelStyles">
-            {{ field.label }}
-            <span *ngIf="field.required" [ngStyle]="requiredStyles">*</span>
-          </label>
-          <input
-            [id]="field.name"
-            [type]="field.type || 'text'"
-            [formControlName]="field.name"
-            [ngStyle]="getInputStyles(field.name)"
-            [attr.aria-describedby]="field.name + '-error'"
-            [attr.aria-invalid]="isFieldInvalid(field.name)"
-          />
-          <div
-            *ngIf="isFieldInvalid(field.name)"
-            [id]="field.name + '-error'"
-            role="alert"
-            [ngStyle]="errorStyles"
-          >
-            {{ getErrorMessage(field.name) }}
-          </div>
-        </div>
-      </div>
+  <div class="form-fields" [ngStyle]="fieldsContainerStyles">
+  <div class="field-group" *ngFor="let field of fields" [ngStyle]="fieldGroupStyles">
+  <label [for]="field.name" [ngStyle]="labelStyles">
+  {{ field.label }}
+  <span *ngIf="field.required" [ngStyle]="requiredStyles">*</span>
+  </label>
+  <input
+  [id]="field.name"
+  [type]="field.type || 'text'"
+  [formControlName]="field.name"
+  [ngStyle]="getInputStyles(field.name)"
+  [attr.aria-describedby]="field.name + '-error'"
+  [attr.aria-invalid]="isFieldInvalid(field.name)"
+  />
+  <div
+  *ngIf="isFieldInvalid(field.name)"
+  [id]="field.name + '-error'"
+  role="alert"
+  [ngStyle]="errorStyles"
+  >
+  {{ getErrorMessage(field.name) }}
+  </div>
+  </div>
+  </div>
 
-      <div *ngIf="showSuccess" [ngStyle]="successStyles" role="status">
-        {{ successMessage }}
-      </div>
+  <div *ngIf="showSuccess" [ngStyle]="successStyles" role="status">
+  {{ successMessage }}
+  </div>
 
-      <div class="form-actions" [ngStyle]="actionsStyles">
-        <button type="submit" [disabled]="isSubmitting || formGroup.invalid" [ngStyle]="submitButtonStyles">
-          {{ isSubmitting ? 'Saving...' : submitButtonText }}
-        </button>
-        <button type="button" (click)="onReset()" [ngStyle]="resetButtonStyles">
-          {{ resetButtonText }}
-        </button>
-      </div>
-    </form>
+  <div class="form-actions" [ngStyle]="actionsStyles">
+  <button type="submit" [disabled]="isSubmitting || formGroup.invalid" [ngStyle]="submitButtonStyles">
+  {{ isSubmitting ? 'Saving...' : submitButtonText }}
+  </button>
+  <button type="button" (click)="onReset()" [ngStyle]="resetButtonStyles">
+  {{ resetButtonText }}
+  </button>
+  </div>
+  </form>
   `
 })
 export class FormComponent {
@@ -65,10 +65,10 @@ export class FormComponent {
   @Input() title: string = 'Profile Settings';
   @Input() description: string = 'Update your information';
   @Input() fields: any[] = [
-    { name: 'firstName', label: 'First Name', required: true },
-    { name: 'lastName', label: 'Last Name', required: true },
-    { name: 'phone', label: 'Phone Number', type: 'tel', required: false },
-    { name: 'bio', label: 'Bio', required: false }
+  { name: 'firstName', label: 'First Name', required: true },
+  { name: 'lastName', label: 'Last Name', required: true },
+  { name: 'phone', label: 'Phone Number', type: 'tel', required: false },
+  { name: 'bio', label: 'Bio', required: false }
   ];
   @Input() submitButtonText: string = 'Save Changes';
   @Input() resetButtonText: string = 'Discard';
@@ -79,214 +79,214 @@ export class FormComponent {
   showSuccess: boolean = false;
 
   private defaultTheme: FormTheme = {
-    primaryColor: '#06b6d4',
-    secondaryColor: '#0891b2',
-    backgroundColor: '#ecfeff',
-        backdropFilter: 'blur(10px)',
-    textColor: '#164e63',
-    borderColor: '#a5f3fc',
-    errorColor: '#e11d48',
-    successColor: '#16a34a'
+  primaryColor: '#06b6d4',
+  secondaryColor: '#0891b2',
+  backgroundColor: '#ecfeff',
+  backdropFilter: 'blur(10px)',
+  textColor: '#164e63',
+  borderColor: '#a5f3fc',
+  errorColor: '#e11d48',
+  successColor: '#16a34a'
   };
 
   constructor(private fb: FormBuilder) {
-    this.formGroup = this.fb.group({});
+  this.formGroup = this.fb.group({});
   }
 
   ngOnInit() {
-    this.initializeForm();
+  this.initializeForm();
   }
 
   get appliedTheme(): FormTheme {
-    return { ...this.defaultTheme, ...this.theme };
+  return { ...this.defaultTheme, ...this.theme };
   }
 
   initializeForm() {
-    const group: any = {};
-    this.fields.forEach(field => {
-      const validators = [];
-      if (field.required) validators.push(Validators.required);
-      if (field.type === 'email') validators.push(Validators.email);
-      group[field.name] = ['', validators];
-    });
-    this.formGroup = this.fb.group(group);
+  const group: any = {};
+  this.fields.forEach(field => {
+  const validators = [];
+  if (field.required) validators.push(Validators.required);
+  if (field.type === 'email') validators.push(Validators.email);
+  group[field.name] = ['', validators];
+  });
+  this.formGroup = this.fb.group(group);
   }
 
   isFieldInvalid(fieldName: string): boolean {
-    const field = this.formGroup.get(fieldName);
-    return !!(field && field.invalid && field.touched);
+  const field = this.formGroup.get(fieldName);
+  return !!(field && field.invalid && field.touched);
   }
 
   getErrorMessage(fieldName: string): string {
-    const field = this.formGroup.get(fieldName);
-    if (field?.errors?.['required']) return 'This field cannot be empty';
-    if (field?.errors?.['email']) return 'Please enter a valid email';
-    return 'Invalid input';
+  const field = this.formGroup.get(fieldName);
+  if (field?.errors?.['required']) return 'This field cannot be empty';
+  if (field?.errors?.['email']) return 'Please enter a valid email';
+  return 'Invalid input';
   }
 
   onSubmit() {
-    if (this.formGroup.valid) {
-      this.isSubmitting = true;
-      setTimeout(() => {
-        this.isSubmitting = false;
-        this.showSuccess = true;
-        setTimeout(() => this.showSuccess = false, 3000);
-      }, 1000);
-    }
+  if (this.formGroup.valid) {
+  this.isSubmitting = true;
+  setTimeout(() => {
+  this.isSubmitting = false;
+  this.showSuccess = true;
+  setTimeout(() => this.showSuccess = false, 3000);
+  }, 1000);
+  }
   }
 
   onReset() {
-    this.formGroup.reset();
-    this.showSuccess = false;
+  this.formGroup.reset();
+  this.showSuccess = false;
   }
 
   get formStyles() {
-    return {
-      backgroundColor: this.appliedTheme.backgroundColor,
-      padding: '2rem',
-      borderRadius: '1rem',
-      border: 'none',
-      maxWidth: '500px',
-      margin: '0 auto',
-      boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)'
-    };
+  return {
+  backgroundColor: this.appliedTheme.backgroundColor,
+  padding: '2rem',
+  borderRadius: '1rem',
+  border: 'none',
+  maxWidth: '500px',
+  margin: '0 auto',
+  boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)'
+  };
   }
 
   get headerStyles() {
-    return {
-      marginBottom: '1.5rem',
-      textAlign: 'left'
-    };
+  return {
+  marginBottom: '1.5rem',
+  textAlign: 'left'
+  };
   }
 
   get titleStyles() {
-    return {
-      color: this.appliedTheme.primaryColor,
-      fontSize: '1.875rem',
-      fontWeight: '800',
-      margin: '0 0 0.5rem 0'
-    };
+  return {
+  color: this.appliedTheme.primaryColor,
+  fontSize: '1.875rem',
+  fontWeight: '800',
+  margin: '0 0 0.5rem 0'
+  };
   }
 
   get descriptionStyles() {
-    return {
-      color: this.appliedTheme.textColor,
-      fontSize: '0.875rem',
-      margin: '0',
-      opacity: '0.75'
-    };
+  return {
+  color: this.appliedTheme.textColor,
+  fontSize: '0.875rem',
+  margin: '0',
+  opacity: '0.75'
+  };
   }
 
   get fieldsContainerStyles() {
-    return {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '1rem'
-    };
+  return {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '1rem'
+  };
   }
 
   get fieldGroupStyles() {
-    return {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '0.375rem'
-    };
+  return {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '0.375rem'
+  };
   }
 
   get labelStyles() {
-    return {
-      color: this.appliedTheme.textColor,
-      fontSize: '0.8125rem',
-      fontWeight: '600'
-    };
+  return {
+  color: this.appliedTheme.textColor,
+  fontSize: '0.8125rem',
+  fontWeight: '600'
+  };
   }
 
   get requiredStyles() {
-    return {
-      color: this.appliedTheme.errorColor,
-      marginLeft: '0.25rem'
-    };
+  return {
+  color: this.appliedTheme.errorColor,
+  marginLeft: '0.25rem'
+  };
   }
 
   getInputStyles(fieldName: string) {
-    const isInvalid = this.isFieldInvalid(fieldName);
-    return {
-      padding: '0.75rem 1rem',
-      border: 'none',
-      borderBottom: `3px solid ${isInvalid ? this.appliedTheme.errorColor : this.appliedTheme.borderColor}`,
-      borderRadius: '0',
-      fontSize: '1rem',
-      color: this.appliedTheme.textColor,
-      backgroundColor: '#ffffff',
-        backdropFilter: 'blur(10px)',
-      outline: 'none',
-      transition: 'border-color 0.2s'
-    };
+  const isInvalid = this.isFieldInvalid(fieldName);
+  return {
+  padding: '0.75rem 1rem',
+  border: 'none',
+  borderBottom: `3px solid ${isInvalid ? this.appliedTheme.errorColor : this.appliedTheme.borderColor}`,
+  borderRadius: '0',
+  fontSize: '1rem',
+  color: this.appliedTheme.textColor,
+  backgroundColor: '#ffffff',
+  backdropFilter: 'blur(10px)',
+  outline: 'none',
+  transition: 'border-color 0.2s'
+  };
   }
 
   get errorStyles() {
-    return {
-      color: this.appliedTheme.errorColor,
-      fontSize: '0.75rem',
-      marginTop: '0.25rem',
-      fontStyle: 'italic'
-    };
+  return {
+  color: this.appliedTheme.errorColor,
+  fontSize: '0.75rem',
+  marginTop: '0.25rem',
+  fontStyle: 'italic'
+  };
   }
 
   get successStyles() {
-    return {
-      backgroundColor: `${this.appliedTheme.successColor}`,
-      color: '#ffffff',
-      padding: '0.875rem',
-      borderRadius: '0.5rem',
-      marginTop: '1rem',
-      textAlign: 'center',
-      fontSize: '0.875rem',
-      fontWeight: '500'
-    };
+  return {
+  backgroundColor: `${this.appliedTheme.successColor}`,
+  color: '#ffffff',
+  padding: '0.875rem',
+  borderRadius: '0.5rem',
+  marginTop: '1rem',
+  textAlign: 'center',
+  fontSize: '0.875rem',
+  fontWeight: '500'
+  };
   }
 
   get actionsStyles() {
-    return {
-      display: 'flex',
-      gap: '1rem',
-      marginTop: '1.5rem'
-    };
+  return {
+  display: 'flex',
+  gap: '1rem',
+  marginTop: '1.5rem'
+  };
   }
 
   get submitButtonStyles() {
-    return {
-      flex: '1',
-      padding: '0.875rem',
-      backgroundColor: this.appliedTheme.primaryColor,
-      color: '#ffffff',
-      border: 'none',
-      borderRadius: '0.5rem',
-      fontSize: '1rem',
-      fontWeight: '600',
-      cursor: this.isSubmitting || this.formGroup.invalid ? 'not-allowed' : 'pointer',
-      opacity: this.isSubmitting || this.formGroup.invalid ? '0.6' : '1',
-      transition: 'opacity 0.2s',
-      textTransform: 'uppercase',
-      letterSpacing: '0.5px'
-    };
+  return {
+  flex: '1',
+  padding: '0.875rem',
+  backgroundColor: this.appliedTheme.primaryColor,
+  color: '#ffffff',
+  border: 'none',
+  borderRadius: '0.5rem',
+  fontSize: '1rem',
+  fontWeight: '600',
+  cursor: this.isSubmitting || this.formGroup.invalid ? 'not-allowed' : 'pointer',
+  opacity: this.isSubmitting || this.formGroup.invalid ? '0.6' : '1',
+  transition: 'opacity 0.2s',
+  textTransform: 'uppercase',
+  letterSpacing: '0.5px'
+  };
   }
 
   get resetButtonStyles() {
-    return {
-      flex: '1',
-      padding: '0.875rem',
-      backgroundColor: 'transparent',
-        backdropFilter: 'blur(10px)',
-      color: this.appliedTheme.textColor,
-      border: `2px solid ${this.appliedTheme.borderColor}`,
-      borderRadius: '0.5rem',
-      fontSize: '1rem',
-      fontWeight: '600',
-      cursor: 'pointer',
-      transition: 'all 0.2s',
-      textTransform: 'uppercase',
-      letterSpacing: '0.5px'
-    };
+  return {
+  flex: '1',
+  padding: '0.875rem',
+  backgroundColor: 'transparent',
+  backdropFilter: 'blur(10px)',
+  color: this.appliedTheme.textColor,
+  border: `2px solid ${this.appliedTheme.borderColor}`,
+  borderRadius: '0.5rem',
+  fontSize: '1rem',
+  fontWeight: '600',
+  cursor: 'pointer',
+  transition: 'all 0.2s',
+  textTransform: 'uppercase',
+  letterSpacing: '0.5px'
+  };
   }
 }

@@ -11,26 +11,26 @@ export const Component: React.FC<ComponentProps> = ({ theme = {}, className = ''
   const primary = theme.primary || '#10b981';
 
   return (
-    <button
-      className={className}
-      onClick={() => { setRotation(r => r + 90); onInteract?.('click'); }}
-      style={{
-        width: '48px',
-        height: '48px',
-        backgroundColor: primary,
-        color: '#ffffff',
-        border: 'none',
-        borderRadius: '16px',
-        fontSize: '20px',
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        transform: `rotate(${rotation}deg)`,
-        transition: 'transform 300ms ease'
-      }}
-    >
-      ↻
-    </button>
+  <button
+  className={className}
+  onClick={() => { setRotation(r => r + 90); onInteract?.('click'); }}
+  style={{
+  width: '48px',
+  height: '48px',
+  backgroundColor: primary,
+  color: '#ffffff',
+  border: 'none',
+  borderRadius: '16px',
+  fontSize: '20px',
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  transform: `rotate(${rotation}deg)`,
+  transition: 'transform 300ms ease'
+  }}
+  >
+  ↻
+  </button>
   );
 };

@@ -1,50 +1,67 @@
 import React, { useState } from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface AccordionItem {
+  id: string;
+  title: string;
+  content: string;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [active, setActive] = useState(false);
-  const [count, setCount] = useState(0);
-  const primary = theme.primary || '#8b5cf6';
-  
+export interface ComponentProps {
+  items?: AccordionItem[];
+  theme?: { primary?: string; background?: string; text?: string };
+  className?: string;
+}
+
+export const Component: React.FC<ComponentProps> = ({
+  items = [
+  { id: '1', title: 'Section 1', content: 'Content 1' },
+  { id: '2', title: 'Section 2', content: 'Content 2' },
+  { id: '3', title: 'Section 3', content: 'Content 3' }
+  ],
+  theme = {},
+  className = ''
+}) => {
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const primary = theme.primary || '#3b82f6';
+
   return (
-    <div
-      className={className}
-      onClick={() => { setActive(!active); setCount(c => c + 1); onInteract?.('interact'); }}
-      style={{
-        padding: '14px 30px',
-        background: active ? `linear-gradient(225deg, ${primary}, ${primary}dd)` : '#ffffff',
-        color: active ? '#ffffff' : primary,
-        border: `2px solid ${active ? primary : primary + '40'}`,
-        borderRadius: '16px',
-        fontSize: '15px',
-        fontWeight: 600,
-        cursor: 'pointer',
-        transition: 'all 330ms cubic-bezier(0.3, 1.4, 0.64, 1)',
-        boxShadow: active ? `0 16px 30px ${primary}40` : `0 4px 14px rgba(0,0,0,0.8)`,
-        transform: active ? 'translateY(-6px) scale(1.02)' : 'translateY(0) scale(1)',
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '10px',
-        position: 'relative',
-        overflow: 'hidden'
-      }}
-    >
-      <span>Accordion V6</span>
-      {count > 0 && (
-        <span style={{ 
-          fontSize: '12px', 
-          background: 'rgba(255,255,255,0.2)', 
-          padding: '2px 8px', 
-          borderRadius: '12px' 
-        }}>
-          {count}
-        </span>
-      )}
-    </div>
+  <div className={className} style={{ width: '100%', maxWidth: '600px' }}>
+  {items.map(item => {
+  const isActive = activeId === item.id;
+  return (
+  <div key={item.id} style={{ marginBottom: '8px' }}>
+  <button
+  onClick={() => setActiveId(isActive ? null : item.id)}
+  style={{
+  width: '100%',
+  padding: '16px',
+  backgroundColor: isActive ? primary : '#fff',
+  color: isActive ? '#fff' : '#111',
+  border: `1px solid ${primary}`,
+  borderRadius: '8px',
+  cursor: 'pointer',
+  textAlign: 'left',
+  fontWeight: '700',
+  transition: 'all 0.2s'
+  }}
+  >
+  {item.title}
+  </button>
+  <div style={{
+  maxHeight: isActive ? '500px' : '0',
+  overflow: 'hidden',
+  transition: 'max-height 0.3s ease',
+  backgroundColor: '#f9fafb',
+  borderLeft: `3px solid ${primary}`,
+  marginLeft: '8px'
+  }}>
+  <div style={{ padding: isActive ? '16px' : '0 16px' }}>
+  {item.content}
+  </div>
+  </div>
+  </div>
+  );
+  })}
+  </div>
   );
 };

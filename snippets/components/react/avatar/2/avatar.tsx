@@ -11,24 +11,24 @@ export const Component: React.FC<ComponentProps> = ({ theme = {}, className = ''
   const primary = theme.primary || '#8b5cf6';
   
   return (
-    <div
-      className={className}
-      onClick={() => { setActive(!active); onInteract?.('avatar'); }}
-      style={{
-        padding: '12px 20px',
-        background: active ? primary : `${primary}20`,
-        color: active ? '#ffffff' : primary,
-        border: `2px solid ${active ? primary : primary + '40'}`,
-        borderRadius: '10px',
-        fontSize: '14px',
-        fontWeight: 600,
-        cursor: 'pointer',
-        transition: 'all 280ms cubic-bezier(0.34, 1.56, 0.64, 1)',
-        display: 'inline-block',
-        userSelect: 'none'
-      }}
-    >
-      Avatar 2
-    </div>
+  <div
+  className={className}
+  onClick={() => { setActive(!active); onInteract?.('avatar'); }}
+  style={{
+  padding: '12px 20px',
+  background: active ? primary : `${primary}20`,
+  color: active ? '#ffffff' : primary,
+  border: `2px solid ${active ? primary : primary + '40'}`,
+  borderRadius: '10px',
+  fontSize: '14px',
+  fontWeight: 600,
+  cursor: 'pointer',
+  transition: 'all 280ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+  display: 'inline-block',
+  userSelect: 'none'
+  }}
+  >
+  Avatar 2
+  </div>
   );
 };

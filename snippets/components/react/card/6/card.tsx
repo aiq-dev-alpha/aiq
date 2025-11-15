@@ -12,28 +12,28 @@ export const Component: React.FC<ComponentProps> = ({ theme = {}, className = ''
   const background = theme.background || 'rgba(255, 255, 255, 0.1)';
   
   return (
-    <div
-      className={className}
-      onClick={() => { setActive(!active); onInteract?.('glassmorphism'); }}
-      style={{
-        width: '320px',
-        padding: '24px',
-        background: background,
-        backdropFilter: 'blur(10px)',
-        border: active ? `3px solid ${primary}` : `2px solid ${primary}40`,
-        borderRadius: '16px',
-        cursor: 'pointer',
-        transition: 'all 350ms cubic-bezier(0.34, 1.56, 0.64, 1)',
-        boxShadow: active ? `0 20px 40px ${primary}40` : `0 8px 24px ${primary}20`,
-        transform: active ? 'translateY(-8px)' : 'translateY(0)'
-      }}
-    >
-      <h3 style={{ margin: '0 0 12px 0', color: primary, fontSize: '20px', fontWeight: 700 }}>
-        Glassmorphism Card
-      </h3>
-      <p style={{ margin: 0, color: '#64748b', fontSize: '14px', lineHeight: 1.6 }}>
-        Click to {active ? 'deactivate' : 'activate'} this glassmorphism card variant.
-      </p>
-    </div>
+  <div
+  className={className}
+  onClick={() => { setActive(!active); onInteract?.('glassmorphism'); }}
+  style={{
+  width: '320px',
+  padding: '24px',
+  background: background,
+  backdropFilter: 'blur(10px)',
+  border: active ? `3px solid ${primary}` : `2px solid ${primary}40`,
+  borderRadius: '16px',
+  cursor: 'pointer',
+  transition: 'all 350ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+  boxShadow: active ? `0 20px 40px ${primary}40` : `0 8px 24px ${primary}20`,
+  transform: active ? 'translateY(-8px)' : 'translateY(0)'
+  }}
+  >
+  <h3 style={{ margin: '0 0 12px 0', color: primary, fontSize: '20px', fontWeight: 700 }}>
+  Glassmorphism Card
+  </h3>
+  <p style={{ margin: 0, color: '#64748b', fontSize: '14px', lineHeight: 1.6 }}>
+  Click to {active ? 'deactivate' : 'activate'} this glassmorphism card variant.
+  </p>
+  </div>
   );
 };

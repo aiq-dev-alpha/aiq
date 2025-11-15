@@ -1,55 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  status?: 'success' | 'warning' | 'error' | 'info';
-  label?: string;
-  icon?: boolean;
-  theme?: { primary?: string; background?: string; text?: string };
+  theme?: {
+  primary?: string;
+  background?: string;
+  text?: string;
+  };
   className?: string;
+  onInteract?: (type: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  status = 'info',
-  label = 'Status',
-  icon = true,
   theme = {},
-  className = ''
+  className = '',
+  onInteract
 }) => {
-  const colors = {
-    success: { bg: '#d1fae5', text: '#065f46', icon: '#10b981' },
-    warning: { bg: '#fef3c7', text: '#92400e', icon: '#f59e0b' },
-    error: { bg: '#fee2e2', text: '#991b1b', icon: '#ef4444' },
-    info: { bg: '#dbeafe', text: '#1e40af', icon: '#3b82f6' }
-  };
+  const [state, setState] = useState({ active: false, hovered: false });
 
-  const config = colors[status];
+  const primary = theme.primary || '#f59e0b';
+  const background = theme.background || '#ffffff';
+  const text = theme.text || '#1f2937';
 
   return (
-    <div
-      className={className}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '6px',
-        padding: '6px 14px',
-        backgroundColor: config.bg,
-        borderRadius: '6px',
-        fontSize: '13px',
-        color: config.text,
-        fontWeight: '600'
-      }}
-    >
-      {icon && (
-        <div
-          style={{
-            width: '8px',
-            height: '8px',
-            borderRadius: '50%',
-            backgroundColor: config.icon
-          }}
-        />
-      )}
-      <span>{label}</span>
-    </div>
+  <div
+  className={className}
+  onClick={() => {
+  setState(s => ({ ...s, active: !s.active }));
+  onInteract?.('interact');
+  }}
+  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
+  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
+  style={{
+  padding: '16px',
+  backgroundColor: state.active ? primary : background,
+  color: state.active ? '#fff' : text,
+  borderRadius: '8px',
+  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
+  boxShadow: state.hovered
+  ? '0 8px 16px rgba(0,0,0,0.12)'
+  : '0 2px 4px rgba(0,0,0,0.06)',
+  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
+  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
+  cursor: 'pointer',
+  fontWeight: state.active ? 600 : 500,
+  userSelect: 'none'
+  }}
+  >
+  Chip - minimal style
+  </div>
   );
 };

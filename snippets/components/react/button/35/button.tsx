@@ -11,8 +11,8 @@ export const Component: React.FC<ComponentProps> = ({ theme = {}, className = ''
   const primary = theme.primary || '#06b6d4';
   const handleClick = () => { setLoading(true); onInteract?.('loading'); setTimeout(() => setLoading(false), 1500); };
   return (
-    <button className={className} onClick={handleClick} disabled={loading} style={{ padding: '12px 32px', backgroundColor: primary, color: '#fff', border: 'none', borderRadius: '24px', cursor: loading ? 'not-allowed' : 'pointer', fontSize: '14px', fontWeight: 600, opacity: loading ? 0.6 : 1, minWidth: '120px', transition: 'opacity 200ms' }}>
-      {loading ? 'Loading...' : 'Submit'}
-    </button>
+  <button className={className} onClick={handleClick} disabled={loading} style={{ padding: '12px 32px', backgroundColor: primary, color: '#fff', border: 'none', borderRadius: '24px', cursor: loading ? 'not-allowed' : 'pointer', fontSize: '14px', fontWeight: 600, opacity: loading ? 0.6 : 1, minWidth: '120px', transition: 'opacity 200ms' }}>
+  {loading ? 'Loading...' : 'Submit'}
+  </button>
   );
 };

@@ -1,19 +1,24 @@
 import React, { useState } from 'react';
 
-interface AccordionItem {
-  id: string;
-  title: string;
-  content: string;
-}
-
-interface AccordionProps {
-  items: AccordionItem[];
+export interface ComponentProps {
+  items?: { id: string; title: string; content: string }[];
   allowMultiple?: boolean;
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
 }
 
-export default function Accordion({ items, allowMultiple = false, className = '' }: AccordionProps) {
+export const Component: React.FC<ComponentProps> = ({
+  items = [
+    { id: '1', title: 'Item 1', content: 'Content 1' },
+    { id: '2', title: 'Item 2', content: 'Content 2' },
+    { id: '3', title: 'Item 3', content: 'Content 3' }
+  ],
+  allowMultiple = false,
+  theme = {},
+  className = ''
+}) => {
   const [openItems, setOpenItems] = useState<Set<string>>(new Set());
+  const primary = theme.primary || '#10b981';
 
   const toggleItem = (id: string) => {
     const newOpenItems = new Set(openItems);
@@ -29,33 +34,45 @@ export default function Accordion({ items, allowMultiple = false, className = ''
   };
 
   return (
-    <div className={`w-full max-w-2xl mx-auto ${className}`}>
+    <div className={className} style={{ width: '100%', maxWidth: '700px', margin: '0 auto' }}>
       {items.map((item) => {
         const isOpen = openItems.has(item.id);
         return (
-          <div key={item.id} className="border-b border-gray-200 last:border-b-0">
+          <div key={item.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
             <button
               onClick={() => toggleItem(item.id)}
-              className="w-full px-6 py-4 flex justify-between items-center text-left hover:bg-gray-50 transition-colors duration-200"
+              style={{
+                width: '100%',
+                padding: '16px 24px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                textAlign: 'left',
+                border: 'none',
+                backgroundColor: isOpen ? '#f9fafb' : '#fff',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s'
+              }}
             >
-              <span className="font-semibold text-gray-900">{item.title}</span>
-              <svg
-                className={`w-5 h-5 text-gray-600 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
+              <span style={{ fontWeight: '600', color: '#1f2937' }}>{item.title}</span>
+              <span style={{ transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s', color: primary }}>
+                ▼
+              </span>
             </button>
             <div
-              className={`overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-96' : 'max-h-0'}`}
+              style={{
+                maxHeight: isOpen ? '300px' : '0',
+                overflow: 'hidden',
+                transition: 'max-height 0.3s ease'
+              }}
             >
-              <div className="px-6 py-4 text-gray-700 bg-gray-50">{item.content}</div>
+              <div style={{ padding: '16px 24px', color: '#4b5563', backgroundColor: '#f9fafb' }}>
+                {item.content}
+              </div>
             </div>
           </div>
         );
       })}
     </div>
   );
-}
+};

@@ -19,33 +19,33 @@ export const Component: React.FC<ComponentProps> = ({
   const primary = theme.primary || '#8b5cf6';
 
   const handleClick = () => {
-    const newSelected = !selected;
-    setSelected(newSelected);
-    onToggle?.(newSelected);
+  const newSelected = !selected;
+  setSelected(newSelected);
+  onToggle?.(newSelected);
   };
 
   return (
-    <button
-      className={className}
-      onClick={handleClick}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '8px',
-        padding: '8px 16px',
-        backgroundColor: selected ? primary : '#fff',
-        color: selected ? '#fff' : '#374151',
-        border: selected ? 'none' : '1px solid #d1d5db',
-        borderRadius: '24px',
-        fontSize: '14px',
-        fontWeight: '500',
-        cursor: 'pointer',
-        transition: 'all 0.2s',
-        boxShadow: selected ? '0 2px 8px rgba(0,0,0,0.15)' : 'none'
-      }}
-    >
-      {selected && <span style={{ fontSize: '16px' }}>✓</span>}
-      <span>{label}</span>
-    </button>
+  <button
+  className={className}
+  onClick={handleClick}
+  style={{
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '8px',
+  padding: '8px 16px',
+  backgroundColor: selected ? primary : '#fff',
+  color: selected ? '#fff' : '#374151',
+  border: selected ? 'none' : '1px solid #d1d5db',
+  borderRadius: '24px',
+  fontSize: '14px',
+  fontWeight: '500',
+  cursor: 'pointer',
+  transition: 'all 0.2s',
+  boxShadow: selected ? '0 2px 8px rgba(0,0,0,0.15)' : 'none'
+  }}
+  >
+  {selected && <span style={{ fontSize: '16px' }}>✓</span>}
+  <span>{label}</span>
+  </button>
   );
 };

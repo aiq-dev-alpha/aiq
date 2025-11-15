@@ -11,24 +11,24 @@ export const Component: React.FC<ComponentProps> = ({ theme = {}, className = ''
   const primary = theme.primary || '#3b82f6';
   
   return (
-    <button
-      className={className}
-      onClick={() => { setState(!state); onInteract?.('drag'); }}
-      style={{
-        padding: '14px 32px',
-        background: primary,
-        color: '#fff',
-        border: 'none',
-        borderRadius: '10px',
-        fontSize: '16px',
-        fontWeight: 700,
-        cursor: 'pointer',
-        transition: 'all 300ms cubic-bezier(0.34, 1.56, 0.64, 1)',
-        transform: state ? 'scale(1.05)' : 'scale(1)',
-        outline: 'none'
-      }}
-    >
-      Drag
-    </button>
+  <button
+  className={className}
+  onClick={() => { setState(!state); onInteract?.('drag'); }}
+  style={{
+  padding: '14px 32px',
+  background: primary,
+  color: '#fff',
+  border: 'none',
+  borderRadius: '10px',
+  fontSize: '16px',
+  fontWeight: 700,
+  cursor: 'pointer',
+  transition: 'all 300ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+  transform: state ? 'scale(1.05)' : 'scale(1)',
+  outline: 'none'
+  }}
+  >
+  Drag
+  </button>
   );
 };

@@ -24,196 +24,196 @@ export interface SidebarTheme {
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="sidebar-overlay"
-         *ngIf="isOpen && variant === 'overlay'"
-         (click)="toggle()"
-         [@fadeAnimation]></div>
+  <div class="sidebar-overlay"
+  *ngIf="isOpen && variant === 'overlay'"
+  (click)="toggle()"
+  [@fadeAnimation]></div>
 
-    <div class="sidebar"
-         [class.open]="isOpen"
-         [class.position-right]="position === 'right'"
-         [ngStyle]="sidebarStyles"
-         [@slideAnimation]="isOpen ? 'open' : 'closed'">
+  <div class="sidebar"
+  [class.open]="isOpen"
+  [class.position-right]="position === 'right'"
+  [ngStyle]="sidebarStyles"
+  [@slideAnimation]="isOpen ? 'open' : 'closed'">
 
-      <div class="sidebar-header">
-        <h2 [ngStyle]="{ color: appliedTheme.textColor }">Menu</h2>
-        <button class="toggle-btn" (click)="toggle()" [ngStyle]="buttonStyles">
-          <span>{{ isOpen ? '✕' : '☰' }}</span>
-        </button>
-      </div>
+  <div class="sidebar-header">
+  <h2 [ngStyle]="{ color: appliedTheme.textColor }">Menu</h2>
+  <button class="toggle-btn" (click)="toggle()" [ngStyle]="buttonStyles">
+  <span>{{ isOpen ? '✕' : '☰' }}</span>
+  </button>
+  </div>
 
-      <nav class="sidebar-nav">
-        <div *ngFor="let item of items" class="nav-item-wrapper">
-          <div class="nav-item"
-               [class.active]="item.id === activeItemId"
-               [class.has-children]="item.children && item.children.length > 0"
-               (click)="onItemClick(item)"
-               [ngStyle]="getItemStyles(item)">
-            <span class="icon">{{ item.icon }}</span>
-            <span class="label">{{ item.label }}</span>
-            <span *ngIf="item.children && item.children.length > 0" class="arrow">
-              {{ expandedItems[item.id] ? '▼' : '▶' }}
-            </span>
-          </div>
+  <nav class="sidebar-nav">
+  <div *ngFor="let item of items" class="nav-item-wrapper">
+  <div class="nav-item"
+  [class.active]="item.id === activeItemId"
+  [class.has-children]="item.children && item.children.length > 0"
+  (click)="onItemClick(item)"
+  [ngStyle]="getItemStyles(item)">
+  <span class="icon">{{ item.icon }}</span>
+  <span class="label">{{ item.label }}</span>
+  <span *ngIf="item.children && item.children.length > 0" class="arrow">
+  {{ expandedItems[item.id] ? '▼' : '▶' }}
+  </span>
+  </div>
 
-          <div *ngIf="item.children && expandedItems[item.id]"
-               class="submenu"
-               [@expandAnimation]>
-            <div *ngFor="let child of item.children"
-                 class="nav-item child"
-                 [class.active]="child.id === activeItemId"
-                 (click)="onItemClick(child); $event.stopPropagation()"
-                 [ngStyle]="getItemStyles(child)">
-              <span class="icon">{{ child.icon }}</span>
-              <span class="label">{{ child.label }}</span>
-            </div>
-          </div>
-        </div>
-      </nav>
-    </div>
+  <div *ngIf="item.children && expandedItems[item.id]"
+  class="submenu"
+  [@expandAnimation]>
+  <div *ngFor="let child of item.children"
+  class="nav-item child"
+  [class.active]="child.id === activeItemId"
+  (click)="onItemClick(child); $event.stopPropagation()"
+  [ngStyle]="getItemStyles(child)">
+  <span class="icon">{{ child.icon }}</span>
+  <span class="label">{{ child.label }}</span>
+  </div>
+  </div>
+  </div>
+  </nav>
+  </div>
   `,
   styles: [`
-    .sidebar-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 998;
-    }
+  .sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+  }
 
-    .sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100vh;
-      overflow-y: auto;
-      z-index: 999;
-      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
-      transition: transform 0.3s ease;
-    }
+  .sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 999;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+  }
 
-    .sidebar.position-right {
-      left: auto;
-      right: 0;
-      box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
-    }
+  .sidebar.position-right {
+  left: auto;
+  right: 0;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+  }
 
-    .sidebar-header {
-      padding: 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
+  .sidebar-header {
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
 
-    .sidebar-header h2 {
-      margin: 0;
-      font-size: 1.5rem;
-      font-weight: 600;
-    }
+  .sidebar-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  }
 
-    .toggle-btn {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      padding: 0.5rem;
-      border-radius: 0.375rem;
-      transition: background-color 0.2s;
-    }
+  .toggle-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  transition: background-color 0.2s;
+  }
 
-    .sidebar-nav {
-      padding: 1rem 0;
-    }
+  .sidebar-nav {
+  padding: 1rem 0;
+  }
 
-    .nav-item-wrapper {
-      margin-bottom: 0.25rem;
-    }
+  .nav-item-wrapper {
+  margin-bottom: 0.25rem;
+  }
 
-    .nav-item {
-      display: flex;
-      align-items: center;
-      padding: 0.875rem 1.5rem;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-    }
+  .nav-item {
+  display: flex;
+  align-items: center;
+  padding: 0.875rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  }
 
-    .nav-item.child {
-      padding-left: 3rem;
-      font-size: 0.9rem;
-    }
+  .nav-item.child {
+  padding-left: 3rem;
+  font-size: 0.9rem;
+  }
 
-    .nav-item .icon {
-      margin-right: 0.75rem;
-      font-size: 1.25rem;
-      width: 1.5rem;
-      text-align: center;
-    }
+  .nav-item .icon {
+  margin-right: 0.75rem;
+  font-size: 1.25rem;
+  width: 1.5rem;
+  text-align: center;
+  }
 
-    .nav-item .label {
-      flex: 1;
-      font-weight: 500;
-    }
+  .nav-item .label {
+  flex: 1;
+  font-weight: 500;
+  }
 
-    .nav-item .arrow {
-      font-size: 0.75rem;
-      margin-left: auto;
-    }
+  .nav-item .arrow {
+  font-size: 0.75rem;
+  margin-left: auto;
+  }
 
-    .submenu {
-      overflow: hidden;
-    }
+  .submenu {
+  overflow: hidden;
+  }
 
-    @media (max-width: 768px) {
-      .sidebar {
-        width: 100% !important;
-        max-width: 320px;
-      }
-    }
+  @media (max-width: 768px) {
+  .sidebar {
+  width: 100% !important;
+  max-width: 320px;
+  }
+  }
   
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    @keyframes slideIn {
-      from { transform: translateX(-20px); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-    
-    @keyframes scaleIn {
-      from { transform: scale(0.95); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
+  
+  @keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes slideIn {
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+  }
+  
+  @keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+  }
   `],
   animations: [
-    trigger('slideAnimation', [
-      state('open', style({ transform: 'translateX(0)' })),
-      state('closed', style({ transform: 'translateX(-100%)' })),
-      transition('open <=> closed', animate('300ms ease-in-out'))
-    ]),
-    trigger('fadeAnimation', [
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate('300ms', style({ opacity: 1 }))
-      ]),
-      transition(':leave', [
-        animate('300ms', style({ opacity: 0 }))
-      ])
-    ]),
-    trigger('expandAnimation', [
-      transition(':enter', [
-        style({ height: 0, opacity: 0 }),
-        animate('200ms ease-out', style({ height: '*', opacity: 1 }))
-      ]),
-      transition(':leave', [
-        animate('200ms ease-in', style({ height: 0, opacity: 0 }))
-      ])
-    ])
+  trigger('slideAnimation', [
+  state('open', style({ transform: 'translateX(0)' })),
+  state('closed', style({ transform: 'translateX(-100%)' })),
+  transition('open <=> closed', animate('300ms ease-in-out'))
+  ]),
+  trigger('fadeAnimation', [
+  transition(':enter', [
+  style({ opacity: 0 }),
+  animate('300ms', style({ opacity: 1 }))
+  ]),
+  transition(':leave', [
+  animate('300ms', style({ opacity: 0 }))
+  ])
+  ]),
+  trigger('expandAnimation', [
+  transition(':enter', [
+  style({ height: 0, opacity: 0 }),
+  animate('200ms ease-out', style({ height: '*', opacity: 1 }))
+  ]),
+  transition(':leave', [
+  animate('200ms ease-in', style({ height: 0, opacity: 0 }))
+  ])
+  ])
   ]
 })
 export class SidebarComponent {
@@ -231,59 +231,59 @@ export class SidebarComponent {
   expandedItems: { [key: string]: boolean } = {};
 
   private defaultTheme: SidebarTheme = {
-    primaryColor: '#1e40af',
-    backgroundColor: '#1e293b',
-        backdropFilter: 'blur(10px)',
-    textColor: '#f1f5f9',
-    activeColor: '#3b82f6',
-    hoverColor: '#334155',
-    borderColor: '#475569'
+  primaryColor: '#1e40af',
+  backgroundColor: '#1e293b',
+  backdropFilter: 'blur(10px)',
+  textColor: '#f1f5f9',
+  activeColor: '#3b82f6',
+  hoverColor: '#334155',
+  borderColor: '#475569'
   };
 
   get appliedTheme(): SidebarTheme {
-    return { ...this.defaultTheme, ...this.theme };
+  return { ...this.defaultTheme, ...this.theme };
   }
 
   get sidebarStyles() {
-    return {
-      width: this.width,
-      backgroundColor: this.appliedTheme.backgroundColor,
-      color: this.appliedTheme.textColor,
-      borderRight: `1px solid ${this.appliedTheme.borderColor}`
-    };
+  return {
+  width: this.width,
+  backgroundColor: this.appliedTheme.backgroundColor,
+  color: this.appliedTheme.textColor,
+  borderRight: `1px solid ${this.appliedTheme.borderColor}`
+  };
   }
 
   get buttonStyles() {
-    return {
-      color: this.appliedTheme.textColor,
-      ':hover': {
-        backgroundColor: this.appliedTheme.hoverColor
-      }
-    };
+  return {
+  color: this.appliedTheme.textColor,
+  ':hover': {
+  backgroundColor: this.appliedTheme.hoverColor
+  }
+  };
   }
 
   getItemStyles(item: SidebarItem) {
-    const isActive = item.id === this.activeItemId;
-    return {
-      backgroundColor: isActive ? this.appliedTheme.activeColor : 'transparent',
-      color: this.appliedTheme.textColor,
-      ':hover': {
-        backgroundColor: isActive ? this.appliedTheme.activeColor : this.appliedTheme.hoverColor
-      }
-    };
+  const isActive = item.id === this.activeItemId;
+  return {
+  backgroundColor: isActive ? this.appliedTheme.activeColor : 'transparent',
+  color: this.appliedTheme.textColor,
+  ':hover': {
+  backgroundColor: isActive ? this.appliedTheme.activeColor : this.appliedTheme.hoverColor
+  }
+  };
   }
 
   onItemClick(item: SidebarItem) {
-    if (item.children && item.children.length > 0) {
-      this.expandedItems[item.id] = !this.expandedItems[item.id];
-    } else {
-      this.activeItemId = item.id;
-      this.itemClicked.emit(item);
-    }
+  if (item.children && item.children.length > 0) {
+  this.expandedItems[item.id] = !this.expandedItems[item.id];
+  } else {
+  this.activeItemId = item.id;
+  this.itemClicked.emit(item);
+  }
   }
 
   toggle() {
-    this.isOpen = !this.isOpen;
-    this.toggleSidebar.emit(this.isOpen);
+  this.isOpen = !this.isOpen;
+  this.toggleSidebar.emit(this.isOpen);
   }
 }

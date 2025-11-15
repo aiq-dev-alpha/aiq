@@ -11,25 +11,25 @@ export const Component: React.FC<ComponentProps> = ({ theme = {}, className = ''
   const primary = theme.primary || '#6366f1';
   
   return (
-    <button
-      className={className}
-      onClick={() => { setActive(!active); onInteract?.('blur'); }}
-      style={{
-        padding: '14px 32px',
-        background: active ? `linear-gradient(135deg, ${primary}, ${primary}dd)` : primary,
-        color: '#fff',
-        border: 'none',
-        borderRadius: '10px',
-        fontSize: '16px',
-        fontWeight: 700,
-        cursor: 'pointer',
-        transition: 'all 300ms ease',
-        boxShadow: active ? `0 8px 24px ${primary}60` : `0 2px 8px ${primary}40`,
-        transform: active ? 'translateY(-4px)' : 'translateY(0)',
-        outline: 'none'
-      }}
-    >
-      Blur
-    </button>
+  <button
+  className={className}
+  onClick={() => { setActive(!active); onInteract?.('blur'); }}
+  style={{
+  padding: '14px 32px',
+  background: active ? `linear-gradient(135deg, ${primary}, ${primary}dd)` : primary,
+  color: '#fff',
+  border: 'none',
+  borderRadius: '10px',
+  fontSize: '16px',
+  fontWeight: 700,
+  cursor: 'pointer',
+  transition: 'all 300ms ease',
+  boxShadow: active ? `0 8px 24px ${primary}60` : `0 2px 8px ${primary}40`,
+  transform: active ? 'translateY(-4px)' : 'translateY(0)',
+  outline: 'none'
+  }}
+  >
+  Blur
+  </button>
   );
 };

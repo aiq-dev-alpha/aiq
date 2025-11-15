@@ -6,9 +6,9 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   selector: 'app-input',
   template: `<div class="zen-input"><input [type]="type" [placeholder]="placeholder" [value]="value" (input)="handleInput($event)" class="zen-field" /><div class="zen-line"></div></div>`,
   styles: [`
-    .zen-input { position: relative; padding: 8px 0; }
-    .zen-field { width: 100%; border: none; outline: none; background: transparent; font-size: 16px; color: #2d3748; padding: 4px 0; font-weight: 300; letter-spacing: 0.5px; }
-    .zen-line { position: absolute; bottom: 0; left: 0; width: 100%; height: 1px; background: linear-gradient(90deg, transparent 0%, #718096 50%, transparent 100%); }
+  .zen-input { position: relative; padding: 8px 0; }
+  .zen-field { width: 100%; border: none; outline: none; background: transparent; font-size: 16px; color: #2d3748; padding: 4px 0; font-weight: 300; letter-spacing: 0.5px; }
+  .zen-line { position: absolute; bottom: 0; left: 0; width: 100%; height: 1px; background: linear-gradient(90deg, transparent 0%, #718096 50%, transparent 100%); }
   `],
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => InputComponent), multi: true }]
 })

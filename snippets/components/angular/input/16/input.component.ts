@@ -6,8 +6,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   selector: 'app-input',
   template: `<div class="skeu"><input [type]="type" [placeholder]="placeholder" [value]="value" (input)="handleInput($event)" class="skeu-field" /></div>`,
   styles: [`
-    .skeu { background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%); border: 1px solid #d1d5db; border-bottom-color: #9ca3af; border-radius: 6px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1), 0 1px 0 rgba(255,255,255,0.8); }
-    .skeu-field { width: 100%; border: none; outline: none; background: transparent; padding: 10px 14px; font-size: 14px; color: #374151; text-shadow: 0 1px 0 rgba(255,255,255,0.8); }
+  .skeu { background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%); border: 1px solid #d1d5db; border-bottom-color: #9ca3af; border-radius: 6px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1), 0 1px 0 rgba(255,255,255,0.8); }
+  .skeu-field { width: 100%; border: none; outline: none; background: transparent; padding: 10px 14px; font-size: 14px; color: #374151; text-shadow: 0 1px 0 rgba(255,255,255,0.8); }
   `],
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => InputComponent), multi: true }]
 })

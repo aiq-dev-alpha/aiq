@@ -6,10 +6,10 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   selector: 'app-input',
   template: `<div class="ripple-input" (click)="triggerRipple($event)"><input [type]="type" [placeholder]="placeholder" [value]="value" (input)="handleInput($event)" class="ripple-field" /><span class="ripple" *ngIf="showRipple" [style.left.px]="rippleX" [style.top.px]="rippleY"></span></div>`,
   styles: [`
-    .ripple-input { position: relative; background: #f7fafc; border: 2px solid #cbd5e1; border-radius: 10px; overflow: hidden; }
-    .ripple-field { width: 100%; border: none; outline: none; background: transparent; padding: 12px 16px; font-size: 15px; color: #2d3748; position: relative; z-index: 1; }
-    .ripple { position: absolute; width: 10px; height: 10px; background: rgba(99, 102, 241, 0.5); border-radius: 50%; transform: translate(-50%, -50%); animation: ripple-expand 0.8s ease-out forwards; pointer-events: none; }
-    @keyframes ripple-expand { 0% { width: 10px; height: 10px; opacity: 0.8; } 100% { width: 200px; height: 200px; opacity: 0; } }
+  .ripple-input { position: relative; background: #f7fafc; border: 2px solid #cbd5e1; border-radius: 10px; overflow: hidden; }
+  .ripple-field { width: 100%; border: none; outline: none; background: transparent; padding: 12px 16px; font-size: 15px; color: #2d3748; position: relative; z-index: 1; }
+  .ripple { position: absolute; width: 10px; height: 10px; background: rgba(99, 102, 241, 0.5); border-radius: 50%; transform: translate(-50%, -50%); animation: ripple-expand 0.8s ease-out forwards; pointer-events: none; }
+  @keyframes ripple-expand { 0% { width: 10px; height: 10px; opacity: 0.8; } 100% { width: 200px; height: 200px; opacity: 0; } }
   `],
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => InputComponent), multi: true }]
 })

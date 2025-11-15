@@ -10,8 +10,8 @@ export const Component: React.FC<ComponentProps> = ({ theme = {}, className = ''
   const [hover, setHover] = useState(false);
   const primary = theme.primary || '#06b6d4';
   return (
-    <div className={className} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onClick={() => onInteract?.('click')} style={{ padding: '14px 28px', backgroundColor: 'transparent', color: primary, border: `2px solid ${primary}`, borderRadius: '20px', cursor: 'pointer', fontSize: '14px', fontWeight: 500, transform: hover ? 'translateY(-2px)' : 'translateY(0)', boxShadow: hover ? `0 8px 16px ${primary}30` : 'none', transition: 'all 250ms cubic-bezier(0.4, 0, 0.2, 1)' }}>
-      Hover Effect
-    </div>
+  <div className={className} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onClick={() => onInteract?.('click')} style={{ padding: '14px 28px', backgroundColor: 'transparent', color: primary, border: `2px solid ${primary}`, borderRadius: '20px', cursor: 'pointer', fontSize: '14px', fontWeight: 500, transform: hover ? 'translateY(-2px)' : 'translateY(0)', boxShadow: hover ? `0 8px 16px ${primary}30` : 'none', transition: 'all 250ms cubic-bezier(0.4, 0, 0.2, 1)' }}>
+  Hover Effect
+  </div>
   );
 };

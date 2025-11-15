@@ -25,59 +25,59 @@ interface TableRow {
 @Component({
   selector: 'app-table',
   template: `
-    <div [ngStyle]="containerStyles">
-      <div *ngIf="searchable" [ngStyle]="searchBarStyles">
-        <input type="text" [ngStyle]="searchInputStyles" [(ngModel)]="searchTerm" (input)="onSearch()" placeholder="Type to search..." aria-label="Search table">
-      </div>
-      <div *ngIf="loading" [ngStyle]="loadingStyles">
-        <div [ngStyle]="spinnerStyles"></div>
-        <p>Please wait...</p>
-      </div>
-      <div *ngIf="!loading" [ngStyle]="tableWrapperStyles">
-        <table [ngStyle]="tableStyles">
-          <thead [ngStyle]="theadStyles">
-            <tr>
-              <th *ngIf="selectable" [ngStyle]="thStyles"><input type="checkbox" [checked]="allSelected" (change)="toggleSelectAll()" aria-label="Select all"></th>
-              <th *ngFor="let col of columns" [ngStyle]="thStyles" [style.width]="col.width" scope="col" [attr.aria-sort]="getSortDirection(col.key)">
-                <div [ngStyle]="thContentStyles">
-                  <span>{{ col.label }}</span>
-                  <button *ngIf="col.sortable" (click)="onSort(col.key)" [ngStyle]="sortButtonStyles" [attr.aria-label]="'Sort by ' + col.label">{{ getSortIcon(col.key) }}</button>
-                </div>
-              </th>
-              <th *ngIf="hasActions" [ngStyle]="thStyles" scope="col">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngIf="filteredData.length === 0">
-              <td [attr.colspan]="totalColumns" [ngStyle]="emptyStateStyles"><p>Nothing to display</p></td>
-            </tr>
-            <ng-container *ngFor="let row of paginatedData; let i = index">
-              <tr [ngStyle]="getTrStyles(row)" (click)="onRowClick(row)" [attr.aria-selected]="isSelected(row.id)">
-                <td *ngIf="selectable" [ngStyle]="tdStyles"><input type="checkbox" [checked]="isSelected(row.id)" (change)="toggleSelect(row.id)" (click)="$event.stopPropagation()" [attr.aria-label]="'Select row ' + (i + 1)"></td>
-                <td *ngFor="let col of columns" [ngStyle]="tdStyles">{{ row[col.key] }}</td>
-                <td *ngIf="hasActions" [ngStyle]="tdStyles">
-                  <div [ngStyle]="actionButtonGroupStyles">
-                    <button [ngStyle]="actionButtonStyles" (click)="onEdit(row); $event.stopPropagation()">Modify</button>
-                    <button [ngStyle]="deleteButtonStyles" (click)="onDelete(row); $event.stopPropagation()">Remove</button>
-                  </div>
-                </td>
-              </tr>
-              <tr *ngIf="expandable && expandedRows.has(row.id)" [ngStyle]="expandedRowStyles">
-                <td [attr.colspan]="totalColumns" [ngStyle]="expandedContentStyles"><ng-content></ng-content></td>
-              </tr>
-            </ng-container>
-          </tbody>
-        </table>
-      </div>
-      <div *ngIf="paginate && filteredData.length > 0" [ngStyle]="paginationStyles">
-        <div [ngStyle]="paginationInfoStyles">Items {{ startIndex + 1 }} to {{ endIndex }} (Total: {{ filteredData.length }})</div>
-        <div [ngStyle]="paginationButtonGroupStyles">
-          <button [ngStyle]="paginationButtonStyles" (click)="previousPage()" [disabled]="currentPage === 1">&laquo;</button>
-          <span [ngStyle]="pageNumberStyles">{{ currentPage }}</span>
-          <button [ngStyle]="paginationButtonStyles" (click)="nextPage()" [disabled]="currentPage === totalPages">&raquo;</button>
-        </div>
-      </div>
-    </div>
+  <div [ngStyle]="containerStyles">
+  <div *ngIf="searchable" [ngStyle]="searchBarStyles">
+  <input type="text" [ngStyle]="searchInputStyles" [(ngModel)]="searchTerm" (input)="onSearch()" placeholder="Type to search..." aria-label="Search table">
+  </div>
+  <div *ngIf="loading" [ngStyle]="loadingStyles">
+  <div [ngStyle]="spinnerStyles"></div>
+  <p>Please wait...</p>
+  </div>
+  <div *ngIf="!loading" [ngStyle]="tableWrapperStyles">
+  <table [ngStyle]="tableStyles">
+  <thead [ngStyle]="theadStyles">
+  <tr>
+  <th *ngIf="selectable" [ngStyle]="thStyles"><input type="checkbox" [checked]="allSelected" (change)="toggleSelectAll()" aria-label="Select all"></th>
+  <th *ngFor="let col of columns" [ngStyle]="thStyles" [style.width]="col.width" scope="col" [attr.aria-sort]="getSortDirection(col.key)">
+  <div [ngStyle]="thContentStyles">
+  <span>{{ col.label }}</span>
+  <button *ngIf="col.sortable" (click)="onSort(col.key)" [ngStyle]="sortButtonStyles" [attr.aria-label]="'Sort by ' + col.label">{{ getSortIcon(col.key) }}</button>
+  </div>
+  </th>
+  <th *ngIf="hasActions" [ngStyle]="thStyles" scope="col">Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngIf="filteredData.length === 0">
+  <td [attr.colspan]="totalColumns" [ngStyle]="emptyStateStyles"><p>Nothing to display</p></td>
+  </tr>
+  <ng-container *ngFor="let row of paginatedData; let i = index">
+  <tr [ngStyle]="getTrStyles(row)" (click)="onRowClick(row)" [attr.aria-selected]="isSelected(row.id)">
+  <td *ngIf="selectable" [ngStyle]="tdStyles"><input type="checkbox" [checked]="isSelected(row.id)" (change)="toggleSelect(row.id)" (click)="$event.stopPropagation()" [attr.aria-label]="'Select row ' + (i + 1)"></td>
+  <td *ngFor="let col of columns" [ngStyle]="tdStyles">{{ row[col.key] }}</td>
+  <td *ngIf="hasActions" [ngStyle]="tdStyles">
+  <div [ngStyle]="actionButtonGroupStyles">
+  <button [ngStyle]="actionButtonStyles" (click)="onEdit(row); $event.stopPropagation()">Modify</button>
+  <button [ngStyle]="deleteButtonStyles" (click)="onDelete(row); $event.stopPropagation()">Remove</button>
+  </div>
+  </td>
+  </tr>
+  <tr *ngIf="expandable && expandedRows.has(row.id)" [ngStyle]="expandedRowStyles">
+  <td [attr.colspan]="totalColumns" [ngStyle]="expandedContentStyles"><ng-content></ng-content></td>
+  </tr>
+  </ng-container>
+  </tbody>
+  </table>
+  </div>
+  <div *ngIf="paginate && filteredData.length > 0" [ngStyle]="paginationStyles">
+  <div [ngStyle]="paginationInfoStyles">Items {{ startIndex + 1 }} to {{ endIndex }} (Total: {{ filteredData.length }})</div>
+  <div [ngStyle]="paginationButtonGroupStyles">
+  <button [ngStyle]="paginationButtonStyles" (click)="previousPage()" [disabled]="currentPage === 1">&laquo;</button>
+  <span [ngStyle]="pageNumberStyles">{{ currentPage }}</span>
+  <button [ngStyle]="paginationButtonStyles" (click)="nextPage()" [disabled]="currentPage === totalPages">&raquo;</button>
+  </div>
+  </div>
+  </div>
   `
 })
 export class TableComponent {
@@ -109,352 +109,352 @@ export class TableComponent {
   expandedRows: Set<string | number> = new Set();
 
   private defaultTheme: TableTheme = {
-    primaryColor: '#8b5cf6',
-    secondaryColor: '#7c3aed',
-    backgroundColor: '#faf5ff',
-        backdropFilter: 'blur(10px)',
-    textColor: '#1f2937',
-    borderColor: '#c4b5fd',
-    headerBgColor: '#e9d5ff',
-    hoverColor: '#f3e8ff'
+  primaryColor: '#8b5cf6',
+  secondaryColor: '#7c3aed',
+  backgroundColor: '#faf5ff',
+  backdropFilter: 'blur(10px)',
+  textColor: '#1f2937',
+  borderColor: '#c4b5fd',
+  headerBgColor: '#e9d5ff',
+  hoverColor: '#f3e8ff'
   };
 
   get appliedTheme(): TableTheme {
-    return { ...this.defaultTheme, ...this.theme };
+  return { ...this.defaultTheme, ...this.theme };
   }
 
   get filteredData(): TableRow[] {
-    let result = [...this.data];
-    if (this.searchTerm) {
-      result = result.filter(row =>
-        Object.values(row).some(val => String(val).toLowerCase().includes(this.searchTerm.toLowerCase()))
-      );
-    }
-    if (this.sortKey && this.sortDirection) {
-      result.sort((a, b) => {
-        const aVal = a[this.sortKey];
-        const bVal = b[this.sortKey];
-        const modifier = this.sortDirection === 'asc' ? 1 : -1;
-        return aVal > bVal ? modifier : aVal < bVal ? -modifier : 0;
-      });
-    }
-    return result;
+  let result = [...this.data];
+  if (this.searchTerm) {
+  result = result.filter(row =>
+  Object.values(row).some(val => String(val).toLowerCase().includes(this.searchTerm.toLowerCase()))
+  );
+  }
+  if (this.sortKey && this.sortDirection) {
+  result.sort((a, b) => {
+  const aVal = a[this.sortKey];
+  const bVal = b[this.sortKey];
+  const modifier = this.sortDirection === 'asc' ? 1 : -1;
+  return aVal > bVal ? modifier : aVal < bVal ? -modifier : 0;
+  });
+  }
+  return result;
   }
 
   get paginatedData(): TableRow[] {
-    if (!this.paginate) return this.filteredData;
-    const start = (this.currentPage - 1) * this.pageSize;
-    return this.filteredData.slice(start, start + this.pageSize);
+  if (!this.paginate) return this.filteredData;
+  const start = (this.currentPage - 1) * this.pageSize;
+  return this.filteredData.slice(start, start + this.pageSize);
   }
 
   get totalPages(): number {
-    return Math.ceil(this.filteredData.length / this.pageSize);
+  return Math.ceil(this.filteredData.length / this.pageSize);
   }
 
   get startIndex(): number {
-    return (this.currentPage - 1) * this.pageSize;
+  return (this.currentPage - 1) * this.pageSize;
   }
 
   get endIndex(): number {
-    return Math.min(this.startIndex + this.pageSize, this.filteredData.length);
+  return Math.min(this.startIndex + this.pageSize, this.filteredData.length);
   }
 
   get allSelected(): boolean {
-    return this.paginatedData.length > 0 && this.paginatedData.every(row => this.selectedRows.has(row.id));
+  return this.paginatedData.length > 0 && this.paginatedData.every(row => this.selectedRows.has(row.id));
   }
 
   get totalColumns(): number {
-    return this.columns.length + (this.selectable ? 1 : 0) + (this.hasActions ? 1 : 0);
+  return this.columns.length + (this.selectable ? 1 : 0) + (this.hasActions ? 1 : 0);
   }
 
   get containerStyles() {
-    return {
-      width: '100%',
-      backgroundColor: this.appliedTheme.backgroundColor,
-      borderRadius: '0',
-      boxShadow: 'none',
-      border: `3px solid ${this.appliedTheme.borderColor}`
-    };
+  return {
+  width: '100%',
+  backgroundColor: this.appliedTheme.backgroundColor,
+  borderRadius: '0',
+  boxShadow: 'none',
+  border: `3px solid ${this.appliedTheme.borderColor}`
+  };
   }
 
   get searchBarStyles() {
-    return {
-      padding: '18px',
-      backgroundColor: this.appliedTheme.headerBgColor,
-      borderBottom: `3px solid ${this.appliedTheme.borderColor}`
-    };
+  return {
+  padding: '18px',
+  backgroundColor: this.appliedTheme.headerBgColor,
+  borderBottom: `3px solid ${this.appliedTheme.borderColor}`
+  };
   }
 
   get searchInputStyles() {
-    return {
-      width: '100%',
-      padding: '12px 18px',
-      border: `2px solid ${this.appliedTheme.primaryColor}`,
-      borderRadius: '4px',
-      fontSize: '15px',
-      backgroundColor: '#ffffff',
-        backdropFilter: 'blur(10px)'
-    };
+  return {
+  width: '100%',
+  padding: '12px 18px',
+  border: `2px solid ${this.appliedTheme.primaryColor}`,
+  borderRadius: '4px',
+  fontSize: '15px',
+  backgroundColor: '#ffffff',
+  backdropFilter: 'blur(10px)'
+  };
   }
 
   get tableWrapperStyles() {
-    return {
-      overflowX: 'auto',
-      maxHeight: this.stickyHeader ? '550px' : 'none',
-      overflowY: this.stickyHeader ? 'auto' : 'visible'
-    };
+  return {
+  overflowX: 'auto',
+  maxHeight: this.stickyHeader ? '550px' : 'none',
+  overflowY: this.stickyHeader ? 'auto' : 'visible'
+  };
   }
 
   get tableStyles() {
-    return {
-      width: '100%',
-      borderCollapse: 'collapse' as const,
-      fontSize: this.size === 'compact' ? '13px' : this.size === 'comfortable' ? '15px' : '17px'
-    };
+  return {
+  width: '100%',
+  borderCollapse: 'collapse' as const,
+  fontSize: this.size === 'compact' ? '13px' : this.size === 'comfortable' ? '15px' : '17px'
+  };
   }
 
   get theadStyles() {
-    return {
-      backgroundColor: this.appliedTheme.headerBgColor,
-      position: this.stickyHeader ? 'sticky' as const : 'static' as const,
-      top: '0',
-      zIndex: '10'
-    };
+  return {
+  backgroundColor: this.appliedTheme.headerBgColor,
+  position: this.stickyHeader ? 'sticky' as const : 'static' as const,
+  top: '0',
+  zIndex: '10'
+  };
   }
 
   get thStyles() {
-    const padding = this.size === 'compact' ? '9px 13px' : this.size === 'comfortable' ? '13px 17px' : '17px 21px';
-    return {
-      padding,
-      textAlign: 'left' as const,
-      fontWeight: '700',
-      color: this.appliedTheme.primaryColor,
-      borderBottom: `3px solid ${this.appliedTheme.borderColor}`,
-      borderRight: this.bordered ? `2px solid ${this.appliedTheme.borderColor}` : 'none'
-    };
+  const padding = this.size === 'compact' ? '9px 13px' : this.size === 'comfortable' ? '13px 17px' : '17px 21px';
+  return {
+  padding,
+  textAlign: 'left' as const,
+  fontWeight: '700',
+  color: this.appliedTheme.primaryColor,
+  borderBottom: `3px solid ${this.appliedTheme.borderColor}`,
+  borderRight: this.bordered ? `2px solid ${this.appliedTheme.borderColor}` : 'none'
+  };
   }
 
   get thContentStyles() {
-    return {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '9px'
-    };
+  return {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '9px'
+  };
   }
 
   get sortButtonStyles() {
-    return {
-      background: this.appliedTheme.primaryColor,
-      border: 'none',
-      cursor: 'pointer',
-      fontSize: '13px',
-      color: '#ffffff',
-      padding: '3px 7px',
-      borderRadius: '3px'
-    };
+  return {
+  background: this.appliedTheme.primaryColor,
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '13px',
+  color: '#ffffff',
+  padding: '3px 7px',
+  borderRadius: '3px'
+  };
   }
 
   getTrStyles(row: TableRow) {
-    const isRowSelected = this.selectedRows.has(row.id);
-    return {
-      backgroundColor: isRowSelected ? this.appliedTheme.hoverColor : this.appliedTheme.backgroundColor,
-      cursor: 'pointer',
-      transition: 'background-color 0.15s',
-      borderBottom: `2px solid ${this.appliedTheme.borderColor}`
-    };
+  const isRowSelected = this.selectedRows.has(row.id);
+  return {
+  backgroundColor: isRowSelected ? this.appliedTheme.hoverColor : this.appliedTheme.backgroundColor,
+  cursor: 'pointer',
+  transition: 'background-color 0.15s',
+  borderBottom: `2px solid ${this.appliedTheme.borderColor}`
+  };
   }
 
   get tdStyles() {
-    const padding = this.size === 'compact' ? '9px 13px' : this.size === 'comfortable' ? '13px 17px' : '17px 21px';
-    return {
-      padding,
-      color: this.appliedTheme.textColor,
-      borderRight: this.bordered ? `2px solid ${this.appliedTheme.borderColor}` : 'none'
-    };
+  const padding = this.size === 'compact' ? '9px 13px' : this.size === 'comfortable' ? '13px 17px' : '17px 21px';
+  return {
+  padding,
+  color: this.appliedTheme.textColor,
+  borderRight: this.bordered ? `2px solid ${this.appliedTheme.borderColor}` : 'none'
+  };
   }
 
   get emptyStateStyles() {
-    return {
-      padding: '55px 18px',
-      textAlign: 'center' as const,
-      color: '#9ca3af',
-      fontSize: '15px'
-    };
+  return {
+  padding: '55px 18px',
+  textAlign: 'center' as const,
+  color: '#9ca3af',
+  fontSize: '15px'
+  };
   }
 
   get loadingStyles() {
-    return {
-      display: 'flex',
-      flexDirection: 'column' as const,
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '55px',
-      gap: '18px'
-    };
+  return {
+  display: 'flex',
+  flexDirection: 'column' as const,
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '55px',
+  gap: '18px'
+  };
   }
 
   get spinnerStyles() {
-    return {
-      width: '45px',
-      height: '45px',
-      border: `4px solid ${this.appliedTheme.borderColor}`,
-      borderTop: `4px solid ${this.appliedTheme.primaryColor}`,
-      borderRadius: '50%',
-      animation: 'spin 0.9s linear infinite'
-    };
+  return {
+  width: '45px',
+  height: '45px',
+  border: `4px solid ${this.appliedTheme.borderColor}`,
+  borderTop: `4px solid ${this.appliedTheme.primaryColor}`,
+  borderRadius: '50%',
+  animation: 'spin 0.9s linear infinite'
+  };
   }
 
   get paginationStyles() {
-    return {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: '18px',
-      borderTop: `3px solid ${this.appliedTheme.borderColor}`,
-      backgroundColor: this.appliedTheme.headerBgColor
-    };
+  return {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  padding: '18px',
+  borderTop: `3px solid ${this.appliedTheme.borderColor}`,
+  backgroundColor: this.appliedTheme.headerBgColor
+  };
   }
 
   get paginationInfoStyles() {
-    return {
-      color: this.appliedTheme.textColor,
-      fontSize: '14px'
-    };
+  return {
+  color: this.appliedTheme.textColor,
+  fontSize: '14px'
+  };
   }
 
   get paginationButtonGroupStyles() {
-    return {
-      display: 'flex',
-      gap: '14px',
-      alignItems: 'center'
-    };
+  return {
+  display: 'flex',
+  gap: '14px',
+  alignItems: 'center'
+  };
   }
 
   get paginationButtonStyles() {
-    return {
-      padding: '7px 14px',
-      border: `2px solid ${this.appliedTheme.primaryColor}`,
-      borderRadius: '4px',
-      backgroundColor: '#ffffff',
-        backdropFilter: 'blur(10px)',
-      color: this.appliedTheme.primaryColor,
-      cursor: 'pointer',
-      fontSize: '15px',
-      fontWeight: '600'
-    };
+  return {
+  padding: '7px 14px',
+  border: `2px solid ${this.appliedTheme.primaryColor}`,
+  borderRadius: '4px',
+  backgroundColor: '#ffffff',
+  backdropFilter: 'blur(10px)',
+  color: this.appliedTheme.primaryColor,
+  cursor: 'pointer',
+  fontSize: '15px',
+  fontWeight: '600'
+  };
   }
 
   get pageNumberStyles() {
-    return {
-      color: this.appliedTheme.primaryColor,
-      fontSize: '15px',
-      fontWeight: '700'
-    };
+  return {
+  color: this.appliedTheme.primaryColor,
+  fontSize: '15px',
+  fontWeight: '700'
+  };
   }
 
   get actionButtonGroupStyles() {
-    return {
-      display: 'flex',
-      gap: '9px'
-    };
+  return {
+  display: 'flex',
+  gap: '9px'
+  };
   }
 
   get actionButtonStyles() {
-    return {
-      padding: '5px 10px',
-      border: `1px solid ${this.appliedTheme.primaryColor}`,
-      borderRadius: '3px',
-      backgroundColor: '#ffffff',
-        backdropFilter: 'blur(10px)',
-      color: this.appliedTheme.primaryColor,
-      cursor: 'pointer',
-      fontSize: '12px'
-    };
+  return {
+  padding: '5px 10px',
+  border: `1px solid ${this.appliedTheme.primaryColor}`,
+  borderRadius: '3px',
+  backgroundColor: '#ffffff',
+  backdropFilter: 'blur(10px)',
+  color: this.appliedTheme.primaryColor,
+  cursor: 'pointer',
+  fontSize: '12px'
+  };
   }
 
   get deleteButtonStyles() {
-    return {
-      padding: '5px 10px',
-      border: '1px solid #dc2626',
-      borderRadius: '3px',
-      backgroundColor: '#ffffff',
-        backdropFilter: 'blur(10px)',
-      color: '#dc2626',
-      cursor: 'pointer',
-      fontSize: '12px'
-    };
+  return {
+  padding: '5px 10px',
+  border: '1px solid #dc2626',
+  borderRadius: '3px',
+  backgroundColor: '#ffffff',
+  backdropFilter: 'blur(10px)',
+  color: '#dc2626',
+  cursor: 'pointer',
+  fontSize: '12px'
+  };
   }
 
   get expandedRowStyles() {
-    return {
-      backgroundColor: '#ffffff',
-        backdropFilter: 'blur(10px)'
-    };
+  return {
+  backgroundColor: '#ffffff',
+  backdropFilter: 'blur(10px)'
+  };
   }
 
   get expandedContentStyles() {
-    return {
-      padding: '18px'
-    };
+  return {
+  padding: '18px'
+  };
   }
 
   onSearch() { this.currentPage = 1; }
   onSort(key: string) {
-    if (this.sortKey === key) {
-      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : this.sortDirection === 'desc' ? null : 'asc';
-      if (this.sortDirection === null) this.sortKey = '';
-    } else {
-      this.sortKey = key;
-      this.sortDirection = 'asc';
-    }
+  if (this.sortKey === key) {
+  this.sortDirection = this.sortDirection === 'asc' ? 'desc' : this.sortDirection === 'desc' ? null : 'asc';
+  if (this.sortDirection === null) this.sortKey = '';
+  } else {
+  this.sortKey = key;
+  this.sortDirection = 'asc';
+  }
   }
   getSortIcon(key: string): string {
-    if (this.sortKey !== key) return '⇵';
-    return this.sortDirection === 'asc' ? '⬆' : '⬇';
+  if (this.sortKey !== key) return '⇵';
+  return this.sortDirection === 'asc' ? '⬆' : '⬇';
   }
   getSortDirection(key: string): string | null {
-    if (this.sortKey !== key) return null;
-    return this.sortDirection === 'asc' ? 'ascending' : 'descending';
+  if (this.sortKey !== key) return null;
+  return this.sortDirection === 'asc' ? 'ascending' : 'descending';
   }
   toggleSelect(id: string | number) {
-    if (this.selectedRows.has(id)) {
-      this.selectedRows.delete(id);
-    } else {
-      this.selectedRows.add(id);
-    }
-    this.selectionChange.emit(Array.from(this.selectedRows));
+  if (this.selectedRows.has(id)) {
+  this.selectedRows.delete(id);
+  } else {
+  this.selectedRows.add(id);
+  }
+  this.selectionChange.emit(Array.from(this.selectedRows));
   }
   toggleSelectAll() {
-    if (this.allSelected) {
-      this.paginatedData.forEach(row => this.selectedRows.delete(row.id));
-    } else {
-      this.paginatedData.forEach(row => this.selectedRows.add(row.id));
-    }
-    this.selectionChange.emit(Array.from(this.selectedRows));
+  if (this.allSelected) {
+  this.paginatedData.forEach(row => this.selectedRows.delete(row.id));
+  } else {
+  this.paginatedData.forEach(row => this.selectedRows.add(row.id));
+  }
+  this.selectionChange.emit(Array.from(this.selectedRows));
   }
   isSelected(id: string | number): boolean {
-    return this.selectedRows.has(id);
+  return this.selectedRows.has(id);
   }
   onRowClick(row: TableRow) {
-    if (this.expandable) {
-      if (this.expandedRows.has(row.id)) {
-        this.expandedRows.delete(row.id);
-      } else {
-        this.expandedRows.add(row.id);
-      }
-    }
-    this.rowClick.emit(row);
+  if (this.expandable) {
+  if (this.expandedRows.has(row.id)) {
+  this.expandedRows.delete(row.id);
+  } else {
+  this.expandedRows.add(row.id);
+  }
+  }
+  this.rowClick.emit(row);
   }
   onEdit(row: TableRow) { this.edit.emit(row); }
   onDelete(row: TableRow) { this.delete.emit(row); }
   nextPage() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-    }
+  if (this.currentPage < this.totalPages) {
+  this.currentPage++;
+  }
   }
   previousPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-    }
+  if (this.currentPage > 1) {
+  this.currentPage--;
+  }
   }
 }

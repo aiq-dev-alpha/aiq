@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react';;
 
 export interface ComponentProps {
   theme?: { primary?: string; background?: string; text?: string; };
@@ -10,11 +10,11 @@ export const Component: React.FC<ComponentProps> = ({ theme = {}, className = ''
   const primary = theme.primary || '#8b5cf6';
   const bg = theme.background || '#ffffff';
   return (
-    <div className={className} onClick={() => onInteract?.('click')} style={{ padding: '20px', backgroundColor: bg, border: `1px solid ${primary}20`, borderLeft: `4px solid ${primary}`, borderRadius: '2px', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: primary }} />
-        <span style={{ fontSize: '15px', fontWeight: 500 }}>Item {idx}</span>
-      </div>
-    </div>
+  <div className={className} onClick={() => onInteract?.('click')} style={{ padding: '20px', backgroundColor: bg, border: `1px solid ${primary}20`, borderLeft: `4px solid ${primary}`, borderRadius: '2px', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+  <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: primary }} />
+  <span style={{ fontSize: '15px', fontWeight: 500 }}>Item {idx}</span>
+  </div>
+  </div>
   );
 };

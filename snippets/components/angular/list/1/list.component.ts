@@ -19,69 +19,69 @@ interface ListTheme {
 @Component({
   selector: 'app-list',
   template: `
-    <div class="list-container" [ngStyle]="containerStyles">
-      <div *ngIf="loading" class="skeleton-loader">
-        <div *ngFor="let item of [1,2,3,4,5]" class="skeleton-item fade-pulse"></div>
-      </div>
-      <div *ngIf="!loading" class="list-items">
-        <div *ngFor="let item of items"
-             class="list-item ocean-wave"
-             [class.selected]="isSelected(item)"
-             [ngStyle]="getItemStyles(item)"
-             (click)="onItemClick(item)">
-          <span *ngIf="item.icon" class="item-icon">{{ item.icon }}</span>
-          <span class="item-content">{{ item.content }}</span>
-          <span *ngIf="item.metadata" class="item-metadata">{{ item.metadata }}</span>
-        </div>
-      </div>
-    </div>
+  <div class="list-container" [ngStyle]="containerStyles">
+  <div *ngIf="loading" class="skeleton-loader">
+  <div *ngFor="let item of [1,2,3,4,5]" class="skeleton-item fade-pulse"></div>
+  </div>
+  <div *ngIf="!loading" class="list-items">
+  <div *ngFor="let item of items"
+  class="list-item ocean-wave"
+  [class.selected]="isSelected(item)"
+  [ngStyle]="getItemStyles(item)"
+  (click)="onItemClick(item)">
+  <span *ngIf="item.icon" class="item-icon">{{ item.icon }}</span>
+  <span class="item-content">{{ item.content }}</span>
+  <span *ngIf="item.metadata" class="item-metadata">{{ item.metadata }}</span>
+  </div>
+  </div>
+  </div>
   `,
   styles: [`
-    .list-container { width: 100%; }
-    .list-items { display: flex; flex-direction: column; gap: 8px; }
-    .list-item {
-      padding: 16px;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      border-radius: 12px;
-      position: relative;
-      overflow: hidden;
-    }
-    .list-item::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      height: 100%;
-      width: 4px;
-      background: linear-gradient(180deg, #0ea5e9, #06b6d4);
-      transform: scaleY(0);
-      transition: transform 0.3s ease;
-    }
-    .list-item:hover::before { transform: scaleY(1); }
-    .ocean-wave:hover {
-      transform: translateX(8px);
-      box-shadow: 0 8px 24px rgba(14, 165, 233, 0.2);
-    }
-    .item-icon { font-size: 1.5rem; flex-shrink: 0; }
-    .item-content { flex: 1; font-weight: 500; }
-    .item-metadata { font-size: 0.875rem; opacity: 0.7; }
-    .selected { box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3); }
-    .skeleton-loader { display: flex; flex-direction: column; gap: 8px; }
-    .skeleton-item {
-      height: 60px;
-      border-radius: 12px;
-      background: linear-gradient(90deg, #e0f2fe 25%, #bae6fd 50%, #e0f2fe 75%);
-      background-size: 200% 100%;
-    }
-    @keyframes fade-pulse {
-      0%, 100% { opacity: 0.6; }
-      50% { opacity: 1; }
-    }
-    .fade-pulse { animation: fade-pulse 2s ease-in-out infinite; }
+  .list-container { width: 100%; }
+  .list-items { display: flex; flex-direction: column; gap: 8px; }
+  .list-item {
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  }
+  .list-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background: linear-gradient(180deg, #0ea5e9, #06b6d4);
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
+  }
+  .list-item:hover::before { transform: scaleY(1); }
+  .ocean-wave:hover {
+  transform: translateX(8px);
+  box-shadow: 0 8px 24px rgba(14, 165, 233, 0.2);
+  }
+  .item-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .item-content { flex: 1; font-weight: 500; }
+  .item-metadata { font-size: 0.875rem; opacity: 0.7; }
+  .selected { box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3); }
+  .skeleton-loader { display: flex; flex-direction: column; gap: 8px; }
+  .skeleton-item {
+  height: 60px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #e0f2fe 25%, #bae6fd 50%, #e0f2fe 75%);
+  background-size: 200% 100%;
+  }
+  @keyframes fade-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+  }
+  .fade-pulse { animation: fade-pulse 2s ease-in-out infinite; }
   `]
 })
 export class ListComponent {
@@ -97,56 +97,56 @@ export class ListComponent {
   selectedItems: Set<string | number> = new Set();
 
   private defaultTheme: ListTheme = {
-    primaryColor: '#0ea5e9',
-    secondaryColor: '#06b6d4',
-    backgroundColor: '#ffffff',
-        backdropFilter: 'blur(10px)',
-    textColor: '#0f172a',
-    borderColor: '#e0f2fe',
-    hoverColor: '#f0f9ff'
+  primaryColor: '#0ea5e9',
+  secondaryColor: '#06b6d4',
+  backgroundColor: '#ffffff',
+  backdropFilter: 'blur(10px)',
+  textColor: '#0f172a',
+  borderColor: '#e0f2fe',
+  hoverColor: '#f0f9ff'
   };
 
   get appliedTheme(): ListTheme {
-    return { ...this.defaultTheme, ...this.theme };
+  return { ...this.defaultTheme, ...this.theme };
   }
 
   get containerStyles() {
-    return {
-      backgroundColor: this.appliedTheme.backgroundColor,
-      color: this.appliedTheme.textColor,
-      padding: '16px',
-      borderRadius: '16px'
-    };
+  return {
+  backgroundColor: this.appliedTheme.backgroundColor,
+  color: this.appliedTheme.textColor,
+  padding: '16px',
+  borderRadius: '16px'
+  };
   }
 
   getItemStyles(item: ListItem) {
-    return {
-      backgroundColor: this.isSelected(item) ? this.appliedTheme.hoverColor : 'transparent',
-      border: `2px solid ${this.appliedTheme.borderColor}`,
-      color: this.appliedTheme.textColor
-    };
+  return {
+  backgroundColor: this.isSelected(item) ? this.appliedTheme.hoverColor : 'transparent',
+  border: `2px solid ${this.appliedTheme.borderColor}`,
+  color: this.appliedTheme.textColor
+  };
   }
 
   isSelected(item: ListItem): boolean {
-    return this.selectedItems.has(item.id);
+  return this.selectedItems.has(item.id);
   }
 
   onItemClick(item: ListItem) {
-    this.itemClicked.emit(item);
-    if (this.selectable) {
-      if (this.multiSelect) {
-        if (this.selectedItems.has(item.id)) {
-          this.selectedItems.delete(item.id);
-        } else {
-          this.selectedItems.add(item.id);
-        }
-      } else {
-        this.selectedItems.clear();
-        this.selectedItems.add(item.id);
-      }
-      this.selectionChanged.emit(Array.from(this.selectedItems).map(id =>
-        this.items.find(i => i.id === id)!
-      ));
-    }
+  this.itemClicked.emit(item);
+  if (this.selectable) {
+  if (this.multiSelect) {
+  if (this.selectedItems.has(item.id)) {
+  this.selectedItems.delete(item.id);
+  } else {
+  this.selectedItems.add(item.id);
+  }
+  } else {
+  this.selectedItems.clear();
+  this.selectedItems.add(item.id);
+  }
+  this.selectionChanged.emit(Array.from(this.selectedItems).map(id =>
+  this.items.find(i => i.id === id)!
+  ));
+  }
   }
 }

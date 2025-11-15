@@ -6,10 +6,10 @@ class CustomBadge extends StatefulWidget {
   final Color? borderColor;
 
   const CustomBadge({
-    Key? key,
-    this.child,
-    this.onTap,
-    this.borderColor,
+  Key? key,
+  this.child,
+  this.onTap,
+  this.borderColor,
   }) : super(key: key);
 
   @override
@@ -21,27 +21,27 @@ class _CustomBadgeState extends State<CustomBadge> {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-            color: _isHovered
-                ? (widget.borderColor ?? Theme.of(context).primaryColor).withOpacity(0.1)
-                : Colors.transparent,
-            border: Border.all(
-              color: widget.borderColor ?? Theme.of(context).primaryColor,
-              width: 2,
-            ),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: widget.child ?? const Text('Component'),
-        ),
-      ),
-    );
+  return MouseRegion(
+  onEnter: (_) => setState(() => _isHovered = true),
+  onExit: (_) => setState(() => _isHovered = false),
+  child: GestureDetector(
+  onTap: widget.onTap,
+  child: AnimatedContainer(
+  duration: const Duration(milliseconds: 200),
+  padding: const EdgeInsets.all(18),
+  decoration: BoxDecoration(
+  color: _isHovered
+  ? (widget.borderColor ?? Theme.of(context).primaryColor).withOpacity(0.1)
+  : Colors.transparent,
+  border: Border.all(
+  color: widget.borderColor ?? Theme.of(context).primaryColor,
+  width: 2,
+  ),
+  borderRadius: BorderRadius.circular(12),
+  ),
+  child: widget.child ?? const Text('Component'),
+  ),
+  ),
+  );
   }
 }

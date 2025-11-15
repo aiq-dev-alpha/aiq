@@ -1,75 +1,52 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  label?: string;
-  count?: number;
-  onRemove?: () => void;
-  theme?: { primary?: string; background?: string; text?: string };
+  theme?: {
+  primary?: string;
+  background?: string;
+  text?: string;
+  };
   className?: string;
+  onInteract?: (type: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  label = 'Filter',
-  count = 0,
-  onRemove,
   theme = {},
-  className = ''
+  className = '',
+  onInteract
 }) => {
-  const [isActive, setIsActive] = useState(true);
-  const primary = theme.primary || '#3b82f6';
+  const [state, setState] = useState({ active: false, hovered: false });
 
-  if (!isActive) return null;
+  const primary = theme.primary || 'hsl(0, 70%, 50%)';
+  const background = theme.background || '#ffffff';
+  const text = theme.text || '#1f2937';
 
   return (
-    <div
-      className={className}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '8px',
-        padding: '6px 12px',
-        backgroundColor: `${primary}15`,
-        border: `1px solid ${primary}`,
-        borderRadius: '20px',
-        fontSize: '14px',
-        color: primary,
-        fontWeight: '500'
-      }}
-    >
-      <span>{label}</span>
-      {count > 0 && (
-        <span
-          style={{
-            backgroundColor: primary,
-            color: '#fff',
-            borderRadius: '10px',
-            padding: '2px 6px',
-            fontSize: '12px',
-            fontWeight: '600'
-          }}
-        >
-          {count}
-        </span>
-      )}
-      <button
-        onClick={() => {
-          setIsActive(false);
-          onRemove?.();
-        }}
-        style={{
-          background: 'none',
-          border: 'none',
-          color: primary,
-          cursor: 'pointer',
-          padding: '0',
-          display: 'flex',
-          alignItems: 'center',
-          fontSize: '18px',
-          lineHeight: '1'
-        }}
-      >
-        ×
-      </button>
-    </div>
+  <div
+  className={className}
+  onClick={() => {
+  setState(s => ({ ...s, active: !s.active }));
+  onInteract?.('interact');
+  }}
+  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
+  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
+  style={{
+  padding: '16px',
+  backgroundColor: state.active ? primary : background,
+  color: state.active ? '#fff' : text,
+  borderRadius: '8px',
+  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
+  boxShadow: state.hovered
+  ? '0 8px 16px rgba(0,0,0,0.12)'
+  : '0 2px 4px rgba(0,0,0,0.06)',
+  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
+  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
+  cursor: 'pointer',
+  fontWeight: state.active ? 600 : 500,
+  userSelect: 'none'
+  }}
+  >
+  Chip - minimal style
+  </div>
   );
 };

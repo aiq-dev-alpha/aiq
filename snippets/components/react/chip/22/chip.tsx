@@ -1,51 +1,52 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  label?: string;
-  selected?: boolean;
-  onToggle?: (selected: boolean) => void;
-  theme?: { primary?: string; background?: string; text?: string };
+  theme?: {
+  primary?: string;
+  background?: string;
+  text?: string;
+  };
   className?: string;
+  onInteract?: (type: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  label = 'Choice',
-  selected: initialSelected = false,
-  onToggle,
   theme = {},
-  className = ''
+  className = '',
+  onInteract
 }) => {
-  const [selected, setSelected] = useState(initialSelected);
-  const primary = theme.primary || '#8b5cf6';
+  const [state, setState] = useState({ active: false, hovered: false });
 
-  const handleClick = () => {
-    const newSelected = !selected;
-    setSelected(newSelected);
-    onToggle?.(newSelected);
-  };
+  const primary = theme.primary || 'hsl(0, 70%, 50%)';
+  const background = theme.background || '#ffffff';
+  const text = theme.text || '#1f2937';
 
   return (
-    <button
-      className={className}
-      onClick={handleClick}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '8px',
-        padding: '8px 16px',
-        backgroundColor: selected ? primary : '#fff',
-        color: selected ? '#fff' : '#374151',
-        border: selected ? 'none' : '1px solid #d1d5db',
-        borderRadius: '24px',
-        fontSize: '14px',
-        fontWeight: '500',
-        cursor: 'pointer',
-        transition: 'all 0.2s',
-        boxShadow: selected ? '0 2px 8px rgba(0,0,0,0.15)' : 'none'
-      }}
-    >
-      {selected && <span style={{ fontSize: '16px' }}>✓</span>}
-      <span>{label}</span>
-    </button>
+  <div
+  className={className}
+  onClick={() => {
+  setState(s => ({ ...s, active: !s.active }));
+  onInteract?.('interact');
+  }}
+  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
+  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
+  style={{
+  padding: '12px',
+  backgroundColor: state.active ? primary : background,
+  color: state.active ? '#fff' : text,
+  borderRadius: '4px',
+  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
+  boxShadow: state.hovered
+  ? '0 8px 16px rgba(0,0,0,0.12)'
+  : '0 2px 4px rgba(0,0,0,0.06)',
+  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
+  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
+  cursor: 'pointer',
+  fontWeight: state.active ? 600 : 500,
+  userSelect: 'none'
+  }}
+  >
+  Chip - minimal style
+  </div>
   );
 };

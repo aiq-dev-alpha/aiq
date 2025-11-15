@@ -1,49 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  theme?: {
+  primary?: string;
+  background?: string;
+  text?: string;
+  };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const primary = theme.primary || '#3b82f6';
-  const bg = theme.background || '#ffffff';
+export const Component: React.FC<ComponentProps> = ({
+  theme = {},
+  className = '',
+  onInteract
+}) => {
+  const [state, setState] = useState({ active: false, hovered: false });
+
+  const primary = theme.primary || 'hsl(0, 70%, 50%)';
+  const background = theme.background || '#ffffff';
+  const text = theme.text || '#1f2937';
 
   return (
-    <div
-      className={className}
-      onClick={() => onInteract?.('click')}
-      style={{
-        padding: '20px 24px',
-        backgroundColor: bg,
-        border: `1px solid ${primary}30`,
-        borderLeft: `6px solid ${primary}`,
-        borderRadius: '10px',
-        cursor: 'pointer',
-        boxShadow: '0 3px 10px rgba(0,0,0,0.08)',
-        transition: 'transform 200ms, box-shadow 200ms'
-      }}
-      onMouseEnter={e => { e.currentTarget.style.transform = 'translateX(4px)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.12)'; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.boxShadow = '0 3px 10px rgba(0,0,0,0.08)'; }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-        <div style={{
-          width: '16px',
-          height: '16px',
-          borderRadius: '50%',
-          backgroundColor: primary,
-          boxShadow: `0 0 0 4px ${primary}20`
-        }} />
-        <div>
-          <div style={{ fontSize: '16px', fontWeight: 600, color: '#1f2937', marginBottom: '4px' }}>
-            Item Title {idx}
-          </div>
-          <div style={{ fontSize: '13px', color: '#6b7280' }}>
-            Description text
-          </div>
-        </div>
-      </div>
-    </div>
+  <div
+  className={className}
+  onClick={() => {
+  setState(s => ({ ...s, active: !s.active }));
+  onInteract?.('interact');
+  }}
+  onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
+  onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
+  style={{
+  padding: '16px',
+  backgroundColor: state.active ? primary : background,
+  color: state.active ? '#fff' : text,
+  borderRadius: '8px',
+  border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
+  boxShadow: state.hovered
+  ? '0 8px 16px rgba(0,0,0,0.12)'
+  : '0 2px 4px rgba(0,0,0,0.06)',
+  transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
+  transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
+  cursor: 'pointer',
+  fontWeight: state.active ? 600 : 500,
+  userSelect: 'none'
+  }}
+  >
+  Datepicker - minimal style
+  </div>
   );
 };

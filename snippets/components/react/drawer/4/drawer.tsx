@@ -13,23 +13,23 @@ export const Component: React.FC<ComponentProps> = ({ theme = {}, className = ''
   const text = theme.text || '#1f2937';
 
   return (
-    <div
-      className={className}
-      onClick={() => { setActive(!active); onInteract?.('interact'); }}
-      style={{
-        padding: '16px 24px',
-        backgroundColor: active ? primary : background,
-        color: active ? '#ffffff' : text,
-        border: `2px solid ${primary}`,
-        borderRadius: '16px',
-        cursor: 'pointer',
-        fontSize: '15px',
-        fontWeight: 500,
-        transition: 'all 200ms ease',
-        boxShadow: active ? '0 4px 12px rgba(0,0,0,0.15)' : '0 2px 6px rgba(0,0,0,0.08)'
-      }}
-    >
-      Drawer Variant 4
-    </div>
+  <div
+  className={className}
+  onClick={() => { setActive(!active); onInteract?.('interact'); }}
+  style={{
+  padding: '16px 24px',
+  backgroundColor: active ? primary : background,
+  color: active ? '#ffffff' : text,
+  border: `2px solid ${primary}`,
+  borderRadius: '16px',
+  cursor: 'pointer',
+  fontSize: '15px',
+  fontWeight: 500,
+  transition: 'all 200ms ease',
+  boxShadow: active ? '0 4px 12px rgba(0,0,0,0.15)' : '0 2px 6px rgba(0,0,0,0.08)'
+  }}
+  >
+  Drawer Variant 4
+  </div>
   );
 };

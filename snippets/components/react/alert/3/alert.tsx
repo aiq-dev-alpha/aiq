@@ -1,29 +1,31 @@
 import React, { useState } from 'react';
 
-interface AlertProps {
+export interface ComponentProps {
   type?: 'info' | 'success' | 'warning' | 'error';
   title?: string;
-  message: string;
+  message?: string;
   dismissible?: boolean;
   onDismiss?: () => void;
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
 }
 
-export default function Alert({ 
-  type = 'info', 
-  title, 
-  message, 
-  dismissible = false, 
+export const Component: React.FC<ComponentProps> = ({
+  type = 'info',
+  title = 'Alert',
+  message = 'This is an alert message',
+  dismissible = false,
   onDismiss,
-  className = '' 
-}: AlertProps) {
+  theme = {},
+  className = ''
+}) => {
   const [isVisible, setIsVisible] = useState(true);
 
   const typeConfig = {
-    info: { bg: 'bg-blue-50', border: 'border-blue-400', text: 'text-blue-800', icon: 'ℹ️' },
-    success: { bg: 'bg-green-50', border: 'border-green-400', text: 'text-green-800', icon: '✓' },
-    warning: { bg: 'bg-yellow-50', border: 'border-yellow-400', text: 'text-yellow-800', icon: '⚠' },
-    error: { bg: 'bg-red-50', border: 'border-red-400', text: 'text-red-800', icon: '✕' },
+    info: { bg: '#dbeafe', border: '#3b82f6', text: '#1e40af', icon: 'ℹ' },
+    success: { bg: '#d1fae5', border: '#10b981', text: '#065f46', icon: '✓' },
+    warning: { bg: '#fef3c7', border: '#f59e0b', text: '#92400e', icon: '⚠' },
+    error: { bg: '#fee2e2', border: '#ef4444', text: '#991b1b', icon: '✕' }
   };
 
   const config = typeConfig[type];
@@ -37,27 +39,43 @@ export default function Alert({
 
   return (
     <div
-      className={`${config.bg} ${config.border} border-l-4 p-4 rounded-r-lg shadow-md transition-all duration-300 ${
-        isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-full'
-      } ${className}`}
+      className={className}
+      style={{
+        backgroundColor: config.bg,
+        borderLeft: `4px solid ${config.border}`,
+        color: config.text,
+        padding: '16px',
+        borderRadius: '0 8px 8px 0',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        display: 'flex',
+        alignItems: 'flex-start',
+        gap: '12px',
+        transition: 'all 0.3s ease'
+      }}
     >
-      <div className="flex items-start">
-        <span className="text-2xl mr-3">{config.icon}</span>
-        <div className="flex-1">
-          {title && <h3 className={`font-bold ${config.text} mb-1`}>{title}</h3>}
-          <p className={config.text}>{message}</p>
-        </div>
-        {dismissible && (
-          <button
-            onClick={handleDismiss}
-            className={`ml-4 ${config.text} hover:opacity-70 transition-opacity`}
-          >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-            </svg>
-          </button>
-        )}
+      <span style={{ fontSize: '20px', fontWeight: '700' }}>{config.icon}</span>
+      <div style={{ flex: 1 }}>
+        {title && <h3 style={{ fontWeight: '700', marginBottom: '4px', fontSize: '15px' }}>{title}</h3>}
+        <p style={{ fontSize: '14px', margin: 0 }}>{message}</p>
       </div>
+      {dismissible && (
+        <button
+          onClick={handleDismiss}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: config.text,
+            cursor: 'pointer',
+            fontSize: '20px',
+            padding: '0',
+            opacity: 0.7
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+          onMouseLeave={(e) => e.currentTarget.style.opacity = '0.7'}
+        >
+          ×
+        </button>
+      )}
     </div>
   );
-}
+};
