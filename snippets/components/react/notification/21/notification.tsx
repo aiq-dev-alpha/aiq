@@ -1,43 +1,51 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [state, setState] = useState(false);
-  const [hovered, setHovered] = useState(false);
-  const primary = theme.primary || '#6366f1';
-  const bg = theme.background || '#ffffff';
-  
+export const Component: React.FC<ComponentProps> = ({
+  theme = {},
+  className = '',
+  onInteract
+}) => {
+  const [state, setState] = useState({ active: false, hovered: false });
+
+  const primary = theme.primary || '#10b981';
+  const background = theme.background || '#ffffff';
+  const text = theme.text || '#1f2937';
+
   return (
     <div
       className={className}
-      onClick={() => { setState(!state); onInteract?.('notification_click'); }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onClick={() => {
+        setState(s => ({ ...s, active: !s.active }));
+        onInteract?.('interact');
+      }}
+      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
+      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
       style={{
-        padding: '22px 35px',
-        background: state ? primary : bg,
-        color: state ? '#ffffff' : primary,
-        border: `2px solid ${hovered ? primary : primary + '50'}`,
-        borderRadius: '13px',
-        fontSize: '15px',
-        fontWeight: 600,
+        padding: '6px 12px',
+        backgroundColor: state.active ? primary : background,
+        color: state.active ? '#fff' : text,
+        borderRadius: '10px',
+        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
+        boxShadow: state.hovered ? '0 6px 12px rgba(0,0,0,0.12)' : '0 1px 2px rgba(0,0,0,0.05)',
+        transform: state.hovered ? 'translateY(-4px)' : 'translateY(0) scale(1)',
+        transition: `all 100ms cubic-bezier(0.4, 0, 0.2, 1)`,
         cursor: 'pointer',
-        transition: 'all 460ms cubic-bezier(0.34, 1.56, 0.64, 1)',
-        transform: hovered ? 'translateY(-3px) scale(1.22)' : 'translateY(0) scale(1)',
-        boxShadow: hovered ? `0 13px 25px ${primary}31` : '0 2px 8px rgba(0,0,0,0.08)',
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '8px',
-        userSelect: 'none'
+        fontSize: '13px',
+        fontWeight: 500,
+        userSelect: 'none' as const
       }}
     >
-      <span>Notification 21</span>
-      {state && <span style={{ fontSize: '12px', opacity: 0.9 }}>✓</span>}
+      notification - variant 21
     </div>
   );
 };

@@ -15,21 +15,21 @@ interface Theme {
       (click)="handleClick()"
       (mouseenter)="hovered = true"
       (mouseleave)="hovered = false"
-      class="list-container">
+      class="container">
       <ng-content></ng-content>
       <span *ngIf="active" class="indicator">✓</span>
     </div>
   `,
   styles: [`
-    .list-container {
+    .container {
       cursor: pointer;
-      transition: all 430ms cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 350ms cubic-bezier(0.4, 0, 0.2, 1);
       user-select: none;
       position: relative;
     }
     .indicator {
-      margin-left: 8px;
-      opacity: 0.8;
+      margin-left: 6px;
+      opacity: 0.7999999999999999;
       font-size: 14px;
     }
   `]
@@ -43,7 +43,7 @@ export class ListComponent {
   hovered = false;
 
   private defaultTheme: Theme = {
-    primaryColor: '#22c55e',
+    primaryColor: '#f97316',
     backgroundColor: '#ffffff',
     textColor: '#1f2937',
     borderColor: '#e5e7eb'
@@ -55,19 +55,20 @@ export class ListComponent {
 
   get styles() {
     const t = this.appliedTheme;
+    const borderWidth = this.hovered ? 3 : 1;
     return {
-      padding: '14px 28px',
+      padding: '10px 16px',
       background: this.active ? t.primaryColor : t.backgroundColor,
       color: this.active ? '#ffffff' : t.textColor,
-      border: `2px solid ${this.hovered ? t.primaryColor : t.borderColor}`,
-      borderRadius: '8px',
-      fontSize: '16px',
-      fontWeight: 500,
-      boxShadow: this.hovered ? `0 10px 22px ${t.primaryColor}40` : '0 2px 8px rgba(0,0,0,0.08)',
-      transform: this.hovered ? 'translateY(-4px)' : 'translateY(0)',
+      border: `${borderWidth}px solid ${this.hovered ? t.primaryColor : t.borderColor}`,
+      borderRadius: '16px',
+      fontSize: '17px',
+      fontWeight: 700,
+      boxShadow: this.hovered ? `0 8px 28px ${t.primaryColor}30` : '0 2px 6px rgba(0,0,0,0.08)',
+      transform: this.hovered ? 'translateY(-2px)' : 'translateY(0)',
       display: 'inline-flex',
       alignItems: 'center',
-      gap: '8px'
+      gap: '6px'
     };
   }
 

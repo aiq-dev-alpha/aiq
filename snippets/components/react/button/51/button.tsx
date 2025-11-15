@@ -1,34 +1,51 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [state, setState] = useState(false);
-  const primary = theme.primary || '#f97316';
-  
+export const Component: React.FC<ComponentProps> = ({
+  theme = {},
+  className = '',
+  onInteract
+}) => {
+  const [state, setState] = useState({ active: false, hovered: false });
+
+  const primary = theme.primary || '#10b981';
+  const background = theme.background || '#ffffff';
+  const text = theme.text || '#1f2937';
+
   return (
-    <button
+    <div
       className={className}
-      onClick={() => { setState(!state); onInteract?.('double_border'); }}
+      onClick={() => {
+        setState(s => ({ ...s, active: !s.active }));
+        onInteract?.('interact');
+      }}
+      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
+      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
       style={{
-        padding: '14px 32px',
-        background: primary,
-        color: '#fff',
-        border: 'none',
-        borderRadius: '10px',
-        fontSize: '16px',
-        fontWeight: 700,
+        padding: '10px 20px',
+        backgroundColor: state.active ? primary : background,
+        color: state.active ? '#fff' : text,
+        borderRadius: '20px',
+        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
+        boxShadow: state.hovered ? '0 10px 20px rgba(0,0,0,0.18)' : '0 4px 8px rgba(0,0,0,0.10)',
+        transform: state.hovered ? 'translateY(-4px)' : 'translateY(0) scale(1)',
+        transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
         cursor: 'pointer',
-        transition: 'all 350ms cubic-bezier(0.68, -0.55, 0.265, 1.55)',
-        transform: 'scale(1)',
-        outline: 'none'
+        fontSize: '15px',
+        fontWeight: 500,
+        userSelect: 'none' as const
       }}
     >
-      Double Border
-    </button>
+      button - variant 51
+    </div>
   );
 };

@@ -1,43 +1,51 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [state, setState] = useState(false);
-  const [hovered, setHovered] = useState(false);
-  const primary = theme.primary || '#ef4444';
-  const bg = theme.background || '#ffffff';
-  
+export const Component: React.FC<ComponentProps> = ({
+  theme = {},
+  className = '',
+  onInteract
+}) => {
+  const [state, setState] = useState({ active: false, hovered: false });
+
+  const primary = theme.primary || '#8b5cf6';
+  const background = theme.background || '#ffffff';
+  const text = theme.text || '#1f2937';
+
   return (
     <div
       className={className}
-      onClick={() => { setState(!state); onInteract?.('chip_click'); }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onClick={() => {
+        setState(s => ({ ...s, active: !s.active }));
+        onInteract?.('interact');
+      }}
+      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
+      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
       style={{
-        padding: '24px 38px',
-        background: state ? primary : bg,
-        color: state ? '#ffffff' : primary,
-        border: `2px solid ${hovered ? primary : primary + '50'}`,
-        borderRadius: '14px',
-        fontSize: '16px',
-        fontWeight: 700,
+        padding: '8px 16px',
+        backgroundColor: state.active ? primary : background,
+        color: state.active ? '#fff' : text,
+        borderRadius: '12px',
+        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
+        boxShadow: state.hovered ? '0 8px 16px rgba(0,0,0,0.15)' : '0 2px 4px rgba(0,0,0,0.08)',
+        transform: state.hovered ? 'scale(1.05)' : 'translateY(0) scale(1)',
+        transition: `all 150ms cubic-bezier(0.4, 0, 0.2, 1)`,
         cursor: 'pointer',
-        transition: 'all 470ms cubic-bezier(0.34, 1.56, 0.64, 1)',
-        transform: hovered ? 'translateY(-4px) scale(1.32)' : 'translateY(0) scale(1)',
-        boxShadow: hovered ? `0 14px 26px ${primary}32` : '0 2px 8px rgba(0,0,0,0.08)',
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '8px',
-        userSelect: 'none'
+        fontSize: '14px',
+        fontWeight: 600,
+        userSelect: 'none' as const
       }}
     >
-      <span>Chip 22</span>
-      {state && <span style={{ fontSize: '12px', opacity: 0.9 }}>✓</span>}
+      chip - variant 22
     </div>
   );
 };

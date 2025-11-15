@@ -1,78 +1,83 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
-interface Theme {
-  primaryColor: string;
-  backgroundColor: string;
-  textColor: string;
-  borderColor: string;
+interface NavLink {
+  text: string;
+  url: string;
+  icon?: string;
 }
 
 @Component({
   selector: 'app-navbar',
   template: `
-    <div
-      [ngStyle]="styles"
-      (click)="handleClick()"
-      (mouseenter)="hovered = true"
-      (mouseleave)="hovered = false"
-      class="navbar-container">
-      <ng-content></ng-content>
-      <span *ngIf="active" class="indicator">✓</span>
-    </div>
+    <header class="header">
+      <div class="container">
+        <div class="logo">
+          <img *ngIf="logoUrl" [src]="logoUrl" alt="Logo" class="logo-img" />
+          <span class="logo-text">{{ title }}</span>
+        </div>
+        <nav class="navigation">
+          <a *ngFor="let link of links"
+             [href]="link.url"
+             class="nav-link">
+            <span *ngIf="link.icon">{{ link.icon }}</span>
+            {{ link.text }}
+          </a>
+        </nav>
+      </div>
+    </header>
   `,
   styles: [`
-    .navbar-container {
-      cursor: pointer;
-      transition: all 480ms cubic-bezier(0.4, 0, 0.2, 1);
-      user-select: none;
-      position: relative;
+    .header {
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
-    .indicator {
-      margin-left: 8px;
-      opacity: 0.8;
-      font-size: 14px;
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-img {
+      height: 40px;
+      width: auto;
+    }
+    .logo-text {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1f2937;
+    }
+    .navigation {
+      display: flex;
+      gap: 8px;
+    }
+    .nav-link {
+      padding: 8px 16px;
+      color: #6b7280;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: all 150ms;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-link:hover {
+      background-color: #f3f4f6;
+      color: #3b82f6;
     }
   `]
 })
 export class NavbarComponent {
-  @Input() theme: Partial<Theme> = {};
-  @Input() variant = 'default';
-  @Output() interact = new EventEmitter<string>();
-
-  active = false;
-  hovered = false;
-
-  private defaultTheme: Theme = {
-    primaryColor: '#f59e0b',
-    backgroundColor: '#ffffff',
-    textColor: '#1f2937',
-    borderColor: '#e5e7eb'
-  };
-
-  get appliedTheme(): Theme {
-    return { ...this.defaultTheme, ...this.theme };
-  }
-
-  get styles() {
-    const t = this.appliedTheme;
-    return {
-      padding: '19px 23px',
-      background: this.active ? t.primaryColor : t.backgroundColor,
-      color: this.active ? '#ffffff' : t.textColor,
-      border: `3px solid ${this.hovered ? t.primaryColor : t.borderColor}`,
-      borderRadius: '13px',
-      fontSize: '17px',
-      fontWeight: 700,
-      boxShadow: this.hovered ? `0 15px 27px ${t.primaryColor}40` : '0 2px 8px rgba(0,0,0,0.08)',
-      transform: this.hovered ? 'translateY(-5px)' : 'translateY(0)',
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '8px'
-    };
-  }
-
-  handleClick(): void {
-    this.active = !this.active;
-    this.interact.emit('navbar_v23');
-  }
+  @Input() title = 'App';
+  @Input() logoUrl = '';
+  @Input() links: NavLink[] = [];
 }

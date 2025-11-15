@@ -1,34 +1,55 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  label?: string;
+  gradient?: boolean;
+  theme?: { primary?: string; secondary?: string; text?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  onClick?: () => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [state, setState] = useState(false);
-  const primary = theme.primary || '#f59e0b';
-  
+export const Component: React.FC<ComponentProps> = ({
+  label = 'Button',
+  gradient = true,
+  theme = {},
+  className = '',
+  onClick
+}) => {
+  const [isActive, setIsActive] = useState(false);
+
+  const primary = theme.primary || '#8b5cf6';
+  const secondary = theme.secondary || '#ec4899';
+  const text = theme.text || '#ffffff';
+
   return (
     <button
       className={className}
-      onClick={() => { setState(!state); onInteract?.('long_press'); }}
+      onClick={() => {
+        setIsActive(!isActive);
+        onClick?.();
+      }}
       style={{
-        padding: '14px 32px',
-        background: primary,
-        color: '#fff',
+        padding: '14px 36px',
+        background: gradient 
+          ? `linear-gradient(135deg, ${primary}, ${secondary})`
+          : primary,
+        color: text,
         border: 'none',
-        borderRadius: '10px',
+        borderRadius: '50px',
         fontSize: '16px',
         fontWeight: 700,
         cursor: 'pointer',
-        transition: 'all 300ms cubic-bezier(0.34, 1.56, 0.64, 1)',
-        transform: state ? 'scale(1.05)' : 'scale(1)',
-        outline: 'none'
+        boxShadow: isActive 
+          ? `0 0 0 4px ${primary}40, 0 8px 16px rgba(0,0,0,0.2)`
+          : '0 4px 12px rgba(0,0,0,0.15)',
+        transform: isActive ? 'translateY(0)' : 'translateY(-1px)',
+        transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+        outline: 'none',
+        letterSpacing: '0.5px',
+        textTransform: 'uppercase' as const
       }}
     >
-      Long Press
+      {label}
     </button>
   );
 };

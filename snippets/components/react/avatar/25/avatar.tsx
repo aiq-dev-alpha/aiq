@@ -1,34 +1,51 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [active, setActive] = useState(false);
-  const primary = theme.primary || '#14b8a6';
-  
+export const Component: React.FC<ComponentProps> = ({
+  theme = {},
+  className = '',
+  onInteract
+}) => {
+  const [state, setState] = useState({ active: false, hovered: false });
+
+  const primary = theme.primary || '#ec4899';
+  const background = theme.background || '#ffffff';
+  const text = theme.text || '#1f2937';
+
   return (
     <div
       className={className}
-      onClick={() => { setActive(!active); onInteract?.('avatar'); }}
+      onClick={() => {
+        setState(s => ({ ...s, active: !s.active }));
+        onInteract?.('interact');
+      }}
+      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
+      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
       style={{
-        padding: '12px 20px',
-        background: active ? primary : `${primary}20`,
-        color: active ? '#ffffff' : primary,
-        border: `2px solid ${active ? primary : primary + '40'}`,
-        borderRadius: '12px',
-        fontSize: '14px',
-        fontWeight: 600,
+        padding: '14px 28px',
+        backgroundColor: state.active ? primary : background,
+        color: state.active ? '#fff' : text,
+        borderRadius: '24px',
+        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
+        boxShadow: state.hovered ? '0 1px 2px rgba(0,0,0,0.05)' : '0 8px 16px rgba(0,0,0,0.15)',
+        transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
+        transition: `all 300ms cubic-bezier(0.4, 0, 0.2, 1)`,
         cursor: 'pointer',
-        transition: 'all 280ms cubic-bezier(0.34, 1.56, 0.64, 1)',
-        display: 'inline-block',
-        userSelect: 'none'
+        fontSize: '17px',
+        fontWeight: 400,
+        userSelect: 'none' as const
       }}
     >
-      Avatar 25
+      avatar - variant 25
     </div>
   );
 };

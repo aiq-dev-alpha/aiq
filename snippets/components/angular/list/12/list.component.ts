@@ -1,78 +1,63 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
-interface Theme {
-  primaryColor: string;
-  backgroundColor: string;
-  textColor: string;
-  borderColor: string;
+interface ListItem {
+  id: string;
+  label: string;
+  selected?: boolean;
 }
 
 @Component({
   selector: 'app-list',
   template: `
-    <div
-      [ngStyle]="styles"
-      (click)="handleClick()"
-      (mouseenter)="hovered = true"
-      (mouseleave)="hovered = false"
-      class="list-container">
-      <ng-content></ng-content>
-      <span *ngIf="active" class="indicator">✓</span>
-    </div>
+    <ul class="list-container">
+      <li *ngFor="let item of items"
+          [class.selected]="item.selected"
+          (click)="onItemClick(item)"
+          class="list-item">
+        <span class="item-icon">{{ item.selected ? '✓' : '○' }}</span>
+        <span class="item-label">{{ item.label }}</span>
+      </li>
+    </ul>
   `,
   styles: [`
     .list-container {
-      cursor: pointer;
-      transition: all 370ms cubic-bezier(0.4, 0, 0.2, 1);
-      user-select: none;
-      position: relative;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-width: 400px;
     }
-    .indicator {
-      margin-left: 8px;
-      opacity: 0.8;
-      font-size: 14px;
+    .list-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid #e5e7eb;
+      transition: background-color 200ms;
+    }
+    .list-item:hover {
+      background-color: #f3f4f6;
+    }
+    .list-item.selected {
+      background-color: #dbeafe;
+    }
+    .item-icon {
+      color: #3b82f6;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .item-label {
+      flex: 1;
+      color: #1f2937;
+      font-size: 16px;
     }
   `]
 })
 export class ListComponent {
-  @Input() theme: Partial<Theme> = {};
-  @Input() variant = 'default';
-  @Output() interact = new EventEmitter<string>();
+  @Input() items: ListItem[] = [];
+  @Output() itemClick = new EventEmitter<ListItem>();
 
-  active = false;
-  hovered = false;
-
-  private defaultTheme: Theme = {
-    primaryColor: '#8b5cf6',
-    backgroundColor: '#ffffff',
-    textColor: '#1f2937',
-    borderColor: '#e5e7eb'
-  };
-
-  get appliedTheme(): Theme {
-    return { ...this.defaultTheme, ...this.theme };
-  }
-
-  get styles() {
-    const t = this.appliedTheme;
-    return {
-      padding: '16px 22px',
-      background: this.active ? t.primaryColor : t.backgroundColor,
-      color: this.active ? '#ffffff' : t.textColor,
-      border: `2px solid ${this.hovered ? t.primaryColor : t.borderColor}`,
-      borderRadius: '8px',
-      fontSize: '14px',
-      fontWeight: 500,
-      boxShadow: this.hovered ? `0 12px 16px ${t.primaryColor}40` : '0 2px 8px rgba(0,0,0,0.08)',
-      transform: this.hovered ? 'translateY(-2px)' : 'translateY(0)',
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '8px'
-    };
-  }
-
-  handleClick(): void {
-    this.active = !this.active;
-    this.interact.emit('list_v12');
+  onItemClick(item: ListItem): void {
+    this.itemClick.emit(item);
   }
 }

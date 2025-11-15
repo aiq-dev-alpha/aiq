@@ -1,34 +1,51 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [state, setState] = useState(false);
-  const primary = theme.primary || '#84cc16';
-  
+export const Component: React.FC<ComponentProps> = ({
+  theme = {},
+  className = '',
+  onInteract
+}) => {
+  const [state, setState] = useState({ active: false, hovered: false });
+
+  const primary = theme.primary || '#3b82f6';
+  const background = theme.background || '#ffffff';
+  const text = theme.text || '#1f2937';
+
   return (
-    <button
+    <div
       className={className}
-      onClick={() => { setState(!state); onInteract?.('height_expand'); }}
+      onClick={() => {
+        setState(s => ({ ...s, active: !s.active }));
+        onInteract?.('interact');
+      }}
+      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
+      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
       style={{
-        padding: '14px 32px',
-        background: primary,
-        color: '#fff',
-        border: 'none',
-        borderRadius: '10px',
-        fontSize: '16px',
-        fontWeight: 700,
+        padding: '14px 28px',
+        backgroundColor: state.active ? primary : background,
+        color: state.active ? '#fff' : text,
+        borderRadius: '20px',
+        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
+        boxShadow: state.hovered ? '0 1px 2px rgba(0,0,0,0.05)' : '0 8px 16px rgba(0,0,0,0.15)',
+        transform: state.hovered ? 'translateY(-1px) scale(1.01)' : 'translateY(0) scale(1)',
+        transition: `all 300ms cubic-bezier(0.4, 0, 0.2, 1)`,
         cursor: 'pointer',
-        transition: 'all 350ms cubic-bezier(0.68, -0.55, 0.265, 1.55)',
-        transform: 'scaleY(state ? 1.3 : 1)',
-        outline: 'none'
+        fontSize: '17px',
+        fontWeight: 400,
+        userSelect: 'none' as const
       }}
     >
-      Height Expand
-    </button>
+      button - variant 60
+    </div>
   );
 };

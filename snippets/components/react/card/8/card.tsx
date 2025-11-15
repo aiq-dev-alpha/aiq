@@ -1,39 +1,91 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  title?: string;
+  description?: string;
+  imageUrl?: string;
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  onInteract?: () => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [active, setActive] = useState(false);
-  const primary = theme.primary || '#ec4899';
+export const Component: React.FC<ComponentProps> = ({
+  title = 'Card Title',
+  description = 'Card description goes here',
+  imageUrl,
+  theme = {},
+  className = '',
+  onInteract
+}) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const primary = theme.primary || '#3b82f6';
   const background = theme.background || '#ffffff';
-  
+  const text = theme.text || '#1f2937';
+
   return (
     <div
       className={className}
-      onClick={() => { setActive(!active); onInteract?.('gradient_border'); }}
+      onClick={onInteract}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       style={{
-        width: '320px',
-        padding: '24px',
-        background: background,
-        backdropFilter: 'none',
-        border: active ? `3px solid ${primary}` : `2px solid ${primary}40`,
+        backgroundColor: background,
         borderRadius: '16px',
-        cursor: 'pointer',
-        transition: 'all 350ms cubic-bezier(0.34, 1.56, 0.64, 1)',
-        boxShadow: active ? `0 20px 40px ${primary}40` : `0 8px 24px ${primary}20`,
-        transform: active ? 'translateY(-8px)' : 'translateY(0)'
+        overflow: 'hidden',
+        boxShadow: isHovered 
+          ? '0 20px 40px rgba(0,0,0,0.15)'
+          : '0 4px 12px rgba(0,0,0,0.08)',
+        transform: isHovered ? 'translateY(-8px)' : 'translateY(0)',
+        transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+        cursor: onInteract ? 'pointer' : 'default',
+        maxWidth: '400px'
       }}
     >
-      <h3 style={{ margin: '0 0 12px 0', color: primary, fontSize: '20px', fontWeight: 700 }}>
-        Gradient Border Card
-      </h3>
-      <p style={{ margin: 0, color: '#64748b', fontSize: '14px', lineHeight: 1.6 }}>
-        Click to {active ? 'deactivate' : 'activate'} this gradient border card variant.
-      </p>
+      {imageUrl && (
+        <div style={{
+          width: '100%',
+          height: '200px',
+          backgroundImage: `url(${imageUrl})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          transform: isHovered ? 'scale(1.05)' : 'scale(1)',
+          transition: 'transform 300ms'
+        }} />
+      )}
+      <div style={{ padding: '24px' }}>
+        <h3 style={{ 
+          margin: '0 0 12px 0',
+          color: text,
+          fontSize: '24px',
+          fontWeight: 700
+        }}>
+          {title}
+        </h3>
+        <p style={{ 
+          margin: 0,
+          color: `${text}99`,
+          fontSize: '16px',
+          lineHeight: '1.6'
+        }}>
+          {description}
+        </p>
+        {onInteract && (
+          <button style={{
+            marginTop: '16px',
+            padding: '8px 20px',
+            backgroundColor: primary,
+            color: '#ffffff',
+            border: 'none',
+            borderRadius: '8px',
+            fontSize: '14px',
+            fontWeight: 600,
+            cursor: 'pointer'
+          }}>
+            Learn More
+          </button>
+        )}
+      </div>
     </div>
   );
 };

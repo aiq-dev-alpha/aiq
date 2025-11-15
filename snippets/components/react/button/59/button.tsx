@@ -1,34 +1,51 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [state, setState] = useState(false);
-  const primary = theme.primary || '#0ea5e9';
-  
+export const Component: React.FC<ComponentProps> = ({
+  theme = {},
+  className = '',
+  onInteract
+}) => {
+  const [state, setState] = useState({ active: false, hovered: false });
+
+  const primary = theme.primary || '#14b8a6';
+  const background = theme.background || '#ffffff';
+  const text = theme.text || '#1f2937';
+
   return (
-    <button
+    <div
       className={className}
-      onClick={() => { setState(!state); onInteract?.('width_expand'); }}
+      onClick={() => {
+        setState(s => ({ ...s, active: !s.active }));
+        onInteract?.('interact');
+      }}
+      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
+      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
       style={{
-        padding: '14px 32px',
-        background: primary,
-        color: '#fff',
-        border: 'none',
-        borderRadius: '10px',
-        fontSize: '16px',
-        fontWeight: 700,
+        padding: '12px 24px',
+        backgroundColor: state.active ? primary : background,
+        color: state.active ? '#fff' : text,
+        borderRadius: '16px',
+        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
+        boxShadow: state.hovered ? '0 12px 24px rgba(0,0,0,0.20)' : '0 6px 12px rgba(0,0,0,0.12)',
+        transform: state.hovered ? 'rotate(1deg) scale(1.02)' : 'translateY(0) scale(1)',
+        transition: `all 250ms cubic-bezier(0.4, 0, 0.2, 1)`,
         cursor: 'pointer',
-        transition: 'all 350ms cubic-bezier(0.68, -0.55, 0.265, 1.55)',
-        transform: 'scaleX(state ? 1.2 : 1)',
-        outline: 'none'
+        fontSize: '16px',
+        fontWeight: 800,
+        userSelect: 'none' as const
       }}
     >
-      Width Expand
-    </button>
+      button - variant 59
+    </div>
   );
 };

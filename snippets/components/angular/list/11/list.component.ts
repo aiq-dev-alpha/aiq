@@ -1,78 +1,67 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
-interface Theme {
-  primaryColor: string;
-  backgroundColor: string;
-  textColor: string;
-  borderColor: string;
+interface ListItem {
+  id: string;
+  text: string;
+  icon?: string;
+  badge?: string;
 }
 
 @Component({
   selector: 'app-list',
   template: `
-    <div
-      [ngStyle]="styles"
-      (click)="handleClick()"
-      (mouseenter)="hovered = true"
-      (mouseleave)="hovered = false"
-      class="list-container">
-      <ng-content></ng-content>
-      <span *ngIf="active" class="indicator">✓</span>
+    <div class="compact-list">
+      <div *ngFor="let item of items; let i = index"
+           class="list-row"
+           [class.striped]="striped && i % 2 === 1">
+        <span *ngIf="item.icon" class="icon">{{ item.icon }}</span>
+        <span class="text">{{ item.text }}</span>
+        <span *ngIf="item.badge" class="badge">{{ item.badge }}</span>
+      </div>
     </div>
   `,
   styles: [`
-    .list-container {
-      cursor: pointer;
-      transition: all 360ms cubic-bezier(0.4, 0, 0.2, 1);
-      user-select: none;
-      position: relative;
+    .compact-list {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
+      max-width: 500px;
     }
-    .indicator {
-      margin-left: 8px;
-      opacity: 0.8;
+    .list-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .list-row:last-child {
+      border-bottom: none;
+    }
+    .list-row.striped {
+      background-color: #f9fafb;
+    }
+    .icon {
+      width: 24px;
+      text-align: center;
+      font-size: 18px;
+    }
+    .text {
+      flex: 1;
+      color: #1f2937;
       font-size: 14px;
+    }
+    .badge {
+      padding: 2px 8px;
+      background-color: #3b82f6;
+      color: white;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
     }
   `]
 })
 export class ListComponent {
-  @Input() theme: Partial<Theme> = {};
-  @Input() variant = 'default';
-  @Output() interact = new EventEmitter<string>();
-
-  active = false;
-  hovered = false;
-
-  private defaultTheme: Theme = {
-    primaryColor: '#10b981',
-    backgroundColor: '#ffffff',
-    textColor: '#1f2937',
-    borderColor: '#e5e7eb'
-  };
-
-  get appliedTheme(): Theme {
-    return { ...this.defaultTheme, ...this.theme };
-  }
-
-  get styles() {
-    const t = this.appliedTheme;
-    return {
-      padding: '15px 21px',
-      background: this.active ? t.primaryColor : t.backgroundColor,
-      color: this.active ? '#ffffff' : t.textColor,
-      border: `3px solid ${this.hovered ? t.primaryColor : t.borderColor}`,
-      borderRadius: '13px',
-      fontSize: '17px',
-      fontWeight: 700,
-      boxShadow: this.hovered ? `0 11px 27px ${t.primaryColor}40` : '0 2px 8px rgba(0,0,0,0.08)',
-      transform: this.hovered ? 'translateY(-5px)' : 'translateY(0)',
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '8px'
-    };
-  }
-
-  handleClick(): void {
-    this.active = !this.active;
-    this.interact.emit('list_v11');
-  }
+  @Input() items: ListItem[] = [];
+  @Input() striped = false;
 }

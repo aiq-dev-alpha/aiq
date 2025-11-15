@@ -1,78 +1,78 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
-interface Theme {
-  primaryColor: string;
-  backgroundColor: string;
-  textColor: string;
-  borderColor: string;
+interface NavItem {
+  label: string;
+  href: string;
+  active?: boolean;
 }
 
 @Component({
   selector: 'app-navbar',
   template: `
-    <div
-      [ngStyle]="styles"
-      (click)="handleClick()"
-      (mouseenter)="hovered = true"
-      (mouseleave)="hovered = false"
-      class="navbar-container">
-      <ng-content></ng-content>
-      <span *ngIf="active" class="indicator">✓</span>
-    </div>
+    <nav class="navbar">
+      <div class="nav-brand">{{ brand }}</div>
+      <ul class="nav-menu">
+        <li *ngFor="let item of items"
+            [class.active]="item.active"
+            (click)="onNavClick(item)"
+            class="nav-item">
+          {{ item.label }}
+        </li>
+      </ul>
+      <div class="nav-actions">
+        <ng-content></ng-content>
+      </div>
+    </nav>
   `,
   styles: [`
-    .navbar-container {
-      cursor: pointer;
-      transition: all 490ms cubic-bezier(0.4, 0, 0.2, 1);
-      user-select: none;
-      position: relative;
+    .navbar {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
-    .indicator {
-      margin-left: 8px;
-      opacity: 0.8;
-      font-size: 14px;
+    .nav-brand {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .nav-menu {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      flex: 1;
+    }
+    .nav-item {
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 200ms;
+      font-weight: 500;
+    }
+    .nav-item:hover {
+      background-color: rgba(255,255,255,0.2);
+    }
+    .nav-item.active {
+      background-color: rgba(255,255,255,0.3);
+      font-weight: 700;
+    }
+    .nav-actions {
+      display: flex;
+      gap: 12px;
     }
   `]
 })
 export class NavbarComponent {
-  @Input() theme: Partial<Theme> = {};
-  @Input() variant = 'default';
-  @Output() interact = new EventEmitter<string>();
+  @Input() brand = 'Brand';
+  @Input() items: NavItem[] = [];
+  @Output() navClick = new EventEmitter<NavItem>();
 
-  active = false;
-  hovered = false;
-
-  private defaultTheme: Theme = {
-    primaryColor: '#ec4899',
-    backgroundColor: '#ffffff',
-    textColor: '#1f2937',
-    borderColor: '#e5e7eb'
-  };
-
-  get appliedTheme(): Theme {
-    return { ...this.defaultTheme, ...this.theme };
-  }
-
-  get styles() {
-    const t = this.appliedTheme;
-    return {
-      padding: '12px 24px',
-      background: this.active ? t.primaryColor : t.backgroundColor,
-      color: this.active ? '#ffffff' : t.textColor,
-      border: `2px solid ${this.hovered ? t.primaryColor : t.borderColor}`,
-      borderRadius: '8px',
-      fontSize: '14px',
-      fontWeight: 500,
-      boxShadow: this.hovered ? `0 8px 16px ${t.primaryColor}40` : '0 2px 8px rgba(0,0,0,0.08)',
-      transform: this.hovered ? 'translateY(-2px)' : 'translateY(0)',
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '8px'
-    };
-  }
-
-  handleClick(): void {
-    this.active = !this.active;
-    this.interact.emit('navbar_v24');
+  onNavClick(item: NavItem): void {
+    this.navClick.emit(item);
   }
 }

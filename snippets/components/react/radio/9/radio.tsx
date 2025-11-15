@@ -17,7 +17,7 @@ export const Component: React.FC<ComponentProps> = ({
 }) => {
   const [state, setState] = useState({ active: false, hovered: false });
 
-  const primary = theme.primary || 'hsl(328, 70%, 50%)';
+  const primary = theme.primary || '#14b8a6';
   const background = theme.background || '#ffffff';
   const text = theme.text || '#1f2937';
 
@@ -31,22 +31,21 @@ export const Component: React.FC<ComponentProps> = ({
       onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
       onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
       style={{
-        padding: '16px',
+        padding: '10px 20px',
         backgroundColor: state.active ? primary : background,
         color: state.active ? '#fff' : text,
-        borderRadius: '12px',
+        borderRadius: '4px',
         border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-        boxShadow: state.hovered
-          ? '0 8px 16px rgba(0,0,0,0.12)'
-          : '0 2px 4px rgba(0,0,0,0.06)',
-        transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-        transition: `all 360ms cubic-bezier(0.4, 0, 0.2, 1)`,
+        boxShadow: state.hovered ? '0 10px 20px rgba(0,0,0,0.18)' : '0 4px 8px rgba(0,0,0,0.10)',
+        transform: state.hovered ? 'translateY(-4px)' : 'translateY(0) scale(1)',
+        transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
         cursor: 'pointer',
-        fontWeight: state.active ? 600 : 500,
-        userSelect: 'none'
+        fontSize: '15px',
+        fontWeight: 800,
+        userSelect: 'none' as const
       }}
     >
-      Radio - outline style
+      radio - variant 9
     </div>
   );
 };

@@ -1,36 +1,100 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  label?: string;
+  placeholder?: string;
+  icon?: React.ReactNode;
+  helperText?: string;
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  value?: string;
+  onChange?: (value: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [value, setValue] = useState('');
-  const [focused, setFocused] = useState(false);
-  const primary = theme.primary || '#f59e0b';
-  
+export const Component: React.FC<ComponentProps> = ({
+  label,
+  placeholder = 'Type here...',
+  icon,
+  helperText,
+  theme = {},
+  className = '',
+  value,
+  onChange
+}) => {
+  const [isFocused, setIsFocused] = useState(false);
+  const [hasValue, setHasValue] = useState(false);
+
+  const primary = theme.primary || '#10b981';
+  const background = theme.background || '#f9fafb';
+  const text = theme.text || '#1f2937';
+
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '360px' }}>
-      <input
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
-        placeholder="Enter text..."
-        style={{
-          width: '100%',
-          padding: '14px 18px',
-          border: `2px solid ${focused ? primary : '#e5e7eb'}`,
-          borderRadius: '11px',
-          fontSize: '16px',
-          outline: 'none',
-          transition: 'all 250ms',
-          background: focused ? `${primary}05` : '#ffffff',
-          boxShadow: focused ? `0 0 0 4px ${primary}20` : 'none'
-        }}
-      />
+    <div className={className} style={{ width: '100%', maxWidth: '500px' }}>
+      <div style={{
+        position: 'relative',
+        backgroundColor: background,
+        borderRadius: '12px',
+        border: `2px solid ${isFocused ? primary : 'transparent'}`,
+        transition: 'all 200ms',
+        overflow: 'hidden'
+      }}>
+        {label && (
+          <label style={{
+            position: 'absolute',
+            left: icon ? '48px' : '16px',
+            top: isFocused || hasValue ? '8px' : '50%',
+            transform: isFocused || hasValue ? 'translateY(0)' : 'translateY(-50%)',
+            fontSize: isFocused || hasValue ? '12px' : '16px',
+            color: isFocused ? primary : `${text}80`,
+            fontWeight: 500,
+            transition: 'all 200ms',
+            pointerEvents: 'none'
+          }}>
+            {label}
+          </label>
+        )}
+        {icon && (
+          <div style={{
+            position: 'absolute',
+            left: '16px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            color: isFocused ? primary : `${text}60`
+          }}>
+            {icon}
+          </div>
+        )}
+        <input
+          placeholder={isFocused ? placeholder : ''}
+          value={value}
+          onChange={(e) => {
+            const val = e.target.value;
+            setHasValue(val.length > 0);
+            onChange?.(val);
+          }}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          style={{
+            width: '100%',
+            padding: label ? '28px 16px 8px' : '16px',
+            paddingLeft: icon ? '48px' : '16px',
+            backgroundColor: 'transparent',
+            color: text,
+            border: 'none',
+            fontSize: '16px',
+            outline: 'none'
+          }}
+        />
+      </div>
+      {helperText && (
+        <p style={{
+          margin: '8px 0 0 16px',
+          color: `${text}60`,
+          fontSize: '14px'
+        }}>
+          {helperText}
+        </p>
+      )}
     </div>
   );
 };

@@ -1,34 +1,53 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [state, setState] = useState({ x: 0, y: 0 });
-  const primary = theme.primary || '#6366f1';
-  
+export const Component: React.FC<ComponentProps> = ({
+  theme = {},
+  className = '',
+  onInteract
+}) => {
+  const [state, setState] = useState({ active: false, hovered: false });
+
+  const primary = theme.primary || '#10b981';
+  const background = theme.background || '#ffffff';
+  const text = theme.text || '#1f2937';
+
   return (
-    <button
+    <div
       className={className}
-      onClick={() => { setState(!state); onInteract?.('magnetic'); }}
+      onClick={() => {
+        setState(s => ({ ...s, active: !s.active }));
+        onInteract?.('interact');
+      }}
+      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
+      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
       style={{
-        padding: '14px 32px',
-        background: primary,
-        color: '#fff',
-        border: 'none',
-        borderRadius: '10px',
-        fontSize: '16px',
-        fontWeight: 700,
+        padding: '8px 16px',
+        backgroundColor: state.active ? primary : background,
+        color: state.active ? '#fff' : text,
+        borderRadius: '8px',
+        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
+        boxShadow: state.hovered
+          ? '0 4px 8px rgba(0,0,0,0.12)'
+          : '0 1px 2px rgba(0,0,0,0.05)',
+        transform: state.hovered ? 'translateY(-2px) scale(1.01)' : 'translateY(0) scale(1)',
+        transition: `all 150ms cubic-bezier(0.4, 0, 0.2, 1)`,
         cursor: 'pointer',
-        transition: 'all 300ms cubic-bezier(0.34, 1.56, 0.64, 1)',
-        transform: state ? 'scale(1.05)' : 'scale(1)',
-        outline: 'none'
+        fontSize: '14px',
+        fontWeight: 600,
+        userSelect: 'none' as const
       }}
     >
-      Magnetic
-    </button>
+      button - variant 25
+    </div>
   );
 };

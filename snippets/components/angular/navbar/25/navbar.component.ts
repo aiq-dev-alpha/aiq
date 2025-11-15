@@ -15,22 +15,22 @@ interface Theme {
       (click)="handleClick()"
       (mouseenter)="hovered = true"
       (mouseleave)="hovered = false"
-      class="navbar-container">
+      class="container">
       <ng-content></ng-content>
       <span *ngIf="active" class="indicator">✓</span>
     </div>
   `,
   styles: [`
-    .navbar-container {
+    .container {
       cursor: pointer;
-      transition: all 500ms cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
       user-select: none;
       position: relative;
     }
     .indicator {
       margin-left: 8px;
-      opacity: 0.8;
-      font-size: 14px;
+      opacity: 0.75;
+      font-size: 13px;
     }
   `]
 })
@@ -43,7 +43,7 @@ export class NavbarComponent {
   hovered = false;
 
   private defaultTheme: Theme = {
-    primaryColor: '#14b8a6',
+    primaryColor: '#ec4899',
     backgroundColor: '#ffffff',
     textColor: '#1f2937',
     borderColor: '#e5e7eb'
@@ -55,15 +55,16 @@ export class NavbarComponent {
 
   get styles() {
     const t = this.appliedTheme;
+    const borderWidth = this.hovered ? 3 : 2;
     return {
-      padding: '13px 25px',
+      padding: '12px 20px',
       background: this.active ? t.primaryColor : t.backgroundColor,
       color: this.active ? '#ffffff' : t.textColor,
-      border: `3px solid ${this.hovered ? t.primaryColor : t.borderColor}`,
-      borderRadius: '9px',
-      fontSize: '15px',
+      border: `${borderWidth}px solid ${this.hovered ? t.primaryColor : t.borderColor}`,
+      borderRadius: '16px',
+      fontSize: '14px',
       fontWeight: 600,
-      boxShadow: this.hovered ? `0 9px 17px ${t.primaryColor}40` : '0 2px 8px rgba(0,0,0,0.08)',
+      boxShadow: this.hovered ? `0 12px 22px ${t.primaryColor}30` : '0 2px 6px rgba(0,0,0,0.08)',
       transform: this.hovered ? 'translateY(-3px)' : 'translateY(0)',
       display: 'inline-flex',
       alignItems: 'center',

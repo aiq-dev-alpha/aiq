@@ -15,22 +15,22 @@ interface Theme {
       (click)="handleClick()"
       (mouseenter)="hovered = true"
       (mouseleave)="hovered = false"
-      class="list-container">
+      class="container">
       <ng-content></ng-content>
       <span *ngIf="active" class="indicator">✓</span>
     </div>
   `,
   styles: [`
-    .list-container {
+    .container {
       cursor: pointer;
-      transition: all 410ms cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
       user-select: none;
       position: relative;
     }
     .indicator {
       margin-left: 8px;
-      opacity: 0.8;
-      font-size: 14px;
+      opacity: 0.7;
+      font-size: 12px;
     }
   `]
 })
@@ -43,7 +43,7 @@ export class ListComponent {
   hovered = false;
 
   private defaultTheme: Theme = {
-    primaryColor: '#6366f1',
+    primaryColor: '#06b6d4',
     backgroundColor: '#ffffff',
     textColor: '#1f2937',
     borderColor: '#e5e7eb'
@@ -55,16 +55,17 @@ export class ListComponent {
 
   get styles() {
     const t = this.appliedTheme;
+    const borderWidth = this.hovered ? 3 : 1;
     return {
-      padding: '12px 26px',
+      padding: '18px 32px',
       background: this.active ? t.primaryColor : t.backgroundColor,
       color: this.active ? '#ffffff' : t.textColor,
-      border: `2px solid ${this.hovered ? t.primaryColor : t.borderColor}`,
-      borderRadius: '12px',
-      fontSize: '14px',
-      fontWeight: 600,
-      boxShadow: this.hovered ? `0 8px 20px ${t.primaryColor}40` : '0 2px 8px rgba(0,0,0,0.08)',
-      transform: this.hovered ? 'translateY(-2px)' : 'translateY(0)',
+      border: `${borderWidth}px solid ${this.hovered ? t.primaryColor : t.borderColor}`,
+      borderRadius: '10px',
+      fontSize: '15px',
+      fontWeight: 500,
+      boxShadow: this.hovered ? `0 12px 16px ${t.primaryColor}30` : '0 2px 6px rgba(0,0,0,0.08)',
+      transform: this.hovered ? 'translateY(-3px)' : 'translateY(0)',
       display: 'inline-flex',
       alignItems: 'center',
       gap: '8px'

@@ -1,34 +1,78 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  label?: string;
+  variant?: 'solid' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  theme?: { primary?: string; background?: string; text?: string };
   className?: string;
-  onInteract?: (type: string) => void;
+  onClick?: () => void;
+  disabled?: boolean;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [state, setState] = useState(0);
-  const primary = theme.primary || '#10b981';
-  
+export const Component: React.FC<ComponentProps> = ({
+  label = 'Button',
+  variant = 'solid',
+  size = 'md',
+  theme = {},
+  className = '',
+  onClick,
+  disabled = false
+}) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
+
+  const primary = theme.primary || '#3b82f6';
+  const background = theme.background || '#ffffff';
+  const text = theme.text || '#1f2937';
+
+  const sizeStyles = {
+    sm: { padding: '6px 16px', fontSize: '14px' },
+    md: { padding: '10px 24px', fontSize: '16px' },
+    lg: { padding: '14px 32px', fontSize: '18px' }
+  };
+
+  const variantStyles = {
+    solid: {
+      backgroundColor: disabled ? '#d1d5db' : primary,
+      color: '#ffffff',
+      border: 'none'
+    },
+    outline: {
+      backgroundColor: 'transparent',
+      color: primary,
+      border: `2px solid ${primary}`
+    },
+    ghost: {
+      backgroundColor: isHovered ? `${primary}15` : 'transparent',
+      color: primary,
+      border: 'none'
+    }
+  };
+
   return (
     <button
       className={className}
-      onClick={() => { setState(!state); onInteract?.('hover_gradient'); }}
+      onClick={onClick}
+      disabled={disabled}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => { setIsHovered(false); setIsPressed(false); }}
+      onMouseDown={() => setIsPressed(true)}
+      onMouseUp={() => setIsPressed(false)}
       style={{
-        padding: '14px 32px',
-        background: primary,
-        color: '#fff',
-        border: 'none',
-        borderRadius: '10px',
-        fontSize: '16px',
-        fontWeight: 700,
-        cursor: 'pointer',
-        transition: 'all 300ms cubic-bezier(0.34, 1.56, 0.64, 1)',
-        transform: state ? 'scale(1.05)' : 'scale(1)',
+        ...sizeStyles[size],
+        ...variantStyles[variant],
+        borderRadius: '8px',
+        fontWeight: 600,
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.6 : 1,
+        transform: isPressed && !disabled ? 'scale(0.95)' : isHovered && !disabled ? 'scale(1.02)' : 'scale(1)',
+        boxShadow: isHovered && !disabled ? '0 4px 12px rgba(0,0,0,0.15)' : '0 2px 4px rgba(0,0,0,0.1)',
+        transition: 'all 150ms cubic-bezier(0.4, 0, 0.2, 1)',
         outline: 'none'
       }}
     >
-      Hover Gradient
+      {label}
     </button>
   );
 };

@@ -1,56 +1,51 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [hovered, setHovered] = useState(false);
-  const primary = theme.primary || '#dc2626';
+export const Component: React.FC<ComponentProps> = ({
+  theme = {},
+  className = '',
+  onInteract
+}) => {
+  const [state, setState] = useState({ active: false, hovered: false });
+
+  const primary = theme.primary || '#ec4899';
+  const background = theme.background || '#ffffff';
   const text = theme.text || '#1f2937';
-  
+
   return (
     <div
       className={className}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onClick={() => onInteract?.('alert_card')}
+      onClick={() => {
+        setState(s => ({ ...s, active: !s.active }));
+        onInteract?.('interact');
+      }}
+      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
+      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
       style={{
-        width: '340px',
-        padding: '28px',
-        background: '#ffffff',
-        border: `2px solid ${hovered ? primary : '#e5e7eb'}`,
-        borderRadius: '14px',
+        padding: '12px 24px',
+        backgroundColor: state.active ? primary : background,
+        color: state.active ? '#fff' : text,
+        borderRadius: '4px',
+        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
+        boxShadow: state.hovered ? '0 12px 24px rgba(0,0,0,0.20)' : '0 6px 12px rgba(0,0,0,0.12)',
+        transform: state.hovered ? 'translateY(-4px)' : 'translateY(0) scale(1)',
+        transition: `all 250ms cubic-bezier(0.4, 0, 0.2, 1)`,
         cursor: 'pointer',
-        transition: 'all 300ms ease',
-        boxShadow: hovered ? `0 12px 32px ${primary}30` : '0 4px 16px rgba(0,0,0,0.08)',
-        transform: hovered ? 'translateY(-6px)' : 'translateY(0)'
+        fontSize: '16px',
+        fontWeight: 400,
+        userSelect: 'none' as const
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-        <div style={{
-          width: '48px',
-          height: '48px',
-          borderRadius: '12px',
-          background: `${primary}20`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '24px',
-          fontWeight: 700,
-          color: primary
-        }}>
-          A
-        </div>
-        <h3 style={{ margin: 0, color: text, fontSize: '20px', fontWeight: 700 }}>
-          Alert Card
-        </h3>
-      </div>
-      <p style={{ margin: 0, color: '#64748b', fontSize: '15px', lineHeight: 1.7 }}>
-        This is a alert card component with custom styling and hover effects.
-      </p>
+      card - variant 45
     </div>
   );
 };

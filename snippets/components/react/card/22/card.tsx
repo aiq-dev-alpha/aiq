@@ -1,56 +1,51 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [hovered, setHovered] = useState(false);
-  const primary = theme.primary || '#0ea5e9';
+export const Component: React.FC<ComponentProps> = ({
+  theme = {},
+  className = '',
+  onInteract
+}) => {
+  const [state, setState] = useState({ active: false, hovered: false });
+
+  const primary = theme.primary || '#8b5cf6';
+  const background = theme.background || '#ffffff';
   const text = theme.text || '#1f2937';
-  
+
   return (
     <div
       className={className}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onClick={() => onInteract?.('border_animate')}
+      onClick={() => {
+        setState(s => ({ ...s, active: !s.active }));
+        onInteract?.('interact');
+      }}
+      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
+      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
       style={{
-        width: '340px',
-        padding: '28px',
-        background: '#ffffff',
-        border: `2px solid ${hovered ? primary : '#e5e7eb'}`,
-        borderRadius: '14px',
+        padding: '8px 16px',
+        backgroundColor: state.active ? primary : background,
+        color: state.active ? '#fff' : text,
+        borderRadius: '12px',
+        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
+        boxShadow: state.hovered ? '0 8px 16px rgba(0,0,0,0.15)' : '0 2px 4px rgba(0,0,0,0.08)',
+        transform: state.hovered ? 'scale(1.05)' : 'translateY(0) scale(1)',
+        transition: `all 150ms cubic-bezier(0.4, 0, 0.2, 1)`,
         cursor: 'pointer',
-        transition: 'all 300ms ease',
-        boxShadow: hovered ? `0 12px 32px ${primary}30` : '0 4px 16px rgba(0,0,0,0.08)',
-        transform: hovered ? 'translateY(-6px)' : 'translateY(0)'
+        fontSize: '14px',
+        fontWeight: 600,
+        userSelect: 'none' as const
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-        <div style={{
-          width: '48px',
-          height: '48px',
-          borderRadius: '12px',
-          background: `${primary}20`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '24px',
-          fontWeight: 700,
-          color: primary
-        }}>
-          B
-        </div>
-        <h3 style={{ margin: 0, color: text, fontSize: '20px', fontWeight: 700 }}>
-          Border Animate
-        </h3>
-      </div>
-      <p style={{ margin: 0, color: '#64748b', fontSize: '15px', lineHeight: 1.7 }}>
-        This is a border animate component with custom styling and hover effects.
-      </p>
+      card - variant 22
     </div>
   );
 };

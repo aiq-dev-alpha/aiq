@@ -1,43 +1,51 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [state, setState] = useState(false);
-  const [hovered, setHovered] = useState(false);
-  const primary = theme.primary || '#eab308';
-  const bg = theme.background || '#ffffff';
-  
+export const Component: React.FC<ComponentProps> = ({
+  theme = {},
+  className = '',
+  onInteract
+}) => {
+  const [state, setState] = useState({ active: false, hovered: false });
+
+  const primary = theme.primary || '#84cc16';
+  const background = theme.background || '#ffffff';
+  const text = theme.text || '#1f2937';
+
   return (
     <div
       className={className}
-      onClick={() => { setState(!state); onInteract?.('datepicker_click'); }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onClick={() => {
+        setState(s => ({ ...s, active: !s.active }));
+        onInteract?.('interact');
+      }}
+      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
+      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
       style={{
-        padding: '18px 29px',
-        background: state ? primary : bg,
-        color: state ? '#ffffff' : primary,
-        border: `2px solid ${hovered ? primary : primary + '50'}`,
-        borderRadius: '11px',
-        fontSize: '17px',
-        fontWeight: 800,
+        padding: '18px 36px',
+        backgroundColor: state.active ? primary : background,
+        color: state.active ? '#fff' : text,
+        borderRadius: '4px',
+        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
+        boxShadow: state.hovered ? '0 4px 8px rgba(0,0,0,0.10)' : '0 12px 24px rgba(0,0,0,0.20)',
+        transform: state.hovered ? 'translateY(-4px)' : 'translateY(0) scale(1)',
+        transition: `all 400ms cubic-bezier(0.4, 0, 0.2, 1)`,
         cursor: 'pointer',
-        transition: 'all 520ms cubic-bezier(0.34, 1.56, 0.64, 1)',
-        transform: hovered ? 'translateY(-5px) scale(1.22)' : 'translateY(0) scale(1)',
-        boxShadow: hovered ? `0 11px 19px ${primary}37` : '0 2px 8px rgba(0,0,0,0.08)',
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '8px',
-        userSelect: 'none'
+        fontSize: '19px',
+        fontWeight: 600,
+        userSelect: 'none' as const
       }}
     >
-      <span>Datepicker 27</span>
-      {state && <span style={{ fontSize: '12px', opacity: 0.9 }}>✓</span>}
+      datepicker - variant 27
     </div>
   );
 };

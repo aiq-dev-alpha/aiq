@@ -17,7 +17,7 @@ export const Component: React.FC<ComponentProps> = ({
 }) => {
   const [state, setState] = useState({ active: false, hovered: false });
 
-  const primary = theme.primary || 'hsl(59, 70%, 50%)';
+  const primary = theme.primary || '#3b82f6';
   const background = theme.background || '#ffffff';
   const text = theme.text || '#1f2937';
 
@@ -31,22 +31,21 @@ export const Component: React.FC<ComponentProps> = ({
       onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
       onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
       style={{
-        padding: '22px',
+        padding: '18px 36px',
         backgroundColor: state.active ? primary : background,
         color: state.active ? '#fff' : text,
-        borderRadius: '10px',
+        borderRadius: '8px',
         border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-        boxShadow: state.hovered
-          ? '0 8px 16px rgba(0,0,0,0.12)'
-          : '0 2px 4px rgba(0,0,0,0.06)',
-        transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-        transition: `all 280ms cubic-bezier(0.4, 0, 0.2, 1)`,
+        boxShadow: state.hovered ? '0 4px 8px rgba(0,0,0,0.10)' : '0 12px 24px rgba(0,0,0,0.20)',
+        transform: state.hovered ? 'translateY(-3px) scale(1.03)' : 'translateY(0) scale(1)',
+        transition: `all 400ms cubic-bezier(0.4, 0, 0.2, 1)`,
         cursor: 'pointer',
-        fontWeight: state.active ? 600 : 500,
-        userSelect: 'none'
+        fontSize: '19px',
+        fontWeight: 400,
+        userSelect: 'none' as const
       }}
     >
-      Stepper - filled style
+      stepper - variant 20
     </div>
   );
 };

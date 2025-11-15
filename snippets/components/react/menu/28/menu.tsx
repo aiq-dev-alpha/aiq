@@ -1,43 +1,51 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [state, setState] = useState(false);
-  const [hovered, setHovered] = useState(false);
-  const primary = theme.primary || '#dc2626';
-  const bg = theme.background || '#ffffff';
-  
+export const Component: React.FC<ComponentProps> = ({
+  theme = {},
+  className = '',
+  onInteract
+}) => {
+  const [state, setState] = useState({ active: false, hovered: false });
+
+  const primary = theme.primary || '#f97316';
+  const background = theme.background || '#ffffff';
+  const text = theme.text || '#1f2937';
+
   return (
     <div
       className={className}
-      onClick={() => { setState(!state); onInteract?.('menu_click'); }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onClick={() => {
+        setState(s => ({ ...s, active: !s.active }));
+        onInteract?.('interact');
+      }}
+      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
+      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
       style={{
-        padding: '20px 32px',
-        background: state ? primary : bg,
-        color: state ? '#ffffff' : primary,
-        border: `2px solid ${hovered ? primary : primary + '50'}`,
-        borderRadius: '12px',
-        fontSize: '14px',
-        fontWeight: 500,
+        padding: '6px 12px',
+        backgroundColor: state.active ? primary : background,
+        color: state.active ? '#fff' : text,
+        borderRadius: '6px',
+        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
+        boxShadow: state.hovered ? '0 6px 12px rgba(0,0,0,0.12)' : '0 1px 2px rgba(0,0,0,0.05)',
+        transform: state.hovered ? 'scale(1.05)' : 'translateY(0) scale(1)',
+        transition: `all 100ms cubic-bezier(0.4, 0, 0.2, 1)`,
         cursor: 'pointer',
-        transition: 'all 530ms cubic-bezier(0.34, 1.56, 0.64, 1)',
-        transform: hovered ? 'translateY(-2px) scale(1.32)' : 'translateY(0) scale(1)',
-        boxShadow: hovered ? `0 12px 20px ${primary}38` : '0 2px 8px rgba(0,0,0,0.08)',
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '8px',
-        userSelect: 'none'
+        fontSize: '13px',
+        fontWeight: 700,
+        userSelect: 'none' as const
       }}
     >
-      <span>Menu 28</span>
-      {state && <span style={{ fontSize: '12px', opacity: 0.9 }}>✓</span>}
+      menu - variant 28
     </div>
   );
 };

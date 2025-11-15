@@ -1,35 +1,51 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [active, setActive] = useState(false);
-  const primary = theme.primary || '#3b82f6';
-  
+export const Component: React.FC<ComponentProps> = ({
+  theme = {},
+  className = '',
+  onInteract
+}) => {
+  const [state, setState] = useState({ active: false, hovered: false });
+
+  const primary = theme.primary || '#f59e0b';
+  const background = theme.background || '#ffffff';
+  const text = theme.text || '#1f2937';
+
   return (
-    <button
+    <div
       className={className}
-      onClick={() => { setActive(!active); onInteract?.('backdrop_blur'); }}
+      onClick={() => {
+        setState(s => ({ ...s, active: !s.active }));
+        onInteract?.('interact');
+      }}
+      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
+      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
       style={{
-        padding: '14px 32px',
-        background: active ? `linear-gradient(135deg, ${primary}, ${primary}dd)` : primary,
-        color: '#fff',
-        border: 'none',
-        borderRadius: '10px',
-        fontSize: '16px',
-        fontWeight: 700,
+        padding: '14px 28px',
+        backgroundColor: state.active ? primary : background,
+        color: state.active ? '#fff' : text,
+        borderRadius: '8px',
+        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
+        boxShadow: state.hovered ? '0 1px 2px rgba(0,0,0,0.05)' : '0 8px 16px rgba(0,0,0,0.15)',
+        transform: state.hovered ? 'translateY(-3px) scale(1.03)' : 'translateY(0) scale(1)',
+        transition: `all 300ms cubic-bezier(0.4, 0, 0.2, 1)`,
         cursor: 'pointer',
-        transition: 'all 300ms ease',
-        boxShadow: active ? `0 8px 24px ${primary}60` : `0 2px 8px ${primary}40`,
-        transform: active ? 'translateY(-4px)' : 'translateY(0)',
-        outline: 'none'
+        fontSize: '17px',
+        fontWeight: 800,
+        userSelect: 'none' as const
       }}
     >
-      Backdrop Blur
-    </button>
+      button - variant 74
+    </div>
   );
 };

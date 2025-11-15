@@ -1,36 +1,51 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [value, setValue] = useState('');
-  const [focused, setFocused] = useState(false);
-  const primary = theme.primary || '#ec4899';
-  
+export const Component: React.FC<ComponentProps> = ({
+  theme = {},
+  className = '',
+  onInteract
+}) => {
+  const [state, setState] = useState({ active: false, hovered: false });
+
+  const primary = theme.primary || '#f59e0b';
+  const background = theme.background || '#ffffff';
+  const text = theme.text || '#1f2937';
+
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '360px' }}>
-      <input
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
-        placeholder="Enter text..."
-        style={{
-          width: '100%',
-          padding: '14px 18px',
-          border: `2px solid ${focused ? primary : '#e5e7eb'}`,
-          borderRadius: '12px',
-          fontSize: '16px',
-          outline: 'none',
-          transition: 'all 250ms',
-          background: focused ? `${primary}05` : '#ffffff',
-          boxShadow: focused ? `0 0 0 4px ${primary}20` : 'none'
-        }}
-      />
+    <div
+      className={className}
+      onClick={() => {
+        setState(s => ({ ...s, active: !s.active }));
+        onInteract?.('interact');
+      }}
+      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
+      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
+      style={{
+        padding: '12px 24px',
+        backgroundColor: state.active ? primary : background,
+        color: state.active ? '#fff' : text,
+        borderRadius: '20px',
+        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
+        boxShadow: state.hovered ? '0 12px 24px rgba(0,0,0,0.20)' : '0 6px 12px rgba(0,0,0,0.12)',
+        transform: state.hovered ? 'translateY(-1px) scale(1.01)' : 'translateY(0) scale(1)',
+        transition: `all 250ms cubic-bezier(0.4, 0, 0.2, 1)`,
+        cursor: 'pointer',
+        fontSize: '16px',
+        fontWeight: 800,
+        userSelect: 'none' as const
+      }}
+    >
+      input - variant 24
     </div>
   );
 };

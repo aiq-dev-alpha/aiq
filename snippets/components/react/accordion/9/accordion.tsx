@@ -1,50 +1,51 @@
 import React, { useState } from 'react';
 
-export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string; };
-  className?: string;
-  onInteract?: (type: string) => void;
+interface AccordionItem {
+  id: string;
+  title: string;
+  content: string;
+  icon?: React.ReactNode;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [active, setActive] = useState(false);
-  const [count, setCount] = useState(0);
-  const primary = theme.primary || '#f59e0b';
-  
+interface AccordionProps {
+  items: AccordionItem[];
+  variant?: 'default' | 'bordered' | 'shadow';
+  className?: string;
+}
+
+export default function Accordion({ items, variant = 'default', className = '' }: AccordionProps) {
+  const [activeId, setActiveId] = useState<string | null>(null);
+
+  const variantStyles = {
+    default: 'bg-white',
+    bordered: 'border-2 border-blue-500 rounded-lg overflow-hidden',
+    shadow: 'shadow-lg rounded-lg overflow-hidden',
+  };
+
   return (
-    <div
-      className={className}
-      onClick={() => { setActive(!active); setCount(c => c + 1); onInteract?.('interact'); }}
-      style={{
-        padding: '17px 25px',
-        background: active ? `linear-gradient(270deg, ${primary}, ${primary}dd)` : '#ffffff',
-        color: active ? '#ffffff' : primary,
-        border: `3px solid ${active ? primary : primary + '40'}`,
-        borderRadius: '11px',
-        fontSize: '15px',
-        fontWeight: 600,
-        cursor: 'pointer',
-        transition: 'all 345ms cubic-bezier(0.6, 2.7, 0.64, 1)',
-        boxShadow: active ? `0 19px 33px ${primary}40` : `0 3px 9px rgba(0,0,0,0.7)`,
-        transform: active ? 'translateY(-5px) scale(1.02)' : 'translateY(0) scale(1)',
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '9px',
-        position: 'relative',
-        overflow: 'hidden'
-      }}
-    >
-      <span>Accordion V9</span>
-      {count > 0 && (
-        <span style={{ 
-          fontSize: '12px', 
-          background: 'rgba(255,255,255,0.2)', 
-          padding: '2px 8px', 
-          borderRadius: '12px' 
-        }}>
-          {count}
-        </span>
-      )}
+    <div className={`w-full max-w-3xl mx-auto space-y-3 ${className}`}>
+      {items.map((item) => {
+        const isActive = activeId === item.id;
+        return (
+          <div key={item.id} className={`${variantStyles[variant]} transition-all duration-200`}>
+            <button
+              onClick={() => setActiveId(isActive ? null : item.id)}
+              className="w-full px-5 py-4 flex items-center gap-3 text-left hover:bg-blue-50 transition-colors"
+            >
+              {item.icon && <span className="text-blue-600">{item.icon}</span>}
+              <span className="flex-1 font-medium text-gray-800">{item.title}</span>
+              <span className={`text-2xl text-blue-600 transition-transform ${isActive ? 'rotate-45' : ''}`}>
+                +
+              </span>
+            </button>
+            {isActive && (
+              <div className="px-5 py-4 border-t border-gray-200 bg-blue-50 animate-fadeIn">
+                <p className="text-gray-700">{item.content}</p>
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
-};
+}
