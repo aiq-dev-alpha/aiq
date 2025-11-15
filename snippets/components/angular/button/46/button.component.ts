@@ -21,11 +21,12 @@ interface ColorPalette {
     </button>
   `,
   styles: [`
-    .btn { border: none; cursor: pointer; font: inherit; outline: none; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; position: relative; }
-    .btn:disabled { cursor: not-allowed; opacity: 0.6; }
-    .btn:not(:disabled):hover { filter: brightness(1.08); }
-    .btn:not(:disabled):active { transform: scale(0.97); }
-    .spin { width: 16px; height: 16px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%; animation: rotate 0.6s linear infinite; }
+    .btn { border: none; cursor: pointer; font: inherit; outline: none; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); display: inline-flex; align-items: center; justify-content: center; gap: 8px; position: relative; overflow: hidden; }
+    .btn:disabled { cursor: not-allowed; opacity: 0.55; filter: grayscale(0.3); }
+    .btn:not(:disabled):hover { transform: translateY(-2px); filter: brightness(1.12); }
+    .btn:not(:disabled):active { transform: translateY(0) scale(0.98); }
+    .btn.look-outline:hover { box-shadow: inset 0 0 0 2px currentColor !important; }
+    .spin { width: 16px; height: 16px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%; animation: rotate 0.7s linear infinite; }
     @keyframes rotate { to { transform: rotate(360deg); } }
   `]
 })
@@ -39,9 +40,10 @@ export class ButtonComponent {
   @Input() iconPos: 'left' | 'right' = 'left';
   @Input() wide = false;
   @Input() rounded = true;
+  @Input() ripple = true;
   @Output() click = new EventEmitter<MouseEvent>();
 
-  private base: ColorPalette = { primary: '#6366f1', secondary: '#a78bfa', tertiary: '#c4b5fd', surface: '#ffffff', onSurface: '#0f172a' };
+  private base: ColorPalette = { primary: '#10b981', secondary: '#059669', tertiary: '#047857', surface: '#ffffff', onSurface: '#111827' };
 
   get colors(): ColorPalette {
     return { ...this.base, ...this.palette };
@@ -49,14 +51,14 @@ export class ButtonComponent {
 
   get styles(): Record<string, string> {
     const c = this.colors;
-    const sizes = { sm: { padding: '7px 14px', fontSize: '13px' }, md: { padding: '10px 20px', fontSize: '14px' }, lg: { padding: '13px 26px', fontSize: '16px' } };
+    const sizes = { sm: { padding: '7px 16px', fontSize: '13px', minHeight: '34px' }, md: { padding: '11px 22px', fontSize: '14px', minHeight: '42px' }, lg: { padding: '14px 28px', fontSize: '16px', minHeight: '50px' } };
     const looks = {
-      filled: { background: c.primary, color: '#fff', border: 'none' },
-      outline: { background: 'transparent', color: c.primary, border: `2px solid ${c.primary}` },
-      ghost: { background: 'transparent', color: c.primary, border: 'none' },
-      soft: { background: `${c.primary}20`, color: c.primary, border: 'none' }
+      filled: { background: `linear-gradient(135deg, ${c.primary}, ${c.secondary})`, color: '#fff', border: 'none', boxShadow: `0 3px 8px ${c.primary}40` },
+      outline: { background: 'transparent', color: c.primary, border: `2px solid ${c.primary}`, boxShadow: `inset 0 0 0 0 ${c.primary}` },
+      ghost: { background: 'transparent', color: c.primary, border: 'none', boxShadow: 'none' },
+      soft: { background: `${c.primary}18`, color: c.secondary, border: `1px solid ${c.primary}30`, boxShadow: '0 2px 4px rgba(0,0,0,0.04)' }
     };
-    return { ...sizes[this.size], ...looks[this.look], borderRadius: this.rounded ? '10px' : '4px', width: this.wide ? '100%' : 'auto', fontWeight: '600' };
+    return { ...sizes[this.size], ...looks[this.look], borderRadius: this.rounded ? '12px' : '5px', width: this.wide ? '100%' : 'auto', fontWeight: '600', letterSpacing: '0.3px' };
   }
 
   get classes(): string[] {

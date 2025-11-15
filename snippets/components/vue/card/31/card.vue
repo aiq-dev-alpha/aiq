@@ -103,11 +103,11 @@ export default defineComponent({
     const isHovered = ref(false);
 
     const defaultTheme: CardTheme = {
-      background: '#ffffff',
-      foreground: '#0f172a',
-      border: '#e2e8f0',
-      accent: '#3b82f6',
-      shadow: 'rgba(0, 0, 0, 0.1)'
+      background: '#fafafa',
+      foreground: '#18181b',
+      border: '#d4d4d8',
+      accent: '#8b5cf6',
+      shadow: 'rgba(139, 92, 246, 0.15)'
     };
 
     const appliedTheme = computed(() => ({
@@ -134,17 +134,17 @@ export default defineComponent({
         elevated: {
           background: t.background,
           border: 'none',
-          boxShadow: `0 4px 6px ${t.shadow}`
+          boxShadow: `0 8px 16px ${t.shadow}, 0 2px 4px rgba(0, 0, 0, 0.06)`
         },
         outlined: {
           background: t.background,
-          border: `1px solid ${t.border}`,
-          boxShadow: 'none'
+          border: `2px solid ${t.border}`,
+          boxShadow: `0 2px 4px rgba(0, 0, 0, 0.04)`
         },
         filled: {
-          background: `${t.accent}15`,
-          border: 'none',
-          boxShadow: 'none'
+          background: `linear-gradient(135deg, ${t.accent}12, ${t.accent}20)`,
+          border: `1px solid ${t.accent}25`,
+          boxShadow: `0 4px 8px ${t.shadow}`
         }
       };
     });
@@ -152,13 +152,13 @@ export default defineComponent({
     const cardStyles = computed(() => ({
       ...variantMap.value[props.variant],
       color: appliedTheme.value.foreground,
-      borderRadius: '14px',
+      borderRadius: '16px',
       overflow: 'hidden',
       cursor: props.clickable ? 'pointer' : 'default',
-      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-      transform: props.hoverable && isHovered.value ? 'translateY(-4px)' : 'none',
+      transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
+      transform: props.hoverable && isHovered.value ? 'translateY(-6px) scale(1.01)' : 'none',
       boxShadow: props.hoverable && isHovered.value
-        ? `0 12px 20px ${appliedTheme.value.shadow}`
+        ? `0 16px 32px ${appliedTheme.value.shadow}, 0 4px 8px rgba(0, 0, 0, 0.1)`
         : variantMap.value[props.variant].boxShadow
     }));
 
@@ -189,15 +189,17 @@ export default defineComponent({
 <style scoped>
 .card-badge {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  top: 14px;
+  right: 14px;
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9);
   color: white;
-  padding: 4px 12px;
-  border-radius: 12px;
+  padding: 5px 14px;
+  border-radius: 14px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   z-index: 1;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
+  letter-spacing: 0.5px;
 }
 .card-image {
   width: 100%;

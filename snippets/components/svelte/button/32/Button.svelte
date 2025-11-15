@@ -9,28 +9,29 @@
   export let icon: string = '';
   export let iconPosition: 'left' | 'right' = 'left';
   export let fullWidth = false;
+  export let elevated = false;
 
   const dispatch = createEventDispatcher<{ click: MouseEvent }>();
 
   const variants = {
-    primary: { base: '#3b82f6', contrast: '#fff' },
-    secondary: { base: '#8b5cf6', contrast: '#fff' },
-    accent: { base: '#10b981', contrast: '#fff' }
+    primary: { base: '#ec4899', contrast: '#fff', shadow: '#ec489960' },
+    secondary: { base: '#f59e0b', contrast: '#fff', shadow: '#f59e0b60' },
+    accent: { base: '#06b6d4', contrast: '#fff', shadow: '#06b6d460' }
   };
 
   const v = variants[variant];
 
   const sizes = {
-    sm: 'padding: 6px 14px; font-size: 13px; min-height: 32px',
-    md: 'padding: 10px 20px; font-size: 14px; min-height: 40px',
-    lg: 'padding: 12px 24px; font-size: 16px; min-height: 48px'
+    sm: 'padding: 7px 15px; font-size: 13px; min-height: 34px; gap: 6px',
+    md: 'padding: 11px 22px; font-size: 14px; min-height: 42px; gap: 8px',
+    lg: 'padding: 14px 28px; font-size: 16px; min-height: 50px; gap: 10px'
   };
 
   const looks = {
-    solid: `background: ${v.base}; color: ${v.contrast}; border: none;`,
-    outline: `background: transparent; color: ${v.base}; border: 2px solid ${v.base};`,
-    ghost: `background: transparent; color: ${v.base}; border: none;`,
-    tonal: `background: ${v.base}20; color: ${v.base}; border: none;`
+    solid: `background: linear-gradient(135deg, ${v.base}, ${v.base}dd); color: ${v.contrast}; border: none; box-shadow: ${elevated ? `0 4px 12px ${v.shadow}` : '0 2px 4px rgba(0,0,0,0.1)'};`,
+    outline: `background: transparent; color: ${v.base}; border: 2px solid ${v.base}; box-shadow: none;`,
+    ghost: `background: transparent; color: ${v.base}; border: none; box-shadow: none;`,
+    tonal: `background: ${v.base}15; color: ${v.base}; border: 1px solid ${v.base}30; box-shadow: 0 1px 3px rgba(0,0,0,0.05);`
   };
 
   function handleClick(e: MouseEvent) {
@@ -60,34 +61,38 @@
 
 <style>
   .btn {
-    border-radius: 8px;
+    border-radius: 10px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
     font-family: inherit;
     outline: none;
+    letter-spacing: 0.3px;
+    position: relative;
+    overflow: hidden;
   }
   .btn:disabled {
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: 0.55;
+    filter: grayscale(0.2);
   }
   .btn:not(:disabled):hover {
-    filter: brightness(1.1);
+    transform: translateY(-2px);
+    filter: brightness(1.15);
   }
   .btn:not(:disabled):active {
-    transform: scale(0.98);
+    transform: translateY(0) scale(0.97);
   }
   .spinner {
-    width: 14px;
-    height: 14px;
+    width: 15px;
+    height: 15px;
     border: 2px solid currentColor;
     border-top-color: transparent;
     border-radius: 50%;
-    animation: spin 0.6s linear infinite;
+    animation: spin 0.7s linear infinite;
   }
   @keyframes spin {
     to {

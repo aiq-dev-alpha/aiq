@@ -30,11 +30,11 @@ interface NavbarProps {
 }
 
 const defaultTheme: NavTheme = {
-  background: '#ffffff',
-  text: '#0f172a',
-  accent: '#3b82f6',
-  border: '#e2e8f0',
-  hover: '#f1f5f9'
+  background: '#0f172a',
+  text: '#f8fafc',
+  accent: '#06b6d4',
+  border: '#1e293b',
+  hover: '#1e293b'
 };
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -54,23 +54,27 @@ export const Navbar: React.FC<NavbarProps> = ({
   const variantStyles: Record<string, CSSProperties> = {
     solid: {
       background: appliedTheme.background,
-      borderBottom: `1px solid ${appliedTheme.border}`,
-      backdropFilter: 'none'
+      borderBottom: `2px solid ${appliedTheme.border}`,
+      backdropFilter: 'none',
+      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
     },
     transparent: {
       background: 'transparent',
       borderBottom: 'none',
-      backdropFilter: 'none'
+      backdropFilter: 'none',
+      boxShadow: 'none'
     },
     blur: {
-      background: `${appliedTheme.background}dd`,
-      borderBottom: `1px solid ${appliedTheme.border}80`,
-      backdropFilter: 'blur(12px)'
+      background: `${appliedTheme.background}f0`,
+      borderBottom: `1px solid ${appliedTheme.border}90`,
+      backdropFilter: 'blur(16px) saturate(180%)',
+      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
     },
     gradient: {
-      background: `linear-gradient(135deg, ${appliedTheme.background}, ${appliedTheme.accent}15)`,
-      borderBottom: 'none',
-      backdropFilter: 'none'
+      background: `linear-gradient(135deg, ${appliedTheme.background}, ${appliedTheme.accent}20)`,
+      borderBottom: `1px solid ${appliedTheme.accent}40`,
+      backdropFilter: 'none',
+      boxShadow: '0 4px 12px rgba(6, 182, 212, 0.15)'
     }
   };
 
@@ -114,31 +118,36 @@ export const Navbar: React.FC<NavbarProps> = ({
   const itemStyle = (item: NavItem): CSSProperties => ({
     display: 'flex',
     alignItems: 'center',
-    gap: '6px',
-    padding: '8px 16px',
-    borderRadius: '8px',
+    gap: '7px',
+    padding: '10px 18px',
+    borderRadius: '10px',
     cursor: 'pointer',
-    transition: 'all 0.2s ease',
-    background: item.active ? `${appliedTheme.accent}15` : 'transparent',
+    transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+    background: item.active ? `${appliedTheme.accent}25` : 'transparent',
     color: item.active ? appliedTheme.accent : appliedTheme.text,
-    fontWeight: item.active ? 600 : 500,
+    fontWeight: item.active ? 700 : 500,
     fontSize: '14px',
     position: 'relative',
-    textDecoration: 'none'
+    textDecoration: 'none',
+    letterSpacing: '0.3px',
+    border: item.active ? `1px solid ${appliedTheme.accent}40` : '1px solid transparent',
+    boxShadow: item.active ? `0 2px 8px ${appliedTheme.accent}30` : 'none'
   });
 
   const badgeStyle: CSSProperties = {
     position: 'absolute',
-    top: '4px',
-    right: '4px',
-    background: appliedTheme.accent,
+    top: '2px',
+    right: '2px',
+    background: `linear-gradient(135deg, ${appliedTheme.accent}, ${appliedTheme.accent}cc)`,
     color: '#fff',
-    borderRadius: '10px',
-    padding: '2px 6px',
+    borderRadius: '12px',
+    padding: '3px 7px',
     fontSize: '10px',
-    fontWeight: 700,
-    minWidth: '18px',
-    textAlign: 'center'
+    fontWeight: 800,
+    minWidth: '20px',
+    textAlign: 'center',
+    boxShadow: `0 2px 6px ${appliedTheme.accent}60`,
+    letterSpacing: '0.2px'
   };
 
   const toggleStyle: CSSProperties = {
