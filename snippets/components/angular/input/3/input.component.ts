@@ -1,68 +1,218 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
-interface ComponentTheme {
+interface InputTheme {
   primaryColor: string;
   secondaryColor: string;
   backgroundColor: string;
   textColor: string;
-  borderColor: string;
+  glowColor: string;
 }
 
 @Component({
-  selector: 'app-component',
+  selector: 'app-input',
   template: `
-    <div [ngStyle]="componentStyles">
-      <ng-content></ng-content>
+    <div class="input-wrapper" [ngStyle]="wrapperStyles">
+      <div class="floating-label-container" [ngStyle]="containerStyles">
+        <input
+          [id]="inputId"
+          [type]="type"
+          [placeholder]="' '"
+          [disabled]="disabled"
+          [value]="value"
+          [ngStyle]="inputStyles"
+          (input)="onInput($event)"
+          (focus)="onFocus()"
+          (blur)="onBlur()"
+          [attr.aria-label]="ariaLabel || label"
+          class="input-field"
+        />
+        <label *ngIf="label" [for]="inputId" class="floating-label" [ngStyle]="labelStyles">
+          {{ label }}
+        </label>
+        <div class="glow-effect"></div>
+      </div>
+      <div *ngIf="helperText" class="helper-text" [ngStyle]="helperStyles">
+        {{ helperText }}
+      </div>
     </div>
-  `
+  `,
+  styles: [`
+    .input-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+    }
+    .floating-label-container {
+      position: relative;
+      overflow: visible;
+    }
+    .input-field {
+      width: 100%;
+      border: none;
+      outline: none;
+      font-family: inherit;
+      background: transparent;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .input-field:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+    .floating-label {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-weight: 400;
+      background: white;
+      padding: 0 4px;
+    }
+    .input-field:focus ~ .floating-label,
+    .input-field:not(:placeholder-shown) ~ .floating-label {
+      top: 0;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .glow-effect {
+      position: absolute;
+      bottom: -2px;
+      left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      width: 100%;
+      height: 2px;
+      border-radius: 2px;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .input-field:focus ~ .glow-effect {
+      transform: translateX(-50%) scaleX(1);
+      box-shadow: 0 0 10px currentColor;
+    }
+    .helper-text {
+      font-size: 12px;
+      padding-left: 14px;
+    }
+  `],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => InputComponent),
+      multi: true
+    }
+  ]
 })
-export class ComponentComponent {
-  @Input() theme: Partial<ComponentTheme> = {};
-  @Input() variant: 'default' | 'outlined' | 'filled' = 'default';
+export class InputComponent implements ControlValueAccessor {
+  @Input() theme: Partial<InputTheme> = {};
+  @Input() type: string = 'text';
+  @Input() label?: string;
+  @Input() helperText?: string;
+  @Input() disabled = false;
+  @Input() ariaLabel?: string;
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
+  @Output() valueChange = new EventEmitter<string>();
 
-  private defaultTheme: ComponentTheme = {
-    primaryColor: '#3b82f6',
-    secondaryColor: '#8b5cf6',
+  value: string = '';
+  isFocused = false;
+  inputId = `input-${Math.random().toString(36).substr(2, 9)}`;
+
+  private onChange: (value: string) => void = () => {};
+  private onTouched: () => void = () => {};
+
+  private defaultTheme: InputTheme = {
+    primaryColor: '#10b981',
+    secondaryColor: '#059669',
     backgroundColor: '#ffffff',
-    textColor: '#111827',
-    borderColor: '#e5e7eb'
+    textColor: '#064e3b',
+    glowColor: '#10b981'
   };
 
-  get appliedTheme(): ComponentTheme {
+  get appliedTheme(): InputTheme {
     return { ...this.defaultTheme, ...this.theme };
   }
 
-  get componentStyles() {
-    const sizeMap = {
-      sm: { padding: '0.5rem 1rem', fontSize: '0.875rem' },
-      md: { padding: '0.75rem 1.5rem', fontSize: '1rem' },
-      lg: { padding: '1rem 2rem', fontSize: '1.125rem' }
+  get wrapperStyles() {
+    return {
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     };
+  }
 
-    const variantMap = {
-      default: {
-        backgroundColor: this.appliedTheme.backgroundColor,
-        border: `1px solid ${this.appliedTheme.borderColor}`
-      },
-      outlined: {
-        backgroundColor: 'transparent',
-        border: `2px solid ${this.appliedTheme.primaryColor}`
-      },
-      filled: {
-        backgroundColor: this.appliedTheme.primaryColor,
-        color: '#ffffff'
-      }
+  get containerStyles() {
+    const t = this.appliedTheme;
+    const sizeMap = {
+      sm: { height: '38px' },
+      md: { height: '46px' },
+      lg: { height: '54px' }
     };
 
     return {
       ...sizeMap[this.size],
-      ...variantMap[this.variant],
-      color: this.appliedTheme.textColor,
-      borderRadius: '0.5rem',
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center'
+      border: `2px solid ${t.primaryColor}30`,
+      borderRadius: '12px',
+      backgroundColor: t.backgroundColor
     };
+  }
+
+  get inputStyles() {
+    const t = this.appliedTheme;
+    const sizeMap = {
+      sm: { padding: '8px 12px', fontSize: '13px' },
+      md: { padding: '12px 14px', fontSize: '15px' },
+      lg: { padding: '16px 16px', fontSize: '17px' }
+    };
+
+    return {
+      ...sizeMap[this.size],
+      color: t.textColor
+    };
+  }
+
+  get labelStyles() {
+    const t = this.appliedTheme;
+    return {
+      color: t.primaryColor,
+      fontSize: '15px'
+    };
+  }
+
+  get helperStyles() {
+    const t = this.appliedTheme;
+    return {
+      color: `${t.textColor}99`
+    };
+  }
+
+  onInput(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.value = value;
+    this.onChange(value);
+    this.valueChange.emit(value);
+  }
+
+  onFocus(): void {
+    this.isFocused = true;
+  }
+
+  onBlur(): void {
+    this.isFocused = false;
+    this.onTouched();
+  }
+
+  writeValue(value: string): void {
+    this.value = value || '';
+  }
+
+  registerOnChange(fn: (value: string) => void): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
   }
 }

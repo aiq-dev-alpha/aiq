@@ -1,68 +1,105 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
-interface ComponentTheme {
+interface InputTheme {
   primaryColor: string;
-  secondaryColor: string;
   backgroundColor: string;
   textColor: string;
-  borderColor: string;
+  shadowColor: string;
 }
 
 @Component({
-  selector: 'app-component',
+  selector: 'app-input',
   template: `
-    <div [ngStyle]="componentStyles">
-      <ng-content></ng-content>
+    <div class="input-wrapper">
+      <label *ngIf="label" [for]="inputId" class="label" [ngStyle]="labelStyles">{{ label }}</label>
+      <div class="input-box" [ngStyle]="boxStyles">
+        <input
+          [id]="inputId"
+          [type]="type"
+          [placeholder]="placeholder"
+          [disabled]="disabled"
+          [value]="value"
+          [ngStyle]="inputStyles"
+          (input)="onInput($event)"
+          (focus)="isFocused = true"
+          (blur)="isFocused = false; onTouched()"
+          [attr.aria-label]="ariaLabel || label"
+          class="input-field"
+        />
+      </div>
     </div>
-  `
+  `,
+  styles: [`
+    .input-wrapper { width: 100%; }
+    .label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
+    .input-box { position: relative; border-radius: 16px; overflow: hidden; transition: all 0.3s ease; }
+    .input-box:hover { transform: translateY(-2px); }
+    .input-field { width: 100%; border: none; outline: none; font-family: inherit; background: transparent; }
+    .input-field:disabled { opacity: 0.6; cursor: not-allowed; }
+  `],
+  providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => InputComponent), multi: true }]
 })
-export class ComponentComponent {
-  @Input() theme: Partial<ComponentTheme> = {};
-  @Input() variant: 'default' | 'outlined' | 'filled' = 'default';
+export class InputComponent implements ControlValueAccessor {
+  @Input() theme: Partial<InputTheme> = {};
+  @Input() type = 'text';
+  @Input() label?: string;
+  @Input() placeholder = '';
+  @Input() disabled = false;
+  @Input() ariaLabel?: string;
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
+  @Output() valueChange = new EventEmitter<string>();
 
-  private defaultTheme: ComponentTheme = {
-    primaryColor: '#3b82f6',
-    secondaryColor: '#8b5cf6',
-    backgroundColor: '#ffffff',
-    textColor: '#111827',
-    borderColor: '#e5e7eb'
+  value = '';
+  isFocused = false;
+  inputId = `input-${Math.random().toString(36).substr(2, 9)}`;
+
+  private onChange: (value: string) => void = () => {};
+  private onTouched: () => void = () => {};
+
+  private defaultTheme: InputTheme = {
+    primaryColor: '#f59e0b',
+    backgroundColor: '#fffbeb',
+    textColor: '#78350f',
+    shadowColor: 'rgba(245, 158, 11, 0.3)'
   };
 
-  get appliedTheme(): ComponentTheme {
+  get appliedTheme(): InputTheme {
     return { ...this.defaultTheme, ...this.theme };
   }
 
-  get componentStyles() {
-    const sizeMap = {
-      sm: { padding: '0.5rem 1rem', fontSize: '0.875rem' },
-      md: { padding: '0.75rem 1.5rem', fontSize: '1rem' },
-      lg: { padding: '1rem 2rem', fontSize: '1.125rem' }
-    };
+  get labelStyles() {
+    return { color: this.appliedTheme.primaryColor };
+  }
 
-    const variantMap = {
-      default: {
-        backgroundColor: this.appliedTheme.backgroundColor,
-        border: `1px solid ${this.appliedTheme.borderColor}`
-      },
-      outlined: {
-        backgroundColor: 'transparent',
-        border: `2px solid ${this.appliedTheme.primaryColor}`
-      },
-      filled: {
-        backgroundColor: this.appliedTheme.primaryColor,
-        color: '#ffffff'
-      }
+  get boxStyles() {
+    const t = this.appliedTheme;
+    const sizes = {
+      sm: { padding: '8px 14px', height: '36px' },
+      md: { padding: '12px 16px', height: '44px' },
+      lg: { padding: '16px 20px', height: '52px' }
     };
-
     return {
-      ...sizeMap[this.size],
-      ...variantMap[this.variant],
-      color: this.appliedTheme.textColor,
-      borderRadius: '0.5rem',
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center'
+      ...sizes[this.size],
+      backgroundColor: t.backgroundColor,
+      boxShadow: this.isFocused ? `0 8px 24px ${t.shadowColor}` : `0 2px 8px ${t.shadowColor}`,
+      border: `2px solid ${t.primaryColor}${this.isFocused ? '' : '50'}`
     };
   }
+
+  get inputStyles() {
+    const sizes = { sm: { fontSize: '13px' }, md: { fontSize: '15px' }, lg: { fontSize: '17px' } };
+    return { ...sizes[this.size], color: this.appliedTheme.textColor };
+  }
+
+  onInput(e: Event): void {
+    this.value = (e.target as HTMLInputElement).value;
+    this.onChange(this.value);
+    this.valueChange.emit(this.value);
+  }
+
+  writeValue(value: string): void { this.value = value || ''; }
+  registerOnChange(fn: any): void { this.onChange = fn; }
+  registerOnTouched(fn: any): void { this.onTouched = fn; }
+  setDisabledState(isDisabled: boolean): void { this.disabled = isDisabled; }
 }

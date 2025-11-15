@@ -1,68 +1,110 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
-interface ComponentTheme {
+interface InputTheme {
   primaryColor: string;
-  secondaryColor: string;
-  backgroundColor: string;
+  gradientStart: string;
+  gradientEnd: string;
   textColor: string;
-  borderColor: string;
 }
 
 @Component({
-  selector: 'app-component',
+  selector: 'app-input',
   template: `
-    <div [ngStyle]="componentStyles">
-      <ng-content></ng-content>
+    <div class="input-wrapper">
+      <label *ngIf="label" class="label" [ngStyle]="labelStyles">{{ label }}</label>
+      <div class="input-container" [ngStyle]="containerStyles">
+        <div class="gradient-border" [ngStyle]="borderStyles"></div>
+        <input
+          [type]="type"
+          [placeholder]="placeholder"
+          [disabled]="disabled"
+          [value]="value"
+          [ngStyle]="inputStyles"
+          (input)="onInput($event)"
+          (focus)="isFocused = true"
+          (blur)="isFocused = false; onTouched()"
+          [attr.aria-label]="ariaLabel || label"
+          class="input-field"
+        />
+      </div>
     </div>
-  `
+  `,
+  styles: [`
+    .input-wrapper { width: 100%; }
+    .label { display: block; margin-bottom: 8px; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; }
+    .input-container { position: relative; }
+    .gradient-border { position: absolute; inset: 0; border-radius: 10px; padding: 2px; -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; transition: opacity 0.3s; }
+    .input-field { width: 100%; border: none; outline: none; font-family: inherit; border-radius: 10px; }
+    .input-field:disabled { opacity: 0.5; cursor: not-allowed; }
+  `],
+  providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => InputComponent), multi: true }]
 })
-export class ComponentComponent {
-  @Input() theme: Partial<ComponentTheme> = {};
-  @Input() variant: 'default' | 'outlined' | 'filled' = 'default';
+export class InputComponent implements ControlValueAccessor {
+  @Input() theme: Partial<InputTheme> = {};
+  @Input() type = 'text';
+  @Input() label?: string;
+  @Input() placeholder = '';
+  @Input() disabled = false;
+  @Input() ariaLabel?: string;
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
+  @Output() valueChange = new EventEmitter<string>();
 
-  private defaultTheme: ComponentTheme = {
-    primaryColor: '#3b82f6',
-    secondaryColor: '#8b5cf6',
-    backgroundColor: '#ffffff',
-    textColor: '#111827',
-    borderColor: '#e5e7eb'
+  value = '';
+  isFocused = false;
+
+  private onChange: (value: string) => void = () => {};
+  private onTouched: () => void = () => {};
+
+  private defaultTheme: InputTheme = {
+    primaryColor: '#8b5cf6',
+    gradientStart: '#6366f1',
+    gradientEnd: '#ec4899',
+    textColor: '#1e1b4b'
   };
 
-  get appliedTheme(): ComponentTheme {
+  get appliedTheme(): InputTheme {
     return { ...this.defaultTheme, ...this.theme };
   }
 
-  get componentStyles() {
-    const sizeMap = {
-      sm: { padding: '0.5rem 1rem', fontSize: '0.875rem' },
-      md: { padding: '0.75rem 1.5rem', fontSize: '1rem' },
-      lg: { padding: '1rem 2rem', fontSize: '1.125rem' }
-    };
+  get labelStyles() {
+    return { color: this.appliedTheme.primaryColor };
+  }
 
-    const variantMap = {
-      default: {
-        backgroundColor: this.appliedTheme.backgroundColor,
-        border: `1px solid ${this.appliedTheme.borderColor}`
-      },
-      outlined: {
-        backgroundColor: 'transparent',
-        border: `2px solid ${this.appliedTheme.primaryColor}`
-      },
-      filled: {
-        backgroundColor: this.appliedTheme.primaryColor,
-        color: '#ffffff'
-      }
-    };
+  get containerStyles() {
+    return { position: 'relative' };
+  }
 
+  get borderStyles() {
+    const t = this.appliedTheme;
     return {
-      ...sizeMap[this.size],
-      ...variantMap[this.variant],
-      color: this.appliedTheme.textColor,
-      borderRadius: '0.5rem',
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center'
+      background: `linear-gradient(135deg, ${t.gradientStart}, ${t.gradientEnd})`,
+      opacity: this.isFocused ? 1 : 0.5
     };
   }
+
+  get inputStyles() {
+    const t = this.appliedTheme;
+    const sizes = {
+      sm: { padding: '8px 12px', fontSize: '13px' },
+      md: { padding: '11px 15px', fontSize: '15px' },
+      lg: { padding: '14px 18px', fontSize: '17px' }
+    };
+    return {
+      ...sizes[this.size],
+      color: t.textColor,
+      backgroundColor: '#ffffff'
+    };
+  }
+
+  onInput(e: Event): void {
+    this.value = (e.target as HTMLInputElement).value;
+    this.onChange(this.value);
+    this.valueChange.emit(this.value);
+  }
+
+  writeValue(value: string): void { this.value = value || ''; }
+  registerOnChange(fn: any): void { this.onChange = fn; }
+  registerOnTouched(fn: any): void { this.onTouched = fn; }
+  setDisabledState(isDisabled: boolean): void { this.disabled = isDisabled; }
 }

@@ -1,68 +1,139 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
-interface ComponentTheme {
+interface FormTheme {
   primaryColor: string;
-  secondaryColor: string;
   backgroundColor: string;
   textColor: string;
   borderColor: string;
+  errorColor: string;
 }
 
 @Component({
-  selector: 'app-component',
+  selector: 'app-form',
   template: `
-    <div [ngStyle]="componentStyles">
-      <ng-content></ng-content>
-    </div>
-  `
-})
-export class ComponentComponent {
-  @Input() theme: Partial<ComponentTheme> = {};
-  @Input() variant: 'default' | 'outlined' | 'filled' = 'default';
-  @Input() size: 'sm' | 'md' | 'lg' = 'md';
+    <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" [ngStyle]="formStyles" class="form-container">
+      <div *ngIf="title" class="form-header" [ngStyle]="headerStyles">
+        <h2 class="form-title">{{ title }}</h2>
+        <p *ngIf="description" class="form-description">{{ description }}</p>
+      </div>
 
-  private defaultTheme: ComponentTheme = {
+      <div class="form-body" [ngStyle]="bodyStyles">
+        <ng-content></ng-content>
+      </div>
+
+      <div *ngIf="hasActions" class="form-actions" [ngStyle]="actionsStyles">
+        <ng-content select="[actions]"></ng-content>
+      </div>
+
+      <div *ngIf="errorMessage" class="form-error" [ngStyle]="errorStyles">
+        {{ errorMessage }}
+      </div>
+    </form>
+  `,
+  styles: [`
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .form-header {
+      border-bottom: 2px solid;
+      padding-bottom: 16px;
+    }
+    .form-title {
+      margin: 0 0 8px 0;
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .form-description {
+      margin: 0;
+      font-size: 14px;
+      opacity: 0.7;
+    }
+    .form-body {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      padding-top: 16px;
+      border-top: 1px solid;
+    }
+    .form-error {
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+  `]
+})
+export class FormComponent {
+  @Input() theme: Partial<FormTheme> = {};
+  @Input() formGroup!: FormGroup;
+  @Input() title?: string;
+  @Input() description?: string;
+  @Input() hasActions = false;
+  @Input() errorMessage?: string;
+  @Input() loading = false;
+  @Output() submitted = new EventEmitter<any>();
+
+  private defaultTheme: FormTheme = {
     primaryColor: '#3b82f6',
-    secondaryColor: '#8b5cf6',
     backgroundColor: '#ffffff',
-    textColor: '#111827',
-    borderColor: '#e5e7eb'
+    textColor: '#0f172a',
+    borderColor: '#e2e8f0',
+    errorColor: '#ef4444'
   };
 
-  get appliedTheme(): ComponentTheme {
+  get appliedTheme(): FormTheme {
     return { ...this.defaultTheme, ...this.theme };
   }
 
-  get componentStyles() {
-    const sizeMap = {
-      sm: { padding: '0.5rem 1rem', fontSize: '0.875rem' },
-      md: { padding: '0.75rem 1.5rem', fontSize: '1rem' },
-      lg: { padding: '1rem 2rem', fontSize: '1.125rem' }
-    };
-
-    const variantMap = {
-      default: {
-        backgroundColor: this.appliedTheme.backgroundColor,
-        border: `1px solid ${this.appliedTheme.borderColor}`
-      },
-      outlined: {
-        backgroundColor: 'transparent',
-        border: `2px solid ${this.appliedTheme.primaryColor}`
-      },
-      filled: {
-        backgroundColor: this.appliedTheme.primaryColor,
-        color: '#ffffff'
-      }
-    };
-
+  get formStyles() {
+    const t = this.appliedTheme;
     return {
-      ...sizeMap[this.size],
-      ...variantMap[this.variant],
-      color: this.appliedTheme.textColor,
-      borderRadius: '0.5rem',
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center'
+      backgroundColor: t.backgroundColor,
+      color: t.textColor,
+      padding: '32px',
+      borderRadius: '16px',
+      border: `1px solid ${t.borderColor}`
     };
+  }
+
+  get headerStyles() {
+    const t = this.appliedTheme;
+    return {
+      borderColor: t.primaryColor
+    };
+  }
+
+  get bodyStyles() {
+    return {};
+  }
+
+  get actionsStyles() {
+    const t = this.appliedTheme;
+    return {
+      borderColor: t.borderColor
+    };
+  }
+
+  get errorStyles() {
+    const t = this.appliedTheme;
+    return {
+      backgroundColor: `${t.errorColor}15`,
+      color: t.errorColor,
+      border: `1px solid ${t.errorColor}`
+    };
+  }
+
+  onSubmit(): void {
+    if (this.formGroup.valid && !this.loading) {
+      this.submitted.emit(this.formGroup.value);
+    }
   }
 }
