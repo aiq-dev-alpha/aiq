@@ -3,75 +3,93 @@ import 'package:flutter/material.dart';
 class BarComponent extends StatefulWidget {
   final Color? backgroundColor;
   final Color? textColor;
+  final Color? accentColor;
   final EdgeInsetsGeometry? padding;
-  final double? borderRadius;
-  final BoxShadow? shadow;
+  final VoidCallback? onTap;
 
   const BarComponent({
     Key? key,
     this.backgroundColor,
     this.textColor,
+    this.accentColor,
     this.padding,
-    this.borderRadius,
-    this.shadow,
+    this.onTap,
   }) : super(key: key);
 
   @override
   State<BarComponent> createState() => _BarComponentState();
 }
 
-class _BarComponentState extends State<BarComponent> with SingleTickerProviderStateMixin {
+class _BarComponentState extends State<BarComponent> with TickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _fadeAnimation;
-  late Animation<Offset> _slideAnimation;
+  late AnimationController _hoverController;
+  late Animation<double> _scaleAnimation;
+  bool _isHovered = false;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 1050),
+      duration: const Duration(milliseconds: 980),
       vsync: this,
     );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    _hoverController = AnimationController(
+      duration: const Duration(milliseconds: 227),
+      vsync: this,
     );
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    _scaleAnimation = Tween<double>(begin: 0.95, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+    );
     _controller.forward();
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _hoverController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = widget.backgroundColor ?? Colors.white;
-    final txtColor = widget.textColor ?? Colors.black87;
-
-    return SlideTransition(
-      position: _slideAnimation,
-      child: FadeTransition(
-        opacity: _fadeAnimation,
-        child: Container(
-          padding: widget.padding ?? const EdgeInsets.all(32),
-          decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.circular(widget.borderRadius ?? 22),
-            boxShadow: widget.shadow != null ? [widget.shadow!] : [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.10),
-                blurRadius: 17,
-                offset: const Offset(0, 4),
+    return MouseRegion(
+      onEnter: (_) => setState(() {
+        _isHovered = true;
+        _hoverController.forward();
+      }),
+      onExit: (_) => setState(() {
+        _isHovered = false;
+        _hoverController.reverse();
+      }),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: ScaleTransition(
+          scale: _scaleAnimation,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 227),
+            transform: Matrix4.identity()
+              ..translate(0.0, _isHovered ? -5.0 : 0.0),
+            padding: widget.padding ?? const EdgeInsets.all(33),
+            decoration: BoxDecoration(
+              color: widget.backgroundColor ?? Colors.white,
+              borderRadius: BorderRadius.circular(23),
+              border: Border.all(
+                color: (widget.accentColor ?? Theme.of(context).primaryColor).withOpacity(
+                  _isHovered ? 0.9 : 0.1
+                ),
+                width: _isHovered ? 3.0 : 1.0,
               ),
-            ],
-          ),
-          child: const Center(
-            child: Text('Component'),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(_isHovered ? 0.15 : 0.7),
+                  blurRadius: _isHovered ? 22.0 : 11.0,
+                  offset: Offset(0, _isHovered ? 7.0 : 2.0),
+                ),
+              ],
+            ),
+            child: const Center(
+              child: Text('Component', style: TextStyle(fontWeight: FontWeight.w600)),
+            ),
           ),
         ),
       ),

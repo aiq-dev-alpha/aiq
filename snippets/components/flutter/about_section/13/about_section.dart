@@ -1,22 +1,16 @@
 import 'package:flutter/material.dart';
 
 class CustomSection extends StatefulWidget {
-  final String title;
-  final String description;
-  final Color backgroundColor;
-  final Color textColor;
-  final Color? highlightColor;
-  final Widget? action;
+  final Color? backgroundColor;
+  final Color? textColor;
+  final Color? accentColor;
   final EdgeInsetsGeometry? padding;
 
   const CustomSection({
     Key? key,
-    required this.title,
-    required this.description,
-    this.backgroundColor = Colors.white,
-    this.textColor = Colors.black87,
-    this.highlightColor,
-    this.action,
+    this.backgroundColor,
+    this.textColor,
+    this.accentColor,
     this.padding,
   }) : super(key: key);
 
@@ -24,15 +18,20 @@ class CustomSection extends StatefulWidget {
   State<CustomSection> createState() => _CustomSectionState();
 }
 
-class _CustomSectionState extends State<CustomSection> with SingleTickerProviderStateMixin {
+class _CustomSectionState extends State<CustomSection> with TickerProviderStateMixin {
   late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+  bool _isHovered = false;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 1100),
+      duration: const Duration(milliseconds: 1120),
       vsync: this,
+    );
+    _scaleAnimation = Tween<double>(begin: 0.95, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
     );
     _controller.forward();
   }
@@ -45,45 +44,31 @@ class _CustomSectionState extends State<CustomSection> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-    final highlight = widget.highlightColor ?? Theme.of(context).colorScheme.primary;
-
-    return SlideTransition(
-      position: Tween<Offset>(
-        begin: const Offset(0, 0.1),
-        end: Offset.zero,
-      ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut)),
-      child: Container(
-        padding: widget.padding ?? const EdgeInsets.all(26),
-        decoration: BoxDecoration(
-          color: widget.backgroundColor,
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: highlight.withOpacity(0.25), width: 2),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.title,
-              style: TextStyle(
-                fontSize: 27,
-                fontWeight: FontWeight.w800,
-                color: widget.textColor,
-              ),
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: ScaleTransition(
+        scale: _scaleAnimation,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          transform: Matrix4.identity()..translate(0.0, _isHovered ? -3.0 : 0.0),
+          padding: widget.padding ?? const EdgeInsets.all(35),
+          decoration: BoxDecoration(
+            color: widget.backgroundColor ?? Colors.white,
+            borderRadius: BorderRadius.circular(25),
+            border: Border.all(
+              color: (widget.accentColor ?? Colors.blue).withOpacity(_isHovered ? 0.6 : 0.2),
+              width: _isHovered ? 2.0 : 1.0,
             ),
-            const SizedBox(height: 16),
-            Text(
-              widget.description,
-              style: TextStyle(
-                fontSize: 15,
-                height: 1.7,
-                color: widget.textColor.withOpacity(0.8),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(_isHovered ? 0.15 : 0.08),
+                blurRadius: _isHovered ? 16.0 : 10.0,
+                offset: Offset(0, _isHovered ? 4.0 : 2.0),
               ),
-            ),
-            if (widget.action != null) ...[
-              const SizedBox(height: 22),
-              widget.action!,
             ],
-          ],
+          ),
+          child: const Center(child: Text('Component')),
         ),
       ),
     );

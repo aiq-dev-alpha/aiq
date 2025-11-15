@@ -1,23 +1,16 @@
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 
 class CustomSection extends StatefulWidget {
-  final String title;
-  final String description;
-  final Color backgroundColor;
-  final Color textColor;
-  final Widget? action;
-  final List<Color>? decorativeColors;
+  final Color? backgroundColor;
+  final Color? textColor;
+  final Color? accentColor;
   final EdgeInsetsGeometry? padding;
 
   const CustomSection({
     Key? key,
-    required this.title,
-    required this.description,
-    this.backgroundColor = Colors.white,
-    this.textColor = Colors.black87,
-    this.action,
-    this.decorativeColors,
+    this.backgroundColor,
+    this.textColor,
+    this.accentColor,
     this.padding,
   }) : super(key: key);
 
@@ -25,15 +18,20 @@ class CustomSection extends StatefulWidget {
   State<CustomSection> createState() => _CustomSectionState();
 }
 
-class _CustomSectionState extends State<CustomSection> with SingleTickerProviderStateMixin {
+class _CustomSectionState extends State<CustomSection> with TickerProviderStateMixin {
   late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+  bool _isHovered = false;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 2000),
+      duration: const Duration(milliseconds: 920),
       vsync: this,
+    );
+    _scaleAnimation = Tween<double>(begin: 0.95, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
     );
     _controller.forward();
   }
@@ -46,106 +44,33 @@ class _CustomSectionState extends State<CustomSection> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-    final colors = widget.decorativeColors ?? [
-      Colors.blue,
-      Colors.purple,
-      Colors.pink,
-    ];
-
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return Stack(
-          children: [
-            Positioned(
-              right: -20,
-              top: -20,
-              child: Opacity(
-                opacity: 0.1 * _controller.value,
-                child: Transform.rotate(
-                  angle: math.pi / 4,
-                  child: Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: colors),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                ),
-              ),
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: ScaleTransition(
+        scale: _scaleAnimation,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          transform: Matrix4.identity()..translate(0.0, _isHovered ? -3.0 : 0.0),
+          padding: widget.padding ?? const EdgeInsets.all(30),
+          decoration: BoxDecoration(
+            color: widget.backgroundColor ?? Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: (widget.accentColor ?? Colors.blue).withOpacity(_isHovered ? 0.6 : 0.2),
+              width: _isHovered ? 2.0 : 1.0,
             ),
-            Container(
-              padding: widget.padding ?? const EdgeInsets.all(28),
-              decoration: BoxDecoration(
-                color: widget.backgroundColor,
-                borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(_isHovered ? 0.15 : 0.08),
+                blurRadius: _isHovered ? 16.0 : 10.0,
+                offset: Offset(0, _isHovered ? 4.0 : 2.0),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Transform.translate(
-                    offset: Offset(0, 20 * (1 - _controller.value)),
-                    child: Opacity(
-                      opacity: _controller.value,
-                      child: Text(
-                        widget.title,
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w900,
-                          color: widget.textColor,
-                          letterSpacing: -0.8,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: List.generate(
-                      3,
-                      (index) => Transform.scale(
-                        scale: _controller.value,
-                        child: Container(
-                          margin: const EdgeInsets.only(right: 4),
-                          width: index == 0 ? 24 : 16,
-                          height: 4,
-                          decoration: BoxDecoration(
-                            color: colors[index % colors.length].withOpacity(0.7),
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Transform.translate(
-                    offset: Offset(0, 30 * (1 - _controller.value)),
-                    child: Opacity(
-                      opacity: _controller.value,
-                      child: Text(
-                        widget.description,
-                        style: TextStyle(
-                          fontSize: 16,
-                          height: 1.7,
-                          color: widget.textColor.withOpacity(0.85),
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (widget.action != null) ...[
-                    const SizedBox(height: 24),
-                    Transform.scale(
-                      scale: _controller.value,
-                      alignment: Alignment.centerLeft,
-                      child: widget.action!,
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ],
-        );
-      },
+            ],
+          ),
+          child: const Center(child: Text('Component')),
+        ),
+      ),
     );
   }
 }

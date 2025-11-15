@@ -1,113 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-interface SearchResult {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  relevance: number;
+export interface SearchResultsScreenProps {
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
+  className?: string;
+  onHover?: (isHovered: boolean) => void;
 }
 
-const results: SearchResult[] = [
-  { id: '1', title: 'Getting Started Guide', description: 'Learn the basics of our platform', category: 'Documentation', relevance: 95 },
-  { id: '2', title: 'API Reference', description: 'Complete API documentation', category: 'Technical', relevance: 88 },
-  { id: '3', title: 'Best Practices', description: 'Tips and tricks for optimal usage', category: 'Guide', relevance: 82 },
-  { id: '4', title: 'Troubleshooting', description: 'Common issues and solutions', category: 'Support', relevance: 75 }
-];
+export const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({ 
+  theme = {}, 
+  className = '',
+  onHover
+}) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
-export const SearchResultsScreen: React.FC = () => {
-  const [query, setQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
-  const categories = ['All', ...Array.from(new Set(results.map(r => r.category)))];
-  const filteredResults = results.filter(r =>
-    (selectedCategory === 'All' || r.category === selectedCategory) &&
-    (r.title.toLowerCase().includes(query.toLowerCase()) ||
-     r.description.toLowerCase().includes(query.toLowerCase()))
-  );
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    onHover?.(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    onHover?.(false);
+  };
+
+  const styles: React.CSSProperties = {
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible 
+      ? isHovered 
+        ? 'translateY(-5px) scale(1.2)'
+        : 'translateY(0) scale(1)'
+      : 'translateY(13px) scale(0.95)',
+    transition: `all 280ms cubic-bezier(0.4, 0, 0.2, 1)`,
+    padding: '19px',
+    backgroundColor: theme.background || '#ffffff',
+    color: theme.text || '#111827',
+    borderRadius: '11px',
+    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
+    boxShadow: isHovered 
+      ? '0 7px 21px rgba(0,0,0,0.13)' 
+      : '0 4px 13px rgba(0,0,0,0.7)',
+    cursor: 'pointer',
+  };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', padding: '2rem', fontFamily: 'system-ui, sans-serif' }}>
-      <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-        <div style={{ marginBottom: '2rem' }}>
-          <input
-            type="text"
-            placeholder="Search..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '1rem 1.5rem',
-              border: '1px solid #d1d5db',
-              borderRadius: '0.75rem',
-              fontSize: '1.125rem',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
-            }}
-          />
-        </div>
-
-        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
-          {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              style={{
-                padding: '0.5rem 1rem',
-                border: 'none',
-                borderRadius: '0.5rem',
-                backgroundColor: selectedCategory === cat ? '#3b82f6' : '#fff',
-                color: selectedCategory === cat ? '#fff' : '#374151',
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                cursor: 'pointer',
-                boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
-              }}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        <div style={{ marginBottom: '1rem', color: '#6b7280' }}>
-          {filteredResults.length} results
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {filteredResults.map(result => (
-            <div
-              key={result.id}
-              style={{
-                backgroundColor: '#fff',
-                borderRadius: '0.75rem',
-                padding: '1.5rem',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                cursor: 'pointer',
-                transition: 'transform 0.2s'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-              onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 600, margin: 0 }}>{result.title}</h3>
-                <span style={{
-                  padding: '0.25rem 0.75rem',
-                  borderRadius: '0.375rem',
-                  backgroundColor: '#eff6ff',
-                  color: '#3b82f6',
-                  fontSize: '0.75rem',
-                  fontWeight: 500
-                }}>
-                  {result.category}
-                </span>
-              </div>
-              <p style={{ color: '#6b7280', marginBottom: '0.5rem' }}>{result.description}</p>
-              <div style={{ fontSize: '0.875rem', color: '#9ca3af' }}>
-                Relevance: {result.relevance}%
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+    <div 
+      className={className} 
+      style={styles}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      Component
     </div>
   );
 };

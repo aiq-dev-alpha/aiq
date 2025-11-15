@@ -1,22 +1,16 @@
 import 'package:flutter/material.dart';
 
 class CustomSection extends StatefulWidget {
-  final String title;
-  final String description;
-  final Color backgroundColor;
-  final Color textColor;
-  final Widget? action;
-  final String? subtitle;
+  final Color? backgroundColor;
+  final Color? textColor;
+  final Color? accentColor;
   final EdgeInsetsGeometry? padding;
 
   const CustomSection({
     Key? key,
-    required this.title,
-    required this.description,
-    this.backgroundColor = Colors.white,
-    this.textColor = Colors.black87,
-    this.action,
-    this.subtitle,
+    this.backgroundColor,
+    this.textColor,
+    this.accentColor,
     this.padding,
   }) : super(key: key);
 
@@ -24,15 +18,20 @@ class CustomSection extends StatefulWidget {
   State<CustomSection> createState() => _CustomSectionState();
 }
 
-class _CustomSectionState extends State<CustomSection> with SingleTickerProviderStateMixin {
+class _CustomSectionState extends State<CustomSection> with TickerProviderStateMixin {
   late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+  bool _isHovered = false;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 900),
+      duration: const Duration(milliseconds: 1080),
       vsync: this,
+    );
+    _scaleAnimation = Tween<double>(begin: 0.95, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
     );
     _controller.forward();
   }
@@ -45,51 +44,31 @@ class _CustomSectionState extends State<CustomSection> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: _controller,
-      child: Container(
-        padding: widget.padding ?? const EdgeInsets.all(28),
-        decoration: BoxDecoration(
-          color: widget.backgroundColor,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: widget.textColor.withOpacity(0.15)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (widget.subtitle != null)
-              Text(
-                widget.subtitle!,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.8,
-                  color: widget.textColor.withOpacity(0.6),
-                ),
-              ),
-            if (widget.subtitle != null) const SizedBox(height: 10),
-            Text(
-              widget.title,
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.w800,
-                color: widget.textColor,
-              ),
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: ScaleTransition(
+        scale: _scaleAnimation,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          transform: Matrix4.identity()..translate(0.0, _isHovered ? -3.0 : 0.0),
+          padding: widget.padding ?? const EdgeInsets.all(34),
+          decoration: BoxDecoration(
+            color: widget.backgroundColor ?? Colors.white,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: (widget.accentColor ?? Colors.blue).withOpacity(_isHovered ? 0.6 : 0.2),
+              width: _isHovered ? 2.0 : 1.0,
             ),
-            const SizedBox(height: 16),
-            Text(
-              widget.description,
-              style: TextStyle(
-                fontSize: 15,
-                height: 1.7,
-                color: widget.textColor.withOpacity(0.78),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(_isHovered ? 0.15 : 0.08),
+                blurRadius: _isHovered ? 16.0 : 10.0,
+                offset: Offset(0, _isHovered ? 4.0 : 2.0),
               ),
-            ),
-            if (widget.action != null) ...[
-              const SizedBox(height: 22),
-              widget.action!,
             ],
-          ],
+          ),
+          child: const Center(child: Text('Component')),
         ),
       ),
     );

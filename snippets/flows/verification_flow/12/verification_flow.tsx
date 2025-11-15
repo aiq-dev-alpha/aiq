@@ -7,25 +7,58 @@ export interface FlowProps {
     text?: string;
   };
   className?: string;
+  onHover?: (isHovered: boolean) => void;
 }
 
-export const Flow: React.FC<FlowProps> = ({ theme = {}, className = '' }) => {
+export const Flow: React.FC<FlowProps> = ({ 
+  theme = {}, 
+  className = '',
+  onHover
+}) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
 
-  const styles: React.CSSProperties = {
-    opacity: isVisible ? 1 : 0,
-    transform: isVisible ? 'translateY(0)' : 'translateY(22px)',
-    transition: `all 900ms ease-out`,
-    padding: '16px',
-    backgroundColor: theme.background || '#ffffff',
-    color: theme.text || '#111827',
-    borderRadius: '8px',
-    boxShadow: '0 2px 12px rgba(0,0,0,0.1)',
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    onHover?.(true);
   };
 
-  return <div className={className} style={styles}>Component</div>;
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    onHover?.(false);
+  };
+
+  const styles: React.CSSProperties = {
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible 
+      ? isHovered 
+        ? 'translateY(-4px) scale(1.1)'
+        : 'translateY(0) scale(1)'
+      : 'translateY(24px) scale(0.95)',
+    transition: `all 610ms cubic-bezier(0.4, 0, 0.2, 1)`,
+    padding: '30px',
+    backgroundColor: theme.background || '#ffffff',
+    color: theme.text || '#111827',
+    borderRadius: '22px',
+    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
+    boxShadow: isHovered 
+      ? '0 10px 20px rgba(0,0,0,0.16)' 
+      : '0 5px 16px rgba(0,0,0,0.6)',
+    cursor: 'pointer',
+  };
+
+  return (
+    <div 
+      className={className} 
+      style={styles}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      Component
+    </div>
+  );
 };

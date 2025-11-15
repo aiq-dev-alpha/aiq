@@ -1,55 +1,64 @@
 import React, { useState, useEffect } from 'react';
 
-export interface ButtonTheme {
-  primary: string;
-  secondary: string;
-  background: string;
-  text: string;
-  border: string;
-}
-
 export interface ButtonProps {
-  theme?: Partial<ButtonTheme>;
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
   className?: string;
-  style?: React.CSSProperties;
+  onHover?: (isHovered: boolean) => void;
 }
 
-const defaultTheme: ButtonTheme = {
-  primary: '#3b82f6',
-  secondary: '#8b5cf6',
-  background: '#ffffff',
-  text: '#111827',
-  border: '#e5e7eb'
-};
-
-export const Button: React.FC<ButtonProps> = ({
-  theme = {},
+export const Button: React.FC<ButtonProps> = ({ 
+  theme = {}, 
   className = '',
-  style = {}
+  onHover
 }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const appliedTheme = { ...defaultTheme, ...theme };
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
 
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    onHover?.(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    onHover?.(false);
+  };
+
   const styles: React.CSSProperties = {
     opacity: isVisible ? 1 : 0,
-    transform: isVisible ? 'translateY(0)' : 'translateY(19px)',
-    transition: `all 950ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    padding: '25px',
-    backgroundColor: appliedTheme.background,
-    color: appliedTheme.text,
-    borderRadius: '17px',
-    border: `1px solid ${appliedTheme.border}`,
-    boxShadow: '0 3px 19px rgba(0,0,0,0.14)',
-    ...style
+    transform: isVisible 
+      ? isHovered 
+        ? 'translateY(-7px) scale(1.2)'
+        : 'translateY(0) scale(1)'
+      : 'translateY(27px) scale(0.95)',
+    transition: `all 520ms cubic-bezier(0.4, 0, 0.2, 1)`,
+    padding: '31px',
+    backgroundColor: theme.background || '#ffffff',
+    color: theme.text || '#111827',
+    borderRadius: '23px',
+    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
+    boxShadow: isHovered 
+      ? '0 11px 29px rgba(0,0,0,0.17)' 
+      : '0 7px 17px rgba(0,0,0,0.9)',
+    cursor: 'pointer',
   };
 
   return (
-    <div className={className} style={styles}>
-      <div>Component Content</div>
+    <div 
+      className={className} 
+      style={styles}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      Component
     </div>
   );
 };

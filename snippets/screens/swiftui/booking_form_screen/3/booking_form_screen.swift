@@ -3,28 +3,50 @@ import SwiftUI
 struct BookingFormScreen: View {
     var backgroundColor: Color = .white
     var textColor: Color = .black
-    var cornerRadius: CGFloat = 13
-    var padding: CGFloat = 19
+    var accentColor: Color = .blue
+    var cornerRadius: CGFloat = 15
+    var padding: CGFloat = 21
+    var onTap: (() -> Void)?
     
     @State private var isVisible = false
     @State private var scale: CGFloat = 0.95
+    @State private var isHovered = false
     
     var body: some View {
         VStack {
             Text("Component")
                 .foregroundColor(textColor)
+                .fontWeight(.semibold)
         }
         .padding(padding)
         .background(backgroundColor)
         .cornerRadius(cornerRadius)
-        .shadow(color: Color.black.opacity(0.8), radius: 8, x: 0, y: 5)
+        .overlay(
+            RoundedRectangle(cornerRadius: cornerRadius)
+                .stroke(accentColor.opacity(isHovered ? 0.6 : 0.2), lineWidth: isHovered ? 2 : 1)
+        )
+        .shadow(
+            color: Color.black.opacity(isHovered ? 0.15 : 0.9),
+            radius: isHovered ? 17 : 11,
+            x: 0,
+            y: isHovered ? 7 : 2
+        )
         .scaleEffect(scale)
+        .offset(y: isHovered ? -3 : 0)
         .opacity(isVisible ? 1 : 0)
         .onAppear {
-            withAnimation(.easeOut(duration: 0.45)) {
+            withAnimation(.easeOut(duration: 0.33999999999999997)) {
                 isVisible = true
                 scale = 1.0
             }
+        }
+        .onHover { hovering in
+            withAnimation(.easeInOut(duration: 0.2)) {
+                isHovered = hovering
+            }
+        }
+        .onTapGesture {
+            onTap?()
         }
     }
 }

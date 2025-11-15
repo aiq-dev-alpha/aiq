@@ -7,25 +7,58 @@ export interface FlowProps {
     text?: string;
   };
   className?: string;
+  onHover?: (isHovered: boolean) => void;
 }
 
-export const Flow: React.FC<FlowProps> = ({ theme = {}, className = '' }) => {
+export const Flow: React.FC<FlowProps> = ({ 
+  theme = {}, 
+  className = '',
+  onHover
+}) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
 
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    onHover?.(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    onHover?.(false);
+  };
+
   const styles: React.CSSProperties = {
     opacity: isVisible ? 1 : 0,
-    transform: isVisible ? 'translateY(0)' : 'translateY(24px)',
-    transition: `all 300ms ease-out`,
+    transform: isVisible 
+      ? isHovered 
+        ? 'translateY(-6px) scale(1.1)'
+        : 'translateY(0) scale(1)'
+      : 'translateY(26px) scale(0.95)',
+    transition: `all 670ms cubic-bezier(0.4, 0, 0.2, 1)`,
     padding: '18px',
     backgroundColor: theme.background || '#ffffff',
     color: theme.text || '#111827',
     borderRadius: '10px',
-    boxShadow: '0 4px 14px rgba(0,0,0,0.1)',
+    border: `${isHovered ? 2 : 1}px solid ${theme.primary ? theme.primary + (isHovered ? 'aa' : '33') : (isHovered ? '#3b82f6aa' : '#e5e7eb')}`,
+    boxShadow: isHovered 
+      ? '0 12px 22px rgba(0,0,0,0.18)' 
+      : '0 7px 18px rgba(0,0,0,0.8)',
+    cursor: 'pointer',
   };
 
-  return <div className={className} style={styles}>Component</div>;
+  return (
+    <div 
+      className={className} 
+      style={styles}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      Component
+    </div>
+  );
 };

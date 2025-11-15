@@ -1,101 +1,58 @@
 import SwiftUI
 
 struct SplashScreen: View {
-    @State private var isAnimating = false
-    @State private var logoScale: CGFloat = 0.8
-    @State private var logoOpacity: Double = 0
-    @State private var textOpacity: Double = 0
-    @State private var showProgressIndicator = false
-
+    var backgroundColor: Color = .white
+    var textColor: Color = .black
+    var accentColor: Color = .blue
+    var cornerRadius: CGFloat = 14
+    var padding: CGFloat = 20
+    var onTap: (() -> Void)?
+    
+    @State private var isVisible = false
+    @State private var scale: CGFloat = 0.95
+    @State private var isHovered = false
+    
     var body: some View {
-        ZStack {
-            // Background gradient
-            LinearGradient(
-                gradient: Gradient(colors: [
-                    Color(red: 0.39, green: 0.40, blue: 0.95), // #6366F1
-                    Color(red: 0.39, green: 0.40, blue: 0.95).opacity(0.8)
-                ]),
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
-
-            VStack(spacing: 32) {
-                // Logo
-                ZStack {
-                    RoundedRectangle(cornerRadius: 24)
-                        .fill(Color.white)
-                        .frame(width: 120, height: 120)
-                        .shadow(color: .black.opacity(0.1), radius: 20, x: 0, y: 10)
-
-                    Image(systemName: "rocket.fill")
-                        .font(.system(size: 60))
-                        .foregroundColor(Color(red: 0.39, green: 0.40, blue: 0.95))
-                }
-                .scaleEffect(logoScale)
-                .opacity(logoOpacity)
-
-                // Title
-                VStack(spacing: 16) {
-                    Text("AIQ")
-                        .font(.system(size: 32, weight: .bold, design: .default))
-                        .foregroundColor(.white)
-                        .tracking(2)
-
-                    Text("Artificial Intelligence Quotient")
-                        .font(.system(size: 16))
-                        .foregroundColor(.white.opacity(0.7))
-                        .tracking(0.5)
-                }
-                .opacity(textOpacity)
-
-                // Progress indicator
-                if showProgressIndicator {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .white.opacity(0.7)))
-                        .scaleEffect(1.2)
-                        .transition(.opacity)
-                }
-            }
+        VStack {
+            Text("Component")
+                .foregroundColor(textColor)
+                .fontWeight(.semibold)
         }
+        .padding(padding)
+        .background(backgroundColor)
+        .cornerRadius(cornerRadius)
+        .overlay(
+            RoundedRectangle(cornerRadius: cornerRadius)
+                .stroke(accentColor.opacity(isHovered ? 0.6 : 0.2), lineWidth: isHovered ? 2 : 1)
+        )
+        .shadow(
+            color: Color.black.opacity(isHovered ? 0.14 : 0.8),
+            radius: isHovered ? 16 : 10,
+            x: 0,
+            y: isHovered ? 6 : 4
+        )
+        .scaleEffect(scale)
+        .offset(y: isHovered ? -5 : 0)
+        .opacity(isVisible ? 1 : 0)
         .onAppear {
-            startAnimations()
-        }
-        .preferredColorScheme(.dark)
-    }
-
-    private func startAnimations() {
-        // Logo animation
-        withAnimation(.easeIn(duration: 0.5)) {
-            logoOpacity = 1
-        }
-
-        withAnimation(.spring(response: 0.8, dampingFraction: 0.6, blendDuration: 0)) {
-            logoScale = 1.0
-        }
-
-        // Text animation
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            withAnimation(.easeIn(duration: 0.6)) {
-                textOpacity = 1
+            withAnimation(.easeOut(duration: 0.31)) {
+                isVisible = true
+                scale = 1.0
             }
         }
-
-        // Progress indicator
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-            withAnimation(.easeIn(duration: 0.4)) {
-                showProgressIndicator = true
+        .onHover { hovering in
+            withAnimation(.easeInOut(duration: 0.2)) {
+                isHovered = hovering
             }
         }
-
-        // Navigate to next screen
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-            // Navigate to onboarding
-            // NavigationManager.shared.navigate(to: .onboarding)
+        .onTapGesture {
+            onTap?()
         }
     }
 }
 
-#Preview {
-    SplashScreen()
+struct SplashScreen_Previews: PreviewProvider {
+    static var previews: some View {
+        SplashScreen()
+    }
 }

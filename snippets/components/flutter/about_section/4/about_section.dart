@@ -1,52 +1,38 @@
 import 'package:flutter/material.dart';
 
 class CustomSection extends StatefulWidget {
-  final String title;
-  final String description;
-  final Color backgroundColor;
-  final Color textColor;
+  final Color? backgroundColor;
+  final Color? textColor;
   final Color? accentColor;
-  final Widget? action;
-  final BorderRadius? borderRadius;
   final EdgeInsetsGeometry? padding;
-  final BoxShadow? shadow;
 
   const CustomSection({
     Key? key,
-    required this.title,
-    required this.description,
-    this.backgroundColor = Colors.white,
-    this.textColor = Colors.black87,
+    this.backgroundColor,
+    this.textColor,
     this.accentColor,
-    this.action,
-    this.borderRadius,
     this.padding,
-    this.shadow,
   }) : super(key: key);
 
   @override
   State<CustomSection> createState() => _CustomSectionState();
 }
 
-class _CustomSectionState extends State<CustomSection> with SingleTickerProviderStateMixin {
+class _CustomSectionState extends State<CustomSection> with TickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _fadeAnimation;
-  late Animation<Offset> _slideAnimation;
+  late Animation<double> _scaleAnimation;
+  bool _isHovered = false;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 760),
       vsync: this,
     );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    _scaleAnimation = Tween<double>(begin: 0.95, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
     );
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
     _controller.forward();
   }
 
@@ -58,77 +44,31 @@ class _CustomSectionState extends State<CustomSection> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-    final effectiveAccent = widget.accentColor ?? Theme.of(context).primaryColor;
-
-    return FadeTransition(
-      opacity: _fadeAnimation,
-      child: SlideTransition(
-        position: _slideAnimation,
-        child: Container(
-          padding: widget.padding ?? const EdgeInsets.all(24),
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: ScaleTransition(
+        scale: _scaleAnimation,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          transform: Matrix4.identity()..translate(0.0, _isHovered ? -3.0 : 0.0),
+          padding: widget.padding ?? const EdgeInsets.all(26),
           decoration: BoxDecoration(
-            color: widget.backgroundColor,
-            borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
-            boxShadow: widget.shadow != null ? [widget.shadow!] : [
+            color: widget.backgroundColor ?? Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: (widget.accentColor ?? Colors.blue).withOpacity(_isHovered ? 0.6 : 0.2),
+              width: _isHovered ? 2.0 : 1.0,
+            ),
+            boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
+                color: Colors.black.withOpacity(_isHovered ? 0.15 : 0.08),
+                blurRadius: _isHovered ? 16.0 : 10.0,
+                offset: Offset(0, _isHovered ? 4.0 : 2.0),
               ),
             ],
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 4,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      color: effectiveAccent,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      widget.title,
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: widget.textColor,
-                        letterSpacing: -0.5,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              TweenAnimationBuilder<double>(
-                duration: const Duration(milliseconds: 600),
-                tween: Tween(begin: 0.0, end: 1.0),
-                builder: (context, value, child) {
-                  return Opacity(
-                    opacity: value,
-                    child: child,
-                  );
-                },
-                child: Text(
-                  widget.description,
-                  style: TextStyle(
-                    fontSize: 16,
-                    height: 1.6,
-                    color: widget.textColor.withOpacity(0.8),
-                  ),
-                ),
-              ),
-              if (widget.action != null) ...[
-                const SizedBox(height: 24),
-                widget.action!,
-              ],
-            ],
-          ),
+          child: const Center(child: Text('Component')),
         ),
       ),
     );

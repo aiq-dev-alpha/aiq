@@ -3,28 +3,50 @@ import SwiftUI
 struct ScreenView: View {
     var backgroundColor: Color = .white
     var textColor: Color = .black
-    var cornerRadius: CGFloat = 21
-    var padding: CGFloat = 27
+    var accentColor: Color = .blue
+    var cornerRadius: CGFloat = 23
+    var padding: CGFloat = 29
+    var onTap: (() -> Void)?
     
     @State private var isVisible = false
     @State private var scale: CGFloat = 0.95
+    @State private var isHovered = false
     
     var body: some View {
         VStack {
             Text("Component")
                 .foregroundColor(textColor)
+                .fontWeight(.semibold)
         }
         .padding(padding)
         .background(backgroundColor)
         .cornerRadius(cornerRadius)
-        .shadow(color: Color.black.opacity(0.6), radius: 6, x: 0, y: 5)
+        .overlay(
+            RoundedRectangle(cornerRadius: cornerRadius)
+                .stroke(accentColor.opacity(isHovered ? 0.6 : 0.2), lineWidth: isHovered ? 2 : 1)
+        )
+        .shadow(
+            color: Color.black.opacity(isHovered ? 0.15 : 0.11),
+            radius: isHovered ? 17 : 13,
+            x: 0,
+            y: isHovered ? 7 : 4
+        )
         .scaleEffect(scale)
+        .offset(y: isHovered ? -5 : 0)
         .opacity(isVisible ? 1 : 0)
         .onAppear {
-            withAnimation(.easeOut(duration: 0.8500000000000001)) {
+            withAnimation(.easeOut(duration: 0.58)) {
                 isVisible = true
                 scale = 1.0
             }
+        }
+        .onHover { hovering in
+            withAnimation(.easeInOut(duration: 0.2)) {
+                isHovered = hovering
+            }
+        }
+        .onTapGesture {
+            onTap?()
         }
     }
 }

@@ -1,24 +1,16 @@
 import 'package:flutter/material.dart';
 
 class CustomSection extends StatefulWidget {
-  final String title;
-  final String description;
-  final Color backgroundColor;
-  final Color textColor;
+  final Color? backgroundColor;
+  final Color? textColor;
   final Color? accentColor;
-  final Widget? action;
-  final String? badge;
   final EdgeInsetsGeometry? padding;
 
   const CustomSection({
     Key? key,
-    required this.title,
-    required this.description,
-    this.backgroundColor = Colors.white,
-    this.textColor = Colors.black87,
+    this.backgroundColor,
+    this.textColor,
     this.accentColor,
-    this.action,
-    this.badge,
     this.padding,
   }) : super(key: key);
 
@@ -28,156 +20,55 @@ class CustomSection extends StatefulWidget {
 
 class _CustomSectionState extends State<CustomSection> with TickerProviderStateMixin {
   late AnimationController _controller;
-  late AnimationController _badgeController;
-  late Animation<double> _fadeAnimation;
-  late Animation<double> _badgeAnimation;
+  late Animation<double> _scaleAnimation;
+  bool _isHovered = false;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 880),
       vsync: this,
     );
-    _badgeController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
-      vsync: this,
-    );
-    _fadeAnimation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    );
-    _badgeAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _badgeController,
-        curve: Curves.easeInOut,
-      ),
+    _scaleAnimation = Tween<double>(begin: 0.95, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
     );
     _controller.forward();
-    if (widget.badge != null) {
-      _badgeController.repeat(reverse: true);
-    }
   }
 
   @override
   void dispose() {
     _controller.dispose();
-    _badgeController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final accent = widget.accentColor ?? Theme.of(context).colorScheme.secondary;
-
-    return FadeTransition(
-      opacity: _fadeAnimation,
-      child: Container(
-        padding: widget.padding ?? const EdgeInsets.all(28),
-        decoration: BoxDecoration(
-          color: widget.backgroundColor,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: accent.withOpacity(0.2),
-            width: 1.5,
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (widget.badge != null)
-              ScaleTransition(
-                scale: _badgeAnimation,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  margin: const EdgeInsets.only(bottom: 16),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [accent, accent.withOpacity(0.7)],
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    widget.badge!,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                ),
-              ),
-            TweenAnimationBuilder<double>(
-              duration: const Duration(milliseconds: 700),
-              tween: Tween(begin: 0.0, end: 1.0),
-              curve: Curves.easeOut,
-              builder: (context, value, child) {
-                return Transform.translate(
-                  offset: Offset(-20 * (1 - value), 0),
-                  child: Opacity(
-                    opacity: value,
-                    child: child,
-                  ),
-                );
-              },
-              child: Text(
-                widget.title,
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w900,
-                  color: widget.textColor,
-                  height: 1.3,
-                ),
-              ),
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: ScaleTransition(
+        scale: _scaleAnimation,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          transform: Matrix4.identity()..translate(0.0, _isHovered ? -3.0 : 0.0),
+          padding: widget.padding ?? const EdgeInsets.all(29),
+          decoration: BoxDecoration(
+            color: widget.backgroundColor ?? Colors.white,
+            borderRadius: BorderRadius.circular(19),
+            border: Border.all(
+              color: (widget.accentColor ?? Colors.blue).withOpacity(_isHovered ? 0.6 : 0.2),
+              width: _isHovered ? 2.0 : 1.0,
             ),
-            const SizedBox(height: 8),
-            Container(
-              height: 2,
-              width: 40,
-              decoration: BoxDecoration(
-                color: accent,
-                borderRadius: BorderRadius.circular(1),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TweenAnimationBuilder<double>(
-              duration: const Duration(milliseconds: 900),
-              tween: Tween(begin: 0.0, end: 1.0),
-              curve: Curves.easeOut,
-              builder: (context, value, child) {
-                return Opacity(
-                  opacity: value,
-                  child: child,
-                );
-              },
-              child: Text(
-                widget.description,
-                style: TextStyle(
-                  fontSize: 15,
-                  height: 1.75,
-                  color: widget.textColor.withOpacity(0.8),
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ),
-            if (widget.action != null) ...[
-              const SizedBox(height: 24),
-              TweenAnimationBuilder<double>(
-                duration: const Duration(milliseconds: 1100),
-                tween: Tween(begin: 0.0, end: 1.0),
-                curve: Curves.easeOut,
-                builder: (context, value, child) {
-                  return Transform.scale(
-                    scale: value,
-                    alignment: Alignment.centerLeft,
-                    child: child,
-                  );
-                },
-                child: widget.action!,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(_isHovered ? 0.15 : 0.08),
+                blurRadius: _isHovered ? 16.0 : 10.0,
+                offset: Offset(0, _isHovered ? 4.0 : 2.0),
               ),
             ],
-          ],
+          ),
+          child: const Center(child: Text('Component')),
         ),
       ),
     );
