@@ -1,0 +1,82 @@
+.card_v3 {
+  background: #fafafa;
+  border: 1px solid #e0e0e0;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.card_v3_accent_top::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #000;
+}
+
+.card_v3_accent_left::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 3px;
+  background: #000;
+}
+
+.card_v3_clickable {
+  cursor: pointer;
+}
+
+.card_v3_clickable:hover {
+  background: #f5f5f5;
+  border-color: #000;
+}
+
+.card_v3_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.5rem;
+  gap: 1rem;
+}
+
+.card_v3_header_main {
+  flex: 1;
+}
+
+.card_v3_title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #000;
+}
+
+.card_v3_subtitle {
+  margin: 0.5rem 0 0 0;
+  font-size: 0.875rem;
+  color: #666;
+  line-height: 1.5;
+}
+
+.card_v3_badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: #000;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.card_v3_content {
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  color: #1a1a1a;
+}
+
+.card_v3_footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e0e0e0;
+}

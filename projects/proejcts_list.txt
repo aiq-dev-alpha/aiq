@@ -1,5 +1,8 @@
-- pixmap
+:: aiq projects
+    - pandaweed
+    - 
 
-- pixapp
-- pixservice
-- 
+:: work projects
+    - pixapp
+    - pixservice
+    - pixmap 

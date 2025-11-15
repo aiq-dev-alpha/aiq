@@ -1,0 +1,85 @@
+.modal_v3_overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1.5rem;
+  animation: modal_v3_fade 0.2s ease;
+}
+
+@keyframes modal_v3_fade {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(4px);
+  }
+}
+
+.modal_v3 {
+  background: white;
+  width: 100%;
+  position: relative;
+  animation: modal_v3_scale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modal_v3_scale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modal_v3_header {
+  padding: 2rem 2rem 1rem 2rem;
+}
+
+.modal_v3_title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #000;
+  letter-spacing: -0.01em;
+}
+
+.modal_v3_content {
+  padding: 0 2rem 2rem 2rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+.modal_v3_actions {
+  padding: 1.5rem 2rem;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.modal_v3_close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: #999;
+  transition: color 0.2s;
+}
+
+.modal_v3_close:hover {
+  color: #000;
+}

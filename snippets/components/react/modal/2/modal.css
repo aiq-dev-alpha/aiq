@@ -1,0 +1,121 @@
+.modal_v2_overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+  animation: modal_v2_fade_in 0.3s ease;
+}
+
+@keyframes modal_v2_fade_in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal_v2 {
+  position: fixed;
+  background: white;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.2);
+}
+
+.modal_v2_right {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 500px;
+  animation: modal_v2_slide_right 0.3s ease;
+}
+
+@keyframes modal_v2_slide_right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.modal_v2_left {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 500px;
+  animation: modal_v2_slide_left 0.3s ease;
+}
+
+@keyframes modal_v2_slide_left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.modal_v2_bottom {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: 80vh;
+  border-radius: 24px 24px 0 0;
+  animation: modal_v2_slide_up 0.3s ease;
+}
+
+@keyframes modal_v2_slide_up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.modal_v2_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: linear-gradient(180deg, white 0%, #fafafa 100%);
+}
+
+.modal_v2_title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.modal_v2_close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: #f3f4f6;
+  font-size: 1.125rem;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.2s;
+}
+
+.modal_v2_close:hover {
+  background: #e5e7eb;
+  color: #000;
+  transform: rotate(90deg);
+}
+
+.modal_v2_content {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal_v2_footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  background: #fafafa;
+}

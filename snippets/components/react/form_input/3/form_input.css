@@ -1,0 +1,81 @@
+.form_input_v3 {
+  margin-bottom: 2rem;
+}
+
+.form_input_v3_wrapper {
+  position: relative;
+  padding-top: 1.5rem;
+}
+
+.form_input_v3_label {
+  position: absolute;
+  left: 0;
+  top: 2rem;
+  color: #999;
+  font-size: 1rem;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  font-weight: 400;
+}
+
+.form_input_v3_wrapper.active .form_input_v3_label {
+  top: 0;
+  font-size: 0.75rem;
+  color: #000;
+  font-weight: 500;
+}
+
+.form_input_v3_field {
+  width: 100%;
+  padding: 0.75rem 0;
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  color: #000;
+  outline: none;
+}
+
+.form_input_v3_field:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.form_input_v3_underline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: #e0e0e0;
+  transition: all 0.2s ease;
+}
+
+.form_input_v3_underline::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #000;
+  transition: width 0.3s ease;
+}
+
+.form_input_v3_wrapper.active .form_input_v3_underline::after {
+  width: 100%;
+}
+
+.form_input_v3_wrapper.error .form_input_v3_underline {
+  background: #ef4444;
+}
+
+.form_input_v3_wrapper.error .form_input_v3_underline::after {
+  background: #ef4444;
+  width: 100%;
+}
+
+.form_input_v3_error {
+  margin: 0.5rem 0 0 0;
+  font-size: 0.875rem;
+  color: #ef4444;
+}
