@@ -12,21 +12,8 @@ class CustomBadge extends StatefulWidget {
   @override
   State<CustomBadge> createState() => _CustomBadgeState();
 }
-class _CustomBadgeState extends State<CustomBadge> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  @override
-  void initState() {
-  super.initState();
-  _controller = AnimationController(
-  duration: const Duration(milliseconds: 300),
-  vsync: this,
-  );
-  }
-  @override
-  void dispose() {
-  _controller.dispose();
-  super.dispose();
-  }
+
+class _CustomBadgeState extends State<CustomBadge> {
   @override
   Widget build(BuildContext context) {
   return GestureDetector(
@@ -51,7 +38,7 @@ class _CustomBadgeState extends State<CustomBadge> with SingleTickerProviderStat
   ),
   ],
   ),
-  child: widget.child ?? const Text('Component', style: TextStyle(color: Colors.white)),
+  child: widget.child ?? const Text('Component', style: const TextStyle(color: Colors.white)),
   ),
   );
   }

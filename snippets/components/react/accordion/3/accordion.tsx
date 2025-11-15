@@ -6,6 +6,7 @@ interface AccordionItem {
 }
 
 interface AccordionProps {
+  className?: string;
   items: AccordionItem[];
   allowMultiple?: boolean;
   bordered?: boolean;
@@ -88,3 +89,5 @@ export const Accordion: React.FC<AccordionProps> = ({
     </div>
   );
 };
+
+export default Accordion;

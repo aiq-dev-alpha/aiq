@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 interface BreadcrumbProps {
+  className?: string;
   children?: React.ReactNode;
   variant?: 'default' | 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
@@ -39,3 +40,5 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = (props) => {
     </div>
   );
 };
+
+export default Breadcrumb;

@@ -15,14 +15,12 @@ class CustomButton extends StatefulWidget {
     this.size = 40,
     this.label,
   }) : super(key: key);
-
   @override
   State<CustomButton> createState() => _CustomButtonState();
 }
 
 class _CustomButtonState extends State<CustomButton> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-
   @override
   void initState() {
     super.initState();
@@ -35,7 +33,6 @@ class _CustomButtonState extends State<CustomButton> with SingleTickerProviderSt
       _controller.repeat();
     }
   }
-
   @override
   void didUpdateWidget(CustomButton oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -47,13 +44,11 @@ class _CustomButtonState extends State<CustomButton> with SingleTickerProviderSt
       }
     }
   }
-
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     final color = widget.color ?? Theme.of(context).primaryColor;

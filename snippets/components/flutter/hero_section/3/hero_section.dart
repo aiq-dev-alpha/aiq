@@ -19,7 +19,6 @@ class CustomSection extends StatelessWidget {
     this.backgroundImage,
     this.darkMode = false,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Container(

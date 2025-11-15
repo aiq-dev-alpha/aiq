@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 interface BadgeProps {
+  className?: string;
   label: string;
   color?: string;
   onRemove?: () => void;
@@ -30,3 +31,5 @@ export const Badge: React.FC<BadgeProps> = ({
     </span>
   );
 };
+
+export default Badge;

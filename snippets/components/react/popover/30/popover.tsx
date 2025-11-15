@@ -1,18 +1,21 @@
 import React from 'react';
 
-export const Popover: React.FC<any> = (props) => {
+interface PopoverProps {
+  variant?: 'elevated' | 'default';
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export const Popover: React.FC<PopoverProps> = ({
+  variant = 'elevated',
+  className = '',
+  children,
+}) => {
   return (
-    <div
-      style={{
-        background: 'rgba(255, 255, 255, 0.1)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.2)',
-        borderRadius: '12px',
-        padding: '16px',
-        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
-      }}
-    >
-      <div>Popover - Glassmorphism</div>
+    <div className={`rounded-md p-4 bg-white shadow-lg ${className}`}>
+      {children}
     </div>
   );
 };
+
+export default Popover;

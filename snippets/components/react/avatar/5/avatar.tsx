@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 interface AvatarProps {
+  className?: string;
   src?: string;
   alt?: string;
   size?: 'sm' | 'md' | 'lg';
@@ -41,3 +42,5 @@ export const Avatar: React.FC<AvatarProps> = ({
     </div>
   );
 };
+
+export default Avatar;

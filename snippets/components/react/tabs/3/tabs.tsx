@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 interface TabsProps {
+  className?: string;
   children?: React.ReactNode;
   variant?: 'default' | 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
@@ -39,3 +40,5 @@ export const Tabs: React.FC<TabsProps> = (props) => {
     </div>
   );
 };
+
+export default Tabs;

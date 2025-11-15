@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 interface RadioProps {
+  className?: string;
   children?: React.ReactNode;
   variant?: 'default' | 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
@@ -39,3 +40,5 @@ export const Radio: React.FC<RadioProps> = (props) => {
     </div>
   );
 };
+
+export default Radio;

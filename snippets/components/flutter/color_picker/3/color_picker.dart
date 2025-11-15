@@ -11,7 +11,6 @@ class CustomPicker extends StatefulWidget {
     this.onColorChanged,
     this.presetColors,
   }) : super(key: key);
-
   @override
   State<CustomPicker> createState() => _CustomPickerState();
 }
@@ -19,7 +18,6 @@ class CustomPicker extends StatefulWidget {
 class _CustomPickerState extends State<CustomPicker> {
   late Color _selectedColor;
   late List<Color> _colors;
-
   @override
   void initState() {
     super.initState();
@@ -44,7 +42,6 @@ class _CustomPickerState extends State<CustomPicker> {
           Colors.deepOrange,
         ];
   }
-
   @override
   Widget build(BuildContext context) {
     return Container(

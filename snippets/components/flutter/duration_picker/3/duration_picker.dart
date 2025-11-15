@@ -9,7 +9,6 @@ class CustomPicker extends StatefulWidget {
     this.initialDuration = Duration.zero,
     this.onDurationChanged,
   }) : super(key: key);
-
   @override
   State<CustomPicker> createState() => _CustomPickerState();
 }
@@ -18,7 +17,6 @@ class _CustomPickerState extends State<CustomPicker> {
   late int _hours;
   late int _minutes;
   late int _seconds;
-
   @override
   void initState() {
     super.initState();
@@ -107,7 +105,6 @@ class _CustomPickerState extends State<CustomPicker> {
       ],
     );
   }
-
   @override
   Widget build(BuildContext context) {
     return Container(

@@ -16,3 +16,5 @@ export const Input: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Input;

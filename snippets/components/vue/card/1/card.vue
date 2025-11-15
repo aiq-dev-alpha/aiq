@@ -1,57 +1,107 @@
 <template>
-  <div class="custom-card" :class="{ elevated, bordered }">
-    <div v-if="$slots.header || title" class="card-header">
-      <h3 v-if="title" class="card-title">{{ title }}</h3>
-      <slot name="header" />
-    </div>
-    <div class="card-body">
+  <div
+    ref="cardRef"
+    :class="['parallax-card', { interactive }]"
+    @mousemove="handleMouseMove"
+    @mouseleave="resetTransform"
+  >
+    <div class="card-shine" ref="shineRef"></div>
+    <div class="card-content">
       <slot />
-    </div>
-    <div v-if="$slots.footer" class="card-footer">
-      <slot name="footer" />
     </div>
   </div>
 </template>
-<script lang="ts">
-import { defineComponent } from 'vue';
-export default defineComponent({
-  name: 'CustomCard',
-  props: {
-    title: { type: String, default: '' },
-    elevated: { type: Boolean, default: true },
-    bordered: { type: Boolean, default: false }
-  }
+
+<script setup lang="ts">
+import { ref } from 'vue';
+
+interface Props {
+  interactive?: boolean;
+  intensity?: number;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  interactive: true,
+  intensity: 20
 });
+
+const cardRef = ref<HTMLElement | null>(null);
+const shineRef = ref<HTMLElement | null>(null);
+
+const handleMouseMove = (e: MouseEvent) => {
+  if (!props.interactive || !cardRef.value || !shineRef.value) return;
+
+  const rect = cardRef.value.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+
+  const centerX = rect.width / 2;
+  const centerY = rect.height / 2;
+
+  const rotateX = ((y - centerY) / centerY) * -props.intensity;
+  const rotateY = ((x - centerX) / centerX) * props.intensity;
+
+  cardRef.value.style.transform = `
+    perspective(1000px)
+    rotateX(${rotateX}deg)
+    rotateY(${rotateY}deg)
+    scale3d(1.02, 1.02, 1.02)
+  `;
+
+  shineRef.value.style.background = `
+    radial-gradient(
+      circle at ${x}px ${y}px,
+      rgba(255, 255, 255, 0.3) 0%,
+      transparent 50%
+    )
+  `;
+  shineRef.value.style.opacity = '1';
+};
+
+const resetTransform = () => {
+  if (!cardRef.value || !shineRef.value) return;
+
+  cardRef.value.style.transform = `
+    perspective(1000px)
+    rotateX(0deg)
+    rotateY(0deg)
+    scale3d(1, 1, 1)
+  `;
+  shineRef.value.style.opacity = '0';
+};
 </script>
+
 <style scoped>
-.custom-card {
+.parallax-card {
+  position: relative;
   background: white;
-  border-radius: 1rem;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-out, box-shadow 0.3s ease;
+  transform-style: preserve-3d;
   overflow: hidden;
 }
-.custom-card.elevated {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+.parallax-card.interactive:hover {
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
 }
-.custom-card.bordered {
-  border: 2px solid #e5e7eb;
+
+.card-shine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  border-radius: 20px;
 }
-.card-header {
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid #f3f4f6;
-  background: linear-gradient(to bottom, #fafafa, #ffffff);
-}
-.card-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #111827;
-  margin: 0;
-}
-.card-body {
-  padding: 1.5rem;
-}
-.card-footer {
-  padding: 1rem 1.5rem;
-  border-top: 1px solid #f3f4f6;
-  background: #f9fafb;
+
+.card-content {
+  position: relative;
+  z-index: 1;
+  transform: translateZ(20px);
 }
 </style>

@@ -1,6 +1,7 @@
 import React from 'react';
 
 interface CardProps {
+  className?: string;
   children: React.ReactNode;
   blur?: 'light' | 'medium' | 'heavy';
   opacity?: number;
@@ -36,3 +37,5 @@ export const Card: React.FC<CardProps> = ({
     </div>
   );
 };
+
+export default Card;

@@ -25,7 +25,6 @@ class CustomInputField extends StatefulWidget {
     this.errorText,
     this.maxLines = 1,
   }) : super(key: key);
-
   @override
   State<CustomInputField> createState() => _CustomInputFieldState();
 }
@@ -34,7 +33,6 @@ class _CustomInputFieldState extends State<CustomInputField> {
   late TextEditingController _controller;
   late FocusNode _focusNode;
   bool _isFocused = false;
-
   @override
   void initState() {
     super.initState();
@@ -46,14 +44,12 @@ class _CustomInputFieldState extends State<CustomInputField> {
       });
     });
   }
-
   @override
   void dispose() {
     _controller.dispose();
     _focusNode.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return Column(

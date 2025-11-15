@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 interface CardProps {
+  className?: string;
   title: string;
   description?: string;
   image?: string;
@@ -74,3 +75,5 @@ export const Card: React.FC<CardProps> = ({
     </div>
   );
 };
+
+export default Card;

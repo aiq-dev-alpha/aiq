@@ -15,3 +15,5 @@ export const Avatar: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Avatar;

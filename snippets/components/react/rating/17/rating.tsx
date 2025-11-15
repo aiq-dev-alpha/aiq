@@ -1,17 +1,21 @@
 import React from 'react';
 
-export const Rating: React.FC<any> = (props) => {
+interface RatingProps {
+  variant?: 'primary' | 'default';
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export const Rating: React.FC<RatingProps> = ({
+  variant = 'primary',
+  className = '',
+  children,
+}) => {
   return (
-    <div
-      style={{
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        padding: '20px',
-        borderRadius: '16px',
-        color: '#fff',
-        boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
-      }}
-    >
-      <div>Rating - Gradient</div>
+    <div className={`rounded-md p-4 bg-blue-500 text-white ${className}`}>
+      {children}
     </div>
   );
 };
+
+export default Rating;

@@ -1,35 +1,49 @@
 import React from 'react';
+
 interface BadgeProps {
-  label: string;
-  variant?: 'success' | 'warning' | 'error' | 'info' | 'neutral';
-  icon?: React.ReactNode;
-  outlined?: boolean;
+  count?: number;
+  max?: number;
+  showZero?: boolean;
+  dot?: boolean;
+  children?: React.ReactNode;
+  className?: string;
 }
+
 export const Badge: React.FC<BadgeProps> = ({
-  label,
-  variant = 'neutral',
-  icon,
-  outlined = false
+  count = 0,
+  max = 99,
+  showZero = false,
+  dot = false,
+  children,
+  className = '',
 }) => {
-  const solidVariants = {
-    success: 'bg-green-100 text-green-800 border-green-200',
-    warning: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    error: 'bg-red-100 text-red-800 border-red-200',
-    info: 'bg-blue-100 text-blue-800 border-blue-200',
-    neutral: 'bg-gray-100 text-gray-800 border-gray-200'
-  };
-  const outlineVariants = {
-    success: 'border-green-500 text-green-700 bg-white',
-    warning: 'border-yellow-500 text-yellow-700 bg-white',
-    error: 'border-red-500 text-red-700 bg-white',
-    info: 'border-blue-500 text-blue-700 bg-white',
-    neutral: 'border-gray-500 text-gray-700 bg-white'
-  };
-  const classes = outlined ? outlineVariants[variant] : solidVariants[variant];
+  const displayCount = count > max ? `${max}+` : count;
+  const showBadge = count > 0 || showZero;
+
+  if (!children) {
+    return showBadge ? (
+      <span
+        className={`animate-pulse inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-500 rounded-full ${className}`}
+      >
+        {dot ? null : displayCount}
+      </span>
+    ) : null;
+  }
+
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium border ${classes}`}>
-      {icon}
-      {label}
-    </span>
+    <div className={`animate-pulse relative inline-flex ${className}`}>
+      {children}
+      {showBadge && (
+        <span
+          className={`animate-pulse absolute -top-1 -right-1 flex items-center justify-center ${
+            dot ? 'w-2 h-2' : 'min-w-[20px] h-5 px-1'
+          } text-xs font-bold text-white bg-red-500 rounded-full border-2 border-white`}
+        >
+          {dot ? null : displayCount}
+        </span>
+      )}
+    </div>
   );
 };
+
+export default Badge;

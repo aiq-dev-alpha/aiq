@@ -1,5 +1,6 @@
 import React from 'react';
 interface DrawerProps {
+  className?: string;
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
@@ -52,3 +53,5 @@ export const Drawer: React.FC<DrawerProps> = ({
     </>
   );
 };
+
+export default Drawer;

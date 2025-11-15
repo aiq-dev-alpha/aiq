@@ -1,5 +1,6 @@
 import React from 'react';
 interface ChipProps {
+  className?: string;
   label: string;
   avatarSrc?: string;
   onDelete?: () => void;
@@ -38,3 +39,5 @@ export const Chip: React.FC<ChipProps> = ({
     </div>
   );
 };
+
+export default Chip;

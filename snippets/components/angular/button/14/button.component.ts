@@ -1,149 +1,224 @@
+// Chip Button - Compact tag/filter style button with dismiss
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-interface ButtonTheme {
+
+interface ChipButtonTheme {
   primaryColor: string;
-  secondaryColor: string;
   backgroundColor: string;
   textColor: string;
   borderColor: string;
-  accentColor: string;
 }
+
 @Component({
   standalone: true,
   imports: [CommonModule],
   selector: 'app-button',
   template: `
-  <button
-  [ngClass]="['btn', 'btn-' + variant, 'btn-' + size]"
-  [ngStyle]="buttonStyles"
-  [disabled]="disabled || loading"
-  [attr.aria-label]="ariaLabel"
-  [attr.aria-busy]="loading"
-  (click)="handleClick($event)"
-  class="flip-button">
-  <span *ngIf="loading" class="spinner flip-spinner">
-  <span class="flip-box"></span>
-  </span>
-  <span *ngIf="!loading && iconLeft" class="icon-left">{{ iconLeft }}</span>
-  <span class="btn-content">
-  <ng-content></ng-content>
-  </span>
-  <span *ngIf="!loading && iconRight" class="icon-right">{{ iconRight }}</span>
-  </button>
+    <div
+      class="chip-btn"
+      [ngStyle]="chipStyles"
+      [class.selected]="isSelected"
+      [class.disabled]="disabled"
+      [class.with-avatar]="avatar !== undefined"
+      [class.with-dismiss]="dismissible"
+      (click)="handleClick($event)">
+
+      <span *ngIf="avatar" class="chip-avatar">{{ avatar }}</span>
+
+      <span *ngIf="leadingIcon" class="chip-icon chip-leading">{{ leadingIcon }}</span>
+
+      <span class="chip-label">{{ label }}</span>
+
+      <span *ngIf="count !== undefined" class="chip-count">{{ count }}</span>
+
+      <button
+        *ngIf="dismissible"
+        class="chip-dismiss"
+        [attr.aria-label]="'Remove ' + label"
+        (click)="handleDismiss($event)">
+        ✕
+      </button>
+
+      <span *ngIf="trailingIcon && !dismissible" class="chip-icon chip-trailing">
+        {{ trailingIcon }}
+      </span>
+    </div>
   `,
   styles: [`
-  .flip-button {
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform 0.6s;
-  transform-style: preserve-3d;
-  font-weight: 600;
-  border: none;
-  outline: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
-  }
-  .flip-button:hover:not(:disabled) {
-  transform: rotateY(10deg) scale(1.02);
-  box-shadow: 0 10px 35px rgba(168, 85, 247, 0.6);
-  }
-  .flip-button:active:not(:disabled) {
-  transform: rotateY(0deg) scale(0.98);
-  }
-  .flip-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  }
-  .flip-spinner {
-  width: 1em;
-  height: 1em;
-  display: inline-block;
-  perspective: 100px;
-  }
-  .flip-box {
-  width: 100%;
-  height: 100%;
-  background: currentColor;
-  animation: flip 1.2s infinite ease-in-out;
-  }
-  @keyframes flip {
-  0%, 100% { transform: rotateY(0deg); }
-  50% { transform: rotateY(180deg); }
-  }
-  .btn-content {
-  display: flex;
-  align-items: center;
-  }
-  .btn-sm {
-  padding: 0.5rem 1.5rem;
-  font-size: 0.875rem;
-  border-radius: 0.75rem;
-  }
-  .btn-md {
-  padding: 0.75rem 2rem;
-  font-size: 1rem;
-  border-radius: 1rem;
-  }
-  .btn-lg {
-  padding: 1rem 2.5rem;
-  font-size: 1.125rem;
-  border-radius: 1.25rem;
-  }
+    .chip-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      border: 1px solid;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chip-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: currentColor;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .chip-btn:hover:not(.disabled)::before {
+      opacity: 0.08;
+    }
+
+    .chip-btn.selected::before {
+      opacity: 0.12;
+    }
+
+    .chip-btn:active:not(.disabled) {
+      transform: scale(0.95);
+    }
+
+    .chip-btn.disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    .chip-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      background: currentColor;
+      color: white;
+      flex-shrink: 0;
+      margin-left: -4px;
+    }
+
+    .chip-with-avatar {
+      padding-left: 4px;
+    }
+
+    .chip-icon {
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .chip-label {
+      position: relative;
+      z-index: 1;
+      white-space: nowrap;
+    }
+
+    .chip-count {
+      background: currentColor;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      min-width: 20px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .chip-dismiss {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 0;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.2s;
+      color: inherit;
+      position: relative;
+      z-index: 2;
+      margin-right: -4px;
+    }
+
+    .chip-dismiss:hover {
+      background: rgba(0, 0, 0, 0.1);
+      transform: scale(1.2);
+    }
+
+    .chip-with-dismiss {
+      padding-right: 8px;
+    }
+
+    .chip-btn.selected {
+      transform: scale(1.05);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
   `]
 })
 export class ButtonComponent {
-  @Input() theme: Partial<ButtonTheme> = {};
-  @Input() variant: 'default' | 'outlined' | 'filled' | 'vibrant' = 'default';
-  @Input() size: 'sm' | 'md' | 'lg' = 'md';
-  @Input() disabled: boolean = false;
-  @Input() loading: boolean = false;
-  @Input() iconLeft: string = '';
-  @Input() iconRight: string = '';
-  @Input() ariaLabel: string = '';
+  @Input() theme: Partial<ChipButtonTheme> = {};
+  @Input() label = 'Chip';
+  @Input() avatar?: string;
+  @Input() leadingIcon?: string;
+  @Input() trailingIcon?: string;
+  @Input() count?: number;
+  @Input() dismissible = false;
+  @Input() isSelected = false;
+  @Input() disabled = false;
+  @Input() variant: 'filled' | 'outlined' = 'outlined';
   @Output() clicked = new EventEmitter<MouseEvent>();
-  private defaultTheme: ButtonTheme = {
-  primaryColor: '#a855f7',
-  secondaryColor: '#9333ea',
-  backgroundColor: '#faf5ff',
-  backdropFilter: 'blur(10px)',
-  textColor: '#ffffff',
-  borderColor: '#a855f7',
-  accentColor: '#c084fc'
+  @Output() dismissed = new EventEmitter<void>();
+
+  private defaultTheme: ChipButtonTheme = {
+    primaryColor: '#3b82f6',
+    backgroundColor: '#eff6ff',
+    textColor: '#1e40af',
+    borderColor: '#93c5fd'
   };
-  get appliedTheme(): ButtonTheme {
-  return { ...this.defaultTheme, ...this.theme };
+
+  get appliedTheme(): ChipButtonTheme {
+    return { ...this.defaultTheme, ...this.theme };
   }
-  get buttonStyles() {
-  const variantStyles = {
-  default: {
-  background: `linear-gradient(135deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})`,
-  color: this.appliedTheme.textColor,
-  border: 'none'
-  },
-  outlined: {
-  background: 'transparent',
-  color: this.appliedTheme.primaryColor,
-  border: `2px solid ${this.appliedTheme.primaryColor}`
-  },
-  filled: {
-  background: this.appliedTheme.primaryColor,
-  color: this.appliedTheme.textColor,
-  border: 'none'
-  },
-  vibrant: {
-  background: `linear-gradient(45deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.accentColor}, ${this.appliedTheme.secondaryColor})`,
-  color: this.appliedTheme.textColor,
-  border: 'none'
+
+  get chipStyles() {
+    const t = this.appliedTheme;
+    if (this.variant === 'filled') {
+      return {
+        background: t.backgroundColor,
+        color: t.textColor,
+        borderColor: t.backgroundColor
+      };
+    } else {
+      return {
+        background: 'transparent',
+        color: t.primaryColor,
+        borderColor: t.borderColor
+      };
+    }
   }
-  };
-  return variantStyles[this.variant];
-  }
+
   handleClick(event: MouseEvent): void {
-  if (!this.disabled && !this.loading) {
-  this.clicked.emit(event);
+    if (!this.disabled) {
+      this.clicked.emit(event);
+    }
   }
+
+  handleDismiss(event: MouseEvent): void {
+    event.stopPropagation();
+    if (!this.disabled) {
+      this.dismissed.emit();
+    }
   }
 }

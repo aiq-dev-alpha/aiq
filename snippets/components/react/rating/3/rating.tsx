@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 interface RatingProps {
+  className?: string;
   children?: React.ReactNode;
   variant?: 'default' | 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
@@ -39,3 +40,5 @@ export const Rating: React.FC<RatingProps> = (props) => {
     </div>
   );
 };
+
+export default Rating;

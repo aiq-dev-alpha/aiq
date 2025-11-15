@@ -1,18 +1,21 @@
 import React from 'react';
 
-export const Colorpicker: React.FC<any> = (props) => {
+interface ColorpickerProps {
+  variant?: 'primary' | 'default';
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export const Colorpicker: React.FC<ColorpickerProps> = ({
+  variant = 'primary',
+  className = '',
+  children,
+}) => {
   return (
-    <div
-      style={{
-        background: 'rgba(255, 255, 255, 0.1)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.2)',
-        borderRadius: '12px',
-        padding: '16px',
-        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
-      }}
-    >
-      <div>Colorpicker - Glassmorphism</div>
+    <div className={`rounded-md p-4 bg-blue-500 text-white ${className}`}>
+      {children}
     </div>
   );
 };
+
+export default Colorpicker;

@@ -1,17 +1,21 @@
 import React from 'react';
 
-export const Skeleton: React.FC<any> = (props) => {
+interface SkeletonProps {
+  variant?: 'default' | 'default';
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export const Skeleton: React.FC<SkeletonProps> = ({
+  variant = 'default',
+  className = '',
+  children,
+}) => {
   return (
-    <div
-      style={{
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        padding: '20px',
-        borderRadius: '16px',
-        color: '#fff',
-        boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
-      }}
-    >
-      <div>Skeleton - Gradient</div>
+    <div className={`rounded-md p-4 bg-white border border-gray-300 ${className}`}>
+      {children}
     </div>
   );
 };
+
+export default Skeleton;

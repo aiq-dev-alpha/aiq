@@ -21,14 +21,12 @@ class CustomRatingBar extends StatefulWidget {
     this.icon,
     this.allowHalfRating = true,
   }) : super(key: key);
-
   @override
   State<CustomRatingBar> createState() => _CustomRatingBarState();
 }
 
 class _CustomRatingBarState extends State<CustomRatingBar> {
   late double _rating;
-
   @override
   void initState() {
     super.initState();
@@ -41,7 +39,6 @@ class _CustomRatingBarState extends State<CustomRatingBar> {
     });
     widget.onRatingChanged?.call(_rating);
   }
-
   @override
   Widget build(BuildContext context) {
     final activeColor = widget.activeColor ?? Colors.amber;
@@ -108,12 +105,10 @@ class _HalfClipper extends CustomClipper<Rect> {
   final double percentage;
 
   _HalfClipper({required this.percentage});
-
   @override
   Rect getClip(Size size) {
     return Rect.fromLTWH(0, 0, size.width * percentage, size.height);
   }
-
   @override
   bool shouldReclip(_HalfClipper oldClipper) {
     return oldClipper.percentage != percentage;

@@ -1,18 +1,21 @@
 import React from 'react';
 
-export const Tree: React.FC<any> = (props) => {
+interface TreeProps {
+  variant?: 'default' | 'default';
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export const Tree: React.FC<TreeProps> = ({
+  variant = 'default',
+  className = '',
+  children,
+}) => {
   return (
-    <div
-      style={{
-        background: 'rgba(255, 255, 255, 0.1)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.2)',
-        borderRadius: '12px',
-        padding: '16px',
-        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
-      }}
-    >
-      <div>Tree - Glassmorphism</div>
+    <div className={`rounded-md p-4 bg-white border border-gray-300 ${className}`}>
+      {children}
     </div>
   );
 };
+
+export default Tree;

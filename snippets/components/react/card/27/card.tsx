@@ -1,5 +1,6 @@
 import React from 'react';
 interface CardProps {
+  className?: string;
   title?: string;
   children: React.ReactNode;
   footer?: React.ReactNode;
@@ -36,3 +37,5 @@ export const Card: React.FC<CardProps> = ({
     </div>
   );
 };
+
+export default Card;

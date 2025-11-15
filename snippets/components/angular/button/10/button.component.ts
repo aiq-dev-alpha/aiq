@@ -1,157 +1,216 @@
+// Button Group - Multiple buttons in a connected group
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-interface ButtonTheme {
+
+interface ButtonGroupTheme {
   primaryColor: string;
   secondaryColor: string;
   backgroundColor: string;
   textColor: string;
-  borderColor: string;
-  accentColor: string;
+  selectedColor: string;
 }
+
+export interface GroupButton {
+  label: string;
+  value: any;
+  icon?: string;
+  disabled?: boolean;
+}
+
 @Component({
   standalone: true,
   imports: [CommonModule],
   selector: 'app-button',
   template: `
-  <button
-  [ngClass]="['btn', 'btn-' + variant, 'btn-' + size]"
-  [ngStyle]="buttonStyles"
-  [disabled]="disabled || loading"
-  [attr.aria-label]="ariaLabel"
-  [attr.aria-busy]="loading"
-  (click)="handleClick($event)"
-  class="bounce-button">
-  <span *ngIf="loading" class="spinner dots-spinner">
-  <span class="dot"></span>
-  <span class="dot"></span>
-  <span class="dot"></span>
-  </span>
-  <span *ngIf="!loading && iconLeft" class="icon-left">{{ iconLeft }}</span>
-  <span class="btn-content">
-  <ng-content></ng-content>
-  </span>
-  <span *ngIf="!loading && iconRight" class="icon-right">{{ iconRight }}</span>
-  </button>
+    <div
+      class="button-group"
+      [ngStyle]="groupStyles"
+      [class.vertical]="vertical"
+      role="group"
+      [attr.aria-label]="ariaLabel">
+      <button
+        *ngFor="let btn of buttons; let i = index"
+        class="group-btn"
+        [class.selected]="isSelected(btn.value)"
+        [class.first]="i === 0"
+        [class.last]="i === buttons.length - 1"
+        [ngStyle]="getButtonStyles(btn)"
+        [disabled]="btn.disabled"
+        (click)="handleClick(btn)">
+        <span *ngIf="btn.icon" class="btn-icon">{{ btn.icon }}</span>
+        <span class="btn-label">{{ btn.label }}</span>
+        <span *ngIf="showCheck && isSelected(btn.value)" class="check-mark">✓</span>
+      </button>
+    </div>
   `,
   styles: [`
-  .bounce-button {
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-weight: 600;
-  border: none;
-  outline: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-  }
-  .bounce-button:hover:not(:disabled) {
-  animation: bounce 0.6s ease;
-  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
-  }
-  .bounce-button:active:not(:disabled) {
-  transform: scale(0.95);
-  }
-  .bounce-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  }
-  @keyframes bounce {
-  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-  40% { transform: translateY(-12px); }
-  60% { transform: translateY(-6px); }
-  }
-  .dots-spinner {
-  display: flex;
-  gap: 0.25rem;
-  align-items: center;
-  }
-  .dot {
-  width: 0.4em;
-  height: 0.4em;
-  background: currentColor;
-  border-radius: 50%;
-  animation: dotBounce 1.4s infinite ease-in-out both;
-  }
-  .dot:nth-child(1) { animation-delay: -0.32s; }
-  .dot:nth-child(2) { animation-delay: -0.16s; }
-  @keyframes dotBounce {
-  0%, 80%, 100% { transform: scale(0); }
-  40% { transform: scale(1); }
-  }
-  .btn-content {
-  display: flex;
-  align-items: center;
-  }
-  .btn-sm {
-  padding: 0.5rem 1.5rem;
-  font-size: 0.875rem;
-  border-radius: 2rem;
-  }
-  .btn-md {
-  padding: 0.75rem 2rem;
-  font-size: 1rem;
-  border-radius: 2.5rem;
-  }
-  .btn-lg {
-  padding: 1rem 2.75rem;
-  font-size: 1.125rem;
-  border-radius: 3rem;
-  }
+    .button-group {
+      display: inline-flex;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .button-group.vertical {
+      flex-direction: column;
+    }
+
+    .group-btn {
+      flex: 1;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 600;
+      padding: 12px 20px;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: relative;
+      background: transparent;
+      border-right: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .button-group.vertical .group-btn {
+      border-right: none;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .group-btn.last {
+      border-right: none;
+      border-bottom: none;
+    }
+
+    .group-btn:hover:not(:disabled):not(.selected) {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    .group-btn.selected {
+      position: relative;
+      z-index: 1;
+    }
+
+    .group-btn.selected::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: currentColor;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .button-group.vertical .group-btn.selected::after {
+      top: 0;
+      bottom: 0;
+      left: auto;
+      right: 0;
+      width: 3px;
+      height: auto;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: scaleX(0);
+      }
+      to {
+        transform: scaleX(1);
+      }
+    }
+
+    .group-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.4;
+    }
+
+    .btn-icon {
+      font-size: 18px;
+    }
+
+    .check-mark {
+      font-size: 12px;
+      margin-left: 4px;
+      animation: checkPop 0.2s ease-out;
+    }
+
+    @keyframes checkPop {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
   `]
 })
 export class ButtonComponent {
-  @Input() theme: Partial<ButtonTheme> = {};
-  @Input() variant: 'default' | 'outlined' | 'filled' | 'soft' = 'default';
-  @Input() size: 'sm' | 'md' | 'lg' = 'md';
-  @Input() disabled: boolean = false;
-  @Input() loading: boolean = false;
-  @Input() iconLeft: string = '';
-  @Input() iconRight: string = '';
-  @Input() ariaLabel: string = '';
-  @Output() clicked = new EventEmitter<MouseEvent>();
-  private defaultTheme: ButtonTheme = {
-  primaryColor: '#10b981',
-  secondaryColor: '#059669',
-  backgroundColor: '#ecfdf5',
-  backdropFilter: 'blur(10px)',
-  textColor: '#ffffff',
-  borderColor: '#10b981',
-  accentColor: '#34d399'
+  @Input() theme: Partial<ButtonGroupTheme> = {};
+  @Input() buttons: GroupButton[] = [];
+  @Input() selectedValue: any;
+  @Input() multiSelect = false;
+  @Input() vertical = false;
+  @Input() showCheck = false;
+  @Input() ariaLabel?: string;
+  @Output() selectionChange = new EventEmitter<any>();
+
+  private selectedValues = new Set<any>();
+
+  private defaultTheme: ButtonGroupTheme = {
+    primaryColor: '#3b82f6',
+    secondaryColor: '#2563eb',
+    backgroundColor: '#ffffff',
+    textColor: '#1f2937',
+    selectedColor: '#3b82f6'
   };
-  get appliedTheme(): ButtonTheme {
-  return { ...this.defaultTheme, ...this.theme };
+
+  ngOnInit() {
+    if (this.selectedValue !== undefined) {
+      if (Array.isArray(this.selectedValue)) {
+        this.selectedValues = new Set(this.selectedValue);
+      } else {
+        this.selectedValues.add(this.selectedValue);
+      }
+    }
   }
-  get buttonStyles() {
-  const variantStyles = {
-  default: {
-  background: `linear-gradient(135deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})`,
-  color: this.appliedTheme.textColor,
-  border: 'none'
-  },
-  outlined: {
-  background: 'transparent',
-  color: this.appliedTheme.primaryColor,
-  border: `2px solid ${this.appliedTheme.primaryColor}`
-  },
-  filled: {
-  background: this.appliedTheme.primaryColor,
-  color: this.appliedTheme.textColor,
-  border: 'none'
-  },
-  soft: {
-  background: this.appliedTheme.backgroundColor,
-  color: this.appliedTheme.primaryColor,
-  border: 'none'
+
+  get appliedTheme(): ButtonGroupTheme {
+    return { ...this.defaultTheme, ...this.theme };
   }
-  };
-  return variantStyles[this.variant];
+
+  get groupStyles() {
+    const t = this.appliedTheme;
+    return {
+      background: t.backgroundColor
+    };
   }
-  handleClick(event: MouseEvent): void {
-  if (!this.disabled && !this.loading) {
-  this.clicked.emit(event);
+
+  getButtonStyles(btn: GroupButton) {
+    const t = this.appliedTheme;
+    const isSelected = this.isSelected(btn.value);
+    return {
+      color: isSelected ? t.selectedColor : t.textColor,
+      background: isSelected ? `${t.selectedColor}15` : 'transparent',
+      fontWeight: isSelected ? '700' : '600'
+    };
   }
+
+  isSelected(value: any): boolean {
+    return this.selectedValues.has(value);
+  }
+
+  handleClick(btn: GroupButton): void {
+    if (btn.disabled) return;
+
+    if (this.multiSelect) {
+      if (this.selectedValues.has(btn.value)) {
+        this.selectedValues.delete(btn.value);
+      } else {
+        this.selectedValues.add(btn.value);
+      }
+      this.selectionChange.emit(Array.from(this.selectedValues));
+    } else {
+      this.selectedValues.clear();
+      this.selectedValues.add(btn.value);
+      this.selectionChange.emit(btn.value);
+    }
   }
 }

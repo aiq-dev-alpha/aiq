@@ -12,6 +12,7 @@ class BarComponent extends StatefulWidget {
   @override
   State<BarComponent> createState() => _BarComponentState();
 }
+
 class _BarComponentState extends State<BarComponent> {
   bool _isHovered = false;
   @override

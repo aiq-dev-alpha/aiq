@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 interface ChipProps {
+  className?: string;
   label: string;
   options?: string[];
   activeFilters?: Set<string>;
@@ -70,3 +71,5 @@ export const Chip: React.FC<ChipProps> = ({
     </div>
   );
 };
+
+export default Chip;

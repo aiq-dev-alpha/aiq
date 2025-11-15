@@ -16,3 +16,5 @@ export const Toggle: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Toggle;

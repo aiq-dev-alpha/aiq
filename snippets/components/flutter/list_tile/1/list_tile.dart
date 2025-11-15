@@ -12,21 +12,8 @@ class CustomListTile extends StatefulWidget {
   @override
   State<CustomListTile> createState() => _CustomListTileState();
 }
-class _CustomListTileState extends State<CustomListTile> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  @override
-  void initState() {
-  super.initState();
-  _controller = AnimationController(
-  duration: const Duration(milliseconds: 300),
-  vsync: this,
-  );
-  }
-  @override
-  void dispose() {
-  _controller.dispose();
-  super.dispose();
-  }
+
+class _CustomListTileState extends State<CustomListTile> {
   @override
   Widget build(BuildContext context) {
   return GestureDetector(
@@ -51,7 +38,7 @@ class _CustomListTileState extends State<CustomListTile> with SingleTickerProvid
   ),
   ],
   ),
-  child: widget.child ?? const Text('Component', style: TextStyle(color: Colors.white)),
+  child: widget.child ?? const Text('Component', style: const TextStyle(color: Colors.white)),
   ),
   );
   }

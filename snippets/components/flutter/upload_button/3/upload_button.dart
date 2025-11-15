@@ -17,7 +17,6 @@ class CustomButton extends StatefulWidget {
     this.backgroundColor,
     this.icon,
   }) : super(key: key);
-
   @override
   State<CustomButton> createState() => _CustomButtonState();
 }
@@ -30,7 +29,6 @@ class _CustomButtonState extends State<CustomButton> {
     final files = ['example_file.pdf'];
     widget.onFilesSelected?.call(files);
   }
-
   @override
   Widget build(BuildContext context) {
     final bgColor = widget.backgroundColor ?? Theme.of(context).primaryColor;

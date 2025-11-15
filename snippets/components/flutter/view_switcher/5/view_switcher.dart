@@ -10,6 +10,7 @@ class ControlComponent extends StatefulWidget {
   @override
   State<ControlComponent> createState() => _ControlComponentState();
 }
+
 class _ControlComponentState extends State<ControlComponent> {
   bool _isPressed = false;
   @override

@@ -1,18 +1,21 @@
 import React from 'react';
 
-export const Datepicker: React.FC<any> = (props) => {
+interface DatepickerProps {
+  variant?: 'elevated' | 'default';
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export const Datepicker: React.FC<DatepickerProps> = ({
+  variant = 'elevated',
+  className = '',
+  children,
+}) => {
   return (
-    <div
-      style={{
-        background: 'rgba(255, 255, 255, 0.1)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.2)',
-        borderRadius: '12px',
-        padding: '16px',
-        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
-      }}
-    >
-      <div>Datepicker - Glassmorphism</div>
+    <div className={`rounded-md p-4 bg-white shadow-lg ${className}`}>
+      {children}
     </div>
   );
 };
+
+export default Datepicker;

@@ -15,7 +15,6 @@ class CustomCarousel extends StatefulWidget {
     this.spacing = 16,
     this.padding = const EdgeInsets.symmetric(horizontal: 24),
   }) : super(key: key);
-
   @override
   State<CustomCarousel> createState() => _CustomCarouselState();
 }
@@ -23,7 +22,6 @@ class CustomCarousel extends StatefulWidget {
 class _CustomCarouselState extends State<CustomCarousel> {
   final ScrollController _scrollController = ScrollController();
   double _scrollOffset = 0;
-
   @override
   void initState() {
     super.initState();
@@ -33,13 +31,11 @@ class _CustomCarouselState extends State<CustomCarousel> {
       });
     });
   }
-
   @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(

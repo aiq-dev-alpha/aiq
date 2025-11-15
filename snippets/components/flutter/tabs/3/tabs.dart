@@ -15,7 +15,6 @@ class CustomTabs extends StatefulWidget {
     this.activeColor,
     this.inactiveColor,
   }) : super(key: key);
-
   @override
   State<CustomTabs> createState() => _CustomTabsState();
 }
@@ -35,7 +34,6 @@ class TabItem {
 class _CustomTabsState extends State<CustomTabs> with TickerProviderStateMixin {
   late int _selectedIndex;
   late TabController _controller;
-
   @override
   void initState() {
     super.initState();
@@ -54,13 +52,11 @@ class _CustomTabsState extends State<CustomTabs> with TickerProviderStateMixin {
       }
     });
   }
-
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     final activeColor = widget.activeColor ?? Theme.of(context).primaryColor;

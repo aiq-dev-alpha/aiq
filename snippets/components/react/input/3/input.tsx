@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 interface InputProps {
+  className?: string;
   children?: React.ReactNode;
   variant?: 'default' | 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
@@ -39,3 +40,5 @@ export const Input: React.FC<InputProps> = (props) => {
     </div>
   );
 };
+
+export default Input;

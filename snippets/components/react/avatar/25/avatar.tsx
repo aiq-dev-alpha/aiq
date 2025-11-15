@@ -1,18 +1,60 @@
 import React from 'react';
 
-export const Avatar: React.FC<any> = (props) => {
+interface AvatarProps {
+  src?: string;
+  alt?: string;
+  name?: string;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  className?: string;
+}
+
+const sizeClasses = {
+  sm: 'w-8 h-8 text-xs',
+  md: 'w-12 h-12 text-sm',
+  lg: 'w-16 h-16 text-base',
+  xl: 'w-24 h-24 text-xl',
+};
+
+export const Avatar: React.FC<AvatarProps> = ({
+  src,
+  alt,
+  name = '',
+  size = 'md',
+  className = '',
+}) => {
+  const [imageError, setImageError] = React.useState(false);
+  
+  const getInitials = (name: string): string => {
+    return name
+      .split(' ')
+      .map(part => part[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  const showImage = src && !imageError;
+  
   return (
     <div
-      style={{
-        background: 'rgba(255, 255, 255, 0.1)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.2)',
-        borderRadius: '12px',
-        padding: '16px',
-        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
-      }}
+      className={`relative inline-flex items-center justify-center rounded-full ring-2 ring-green-400 bg-gray-200 overflow-hidden ${sizeClasses[size]} ${className}`}
+      role="img"
+      aria-label={alt || name}
     >
-      <div>Avatar - Glassmorphism</div>
+      {showImage ? (
+        <img
+          src={src}
+          alt={alt || name}
+          onError={() => setImageError(true)}
+          className="w-full h-full object-cover"
+        />
+      ) : (
+        <span className="font-semibold text-gray-700">
+          {getInitials(name)}
+        </span>
+      )}
     </div>
   );
 };
+
+export default Avatar;

@@ -17,20 +17,17 @@ class CustomPicker extends StatefulWidget {
     this.onRangeChanged,
     this.divisions = 100,
   }) : super(key: key);
-
   @override
   State<CustomPicker> createState() => _CustomPickerState();
 }
 
 class _CustomPickerState extends State<CustomPicker> {
   late RangeValues _currentRange;
-
   @override
   void initState() {
     super.initState();
     _currentRange = RangeValues(widget.startValue, widget.endValue);
   }
-
   @override
   Widget build(BuildContext context) {
     return Container(

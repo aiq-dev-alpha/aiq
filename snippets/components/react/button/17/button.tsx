@@ -1,94 +1,33 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'default' | 'success' | 'warning' | 'error';
+  fullWidth?: boolean;
   children: React.ReactNode;
-  onClick?: () => void;
-  variant?: 'glass' | 'frosted';
-  size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
 }
 
+const variantClasses = {
+  default: 'border-gray-300 text-gray-700 hover:bg-gray-50',
+  success: 'border-green-500 text-green-600 hover:bg-green-50',
+  warning: 'border-yellow-500 text-yellow-600 hover:bg-yellow-50',
+  error: 'border-red-500 text-red-600 hover:bg-red-50',
+};
+
 export const Button: React.FC<ButtonProps> = ({
+  variant = 'default',
+  fullWidth = false,
   children,
-  onClick,
-  variant = 'glass',
-  size = 'md',
-  disabled = false
+  className = '',
+  ...props
 }) => {
-  const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
-
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    setRipples([...ripples, { x, y, id: Date.now() }]);
-    setTimeout(() => setRipples(r => r.slice(1)), 600);
-    onClick?.();
-  };
-
-  const sizeStyles = {
-    sm: { padding: '8px 16px', fontSize: '14px' },
-    md: { padding: '12px 24px', fontSize: '16px' },
-    lg: { padding: '16px 32px', fontSize: '18px' }
-  };
-
-  const variantStyles = {
-    glass: {
-      background: 'rgba(255, 255, 255, 0.1)',
-      backdropFilter: 'blur(10px)',
-      border: '1px solid rgba(255, 255, 255, 0.2)',
-    },
-    frosted: {
-      background: 'rgba(255, 255, 255, 0.05)',
-      backdropFilter: 'blur(20px) saturate(180%)',
-      border: '1px solid rgba(255, 255, 255, 0.3)',
-    }
-  };
-
   return (
     <button
-      onClick={handleClick}
-      disabled={disabled}
-      style={{
-        ...sizeStyles[size],
-        ...variantStyles[variant],
-        position: 'relative',
-        overflow: 'hidden',
-        borderRadius: '12px',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        opacity: disabled ? 0.5 : 1,
-        transition: 'all 0.3s ease',
-        color: '#fff',
-        fontWeight: 600,
-        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
-      }}
+      className={`border-2 rounded-lg px-5 py-2.5 font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 ${variantClasses[variant]} ${fullWidth ? 'w-full' : ''} ${className}`}
+      {...props}
     >
       {children}
-      {ripples.map(ripple => (
-        <span
-          key={ripple.id}
-          style={{
-            position: 'absolute',
-            left: ripple.x,
-            top: ripple.y,
-            width: 0,
-            height: 0,
-            borderRadius: '50%',
-            background: 'rgba(255, 255, 255, 0.6)',
-            transform: 'translate(-50%, -50%)',
-            animation: 'ripple 0.6s ease-out'
-          }}
-        />
-      ))}
-      <style>{`
-        @keyframes ripple {
-          to {
-            width: 200px;
-            height: 200px;
-            opacity: 0;
-          }
-        }
-      `}</style>
     </button>
   );
 };
+
+export default Button;

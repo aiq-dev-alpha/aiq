@@ -16,3 +16,5 @@ export const Popover: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Popover;

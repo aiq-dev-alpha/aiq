@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  className?: string;
   children: React.ReactNode;
   onClick?: () => void;
   neonColor?: 'cyan' | 'pink' | 'green' | 'yellow';
@@ -33,7 +34,7 @@ export const Button: React.FC<ButtonProps> = ({
   return (
     <button
       onClick={onClick}
-      onMouseEnter={() => setIsGlowing(true)}
+      onMouseEnter={() = {...props}> setIsGlowing(true)}
       onMouseLeave={() => setIsGlowing(false)}
       style={{
         padding: '12px 30px',
@@ -73,3 +74,5 @@ export const Button: React.FC<ButtonProps> = ({
     </button>
   );
 };
+
+export default Button;

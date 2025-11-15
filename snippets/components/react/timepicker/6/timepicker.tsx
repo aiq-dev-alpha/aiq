@@ -15,3 +15,5 @@ export const Timepicker: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Timepicker;

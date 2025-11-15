@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 interface TextAreaProps {
+  className?: string;
   value?: string;
   onChange?: (value: string) => void;
   placeholder?: string;
@@ -39,3 +40,5 @@ export const TextArea: React.FC<TextAreaProps> = ({
     </div>
   );
 };
+
+export default TextArea;

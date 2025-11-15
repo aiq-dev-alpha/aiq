@@ -1,167 +1,191 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+// Progress Button - Button that shows download/upload progress
+import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-interface ButtonTheme {
+
+interface ProgressButtonTheme {
   primaryColor: string;
   secondaryColor: string;
-  backgroundColor: string;
+  successColor: string;
+  errorColor: string;
   textColor: string;
-  borderColor: string;
-  accentColor: string;
 }
+
 @Component({
   standalone: true,
   imports: [CommonModule],
   selector: 'app-button',
   template: `
-  <button
-  [ngClass]="['btn', 'btn-' + variant, 'btn-' + size]"
-  [ngStyle]="buttonStyles"
-  [disabled]="disabled || loading"
-  [attr.aria-label]="ariaLabel"
-  [attr.aria-busy]="loading"
-  (click)="handleClick($event)"
-  class="slide-button">
-  <span *ngIf="loading" class="spinner bar-spinner">
-  <span class="bar"></span>
-  <span class="bar"></span>
-  <span class="bar"></span>
-  <span class="bar"></span>
-  </span>
-  <span *ngIf="!loading && iconLeft" class="icon-left">{{ iconLeft }}</span>
-  <span class="btn-content">
-  <ng-content></ng-content>
-  </span>
-  <span *ngIf="!loading && iconRight" class="icon-right">{{ iconRight }}</span>
-  </button>
+    <button
+      class="progress-btn"
+      [ngStyle]="buttonStyles"
+      [disabled]="disabled || isProcessing"
+      [class.processing]="isProcessing"
+      [class.success]="status === 'success'"
+      [class.error]="status === 'error'"
+      (click)="handleClick($event)">
+
+      <div class="progress-fill" [ngStyle]="progressStyles"></div>
+
+      <div class="btn-content">
+        <span *ngIf="status === 'idle'" class="content-text">
+          {{ label }}
+        </span>
+        <span *ngIf="status === 'processing'" class="content-text">
+          {{ processingLabel || 'Processing...' }} {{ progress }}%
+        </span>
+        <span *ngIf="status === 'success'" class="content-text success-msg">
+          {{ successLabel || 'Complete!' }} ✓
+        </span>
+        <span *ngIf="status === 'error'" class="content-text error-msg">
+          {{ errorLabel || 'Failed' }} ✗
+        </span>
+      </div>
+    </button>
   `,
   styles: [`
-  .slide-button {
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  font-weight: 600;
-  border: none;
-  outline: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
-  }
-  .slide-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.2);
-  transition: left 0.5s ease;
-  }
-  .slide-button:hover:not(:disabled)::before {
-  left: 100%;
-  }
-  .slide-button:hover:not(:disabled) {
-  transform: translateX(4px);
-  box-shadow: 0 8px 30px rgba(239, 68, 68, 0.5);
-  }
-  .slide-button:active:not(:disabled) {
-  transform: translateX(2px);
-  }
-  .slide-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  }
-  .bar-spinner {
-  display: flex;
-  gap: 0.2rem;
-  align-items: center;
-  }
-  .bar {
-  width: 0.2em;
-  height: 1em;
-  background: currentColor;
-  animation: barStretch 1s infinite ease-in-out;
-  }
-  .bar:nth-child(1) { animation-delay: 0s; }
-  .bar:nth-child(2) { animation-delay: 0.1s; }
-  .bar:nth-child(3) { animation-delay: 0.2s; }
-  .bar:nth-child(4) { animation-delay: 0.3s; }
-  @keyframes barStretch {
-  0%, 40%, 100% { transform: scaleY(0.4); }
-  20% { transform: scaleY(1); }
-  }
-  .btn-content {
-  display: flex;
-  align-items: center;
-  }
-  .btn-sm {
-  padding: 0.5rem 1.5rem;
-  font-size: 0.875rem;
-  border-radius: 0.5rem;
-  }
-  .btn-md {
-  padding: 0.75rem 2rem;
-  font-size: 1rem;
-  border-radius: 0.75rem;
-  }
-  .btn-lg {
-  padding: 1rem 2.5rem;
-  font-size: 1.125rem;
-  border-radius: 1rem;
-  }
+    .progress-btn {
+      position: relative;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 14px 28px;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      min-width: 180px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .progress-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .progress-btn:hover:not(:disabled):not(.processing) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .progress-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 0;
+      transition: width 0.3s ease-out, background 0.3s;
+      z-index: 0;
+    }
+
+    .btn-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .content-text {
+      transition: all 0.3s;
+    }
+
+    .success-msg {
+      animation: successPulse 0.5s ease-out;
+    }
+
+    .error-msg {
+      animation: shake 0.5s ease-out;
+    }
+
+    @keyframes successPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .progress-btn.processing {
+      animation: processingPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes processingPulse {
+      0%, 100% { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+      50% { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); }
+    }
   `]
 })
-export class ButtonComponent {
-  @Input() theme: Partial<ButtonTheme> = {};
-  @Input() variant: 'default' | 'outlined' | 'filled' | 'gradient' = 'default';
-  @Input() size: 'sm' | 'md' | 'lg' = 'md';
-  @Input() disabled: boolean = false;
-  @Input() loading: boolean = false;
-  @Input() iconLeft: string = '';
-  @Input() iconRight: string = '';
-  @Input() ariaLabel: string = '';
+export class ButtonComponent implements OnChanges {
+  @Input() theme: Partial<ProgressButtonTheme> = {};
+  @Input() label = 'Start';
+  @Input() processingLabel?: string;
+  @Input() successLabel?: string;
+  @Input() errorLabel?: string;
+  @Input() progress = 0;
+  @Input() status: 'idle' | 'processing' | 'success' | 'error' = 'idle';
+  @Input() disabled = false;
   @Output() clicked = new EventEmitter<MouseEvent>();
-  private defaultTheme: ButtonTheme = {
-  primaryColor: '#ef4444',
-  secondaryColor: '#dc2626',
-  backgroundColor: '#fef2f2',
-  backdropFilter: 'blur(10px)',
-  textColor: '#ffffff',
-  borderColor: '#ef4444',
-  accentColor: '#f87171'
+
+  isProcessing = false;
+
+  private defaultTheme: ProgressButtonTheme = {
+    primaryColor: '#3b82f6',
+    secondaryColor: '#2563eb',
+    successColor: '#10b981',
+    errorColor: '#ef4444',
+    textColor: '#ffffff'
   };
-  get appliedTheme(): ButtonTheme {
-  return { ...this.defaultTheme, ...this.theme };
+
+  ngOnChanges() {
+    this.isProcessing = this.status === 'processing';
+
+    if (this.status === 'success' || this.status === 'error') {
+      setTimeout(() => {
+        if (this.status !== 'processing') {
+          this.status = 'idle';
+        }
+      }, 2000);
+    }
   }
+
+  get appliedTheme(): ProgressButtonTheme {
+    return { ...this.defaultTheme, ...this.theme };
+  }
+
   get buttonStyles() {
-  const variantStyles = {
-  default: {
-  background: `linear-gradient(90deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})`,
-  color: this.appliedTheme.textColor,
-  border: 'none'
-  },
-  outlined: {
-  background: 'transparent',
-  color: this.appliedTheme.primaryColor,
-  border: `2px solid ${this.appliedTheme.primaryColor}`
-  },
-  filled: {
-  background: this.appliedTheme.primaryColor,
-  color: this.appliedTheme.textColor,
-  border: 'none'
-  },
-  gradient: {
-  background: `linear-gradient(45deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.accentColor})`,
-  color: this.appliedTheme.textColor,
-  border: 'none'
+    const t = this.appliedTheme;
+    let bgColor = `linear-gradient(135deg, ${t.primaryColor}, ${t.secondaryColor})`;
+
+    if (this.status === 'success') {
+      bgColor = t.successColor;
+    } else if (this.status === 'error') {
+      bgColor = t.errorColor;
+    }
+
+    return {
+      background: bgColor,
+      color: t.textColor
+    };
   }
-  };
-  return variantStyles[this.variant];
+
+  get progressStyles() {
+    const t = this.appliedTheme;
+    const clampedProgress = Math.min(100, Math.max(0, this.progress));
+
+    return {
+      width: `${clampedProgress}%`,
+      background: `linear-gradient(90deg, ${t.secondaryColor}, ${t.primaryColor})`
+    };
   }
+
   handleClick(event: MouseEvent): void {
-  if (!this.disabled && !this.loading) {
-  this.clicked.emit(event);
-  }
+    if (!this.disabled && !this.isProcessing) {
+      this.clicked.emit(event);
+    }
   }
 }

@@ -8,6 +8,7 @@ interface AccordionItem {
 }
 
 interface AccordionProps {
+  className?: string;
   items: AccordionItem[];
   defaultOpen?: string[];
 }
@@ -97,3 +98,5 @@ export const Accordion: React.FC<AccordionProps> = ({
     </div>
   );
 };
+
+export default Accordion;

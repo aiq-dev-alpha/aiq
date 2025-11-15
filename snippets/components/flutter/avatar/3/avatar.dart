@@ -19,7 +19,6 @@ class CustomAvatar extends StatelessWidget {
     this.showBadge = false,
     this.badgeColor,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

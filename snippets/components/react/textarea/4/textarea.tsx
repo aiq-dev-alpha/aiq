@@ -16,3 +16,5 @@ export const Textarea: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Textarea;

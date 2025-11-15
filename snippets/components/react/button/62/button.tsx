@@ -1,75 +1,34 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'default' | 'success' | 'warning' | 'error';
+  fullWidth?: boolean;
   children: React.ReactNode;
-  onClick?: () => void;
-  neonColor?: 'cyan' | 'pink' | 'green' | 'yellow';
-  intensity?: 'low' | 'medium' | 'high';
 }
 
+const variantClasses = {
+  default: 'border-gray-300 text-gray-700 hover:bg-gray-50',
+  success: 'border-green-500 text-green-600 hover:bg-green-50',
+  warning: 'border-yellow-500 text-yellow-600 hover:bg-yellow-50',
+  error: 'border-red-500 text-red-600 hover:bg-red-50',
+};
+
 export const Button: React.FC<ButtonProps> = ({
+  variant = 'default',
+  fullWidth = false,
   children,
-  onClick,
-  neonColor = 'cyan',
-  intensity = 'medium'
+  className = '',
+  ...props
 }) => {
-  const [isGlowing, setIsGlowing] = useState(false);
-
-  const colors = {
-    cyan: { main: '#00f0ff', shadow: 'rgba(0, 240, 255, 0.5)' },
-    pink: { main: '#ff00ff', shadow: 'rgba(255, 0, 255, 0.5)' },
-    green: { main: '#00ff00', shadow: 'rgba(0, 255, 0, 0.5)' },
-    yellow: { main: '#ffff00', shadow: 'rgba(255, 255, 0, 0.5)' }
-  };
-
-  const intensityMap = {
-    low: '0 0 5px',
-    medium: '0 0 10px',
-    high: '0 0 20px'
-  };
-
-  const color = colors[neonColor];
-
   return (
     <button
-      onClick={onClick}
-      onMouseEnter={() => setIsGlowing(true)}
-      onMouseLeave={() => setIsGlowing(false)}
-      style={{
-        padding: '12px 30px',
-        background: '#1a1a2e',
-        border: `2px solid ${color.main}`,
-        borderRadius: '4px',
-        color: color.main,
-        fontSize: '16px',
-        fontWeight: 'bold',
-        textTransform: 'uppercase',
-        cursor: 'pointer',
-        letterSpacing: '2px',
-        position: 'relative',
-        transition: 'all 0.3s ease',
-        boxShadow: isGlowing
-          ? `${intensityMap[intensity]} ${color.shadow}, inset ${intensityMap[intensity]} ${color.shadow}`
-          : 'none',
-        textShadow: isGlowing ? `0 0 10px ${color.main}` : 'none'
-      }}
+      onClick={(e) => { const ripple = document.createElement("span"); ripple.className = "absolute inset-0 bg-white opacity-25 animate-ping"; e.currentTarget.appendChild(ripple); setTimeout(() => ripple.remove(), 600); onClick?.(e); }}
+      className={`border-2 rounded-lg px-5 py-2.5 font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 ${variantClasses[variant]} ${fullWidth ? 'w-full' : ''} ${className}`}
+      {...props}
     >
       {children}
-      {isGlowing && (
-        <span
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            background: color.shadow,
-            filter: 'blur(8px)',
-            opacity: 0.3,
-            zIndex: -1
-          }}
-        />
-      )}
     </button>
   );
 };
+
+export default Button;

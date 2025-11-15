@@ -12,6 +12,7 @@ class CustomNavigation extends StatefulWidget {
   @override
   State<CustomNavigation> createState() => _CustomNavigationState();
 }
+
 class _CustomNavigationState extends State<CustomNavigation> {
   bool _isHovered = false;
   @override

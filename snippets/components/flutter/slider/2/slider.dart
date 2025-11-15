@@ -12,6 +12,7 @@ class CustomSlider extends StatefulWidget {
   @override
   State<CustomSlider> createState() => _CustomSliderState();
 }
+
 class _CustomSliderState extends State<CustomSlider> {
   bool _isHovered = false;
   @override

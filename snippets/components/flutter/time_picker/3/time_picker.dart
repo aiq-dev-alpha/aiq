@@ -12,7 +12,6 @@ class CustomPicker extends StatefulWidget {
     this.use24HourFormat = false,
   })  : initialTime = initialTime ?? const TimeOfDay(hour: 12, minute: 0),
         super(key: key);
-
   @override
   State<CustomPicker> createState() => _CustomPickerState();
 }
@@ -20,7 +19,6 @@ class CustomPicker extends StatefulWidget {
 class _CustomPickerState extends State<CustomPicker> {
   late TimeOfDay _selectedTime;
   bool _isAM = true;
-
   @override
   void initState() {
     super.initState();
@@ -37,7 +35,6 @@ class _CustomPickerState extends State<CustomPicker> {
     });
     widget.onTimeSelected?.call(_selectedTime);
   }
-
   @override
   Widget build(BuildContext context) {
     final displayHour = widget.use24HourFormat

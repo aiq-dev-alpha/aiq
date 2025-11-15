@@ -16,3 +16,5 @@ export const Stepper: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Stepper;

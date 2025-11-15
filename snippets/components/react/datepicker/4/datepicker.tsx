@@ -16,3 +16,5 @@ export const Datepicker: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Datepicker;

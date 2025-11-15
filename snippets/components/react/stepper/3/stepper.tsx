@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 interface StepperProps {
+  className?: string;
   children?: React.ReactNode;
   variant?: 'default' | 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
@@ -39,3 +40,5 @@ export const Stepper: React.FC<StepperProps> = (props) => {
     </div>
   );
 };
+
+export default Stepper;

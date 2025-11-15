@@ -11,7 +11,6 @@ class CustomPicker extends StatefulWidget {
     this.allowMultiple = true,
     this.allowedTypes = const [MediaType.image, MediaType.video],
   }) : super(key: key);
-
   @override
   State<CustomPicker> createState() => _CustomPickerState();
 }
@@ -33,7 +32,6 @@ class MediaItem {
 class _CustomPickerState extends State<CustomPicker> with SingleTickerProviderStateMixin {
   final List<MediaItem> _selectedMedia = [];
   late TabController _tabController;
-
   @override
   void initState() {
     super.initState();
@@ -42,7 +40,6 @@ class _CustomPickerState extends State<CustomPicker> with SingleTickerProviderSt
       vsync: this,
     );
   }
-
   @override
   void dispose() {
     _tabController.dispose();
@@ -68,7 +65,6 @@ class _CustomPickerState extends State<CustomPicker> with SingleTickerProviderSt
     });
     widget.onMediaSelected?.call(_selectedMedia);
   }
-
   @override
   Widget build(BuildContext context) {
     return Container(

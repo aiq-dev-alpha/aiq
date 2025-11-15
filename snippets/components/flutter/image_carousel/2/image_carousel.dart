@@ -12,6 +12,7 @@ class CustomCarousel extends StatefulWidget {
   @override
   State<CustomCarousel> createState() => _CustomCarouselState();
 }
+
 class _CustomCarouselState extends State<CustomCarousel> {
   bool _isHovered = false;
   @override

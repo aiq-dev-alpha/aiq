@@ -1,5 +1,6 @@
 import React from 'react';
 interface BadgeProps {
+  className?: string;
   content?: string | number;
   max?: number;
   dot?: boolean;
@@ -23,3 +24,5 @@ export const Badge: React.FC<BadgeProps> = ({
     </div>
   );
 };
+
+export default Badge;

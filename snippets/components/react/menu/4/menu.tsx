@@ -16,3 +16,5 @@ export const Menu: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Menu;

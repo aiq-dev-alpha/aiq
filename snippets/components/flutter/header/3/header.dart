@@ -15,7 +15,6 @@ class CustomNavigation extends StatelessWidget {
     this.backgroundColor,
     this.height = 72,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Container(

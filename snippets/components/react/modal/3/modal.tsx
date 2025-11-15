@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 interface ModalProps {
+  className?: string;
   children?: React.ReactNode;
   variant?: 'default' | 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
@@ -39,3 +40,5 @@ export const Modal: React.FC<ModalProps> = (props) => {
     </div>
   );
 };
+
+export default Modal;

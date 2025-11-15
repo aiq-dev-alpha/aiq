@@ -13,7 +13,6 @@ class CustomPicker extends StatefulWidget {
     this.lastDate,
     this.onDateSelected,
   }) : super(key: key);
-
   @override
   State<CustomPicker> createState() => _CustomPickerState();
 }
@@ -21,7 +20,6 @@ class CustomPicker extends StatefulWidget {
 class _CustomPickerState extends State<CustomPicker> {
   late DateTime _selectedDate;
   late DateTime _displayedMonth;
-
   @override
   void initState() {
     super.initState();
@@ -52,7 +50,6 @@ class _CustomPickerState extends State<CustomPicker> {
 
     return days;
   }
-
   @override
   Widget build(BuildContext context) {
     final days = _getDaysInMonth();

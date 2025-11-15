@@ -1,17 +1,21 @@
 import React from 'react';
 
-export const Datepicker: React.FC<any> = (props) => {
+interface DatepickerProps {
+  variant?: 'primary' | 'default';
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export const Datepicker: React.FC<DatepickerProps> = ({
+  variant = 'primary',
+  className = '',
+  children,
+}) => {
   return (
-    <div
-      style={{
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        padding: '20px',
-        borderRadius: '16px',
-        color: '#fff',
-        boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
-      }}
-    >
-      <div>Datepicker - Gradient</div>
+    <div className={`rounded-md p-4 bg-blue-500 text-white ${className}`}>
+      {children}
     </div>
   );
 };
+
+export default Datepicker;

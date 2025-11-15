@@ -19,7 +19,6 @@ class CustomCard extends StatefulWidget {
     this.elevation,
     this.padding,
   }) : super(key: key);
-
   @override
   State<CustomCard> createState() => _CustomCardState();
 }
@@ -27,7 +26,6 @@ class CustomCard extends StatefulWidget {
 class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   bool _isHovered = false;
-
   @override
   void initState() {
     super.initState();
@@ -36,13 +34,11 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
       vsync: this,
     );
   }
-
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return MouseRegion(

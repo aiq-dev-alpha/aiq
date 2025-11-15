@@ -16,3 +16,5 @@ export const Tree: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Tree;

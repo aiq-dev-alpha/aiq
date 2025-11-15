@@ -1,5 +1,6 @@
 import React from 'react';
 interface AvatarProps {
+  className?: string;
   src?: string;
   name?: string;
   size?: number;
@@ -21,3 +22,5 @@ export const Avatar: React.FC<AvatarProps> = ({ src, name = 'User', size = 48, s
     </div>
   );
 };
+
+export default Avatar;

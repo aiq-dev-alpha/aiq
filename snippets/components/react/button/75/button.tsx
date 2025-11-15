@@ -1,53 +1,31 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-interface ButtonProps {
-  children: React.ReactNode;
-  onClick?: () => void;
-  color?: 'red' | 'blue' | 'green' | 'orange';
-  depth?: number;
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  icon: React.ReactNode;
+  label?: string;
+  rounded?: boolean;
+  size?: number;
 }
 
 export const Button: React.FC<ButtonProps> = ({
-  children,
-  onClick,
-  color = 'blue',
-  depth = 6
+  icon,
+  label,
+  rounded = false,
+  size = 40,
+  className = '',
+  ...props
 }) => {
-  const [isPressed, setIsPressed] = useState(false);
-
-  const colors = {
-    red: { top: '#e74c3c', bottom: '#c0392b' },
-    blue: { top: '#3498db', bottom: '#2980b9' },
-    green: { top: '#2ecc71', bottom: '#27ae60' },
-    orange: { top: '#e67e22', bottom: '#d35400' }
-  };
-
-  const currentColor = colors[color];
-
   return (
     <button
-      onClick={onClick}
-      onMouseDown={() => setIsPressed(true)}
-      onMouseUp={() => setIsPressed(false)}
-      onMouseLeave={() => setIsPressed(false)}
-      style={{
-        padding: '14px 28px',
-        background: currentColor.top,
-        border: 'none',
-        borderRadius: '10px',
-        color: '#fff',
-        fontSize: '16px',
-        fontWeight: 'bold',
-        cursor: 'pointer',
-        position: 'relative',
-        transform: isPressed ? `translateY(${depth}px)` : 'translateY(0)',
-        boxShadow: isPressed
-          ? '0 0 0 rgba(0,0,0,0.2)'
-          : `0 ${depth}px 0 ${currentColor.bottom}`,
-        transition: 'all 0.1s ease'
-      }}
+      onClick={(e) => { const ripple = document.createElement("span"); ripple.className = "absolute inset-0 bg-white opacity-25 animate-ping"; e.currentTarget.appendChild(ripple); setTimeout(() => ripple.remove(), 600); onClick?.(e); }}
+      className={`inline-flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${rounded ? 'rounded-full' : 'rounded-md'} ${className}`}
+      style={{ width: size, height: size }}
+      aria-label={label}
+      {...props}
     >
-      {children}
+      {icon}
     </button>
   );
 };
+
+export default Button;

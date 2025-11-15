@@ -12,6 +12,7 @@ class CustomChip extends StatefulWidget {
   @override
   State<CustomChip> createState() => _CustomChipState();
 }
+
 class _CustomChipState extends State<CustomChip> {
   bool _isHovered = false;
   @override

@@ -1,168 +1,134 @@
+// Social Button - Social media branded buttons
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-interface ButtonTheme {
-  primaryColor: string;
-  secondaryColor: string;
-  backgroundColor: string;
+
+interface SocialButtonTheme {
+  brandColor: string;
+  hoverColor: string;
   textColor: string;
-  borderColor: string;
-  accentColor: string;
 }
+
+type SocialPlatform = 'facebook' | 'twitter' | 'google' | 'github' | 'linkedin' | 'instagram' | 'youtube' | 'tiktok' | 'discord';
+
 @Component({
   standalone: true,
   imports: [CommonModule],
   selector: 'app-button',
   template: `
-  <button
-  [ngClass]="['btn', 'btn-' + variant, 'btn-' + size]"
-  [ngStyle]="buttonStyles"
-  [disabled]="disabled || loading"
-  [attr.aria-label]="ariaLabel"
-  [attr.aria-busy]="loading"
-  (click)="handleClick($event)"
-  class="ripple-button">
-  <span *ngIf="loading" class="spinner square-spinner">
-  <span class="square"></span>
-  </span>
-  <span *ngIf="!loading && iconLeft" class="icon-left">{{ iconLeft }}</span>
-  <span class="btn-content">
-  <ng-content></ng-content>
-  </span>
-  <span *ngIf="!loading && iconRight" class="icon-right">{{ iconRight }}</span>
-  <span class="ripple"></span>
-  </button>
+    <button
+      class="social-btn"
+      [ngStyle]="buttonStyles"
+      [class.icon-only]="!showLabel"
+      [class.rounded]="rounded"
+      [disabled]="disabled"
+      [attr.aria-label]="ariaLabel || platform"
+      (click)="handleClick($event)">
+      <span class="social-icon">{{ icon }}</span>
+      <span *ngIf="showLabel" class="social-label">
+        {{ label || ('Continue with ' + capitalizedPlatform) }}
+      </span>
+    </button>
   `,
   styles: [`
-  .ripple-button {
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: 600;
-  border: none;
-  outline: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-  }
-  .ripple-button:hover:not(:disabled) {
-  box-shadow: 0 8px 30px rgba(99, 102, 241, 0.6);
-  transform: translateY(-2px);
-  }
-  .ripple-button:active:not(:disabled) .ripple {
-  animation: rippleEffect 0.6s ease-out;
-  }
-  .ripple-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  }
-  .ripple {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.6);
-  transform: scale(0);
-  pointer-events: none;
-  }
-  @keyframes rippleEffect {
-  to {
-  transform: scale(4);
-  opacity: 0;
-  }
-  }
-  .square-spinner {
-  width: 1em;
-  height: 1em;
-  display: inline-block;
-  }
-  .square {
-  width: 100%;
-  height: 100%;
-  background: currentColor;
-  animation: squareRotate 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  }
-  @keyframes squareRotate {
-  0%, 100% { transform: rotate(0deg) scale(1); }
-  50% { transform: rotate(180deg) scale(0.8); }
-  }
-  .btn-content {
-  display: flex;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-  }
-  .icon-left, .icon-right {
-  position: relative;
-  z-index: 1;
-  }
-  .btn-sm {
-  padding: 0.5rem 1.5rem;
-  font-size: 0.875rem;
-  border-radius: 0.625rem;
-  }
-  .btn-md {
-  padding: 0.75rem 2rem;
-  font-size: 1rem;
-  border-radius: 0.875rem;
-  }
-  .btn-lg {
-  padding: 1rem 2.5rem;
-  font-size: 1.125rem;
-  border-radius: 1.125rem;
-  }
+    .social-btn {
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-width: 200px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .social-btn.icon-only {
+      min-width: auto;
+      width: 48px;
+      height: 48px;
+      padding: 0;
+      border-radius: 50%;
+    }
+
+    .social-btn.rounded {
+      border-radius: 24px;
+    }
+
+    .social-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      filter: brightness(1.05);
+    }
+
+    .social-btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .social-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .social-icon {
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .social-label {
+      white-space: nowrap;
+    }
   `]
 })
 export class ButtonComponent {
-  @Input() theme: Partial<ButtonTheme> = {};
-  @Input() variant: 'default' | 'outlined' | 'filled' | 'elevated' = 'default';
-  @Input() size: 'sm' | 'md' | 'lg' = 'md';
-  @Input() disabled: boolean = false;
-  @Input() loading: boolean = false;
-  @Input() iconLeft: string = '';
-  @Input() iconRight: string = '';
-  @Input() ariaLabel: string = '';
+  @Input() platform: SocialPlatform = 'facebook';
+  @Input() label?: string;
+  @Input() showLabel = true;
+  @Input() rounded = false;
+  @Input() disabled = false;
+  @Input() ariaLabel?: string;
   @Output() clicked = new EventEmitter<MouseEvent>();
-  private defaultTheme: ButtonTheme = {
-  primaryColor: '#6366f1',
-  secondaryColor: '#4f46e5',
-  backgroundColor: '#eef2ff',
-  backdropFilter: 'blur(10px)',
-  textColor: '#ffffff',
-  borderColor: '#6366f1',
-  accentColor: '#818cf8'
+
+  private platformConfig: Record<SocialPlatform, { icon: string; color: string; hover: string }> = {
+    facebook: { icon: 'f', color: '#1877f2', hover: '#166fe5' },
+    twitter: { icon: '𝕏', color: '#1da1f2', hover: '#1a8cd8' },
+    google: { icon: 'G', color: '#4285f4', hover: '#357ae8' },
+    github: { icon: '★', color: '#24292e', hover: '#1b1f23' },
+    linkedin: { icon: 'in', color: '#0a66c2', hover: '#0958a5' },
+    instagram: { icon: '📷', color: '#e4405f', hover: '#d62d50' },
+    youtube: { icon: '▶', color: '#ff0000', hover: '#e60000' },
+    tiktok: { icon: '♪', color: '#000000', hover: '#1a1a1a' },
+    discord: { icon: '🎮', color: '#5865f2', hover: '#4752c4' }
   };
-  get appliedTheme(): ButtonTheme {
-  return { ...this.defaultTheme, ...this.theme };
+
+  get config() {
+    return this.platformConfig[this.platform];
   }
+
+  get icon() {
+    return this.config.icon;
+  }
+
+  get capitalizedPlatform() {
+    return this.platform.charAt(0).toUpperCase() + this.platform.slice(1);
+  }
+
   get buttonStyles() {
-  const variantStyles = {
-  default: {
-  background: `linear-gradient(135deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})`,
-  color: this.appliedTheme.textColor,
-  border: 'none'
-  },
-  outlined: {
-  background: 'transparent',
-  color: this.appliedTheme.primaryColor,
-  border: `2px solid ${this.appliedTheme.primaryColor}`
-  },
-  filled: {
-  background: this.appliedTheme.primaryColor,
-  color: this.appliedTheme.textColor,
-  border: 'none'
-  },
-  elevated: {
-  background: this.appliedTheme.primaryColor,
-  color: this.appliedTheme.textColor,
-  border: 'none',
-  boxShadow: `0 8px 20px rgba(99, 102, 241, 0.4)`
+    return {
+      background: this.config.color,
+      color: '#ffffff'
+    };
   }
-  };
-  return variantStyles[this.variant];
-  }
+
   handleClick(event: MouseEvent): void {
-  if (!this.disabled && !this.loading) {
-  this.clicked.emit(event);
-  }
+    if (!this.disabled) {
+      this.clicked.emit(event);
+    }
   }
 }

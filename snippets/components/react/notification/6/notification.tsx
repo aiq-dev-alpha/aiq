@@ -15,3 +15,5 @@ export const Notification: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Notification;

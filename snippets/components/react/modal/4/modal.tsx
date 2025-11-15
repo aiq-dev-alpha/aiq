@@ -16,3 +16,5 @@ export const Modal: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Modal;

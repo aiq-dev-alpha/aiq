@@ -19,20 +19,17 @@ class CustomSlider extends StatefulWidget {
     this.showValue = true,
     this.divisions = 100,
   }) : super(key: key);
-
   @override
   State<CustomSlider> createState() => _CustomSliderState();
 }
 
 class _CustomSliderState extends State<CustomSlider> {
   late double _currentValue;
-
   @override
   void initState() {
     super.initState();
     _currentValue = widget.value;
   }
-
   @override
   Widget build(BuildContext context) {
     return Container(

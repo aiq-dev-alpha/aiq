@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 interface AlertProps {
+  className?: string;
   message: string;
   type?: 'success' | 'error' | 'warning' | 'info';
   duration?: number;
@@ -84,3 +85,5 @@ export const Alert: React.FC<AlertProps> = ({
     </div>
   );
 };
+
+export default Alert;

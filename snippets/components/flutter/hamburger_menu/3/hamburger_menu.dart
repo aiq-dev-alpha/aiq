@@ -13,7 +13,6 @@ class CustomNavigation extends StatefulWidget {
     this.color,
     this.animationDuration = const Duration(milliseconds: 300),
   }) : super(key: key);
-
   @override
   State<CustomNavigation> createState() => _CustomNavigationState();
 }
@@ -26,7 +25,6 @@ class _CustomNavigationState extends State<CustomNavigation>
   late Animation<double> _bottomBarRotation;
   late Animation<double> _topBarTranslation;
   late Animation<double> _bottomBarTranslation;
-
   @override
   void initState() {
     super.initState();
@@ -59,7 +57,6 @@ class _CustomNavigationState extends State<CustomNavigation>
       _controller.value = 1;
     }
   }
-
   @override
   void didUpdateWidget(CustomNavigation oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -71,13 +68,11 @@ class _CustomNavigationState extends State<CustomNavigation>
       }
     }
   }
-
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     final color = widget.color ?? Theme.of(context).primaryColor;

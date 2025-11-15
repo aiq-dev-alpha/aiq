@@ -12,21 +12,8 @@ class CustomTabs extends StatefulWidget {
   @override
   State<CustomTabs> createState() => _CustomTabsState();
 }
-class _CustomTabsState extends State<CustomTabs> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  @override
-  void initState() {
-  super.initState();
-  _controller = AnimationController(
-  duration: const Duration(milliseconds: 300),
-  vsync: this,
-  );
-  }
-  @override
-  void dispose() {
-  _controller.dispose();
-  super.dispose();
-  }
+
+class _CustomTabsState extends State<CustomTabs> {
   @override
   Widget build(BuildContext context) {
   return GestureDetector(
@@ -51,7 +38,7 @@ class _CustomTabsState extends State<CustomTabs> with SingleTickerProviderStateM
   ),
   ],
   ),
-  child: widget.child ?? const Text('Component', style: TextStyle(color: Colors.white)),
+  child: widget.child ?? const Text('Component', style: const TextStyle(color: Colors.white)),
   ),
   );
   }

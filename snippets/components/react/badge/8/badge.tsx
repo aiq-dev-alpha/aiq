@@ -15,3 +15,5 @@ export const Badge: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Badge;

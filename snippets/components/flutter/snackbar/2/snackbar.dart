@@ -12,6 +12,7 @@ class CustomWidget extends StatefulWidget {
   @override
   State<CustomWidget> createState() => _CustomWidgetState();
 }
+
 class _CustomWidgetState extends State<CustomWidget> {
   bool _isHovered = false;
   @override

@@ -1,88 +1,41 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
   children: React.ReactNode;
-  onClick?: () => Promise<void> | void;
-  variant?: 'primary' | 'secondary';
-  disabled?: boolean;
 }
 
+const variantClasses = {
+  primary: 'bg-blue-600 hover:bg-blue-700 text-white',
+  secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-900',
+  danger: 'bg-red-600 hover:bg-red-700 text-white',
+};
+
+const sizeClasses = {
+  sm: 'px-3 py-1.5 text-sm',
+  md: 'px-4 py-2 text-base',
+  lg: 'px-6 py-3 text-lg',
+};
+
 export const Button: React.FC<ButtonProps> = ({
-  children,
-  onClick,
   variant = 'primary',
-  disabled = false
+  size = 'md',
+  children,
+  className = '',
+  disabled,
+  ...props
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleClick = async () => {
-    if (isLoading || disabled) return;
-
-    setIsLoading(true);
-    try {
-      await onClick?.();
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const variants = {
-    primary: { bg: '#4f46e5', hover: '#4338ca' },
-    secondary: { bg: '#10b981', hover: '#059669' }
-  };
-
   return (
     <button
-      onClick={handleClick}
-      disabled={disabled || isLoading}
-      style={{
-        padding: '12px 24px',
-        background: variants[variant].bg,
-        border: 'none',
-        borderRadius: '8px',
-        color: '#fff',
-        fontSize: '16px',
-        fontWeight: 600,
-        cursor: (disabled || isLoading) ? 'not-allowed' : 'pointer',
-        opacity: (disabled || isLoading) ? 0.7 : 1,
-        transition: 'all 0.2s ease',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        minWidth: '120px',
-        justifyContent: 'center'
-      }}
-      onMouseEnter={(e) => {
-        if (!disabled && !isLoading) {
-          e.currentTarget.style.background = variants[variant].hover;
-        }
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.background = variants[variant].bg;
-      }}
+      onClick={(e) => { const ripple = document.createElement("span"); ripple.className = "absolute inset-0 bg-white opacity-25 animate-ping"; e.currentTarget.appendChild(ripple); setTimeout(() => ripple.remove(), 600); onClick?.(e); }}
+      className={`rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+      disabled={disabled}
+      {...props}
     >
-      {isLoading ? (
-        <>
-          <div
-            style={{
-              width: '16px',
-              height: '16px',
-              border: '2px solid rgba(255,255,255,0.3)',
-              borderTopColor: '#fff',
-              borderRadius: '50%',
-              animation: 'spin 0.6s linear infinite'
-            }}
-          />
-          <span>Loading...</span>
-          <style>{`
-            @keyframes spin {
-              to { transform: rotate(360deg); }
-            }
-          `}</style>
-        </>
-      ) : (
-        children
-      )}
+      {children}
     </button>
   );
 };
+
+export default Button;

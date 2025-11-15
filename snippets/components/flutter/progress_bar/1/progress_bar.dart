@@ -12,21 +12,8 @@ class CustomProgressBar extends StatefulWidget {
   @override
   State<CustomProgressBar> createState() => _CustomProgressBarState();
 }
-class _CustomProgressBarState extends State<CustomProgressBar> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  @override
-  void initState() {
-  super.initState();
-  _controller = AnimationController(
-  duration: const Duration(milliseconds: 300),
-  vsync: this,
-  );
-  }
-  @override
-  void dispose() {
-  _controller.dispose();
-  super.dispose();
-  }
+
+class _CustomProgressBarState extends State<CustomProgressBar> {
   @override
   Widget build(BuildContext context) {
   return GestureDetector(
@@ -51,7 +38,7 @@ class _CustomProgressBarState extends State<CustomProgressBar> with SingleTicker
   ),
   ],
   ),
-  child: widget.child ?? const Text('Component', style: TextStyle(color: Colors.white)),
+  child: widget.child ?? const Text('Component', style: const TextStyle(color: Colors.white)),
   ),
   );
   }

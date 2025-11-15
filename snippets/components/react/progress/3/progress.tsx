@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 interface ProgressProps {
+  className?: string;
   children?: React.ReactNode;
   variant?: 'default' | 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
@@ -39,3 +40,5 @@ export const Progress: React.FC<ProgressProps> = (props) => {
     </div>
   );
 };
+
+export default Progress;

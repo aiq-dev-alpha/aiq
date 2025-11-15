@@ -12,21 +12,8 @@ class CustomNavigation extends StatefulWidget {
   @override
   State<CustomNavigation> createState() => _CustomNavigationState();
 }
-class _CustomNavigationState extends State<CustomNavigation> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  @override
-  void initState() {
-  super.initState();
-  _controller = AnimationController(
-  duration: const Duration(milliseconds: 300),
-  vsync: this,
-  );
-  }
-  @override
-  void dispose() {
-  _controller.dispose();
-  super.dispose();
-  }
+
+class _CustomNavigationState extends State<CustomNavigation> {
   @override
   Widget build(BuildContext context) {
   return GestureDetector(
@@ -51,7 +38,7 @@ class _CustomNavigationState extends State<CustomNavigation> with SingleTickerPr
   ),
   ],
   ),
-  child: widget.child ?? const Text('Component', style: TextStyle(color: Colors.white)),
+  child: widget.child ?? const Text('Component', style: const TextStyle(color: Colors.white)),
   ),
   );
   }

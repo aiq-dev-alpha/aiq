@@ -15,7 +15,6 @@ class CustomNavigation extends StatefulWidget {
     this.backgroundColor,
     this.selectedColor,
   }) : super(key: key);
-
   @override
   State<CustomNavigation> createState() => _CustomNavigationState();
 }

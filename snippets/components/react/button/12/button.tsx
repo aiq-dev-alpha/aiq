@@ -8,7 +8,8 @@ interface ButtonTheme {
   active: string;
 }
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  className?: string;
   children: React.ReactNode;
   onClick?: () => void;
   theme?: 'primary' | 'success' | 'warning' | 'danger' | 'neutral';
@@ -109,7 +110,7 @@ export const Button: React.FC<ButtonProps> = ({
     <button
       onClick={onClick}
       disabled={disabled || processing}
-      onMouseDown={() => setIsPressed(true)}
+      onMouseDown={() = {...props}> setIsPressed(true)}
       onMouseUp={() => setIsPressed(false)}
       onMouseLeave={() => setIsPressed(false)}
       className={`
@@ -142,3 +143,5 @@ export const Button: React.FC<ButtonProps> = ({
     </button>
   );
 };
+
+export default Button;

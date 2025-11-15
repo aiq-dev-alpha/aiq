@@ -1,165 +1,231 @@
+// Floating Action Button (FAB) - Material Design style with speed dial
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-interface ButtonTheme {
+
+interface FABTheme {
   primaryColor: string;
   secondaryColor: string;
   backgroundColor: string;
   textColor: string;
-  borderColor: string;
-  accentColor: string;
 }
+
+export interface SpeedDialAction {
+  icon: string;
+  label: string;
+  action: () => void;
+  color?: string;
+}
+
 @Component({
   standalone: true,
   imports: [CommonModule],
   selector: 'app-button',
   template: `
-  <button
-  [ngClass]="['btn', 'btn-' + variant, 'btn-' + size]"
-  [ngStyle]="buttonStyles"
-  [disabled]="disabled || loading"
-  [attr.aria-label]="ariaLabel"
-  [attr.aria-busy]="loading"
-  (click)="handleClick($event)"
-  class="wave-button">
-  <span *ngIf="loading" class="spinner ring-spinner"></span>
-  <span *ngIf="!loading && iconLeft" class="icon-left">{{ iconLeft }}</span>
-  <span class="btn-content">
-  <ng-content></ng-content>
-  </span>
-  <span *ngIf="!loading && iconRight" class="icon-right">{{ iconRight }}</span>
-  </button>
+    <div class="fab-container" [class.expanded]="isExpanded">
+      <div *ngIf="speedDialActions.length > 0 && isExpanded" class="speed-dial-actions">
+        <div
+          *ngFor="let action of speedDialActions; let i = index"
+          class="speed-dial-item"
+          [style.animation-delay.ms]="i * 50"
+          (click)="handleActionClick(action)">
+          <span class="action-label">{{ action.label }}</span>
+          <button
+            class="action-btn"
+            [ngStyle]="getActionStyles(action)"
+            [attr.aria-label]="action.label">
+            <span class="action-icon">{{ action.icon }}</span>
+          </button>
+        </div>
+      </div>
+
+      <button
+        class="fab-main"
+        [ngStyle]="fabStyles"
+        [disabled]="disabled"
+        [class.loading]="loading"
+        [attr.aria-label]="ariaLabel"
+        (click)="handleMainClick($event)">
+        <span *ngIf="loading" class="fab-loader"></span>
+        <span *ngIf="!loading" class="fab-icon" [class.rotated]="isExpanded">
+          {{ isExpanded && speedDialActions.length > 0 ? '✕' : icon }}
+        </span>
+      </button>
+    </div>
   `,
   styles: [`
-  .wave-button {
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-weight: 600;
-  border: none;
-  outline: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
-  }
-  .wave-button::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
-  }
-  .wave-button:hover:not(:disabled)::after {
-  width: 300px;
-  height: 300px;
-  }
-  .wave-button:hover:not(:disabled) {
-  box-shadow: 0 8px 30px rgba(59, 130, 246, 0.6);
-  transform: translateY(-2px);
-  }
-  .wave-button:active:not(:disabled) {
-  transform: translateY(0);
-  }
-  .wave-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  }
-  .ring-spinner {
-  width: 1em;
-  height: 1em;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-top-color: currentColor;
-  border-bottom-color: currentColor;
-  border-radius: 50%;
-  animation: ringSpin 1s linear infinite;
-  }
-  @keyframes ringSpin {
-  to { transform: rotate(360deg); }
-  }
-  .btn-content {
-  display: flex;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-  }
-  .icon-left, .icon-right {
-  position: relative;
-  z-index: 1;
-  }
-  .btn-sm {
-  padding: 0.5rem 1.5rem;
-  font-size: 0.875rem;
-  border-radius: 0.5rem;
-  }
-  .btn-md {
-  padding: 0.75rem 2rem;
-  font-size: 1rem;
-  border-radius: 0.75rem;
-  }
-  .btn-lg {
-  padding: 1rem 2.5rem;
-  font-size: 1.125rem;
-  border-radius: 1rem;
-  }
+    .fab-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1000;
+    }
+
+    .fab-main {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .fab-main:hover:not(:disabled) {
+      transform: scale(1.1);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+    }
+
+    .fab-main:active:not(:disabled) {
+      transform: scale(0.95);
+    }
+
+    .fab-main:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .fab-icon {
+      font-size: 24px;
+      transition: transform 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .fab-icon.rotated {
+      transform: rotate(45deg);
+    }
+
+    .fab-loader {
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .speed-dial-actions {
+      position: absolute;
+      bottom: 80px;
+      right: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .speed-dial-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      animation-fill-mode: both;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .action-label {
+      background: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      white-space: nowrap;
+      color: #1f2937;
+    }
+
+    .action-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .action-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .action-icon {
+      font-size: 20px;
+    }
   `]
 })
 export class ButtonComponent {
-  @Input() theme: Partial<ButtonTheme> = {};
-  @Input() variant: 'default' | 'outlined' | 'filled' | 'glass' = 'default';
-  @Input() size: 'sm' | 'md' | 'lg' = 'md';
-  @Input() disabled: boolean = false;
-  @Input() loading: boolean = false;
-  @Input() iconLeft: string = '';
-  @Input() iconRight: string = '';
-  @Input() ariaLabel: string = '';
+  @Input() theme: Partial<FABTheme> = {};
+  @Input() icon = '+';
+  @Input() speedDialActions: SpeedDialAction[] = [];
+  @Input() disabled = false;
+  @Input() loading = false;
+  @Input() ariaLabel = 'Floating action button';
   @Output() clicked = new EventEmitter<MouseEvent>();
-  private defaultTheme: ButtonTheme = {
-  primaryColor: '#3b82f6',
-  secondaryColor: '#2563eb',
-  backgroundColor: '#eff6ff',
-  backdropFilter: 'blur(10px)',
-  textColor: '#ffffff',
-  borderColor: '#3b82f6',
-  accentColor: '#60a5fa'
+
+  isExpanded = false;
+
+  private defaultTheme: FABTheme = {
+    primaryColor: '#3b82f6',
+    secondaryColor: '#2563eb',
+    backgroundColor: '#ffffff',
+    textColor: '#ffffff'
   };
-  get appliedTheme(): ButtonTheme {
-  return { ...this.defaultTheme, ...this.theme };
+
+  get appliedTheme(): FABTheme {
+    return { ...this.defaultTheme, ...this.theme };
   }
-  get buttonStyles() {
-  const variantStyles = {
-  default: {
-  background: `linear-gradient(135deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})`,
-  color: this.appliedTheme.textColor,
-  border: 'none'
-  },
-  outlined: {
-  background: 'transparent',
-  color: this.appliedTheme.primaryColor,
-  border: `2px solid ${this.appliedTheme.primaryColor}`
-  },
-  filled: {
-  background: this.appliedTheme.primaryColor,
-  color: this.appliedTheme.textColor,
-  border: 'none'
-  },
-  glass: {
-  background: `rgba(59, 130, 246, 0.2)`,
-  color: this.appliedTheme.primaryColor,
-  border: `1px solid ${this.appliedTheme.primaryColor}`,
-  backdropFilter: 'blur(10px)'
+
+  get fabStyles() {
+    const t = this.appliedTheme;
+    return {
+      background: `linear-gradient(135deg, ${t.primaryColor}, ${t.secondaryColor})`,
+      color: t.textColor
+    };
   }
-  };
-  return variantStyles[this.variant];
+
+  getActionStyles(action: SpeedDialAction) {
+    return {
+      background: action.color || this.appliedTheme.primaryColor,
+      color: '#ffffff'
+    };
   }
-  handleClick(event: MouseEvent): void {
-  if (!this.disabled && !this.loading) {
-  this.clicked.emit(event);
+
+  handleMainClick(event: MouseEvent): void {
+    if (!this.disabled && !this.loading) {
+      if (this.speedDialActions.length > 0) {
+        this.isExpanded = !this.isExpanded;
+      } else {
+        this.clicked.emit(event);
+      }
+    }
   }
+
+  handleActionClick(action: SpeedDialAction): void {
+    action.action();
+    this.isExpanded = false;
   }
 }

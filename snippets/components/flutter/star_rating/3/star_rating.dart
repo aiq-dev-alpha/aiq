@@ -17,7 +17,6 @@ class CustomRating extends StatefulWidget {
     this.color,
     this.readOnly = false,
   }) : super(key: key);
-
   @override
   State<CustomRating> createState() => _CustomRatingState();
 }
@@ -26,7 +25,6 @@ class _CustomRatingState extends State<CustomRating> with TickerProviderStateMix
   late double _currentRating;
   late List<AnimationController> _controllers;
   late List<Animation<double>> _animations;
-
   @override
   void initState() {
     super.initState();
@@ -51,7 +49,6 @@ class _CustomRatingState extends State<CustomRating> with TickerProviderStateMix
       }
     });
   }
-
   @override
   void dispose() {
     for (var controller in _controllers) {
@@ -71,7 +68,6 @@ class _CustomRatingState extends State<CustomRating> with TickerProviderStateMix
     _controllers[index].forward(from: 0.7);
     widget.onRatingUpdate?.call(newRating);
   }
-
   @override
   Widget build(BuildContext context) {
     final color = widget.color ?? Colors.amber;

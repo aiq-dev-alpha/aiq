@@ -1,17 +1,21 @@
 import React from 'react';
 
-export const Tooltip: React.FC<any> = (props) => {
+interface TooltipProps {
+  variant?: 'text' | 'default';
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export const Tooltip: React.FC<TooltipProps> = ({
+  variant = 'text',
+  className = '',
+  children,
+}) => {
   return (
-    <div
-      style={{
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        padding: '20px',
-        borderRadius: '16px',
-        color: '#fff',
-        boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
-      }}
-    >
-      <div>Tooltip - Gradient</div>
+    <div className={`rounded-md p-4 bg-transparent hover:bg-gray-100 ${className}`}>
+      {children}
     </div>
   );
 };
+
+export default Tooltip;

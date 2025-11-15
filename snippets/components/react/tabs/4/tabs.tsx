@@ -16,3 +16,5 @@ export const Tabs: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Tabs;

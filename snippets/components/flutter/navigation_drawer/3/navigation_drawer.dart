@@ -15,7 +15,6 @@ class CustomNavigation extends StatefulWidget {
     this.onItemSelected,
     this.backgroundColor,
   }) : super(key: key);
-
   @override
   State<CustomNavigation> createState() => _CustomNavigationState();
 }
@@ -34,7 +33,6 @@ class DrawerMenuItem {
 
 class _CustomNavigationState extends State<CustomNavigation> with SingleTickerProviderStateMixin {
   late AnimationController _slideController;
-
   @override
   void initState() {
     super.initState();
@@ -43,13 +41,11 @@ class _CustomNavigationState extends State<CustomNavigation> with SingleTickerPr
       vsync: this,
     )..forward();
   }
-
   @override
   void dispose() {
     _slideController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     final bgColor = widget.backgroundColor ?? Colors.grey.shade50;

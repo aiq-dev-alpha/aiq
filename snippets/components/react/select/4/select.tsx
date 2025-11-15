@@ -16,3 +16,5 @@ export const Select: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Select;

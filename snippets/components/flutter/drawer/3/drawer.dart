@@ -15,7 +15,6 @@ class CustomNavigation extends StatefulWidget {
     this.backgroundColor,
     this.selectedColor,
   }) : super(key: key);
-
   @override
   State<CustomNavigation> createState() => _CustomNavigationState();
 }
@@ -32,26 +31,7 @@ class DrawerItem {
   });
 }
 
-class _CustomNavigationState extends State<CustomNavigation> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  int _hoveredIndex = -1;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
+class _CustomNavigationState extends State<CustomNavigation> {  int _hoveredIndex = -1;  @override
   Widget build(BuildContext context) {
     final selectedColor = widget.selectedColor ?? Theme.of(context).primaryColor;
     final bgColor = widget.backgroundColor ?? Colors.white;

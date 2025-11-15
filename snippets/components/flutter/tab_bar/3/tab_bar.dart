@@ -15,7 +15,6 @@ class BarComponent extends StatefulWidget {
     this.activeColor,
     this.inactiveColor,
   }) : super(key: key);
-
   @override
   State<BarComponent> createState() => _BarComponentState();
 }
@@ -24,7 +23,6 @@ class _BarComponentState extends State<BarComponent> with SingleTickerProviderSt
   late int _selectedIndex;
   late AnimationController _animationController;
   late Animation<double> _slideAnimation;
-
   @override
   void initState() {
     super.initState();
@@ -37,7 +35,6 @@ class _BarComponentState extends State<BarComponent> with SingleTickerProviderSt
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
   }
-
   @override
   void dispose() {
     _animationController.dispose();
@@ -58,7 +55,6 @@ class _BarComponentState extends State<BarComponent> with SingleTickerProviderSt
     _animationController.forward(from: 0);
     widget.onTabChanged?.call(index);
   }
-
   @override
   Widget build(BuildContext context) {
     final activeColor = widget.activeColor ?? Theme.of(context).primaryColor;

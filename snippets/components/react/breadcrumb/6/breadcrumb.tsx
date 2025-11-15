@@ -15,3 +15,5 @@ export const Breadcrumb: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Breadcrumb;

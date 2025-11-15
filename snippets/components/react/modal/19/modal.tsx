@@ -1,18 +1,21 @@
 import React from 'react';
 
-export const Modal: React.FC<any> = (props) => {
+interface ModalProps {
+  variant?: 'text' | 'default';
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export const Modal: React.FC<ModalProps> = ({
+  variant = 'text',
+  className = '',
+  children,
+}) => {
   return (
-    <div
-      style={{
-        background: 'rgba(255, 255, 255, 0.1)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.2)',
-        borderRadius: '12px',
-        padding: '16px',
-        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
-      }}
-    >
-      <div>Modal - Glassmorphism</div>
+    <div className={`rounded-md p-4 bg-transparent hover:bg-gray-100 ${className}`}>
+      {children}
     </div>
   );
 };
+
+export default Modal;

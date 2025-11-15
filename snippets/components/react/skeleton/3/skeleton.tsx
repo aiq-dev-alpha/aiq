@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 interface SkeletonProps {
+  className?: string;
   children?: React.ReactNode;
   variant?: 'default' | 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
@@ -39,3 +40,5 @@ export const Skeleton: React.FC<SkeletonProps> = (props) => {
     </div>
   );
 };
+
+export default Skeleton;

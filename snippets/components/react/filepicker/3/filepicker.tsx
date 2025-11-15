@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 interface FilepickerProps {
+  className?: string;
   children?: React.ReactNode;
   variant?: 'default' | 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
@@ -39,3 +40,5 @@ export const Filepicker: React.FC<FilepickerProps> = (props) => {
     </div>
   );
 };
+
+export default Filepicker;

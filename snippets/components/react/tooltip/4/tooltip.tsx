@@ -16,3 +16,5 @@ export const Tooltip: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Tooltip;

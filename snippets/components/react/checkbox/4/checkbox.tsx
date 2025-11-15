@@ -16,3 +16,5 @@ export const Checkbox: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Checkbox;

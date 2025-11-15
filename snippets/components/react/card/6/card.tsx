@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 interface CardProps {
+  className?: string;
   front: React.ReactNode;
   back: React.ReactNode;
   width?: number;
@@ -65,3 +66,5 @@ export const Card: React.FC<CardProps> = ({
     </div>
   );
 };
+
+export default Card;

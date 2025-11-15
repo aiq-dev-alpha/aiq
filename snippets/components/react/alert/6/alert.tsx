@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 interface AlertProps {
+  className?: string;
   children: React.ReactNode;
   type?: 'success' | 'error' | 'warning' | 'info';
   dismissible?: boolean;
@@ -65,3 +66,5 @@ export const Alert: React.FC<AlertProps> = ({
     </div>
   );
 };
+
+export default Alert;

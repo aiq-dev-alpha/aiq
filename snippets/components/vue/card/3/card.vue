@@ -1,18 +1,145 @@
 <template>
-  <div class="stylish-card">
-    <div v-if="title" class="card-top"><h4>{{ title }}</h4></div>
-    <div class="card-content"><slot /></div>
-    <div v-if="$slots.actions" class="card-actions"><slot name="actions" /></div>
+  <div :class="['skeleton-card', { loading }]">
+    <div v-if="loading" class="skeleton-content">
+      <div class="skeleton-header">
+        <div class="skeleton-avatar shimmer"></div>
+        <div class="skeleton-title-group">
+          <div class="skeleton-title shimmer"></div>
+          <div class="skeleton-subtitle shimmer"></div>
+        </div>
+      </div>
+      <div class="skeleton-body">
+        <div class="skeleton-line shimmer"></div>
+        <div class="skeleton-line shimmer"></div>
+        <div class="skeleton-line short shimmer"></div>
+      </div>
+      <div class="skeleton-footer">
+        <div class="skeleton-button shimmer"></div>
+        <div class="skeleton-button shimmer"></div>
+      </div>
+    </div>
+    <div v-else class="actual-content">
+      <slot />
+    </div>
   </div>
 </template>
-<script lang="ts">
-import { defineComponent } from 'vue';
-export default defineComponent({ name: 'StylishCard', props: { title: String } });
+
+<script setup lang="ts">
+interface Props {
+  loading?: boolean;
+}
+
+withDefaults(defineProps<Props>(), {
+  loading: false
+});
 </script>
+
 <style scoped>
-.stylish-card { background: white; border-radius: 1rem; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08); overflow: hidden; border: 1px solid #f0f0f0; }
-.card-top { padding: 1.5rem; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); border-bottom: 1px solid #e0e0e0; }
-.card-top h4 { margin: 0; font-size: 1.25rem; font-weight: 700; color: #2d3748; }
-.card-content { padding: 1.5rem; }
-.card-actions { padding: 1rem 1.5rem; background: #fafafa; border-top: 1px solid #e0e0e0; }
+.skeleton-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.skeleton-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.skeleton-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #e5e7eb;
+}
+
+.skeleton-title-group {
+  flex: 1;
+}
+
+.skeleton-title {
+  width: 60%;
+  height: 16px;
+  margin-bottom: 0.5rem;
+  background: #e5e7eb;
+  border-radius: 4px;
+}
+
+.skeleton-subtitle {
+  width: 40%;
+  height: 12px;
+  background: #e5e7eb;
+  border-radius: 4px;
+}
+
+.skeleton-body {
+  margin-bottom: 1.5rem;
+}
+
+.skeleton-line {
+  width: 100%;
+  height: 12px;
+  margin-bottom: 0.75rem;
+  background: #e5e7eb;
+  border-radius: 4px;
+}
+
+.skeleton-line.short {
+  width: 70%;
+}
+
+.skeleton-footer {
+  display: flex;
+  gap: 1rem;
+}
+
+.skeleton-button {
+  width: 100px;
+  height: 36px;
+  background: #e5e7eb;
+  border-radius: 8px;
+}
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  animation: shimmer-animation 1.5s infinite;
+}
+
+@keyframes shimmer-animation {
+  to {
+    left: 100%;
+  }
+}
+
+.actual-content {
+  animation: fade-in 0.3s ease;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 </style>

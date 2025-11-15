@@ -1,6 +1,7 @@
 import React from 'react';
 
 interface AlertProps {
+  className?: string;
   title: string;
   message?: string;
   variant?: 'filled' | 'outlined' | 'standard';
@@ -74,3 +75,5 @@ export const Alert: React.FC<AlertProps> = ({
     </div>
   );
 };
+
+export default Alert;

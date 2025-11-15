@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  className?: string;
   children: React.ReactNode;
   onClick?: () => void;
   variant?: 'glass' | 'frosted';
@@ -62,7 +63,7 @@ export const Button: React.FC<ButtonProps> = ({
         fontWeight: 600,
         boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
       }}
-    >
+     {...props}>
       {children}
       {ripples.map(ripple => (
         <span
@@ -92,3 +93,5 @@ export const Button: React.FC<ButtonProps> = ({
     </button>
   );
 };
+
+export default Button;

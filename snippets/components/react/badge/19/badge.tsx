@@ -11,3 +11,5 @@ export const Component19: React.FC<Props> = ({ children, className = '' }) => {
     </div>
   );
 };
+
+export default Component19;

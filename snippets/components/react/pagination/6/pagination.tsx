@@ -15,3 +15,5 @@ export const Pagination: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Pagination;

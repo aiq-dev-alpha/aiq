@@ -1,41 +1,57 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 interface BadgeProps {
-  children?: React.ReactNode;
-  variant?: 'default' | 'primary' | 'secondary';
-  size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
+  status: 'active' | 'inactive' | 'pending' | 'archived';
+  label?: string;
+  showIcon?: boolean;
+  className?: string;
 }
 
-export const Badge: React.FC<BadgeProps> = (props) => {
-  const { children, variant = 'default', size = 'md', disabled = false } = props;
-  const [isHovered, setIsHovered] = React.useState(false);
+const statusConfig = {
+  active: {
+    color: 'bg-green-500',
+    textColor: 'text-green-700',
+    bgColor: 'bg-green-50',
+    label: 'Active',
+  },
+  inactive: {
+    color: 'bg-gray-500',
+    textColor: 'text-gray-700',
+    bgColor: 'bg-gray-50',
+    label: 'Inactive',
+  },
+  pending: {
+    color: 'bg-yellow-500',
+    textColor: 'text-yellow-700',
+    bgColor: 'bg-yellow-50',
+    label: 'Pending',
+  },
+  archived: {
+    color: 'bg-purple-500',
+    textColor: 'text-purple-700',
+    bgColor: 'bg-purple-50',
+    label: 'Archived',
+  },
+};
 
-  const variants = {
-    default: '#f3f4f6',
-    primary: '#3b82f6',
-    secondary: '#10b981'
-  };
-
-  const sizes = {
-    sm: '8px 16px',
-    md: '12px 24px',
-    lg: '16px 32px'
-  };
+export const Badge: React.FC<BadgeProps> = ({
+  status,
+  label,
+  showIcon = true,
+  className = '',
+}) => {
+  const config = statusConfig[status];
 
   return (
-    <div
-      style={{
-        background: variants[variant],
-        padding: sizes[size],
-        borderRadius: '8px',
-        transition: 'all 0.3s ease',
-        transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        opacity: disabled ? 0.5 : 1
-      }}
+    <span
+      className={`animate-pulse inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${config.bgColor} ${config.textColor} ${className}`}
     >
-      {children || 'Badge - minimalist'}
-    </div>
+      {showIcon && (
+        <span className={`animate-pulse w-2 h-2 rounded-full ${config.color}`} />
+      )}
+      {label || config.label}
+    </span>
   );
 };
+
+export default Badge;

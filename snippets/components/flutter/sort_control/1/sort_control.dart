@@ -12,21 +12,8 @@ class ControlComponent extends StatefulWidget {
   @override
   State<ControlComponent> createState() => _ControlComponentState();
 }
-class _ControlComponentState extends State<ControlComponent> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  @override
-  void initState() {
-  super.initState();
-  _controller = AnimationController(
-  duration: const Duration(milliseconds: 300),
-  vsync: this,
-  );
-  }
-  @override
-  void dispose() {
-  _controller.dispose();
-  super.dispose();
-  }
+
+class _ControlComponentState extends State<ControlComponent> {
   @override
   Widget build(BuildContext context) {
   return GestureDetector(
@@ -51,7 +38,7 @@ class _ControlComponentState extends State<ControlComponent> with SingleTickerPr
   ),
   ],
   ),
-  child: widget.child ?? const Text('Component', style: TextStyle(color: Colors.white)),
+  child: widget.child ?? const Text('Component', style: const TextStyle(color: Colors.white)),
   ),
   );
   }

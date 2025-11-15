@@ -11,7 +11,6 @@ class CustomPicker extends StatefulWidget {
     this.onFilesSelected,
     this.multipleFiles = false,
   }) : super(key: key);
-
   @override
   State<CustomPicker> createState() => _CustomPickerState();
 }
@@ -57,7 +56,6 @@ class _CustomPickerState extends State<CustomPicker> {
     if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
     return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
   }
-
   @override
   Widget build(BuildContext context) {
     return Container(

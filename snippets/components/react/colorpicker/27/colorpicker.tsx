@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 interface ColorPickerProps {
+  className?: string;
   value?: string;
   onChange?: (color: string) => void;
   presets?: string[];
@@ -52,3 +53,5 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
     </div>
   );
 };
+
+export default ColorPicker;

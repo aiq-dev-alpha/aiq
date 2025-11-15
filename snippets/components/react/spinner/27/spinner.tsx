@@ -1,5 +1,6 @@
 import React from 'react';
 interface SpinnerProps {
+  className?: string;
   size?: 'sm' | 'md' | 'lg';
   color?: string;
   variant?: 'circle' | 'dots' | 'bars';
@@ -47,3 +48,5 @@ export const Spinner: React.FC<SpinnerProps> = ({
     </div>
   );
 };
+
+export default Spinner;

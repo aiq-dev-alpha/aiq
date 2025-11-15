@@ -15,7 +15,6 @@ class CustomNavigation extends StatelessWidget {
     this.backgroundColor,
     this.textColor,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     final bgColor = backgroundColor ?? Colors.grey.shade900;

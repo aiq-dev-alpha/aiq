@@ -15,3 +15,5 @@ export const Radio: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Radio;

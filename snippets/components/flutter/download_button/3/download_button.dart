@@ -17,7 +17,6 @@ class CustomButton extends StatefulWidget {
     this.showProgress = false,
     this.progress,
   }) : super(key: key);
-
   @override
   State<CustomButton> createState() => _CustomButtonState();
 }
@@ -25,7 +24,6 @@ class CustomButton extends StatefulWidget {
 class _CustomButtonState extends State<CustomButton> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   bool _isHovered = false;
-
   @override
   void initState() {
     super.initState();
@@ -34,13 +32,11 @@ class _CustomButtonState extends State<CustomButton> with SingleTickerProviderSt
       vsync: this,
     );
   }
-
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     final bgColor = widget.backgroundColor ?? Theme.of(context).primaryColor;

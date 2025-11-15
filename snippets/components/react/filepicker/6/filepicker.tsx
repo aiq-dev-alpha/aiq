@@ -15,3 +15,5 @@ export const Filepicker: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Filepicker;

@@ -12,21 +12,8 @@ class CustomCarousel extends StatefulWidget {
   @override
   State<CustomCarousel> createState() => _CustomCarouselState();
 }
-class _CustomCarouselState extends State<CustomCarousel> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  @override
-  void initState() {
-  super.initState();
-  _controller = AnimationController(
-  duration: const Duration(milliseconds: 300),
-  vsync: this,
-  );
-  }
-  @override
-  void dispose() {
-  _controller.dispose();
-  super.dispose();
-  }
+
+class _CustomCarouselState extends State<CustomCarousel> {
   @override
   Widget build(BuildContext context) {
   return GestureDetector(
@@ -51,7 +38,7 @@ class _CustomCarouselState extends State<CustomCarousel> with SingleTickerProvid
   ),
   ],
   ),
-  child: widget.child ?? const Text('Component', style: TextStyle(color: Colors.white)),
+  child: widget.child ?? const Text('Component', style: const TextStyle(color: Colors.white)),
   ),
   );
   }

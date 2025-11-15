@@ -14,6 +14,7 @@ class CustomButton extends StatefulWidget {
   @override
   State<CustomButton> createState() => _CustomButtonState();
 }
+
 class _CustomButtonState extends State<CustomButton> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;

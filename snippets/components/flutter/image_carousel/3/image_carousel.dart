@@ -13,7 +13,6 @@ class CustomCarousel extends StatefulWidget {
     this.autoPlay = true,
     this.autoPlayDuration = const Duration(seconds: 3),
   }) : super(key: key);
-
   @override
   State<CustomCarousel> createState() => _CustomCarouselState();
 }
@@ -21,7 +20,6 @@ class CustomCarousel extends StatefulWidget {
 class _CustomCarouselState extends State<CustomCarousel> {
   late PageController _pageController;
   int _currentPage = 0;
-
   @override
   void initState() {
     super.initState();
@@ -44,13 +42,11 @@ class _CustomCarouselState extends State<CustomCarousel> {
       }
     });
   }
-
   @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(

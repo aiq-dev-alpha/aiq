@@ -1,38 +1,33 @@
 import React from 'react';
 
 interface CardProps {
+  title?: string;
   children: React.ReactNode;
-  blur?: 'light' | 'medium' | 'heavy';
-  opacity?: number;
-  bordered?: boolean;
+  footer?: React.ReactNode;
+  className?: string;
 }
 
 export const Card: React.FC<CardProps> = ({
+  title,
   children,
-  blur = 'medium',
-  opacity = 0.7,
-  bordered = true
+  footer,
+  className = '',
 }) => {
-  const blurValues = {
-    light: '10px',
-    medium: '16px',
-    heavy: '24px'
-  };
-
   return (
-    <div
-      style={{
-        background: `rgba(255, 255, 255, ${opacity})`,
-        backdropFilter: `blur(${blurValues[blur]}) saturate(180%)`,
-        WebkitBackdropFilter: `blur(${blurValues[blur]}) saturate(180%)`,
-        borderRadius: '16px',
-        border: bordered ? '1px solid rgba(255, 255, 255, 0.3)' : 'none',
-        padding: '24px',
-        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
-        maxWidth: '500px'
-      }}
-    >
-      {children}
+    <div className={`bg-white rounded-lg shadow-2xl overflow-hidden ${className}`}>
+      {title && (
+        <div className="px-6 py-4 border-b border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+        </div>
+      )}
+      <div className="px-6 py-4">{children}</div>
+      {footer && (
+        <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+          {footer}
+        </div>
+      )}
     </div>
   );
 };
+
+export default Card;

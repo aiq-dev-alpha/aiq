@@ -16,3 +16,5 @@ export const Autocomplete: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Autocomplete;

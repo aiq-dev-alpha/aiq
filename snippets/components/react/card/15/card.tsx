@@ -1,67 +1,33 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 interface CardProps {
-  front: React.ReactNode;
-  back: React.ReactNode;
-  width?: number;
-  height?: number;
+  title?: string;
+  children: React.ReactNode;
+  footer?: React.ReactNode;
+  className?: string;
 }
 
 export const Card: React.FC<CardProps> = ({
-  front,
-  back,
-  width = 300,
-  height = 400
+  title,
+  children,
+  footer,
+  className = '',
 }) => {
-  const [isFlipped, setIsFlipped] = useState(false);
-
-  const faceStyle = {
-    position: 'absolute' as const,
-    width: '100%',
-    height: '100%',
-    backfaceVisibility: 'hidden' as const,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: '16px',
-    padding: '24px',
-    boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
-  };
-
   return (
-    <div
-      onClick={() => setIsFlipped(!isFlipped)}
-      style={{
-        width,
-        height,
-        perspective: '1000px',
-        cursor: 'pointer'
-      }}
-    >
-      <div
-        style={{
-          position: 'relative',
-          width: '100%',
-          height: '100%',
-          transition: 'transform 0.6s',
-          transformStyle: 'preserve-3d',
-          transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'
-        }}
-      >
-        <div style={{ ...faceStyle, background: '#fff' }}>
-          {front}
+    <div className={`bg-white rounded-lg shadow-xl overflow-hidden ${className}`}>
+      {title && (
+        <div className="px-6 py-4 border-b border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
         </div>
-        <div
-          style={{
-            ...faceStyle,
-            background: '#4f46e5',
-            color: '#fff',
-            transform: 'rotateY(180deg)'
-          }}
-        >
-          {back}
+      )}
+      <div className="px-6 py-4">{children}</div>
+      {footer && (
+        <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+          {footer}
         </div>
-      </div>
+      )}
     </div>
   );
 };
+
+export default Card;

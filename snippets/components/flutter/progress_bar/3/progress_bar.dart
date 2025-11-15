@@ -17,7 +17,6 @@ class CustomProgressBar extends StatefulWidget {
     this.showPercentage = true,
     this.animationDuration = const Duration(milliseconds: 800),
   }) : super(key: key);
-
   @override
   State<CustomProgressBar> createState() => _CustomProgressBarState();
 }
@@ -26,7 +25,6 @@ class _CustomProgressBarState extends State<CustomProgressBar>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _progressAnimation;
-
   @override
   void initState() {
     super.initState();
@@ -39,7 +37,6 @@ class _CustomProgressBarState extends State<CustomProgressBar>
     );
     _controller.forward();
   }
-
   @override
   void didUpdateWidget(CustomProgressBar oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -53,13 +50,11 @@ class _CustomProgressBarState extends State<CustomProgressBar>
       _controller.forward(from: 0);
     }
   }
-
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     final progressColor = widget.progressColor ?? Theme.of(context).primaryColor;

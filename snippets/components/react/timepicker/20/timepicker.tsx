@@ -1,17 +1,21 @@
 import React from 'react';
 
-export const Timepicker: React.FC<any> = (props) => {
+interface TimepickerProps {
+  variant?: 'elevated' | 'default';
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export const Timepicker: React.FC<TimepickerProps> = ({
+  variant = 'elevated',
+  className = '',
+  children,
+}) => {
   return (
-    <div
-      style={{
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        padding: '20px',
-        borderRadius: '16px',
-        color: '#fff',
-        boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
-      }}
-    >
-      <div>Timepicker - Gradient</div>
+    <div className={`rounded-md p-4 bg-white shadow-lg ${className}`}>
+      {children}
     </div>
   );
 };
+
+export default Timepicker;

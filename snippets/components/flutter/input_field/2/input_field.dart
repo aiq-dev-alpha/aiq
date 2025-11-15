@@ -12,6 +12,7 @@ class CustomInputField extends StatefulWidget {
   @override
   State<CustomInputField> createState() => _CustomInputFieldState();
 }
+
 class _CustomInputFieldState extends State<CustomInputField> {
   bool _isHovered = false;
   @override

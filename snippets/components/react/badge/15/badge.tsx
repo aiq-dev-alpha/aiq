@@ -13,3 +13,5 @@ export const Badge: React.FC<{ variant?: 'dot' | 'number'; color?: string; child
     </div>
   );
 };
+
+export default Badge;

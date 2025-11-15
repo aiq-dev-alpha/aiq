@@ -12,6 +12,7 @@ class CustomSection extends StatefulWidget {
   @override
   State<CustomSection> createState() => _CustomSectionState();
 }
+
 class _CustomSectionState extends State<CustomSection> {
   bool _isHovered = false;
   @override

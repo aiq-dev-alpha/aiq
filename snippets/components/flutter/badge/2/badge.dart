@@ -12,6 +12,7 @@ class CustomBadge extends StatefulWidget {
   @override
   State<CustomBadge> createState() => _CustomBadgeState();
 }
+
 class _CustomBadgeState extends State<CustomBadge> {
   bool _isHovered = false;
   @override

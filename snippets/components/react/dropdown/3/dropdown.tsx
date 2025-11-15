@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 interface DropdownProps {
+  className?: string;
   children?: React.ReactNode;
   variant?: 'default' | 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
@@ -39,3 +40,5 @@ export const Dropdown: React.FC<DropdownProps> = (props) => {
     </div>
   );
 };
+
+export default Dropdown;

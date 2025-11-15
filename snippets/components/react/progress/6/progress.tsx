@@ -15,3 +15,5 @@ export const Progress: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Progress;

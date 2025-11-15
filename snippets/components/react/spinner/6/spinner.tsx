@@ -15,3 +15,5 @@ export const Spinner: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Spinner;

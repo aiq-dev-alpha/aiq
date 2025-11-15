@@ -1,52 +1,33 @@
 import React from 'react';
 
 interface CardProps {
+  title?: string;
   children: React.ReactNode;
-  gradient?: 'rainbow' | 'sunset' | 'ocean' | 'forest';
-  borderWidth?: number;
-  padding?: number;
+  footer?: React.ReactNode;
+  className?: string;
 }
 
 export const Card: React.FC<CardProps> = ({
+  title,
   children,
-  gradient = 'rainbow',
-  borderWidth = 2,
-  padding = 24
+  footer,
+  className = '',
 }) => {
-  const gradients = {
-    rainbow: 'linear-gradient(90deg, #ff0080, #ff8c00, #40e0d0, #ff0080)',
-    sunset: 'linear-gradient(90deg, #f093fb 0%, #f5576c 100%)',
-    ocean: 'linear-gradient(90deg, #4facfe 0%, #00f2fe 100%)',
-    forest: 'linear-gradient(90deg, #43e97b 0%, #38f9d7 100%)'
-  };
-
   return (
-    <div
-      style={{
-        background: gradients[gradient],
-        backgroundSize: '200% 200%',
-        animation: 'gradientRotate 4s linear infinite',
-        padding: borderWidth,
-        borderRadius: '16px',
-        maxWidth: '500px'
-      }}
-    >
-      <div
-        style={{
-          background: '#fff',
-          borderRadius: `${16 - borderWidth}px`,
-          padding: padding
-        }}
-      >
-        {children}
-      </div>
-      <style>{`
-        @keyframes gradientRotate {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-      `}</style>
+    <div className={`bg-white rounded-lg shadow-2xl overflow-hidden ${className}`}>
+      {title && (
+        <div className="px-6 py-4 border-b border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+        </div>
+      )}
+      <div className="px-6 py-4">{children}</div>
+      {footer && (
+        <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+          {footer}
+        </div>
+      )}
     </div>
   );
 };
+
+export default Card;

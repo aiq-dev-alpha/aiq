@@ -14,6 +14,7 @@ class CustomComponent extends StatefulWidget {
   @override
   State<CustomComponent> createState() => _CustomComponentState();
 }
+
 class _CustomComponentState extends State<CustomComponent> {
   bool _isPressed = false;
   @override

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  className?: string;
   children: React.ReactNode;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   variant?: 'elevated' | 'tonal' | 'outlined' | 'text';
@@ -74,7 +75,7 @@ export const Button: React.FC<ButtonProps> = ({
         relative overflow-hidden
         select-none
       `}
-    >
+     {...props}>
       {ripples.map(({ x, y, id }) => (
         <span
           key={id}
@@ -104,3 +105,5 @@ export const Button: React.FC<ButtonProps> = ({
     </button>
   );
 };
+
+export default Button;

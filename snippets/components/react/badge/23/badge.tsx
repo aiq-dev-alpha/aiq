@@ -1,18 +1,49 @@
 import React from 'react';
 
-export const Badge: React.FC<any> = (props) => {
+interface BadgeProps {
+  count?: number;
+  max?: number;
+  showZero?: boolean;
+  dot?: boolean;
+  children?: React.ReactNode;
+  className?: string;
+}
+
+export const Badge: React.FC<BadgeProps> = ({
+  count = 0,
+  max = 99,
+  showZero = false,
+  dot = false,
+  children,
+  className = '',
+}) => {
+  const displayCount = count > max ? `${max}+` : count;
+  const showBadge = count > 0 || showZero;
+
+  if (!children) {
+    return showBadge ? (
+      <span
+        className={`animate-pulse inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-500 rounded-full ${className}`}
+      >
+        {dot ? null : displayCount}
+      </span>
+    ) : null;
+  }
+
   return (
-    <div
-      style={{
-        background: 'rgba(255, 255, 255, 0.1)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.2)',
-        borderRadius: '12px',
-        padding: '16px',
-        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
-      }}
-    >
-      <div>Badge - Glassmorphism</div>
+    <div className={`animate-pulse relative inline-flex ${className}`}>
+      {children}
+      {showBadge && (
+        <span
+          className={`animate-pulse absolute -top-1 -right-1 flex items-center justify-center ${
+            dot ? 'w-2 h-2' : 'min-w-[20px] h-5 px-1'
+          } text-xs font-bold text-white bg-red-500 rounded-full border-2 border-white`}
+        >
+          {dot ? null : displayCount}
+        </span>
+      )}
     </div>
   );
 };
+
+export default Badge;

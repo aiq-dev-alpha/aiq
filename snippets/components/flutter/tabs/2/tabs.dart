@@ -12,6 +12,7 @@ class CustomTabs extends StatefulWidget {
   @override
   State<CustomTabs> createState() => _CustomTabsState();
 }
+
 class _CustomTabsState extends State<CustomTabs> {
   bool _isHovered = false;
   @override

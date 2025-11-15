@@ -15,7 +15,6 @@ class CustomNavigation extends StatefulWidget {
     this.isCollapsed = false,
     this.backgroundColor,
   }) : super(key: key);
-
   @override
   State<CustomNavigation> createState() => _CustomNavigationState();
 }
@@ -35,7 +34,6 @@ class SideMenuItem {
 class _CustomNavigationState extends State<CustomNavigation> with SingleTickerProviderStateMixin {
   late AnimationController _widthController;
   late Animation<double> _widthAnimation;
-
   @override
   void initState() {
     super.initState();
@@ -58,7 +56,6 @@ class _CustomNavigationState extends State<CustomNavigation> with SingleTickerPr
       curve: Curves.easeInOut,
     ));
   }
-
   @override
   void didUpdateWidget(CustomNavigation oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -70,13 +67,11 @@ class _CustomNavigationState extends State<CustomNavigation> with SingleTickerPr
       }
     }
   }
-
   @override
   void dispose() {
     _widthController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     final bgColor = widget.backgroundColor ?? Colors.grey.shade100;

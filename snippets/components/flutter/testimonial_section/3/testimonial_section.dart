@@ -11,7 +11,6 @@ class CustomSection extends StatefulWidget {
     this.title,
     this.backgroundColor,
   }) : super(key: key);
-
   @override
   State<CustomSection> createState() => _CustomSectionState();
 }
@@ -37,13 +36,11 @@ class Testimonial {
 class _CustomSectionState extends State<CustomSection> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
-
   @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return Container(

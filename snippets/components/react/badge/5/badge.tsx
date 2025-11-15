@@ -1,5 +1,6 @@
 import React from 'react';
 interface BadgeProps {
+  className?: string;
   label: string;
   variant?: 'success' | 'warning' | 'error' | 'info' | 'neutral';
   icon?: React.ReactNode;
@@ -33,3 +34,5 @@ export const Badge: React.FC<BadgeProps> = ({
     </span>
   );
 };
+
+export default Badge;

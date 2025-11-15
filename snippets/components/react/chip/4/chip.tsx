@@ -15,3 +15,5 @@ export const Chip: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Chip;

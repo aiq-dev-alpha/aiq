@@ -19,7 +19,6 @@ class CustomBadge extends StatefulWidget {
     this.showZero = false,
     this.animate = true,
   }) : super(key: key);
-
   @override
   State<CustomBadge> createState() => _CustomBadgeState();
 }
@@ -28,7 +27,6 @@ class _CustomBadgeState extends State<CustomBadge> with SingleTickerProviderStat
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
-
   @override
   void initState() {
     super.initState();
@@ -50,7 +48,6 @@ class _CustomBadgeState extends State<CustomBadge> with SingleTickerProviderStat
       _controller.forward();
     }
   }
-
   @override
   void didUpdateWidget(CustomBadge oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -58,7 +55,6 @@ class _CustomBadgeState extends State<CustomBadge> with SingleTickerProviderStat
       _controller.forward(from: 0);
     }
   }
-
   @override
   void dispose() {
     _controller.dispose();
@@ -71,7 +67,6 @@ class _CustomBadgeState extends State<CustomBadge> with SingleTickerProviderStat
     }
     return widget.count.toString();
   }
-
   @override
   Widget build(BuildContext context) {
     final shouldShow = widget.count > 0 || widget.showZero;

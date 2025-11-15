@@ -12,21 +12,8 @@ class CustomToggleSwitch extends StatefulWidget {
   @override
   State<CustomToggleSwitch> createState() => _CustomToggleSwitchState();
 }
-class _CustomToggleSwitchState extends State<CustomToggleSwitch> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  @override
-  void initState() {
-  super.initState();
-  _controller = AnimationController(
-  duration: const Duration(milliseconds: 300),
-  vsync: this,
-  );
-  }
-  @override
-  void dispose() {
-  _controller.dispose();
-  super.dispose();
-  }
+
+class _CustomToggleSwitchState extends State<CustomToggleSwitch> {
   @override
   Widget build(BuildContext context) {
   return GestureDetector(
@@ -51,7 +38,7 @@ class _CustomToggleSwitchState extends State<CustomToggleSwitch> with SingleTick
   ),
   ],
   ),
-  child: widget.child ?? const Text('Component', style: TextStyle(color: Colors.white)),
+  child: widget.child ?? const Text('Component', style: const TextStyle(color: Colors.white)),
   ),
   );
   }

@@ -16,3 +16,5 @@ export const Dropdown: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Dropdown;

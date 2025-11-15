@@ -15,3 +15,5 @@ export const Skeleton: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Skeleton;

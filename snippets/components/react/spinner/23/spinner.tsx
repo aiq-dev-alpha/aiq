@@ -1,18 +1,21 @@
 import React from 'react';
 
-export const Spinner: React.FC<any> = (props) => {
+interface SpinnerProps {
+  variant?: 'outlined' | 'default';
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export const Spinner: React.FC<SpinnerProps> = ({
+  variant = 'outlined',
+  className = '',
+  children,
+}) => {
   return (
-    <div
-      style={{
-        background: 'rgba(255, 255, 255, 0.1)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.2)',
-        borderRadius: '12px',
-        padding: '16px',
-        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
-      }}
-    >
-      <div>Spinner - Glassmorphism</div>
+    <div className={`rounded-md p-4 border-2 border-blue-500 bg-transparent ${className}`}>
+      {children}
     </div>
   );
 };
+
+export default Spinner;

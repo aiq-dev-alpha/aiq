@@ -1,5 +1,6 @@
 import React from 'react';
 interface ChipProps {
+  className?: string;
   label: string;
   onDelete?: () => void;
   clickable?: boolean;
@@ -31,3 +32,5 @@ export const Chip: React.FC<ChipProps> = ({
     </span>
   );
 };
+
+export default Chip;

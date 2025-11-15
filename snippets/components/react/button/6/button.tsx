@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  className?: string;
   children: React.ReactNode;
   onClick?: () => void;
   color?: 'red' | 'blue' | 'green' | 'orange';
@@ -27,7 +28,7 @@ export const Button: React.FC<ButtonProps> = ({
   return (
     <button
       onClick={onClick}
-      onMouseDown={() => setIsPressed(true)}
+      onMouseDown={() = {...props}> setIsPressed(true)}
       onMouseUp={() => setIsPressed(false)}
       onMouseLeave={() => setIsPressed(false)}
       style={{
@@ -51,3 +52,5 @@ export const Button: React.FC<ButtonProps> = ({
     </button>
   );
 };
+
+export default Button;

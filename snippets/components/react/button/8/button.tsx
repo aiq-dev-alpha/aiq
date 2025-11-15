@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  className?: string;
   children: React.ReactNode;
   onClick?: () => Promise<void> | void;
   variant?: 'primary' | 'secondary';
@@ -52,7 +53,7 @@ export const Button: React.FC<ButtonProps> = ({
         minWidth: '120px',
         justifyContent: 'center'
       }}
-      onMouseEnter={(e) => {
+      onMouseEnter={(e) = {...props}> {
         if (!disabled && !isLoading) {
           e.currentTarget.style.background = variants[variant].hover;
         }
@@ -86,3 +87,5 @@ export const Button: React.FC<ButtonProps> = ({
     </button>
   );
 };
+
+export default Button;

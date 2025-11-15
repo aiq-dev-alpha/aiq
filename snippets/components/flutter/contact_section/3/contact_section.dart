@@ -13,7 +13,6 @@ class CustomSection extends StatelessWidget {
     required this.methods,
     this.backgroundColor,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Container(

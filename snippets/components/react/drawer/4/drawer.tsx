@@ -16,3 +16,5 @@ export const Drawer: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Drawer;

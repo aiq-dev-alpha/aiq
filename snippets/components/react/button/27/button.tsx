@@ -1,5 +1,6 @@
 import React from 'react';
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  className?: string;
   children: React.ReactNode;
   onClick?: () => void;
   variant?: 'primary' | 'secondary' | 'success';
@@ -28,8 +29,10 @@ export const Button: React.FC<ButtonProps> = ({
       onClick={onClick}
       disabled={disabled}
       className={`${variants[variant]} ${sizes[size]} text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-    >
+     {...props}>
       {children}
     </button>
   );
 };
+
+export default Button;

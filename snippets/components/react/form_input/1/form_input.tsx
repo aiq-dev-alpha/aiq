@@ -46,3 +46,5 @@ export const Component: React.FC<ComponentProps> = ({
   </div>
   );
 };
+
+export default Component;

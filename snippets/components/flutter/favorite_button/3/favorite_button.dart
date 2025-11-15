@@ -15,7 +15,6 @@ class CustomButton extends StatefulWidget {
     this.inactiveColor,
     this.size = 32,
   }) : super(key: key);
-
   @override
   State<CustomButton> createState() => _CustomButtonState();
 }
@@ -24,7 +23,6 @@ class _CustomButtonState extends State<CustomButton> with SingleTickerProviderSt
   late bool _isFavorite;
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
-
   @override
   void initState() {
     super.initState();
@@ -43,7 +41,6 @@ class _CustomButtonState extends State<CustomButton> with SingleTickerProviderSt
       _controller.value = 1;
     }
   }
-
   @override
   void dispose() {
     _controller.dispose();
@@ -59,7 +56,6 @@ class _CustomButtonState extends State<CustomButton> with SingleTickerProviderSt
       widget.onToggle?.call(_isFavorite);
     });
   }
-
   @override
   Widget build(BuildContext context) {
     final activeColor = widget.activeColor ?? Colors.red;

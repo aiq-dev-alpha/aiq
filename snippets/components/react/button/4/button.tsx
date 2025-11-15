@@ -1,6 +1,7 @@
 import React from 'react';
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  className?: string;
   children: React.ReactNode;
   onClick?: () => void;
   gradient?: 'sunset' | 'ocean' | 'forest' | 'purple';
@@ -46,7 +47,7 @@ export const Button: React.FC<ButtonProps> = ({
         position: 'relative',
         overflow: 'hidden'
       }}
-      onMouseEnter={(e) => {
+      onMouseEnter={(e) = {...props}> {
         e.currentTarget.style.transform = 'translateY(-2px)';
         e.currentTarget.style.boxShadow = '0 6px 20px 0 rgba(0, 0, 0, 0.3)';
       }}
@@ -66,3 +67,5 @@ export const Button: React.FC<ButtonProps> = ({
     </button>
   );
 };
+
+export default Button;

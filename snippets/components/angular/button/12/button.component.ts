@@ -1,152 +1,162 @@
+// Toggle Button - Two-state button with visual feedback
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-interface ButtonTheme {
-  primaryColor: string;
-  secondaryColor: string;
+
+interface ToggleButtonTheme {
+  activeColor: string;
+  inactiveColor: string;
   backgroundColor: string;
   textColor: string;
-  borderColor: string;
-  accentColor: string;
+  activeTextColor: string;
 }
+
 @Component({
   standalone: true,
   imports: [CommonModule],
   selector: 'app-button',
   template: `
-  <button
-  [ngClass]="['btn', 'btn-' + variant, 'btn-' + size]"
-  [ngStyle]="buttonStyles"
-  [disabled]="disabled || loading"
-  [attr.aria-label]="ariaLabel"
-  [attr.aria-busy]="loading"
-  (click)="handleClick($event)"
-  class="rotate-button">
-  <span *ngIf="loading" class="spinner orbit-spinner">
-  <span class="orbit"></span>
-  </span>
-  <span *ngIf="!loading && iconLeft" class="icon-left">{{ iconLeft }}</span>
-  <span class="btn-content">
-  <ng-content></ng-content>
-  </span>
-  <span *ngIf="!loading && iconRight" class="icon-right">{{ iconRight }}</span>
-  </button>
+    <button
+      class="toggle-btn"
+      [ngStyle]="buttonStyles"
+      [class.active]="isActive"
+      [disabled]="disabled"
+      [attr.aria-pressed]="isActive"
+      [attr.aria-label]="ariaLabel"
+      (click)="handleToggle($event)">
+
+      <div class="toggle-track"></div>
+
+      <div class="toggle-content">
+        <span *ngIf="showIcons" class="toggle-icon">
+          {{ isActive ? activeIcon : inactiveIcon }}
+        </span>
+        <span class="toggle-label">
+          {{ isActive ? activeLabel : inactiveLabel }}
+        </span>
+      </div>
+    </button>
   `,
   styles: [`
-  .rotate-button {
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  font-weight: 600;
-  border: none;
-  outline: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  box-shadow: 0 5px 20px rgba(245, 158, 11, 0.3);
-  }
-  .rotate-button:hover:not(:disabled) {
-  transform: rotate(2deg) scale(1.05);
-  box-shadow: 0 10px 35px rgba(245, 158, 11, 0.5);
-  }
-  .rotate-button:active:not(:disabled) {
-  transform: rotate(0deg) scale(0.98);
-  }
-  .rotate-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  }
-  .orbit-spinner {
-  width: 1.2em;
-  height: 1.2em;
-  position: relative;
-  display: inline-block;
-  }
-  .orbit {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border: 2px solid transparent;
-  border-top-color: currentColor;
-  border-radius: 50%;
-  animation: orbitRotate 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  }
-  @keyframes orbitRotate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-  }
-  .btn-content {
-  display: flex;
-  align-items: center;
-  }
-  .btn-sm {
-  padding: 0.5rem 1.5rem;
-  font-size: 0.875rem;
-  border-radius: 0.625rem;
-  }
-  .btn-md {
-  padding: 0.75rem 2rem;
-  font-size: 1rem;
-  border-radius: 0.875rem;
-  }
-  .btn-lg {
-  padding: 1rem 2.5rem;
-  font-size: 1.125rem;
-  border-radius: 1.125rem;
-  }
+    .toggle-btn {
+      position: relative;
+      border: 2px solid;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 12px 24px;
+      border-radius: 25px;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      min-width: 120px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .toggle-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+      filter: saturate(0.5);
+    }
+
+    .toggle-btn:hover:not(:disabled) {
+      transform: scale(1.05);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .toggle-btn:active:not(:disabled) {
+      transform: scale(0.95);
+    }
+
+    .toggle-track {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      transform-origin: left center;
+      transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      z-index: 0;
+    }
+
+    .toggle-btn.active .toggle-track {
+      transform: scaleX(1);
+    }
+
+    .toggle-btn:not(.active) .toggle-track {
+      transform: scaleX(0);
+    }
+
+    .toggle-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.3s;
+    }
+
+    .toggle-btn.active .toggle-content {
+      animation: contentBounce 0.4s ease-out;
+    }
+
+    @keyframes contentBounce {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
+    .toggle-icon {
+      font-size: 18px;
+      transition: transform 0.3s;
+    }
+
+    .toggle-btn.active .toggle-icon {
+      transform: rotate(360deg);
+    }
+
+    .toggle-label {
+      transition: all 0.3s;
+    }
   `]
 })
 export class ButtonComponent {
-  @Input() theme: Partial<ButtonTheme> = {};
-  @Input() variant: 'default' | 'outlined' | 'filled' | 'glow' = 'default';
-  @Input() size: 'sm' | 'md' | 'lg' = 'md';
-  @Input() disabled: boolean = false;
-  @Input() loading: boolean = false;
-  @Input() iconLeft: string = '';
-  @Input() iconRight: string = '';
-  @Input() ariaLabel: string = '';
-  @Output() clicked = new EventEmitter<MouseEvent>();
-  private defaultTheme: ButtonTheme = {
-  primaryColor: '#f59e0b',
-  secondaryColor: '#d97706',
-  backgroundColor: '#fffbeb',
-  backdropFilter: 'blur(10px)',
-  textColor: '#ffffff',
-  borderColor: '#f59e0b',
-  accentColor: '#fbbf24'
+  @Input() theme: Partial<ToggleButtonTheme> = {};
+  @Input() isActive = false;
+  @Input() activeLabel = 'ON';
+  @Input() inactiveLabel = 'OFF';
+  @Input() activeIcon = '✓';
+  @Input() inactiveIcon = '✗';
+  @Input() showIcons = true;
+  @Input() disabled = false;
+  @Input() ariaLabel?: string;
+  @Output() toggled = new EventEmitter<boolean>();
+
+  private defaultTheme: ToggleButtonTheme = {
+    activeColor: '#10b981',
+    inactiveColor: '#6b7280',
+    backgroundColor: '#ffffff',
+    textColor: '#1f2937',
+    activeTextColor: '#ffffff'
   };
-  get appliedTheme(): ButtonTheme {
-  return { ...this.defaultTheme, ...this.theme };
+
+  get appliedTheme(): ToggleButtonTheme {
+    return { ...this.defaultTheme, ...this.theme };
   }
+
   get buttonStyles() {
-  const variantStyles = {
-  default: {
-  background: `linear-gradient(135deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})`,
-  color: this.appliedTheme.textColor,
-  border: 'none'
-  },
-  outlined: {
-  background: 'transparent',
-  color: this.appliedTheme.primaryColor,
-  border: `2px solid ${this.appliedTheme.primaryColor}`
-  },
-  filled: {
-  background: this.appliedTheme.primaryColor,
-  color: this.appliedTheme.textColor,
-  border: 'none'
-  },
-  glow: {
-  background: this.appliedTheme.primaryColor,
-  color: this.appliedTheme.textColor,
-  border: 'none',
-  boxShadow: `0 0 30px ${this.appliedTheme.primaryColor}`
+    const t = this.appliedTheme;
+    return {
+      background: t.backgroundColor,
+      borderColor: this.isActive ? t.activeColor : t.inactiveColor,
+      color: this.isActive ? t.activeTextColor : t.textColor
+    };
   }
-  };
-  return variantStyles[this.variant];
-  }
-  handleClick(event: MouseEvent): void {
-  if (!this.disabled && !this.loading) {
-  this.clicked.emit(event);
-  }
+
+  handleToggle(event: MouseEvent): void {
+    if (!this.disabled) {
+      this.isActive = !this.isActive;
+      this.toggled.emit(this.isActive);
+    }
   }
 }

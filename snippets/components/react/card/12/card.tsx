@@ -1,76 +1,40 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 interface CardProps {
+  image?: string;
   title: string;
   description?: string;
-  image?: string;
-  footer?: React.ReactNode;
-  onClick?: () => void;
-  elevation?: 'low' | 'medium' | 'high';
+  actions?: React.ReactNode;
+  className?: string;
 }
 
 export const Card: React.FC<CardProps> = ({
+  image,
   title,
   description,
-  image,
-  footer,
-  onClick,
-  elevation = 'medium'
+  actions,
+  className = '',
 }) => {
-  const [isHovered, setIsHovered] = useState(false);
-
-  const elevations = {
-    low: { default: '0 1px 3px rgba(0,0,0,0.12)', hover: '0 4px 6px rgba(0,0,0,0.15)' },
-    medium: { default: '0 4px 6px rgba(0,0,0,0.1)', hover: '0 10px 15px rgba(0,0,0,0.2)' },
-    high: { default: '0 10px 20px rgba(0,0,0,0.15)', hover: '0 15px 30px rgba(0,0,0,0.25)' }
-  };
-
   return (
-    <div
-      onClick={onClick}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      style={{
-        background: '#fff',
-        borderRadius: '12px',
-        overflow: 'hidden',
-        cursor: onClick ? 'pointer' : 'default',
-        transform: isHovered ? 'translateY(-8px)' : 'translateY(0)',
-        boxShadow: isHovered ? elevations[elevation].hover : elevations[elevation].default,
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        maxWidth: '400px'
-      }}
-    >
+    <div className={`bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow ${className}`}>
       {image && (
-        <div style={{ width: '100%', height: '200px', overflow: 'hidden' }}>
+        <div className="h-48 overflow-hidden">
           <img
             src={image}
             alt={title}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              transform: isHovered ? 'scale(1.05)' : 'scale(1)',
-              transition: 'transform 0.3s ease'
-            }}
+            className="w-full h-full object-cover"
           />
         </div>
       )}
-      <div style={{ padding: '20px' }}>
-        <h3 style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: '600', color: '#1a1a1a' }}>
-          {title}
-        </h3>
+      <div className="p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
         {description && (
-          <p style={{ margin: 0, fontSize: '14px', color: '#666', lineHeight: '1.5' }}>
-            {description}
-          </p>
+          <p className="text-gray-600 mb-4">{description}</p>
         )}
+        {actions && <div className="flex gap-2">{actions}</div>}
       </div>
-      {footer && (
-        <div style={{ padding: '12px 20px', borderTop: '1px solid #e5e5e5', background: '#fafafa' }}>
-          {footer}
-        </div>
-      )}
     </div>
   );
 };
+
+export default Card;

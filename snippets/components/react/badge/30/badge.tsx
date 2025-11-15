@@ -1,35 +1,57 @@
 import React from 'react';
+
 interface BadgeProps {
-  label: string;
-  variant?: 'success' | 'warning' | 'error' | 'info' | 'neutral';
-  icon?: React.ReactNode;
-  outlined?: boolean;
+  status: 'active' | 'inactive' | 'pending' | 'archived';
+  label?: string;
+  showIcon?: boolean;
+  className?: string;
 }
+
+const statusConfig = {
+  active: {
+    color: 'bg-green-500',
+    textColor: 'text-green-700',
+    bgColor: 'bg-green-50',
+    label: 'Active',
+  },
+  inactive: {
+    color: 'bg-gray-500',
+    textColor: 'text-gray-700',
+    bgColor: 'bg-gray-50',
+    label: 'Inactive',
+  },
+  pending: {
+    color: 'bg-yellow-500',
+    textColor: 'text-yellow-700',
+    bgColor: 'bg-yellow-50',
+    label: 'Pending',
+  },
+  archived: {
+    color: 'bg-purple-500',
+    textColor: 'text-purple-700',
+    bgColor: 'bg-purple-50',
+    label: 'Archived',
+  },
+};
+
 export const Badge: React.FC<BadgeProps> = ({
+  status,
   label,
-  variant = 'neutral',
-  icon,
-  outlined = false
+  showIcon = true,
+  className = '',
 }) => {
-  const solidVariants = {
-    success: 'bg-green-100 text-green-800 border-green-200',
-    warning: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    error: 'bg-red-100 text-red-800 border-red-200',
-    info: 'bg-blue-100 text-blue-800 border-blue-200',
-    neutral: 'bg-gray-100 text-gray-800 border-gray-200'
-  };
-  const outlineVariants = {
-    success: 'border-green-500 text-green-700 bg-white',
-    warning: 'border-yellow-500 text-yellow-700 bg-white',
-    error: 'border-red-500 text-red-700 bg-white',
-    info: 'border-blue-500 text-blue-700 bg-white',
-    neutral: 'border-gray-500 text-gray-700 bg-white'
-  };
-  const classes = outlined ? outlineVariants[variant] : solidVariants[variant];
+  const config = statusConfig[status];
+
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium border ${classes}`}>
-      {icon}
-      {label}
+    <span
+      className={`animate-pulse inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${config.bgColor} ${config.textColor} ${className}`}
+    >
+      {showIcon && (
+        <span className={`animate-pulse w-2 h-2 rounded-full ${config.color}`} />
+      )}
+      {label || config.label}
     </span>
   );
 };
+
+export default Badge;

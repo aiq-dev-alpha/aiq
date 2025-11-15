@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 interface SliderProps {
+  className?: string;
   children?: React.ReactNode;
   variant?: 'default' | 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
@@ -39,3 +40,5 @@ export const Slider: React.FC<SliderProps> = (props) => {
     </div>
   );
 };
+
+export default Slider;

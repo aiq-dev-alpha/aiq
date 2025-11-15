@@ -16,3 +16,5 @@ export const Rating: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Rating;

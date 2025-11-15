@@ -12,6 +12,7 @@ class CustomProgressBar extends StatefulWidget {
   @override
   State<CustomProgressBar> createState() => _CustomProgressBarState();
 }
+
 class _CustomProgressBarState extends State<CustomProgressBar> {
   bool _isHovered = false;
   @override

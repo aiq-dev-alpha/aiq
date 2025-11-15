@@ -12,3 +12,5 @@ export const Badge: React.FC<{ status?: 'online' | 'offline' | 'busy'; children:
     </div>
   );
 };
+
+export default Badge;

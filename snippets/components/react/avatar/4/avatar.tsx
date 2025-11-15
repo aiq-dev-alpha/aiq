@@ -1,5 +1,6 @@
 import React from 'react';
 interface AvatarGroupProps {
+  className?: string;
   avatars: Array<{ src?: string; alt: string }>;
   max?: number;
   size?: number;
@@ -47,3 +48,5 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
     </div>
   );
 };
+
+export default AvatarGroup;

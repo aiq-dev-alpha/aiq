@@ -1,17 +1,57 @@
 import React from 'react';
 
-export const Badge: React.FC<any> = (props) => {
+interface BadgeProps {
+  status: 'active' | 'inactive' | 'pending' | 'archived';
+  label?: string;
+  showIcon?: boolean;
+  className?: string;
+}
+
+const statusConfig = {
+  active: {
+    color: 'bg-green-500',
+    textColor: 'text-green-700',
+    bgColor: 'bg-green-50',
+    label: 'Active',
+  },
+  inactive: {
+    color: 'bg-gray-500',
+    textColor: 'text-gray-700',
+    bgColor: 'bg-gray-50',
+    label: 'Inactive',
+  },
+  pending: {
+    color: 'bg-yellow-500',
+    textColor: 'text-yellow-700',
+    bgColor: 'bg-yellow-50',
+    label: 'Pending',
+  },
+  archived: {
+    color: 'bg-purple-500',
+    textColor: 'text-purple-700',
+    bgColor: 'bg-purple-50',
+    label: 'Archived',
+  },
+};
+
+export const Badge: React.FC<BadgeProps> = ({
+  status,
+  label,
+  showIcon = true,
+  className = '',
+}) => {
+  const config = statusConfig[status];
+
   return (
-    <div
-      style={{
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        padding: '20px',
-        borderRadius: '16px',
-        color: '#fff',
-        boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
-      }}
+    <span
+      className={`animate-pulse inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${config.bgColor} ${config.textColor} ${className}`}
     >
-      <div>Badge - Gradient</div>
-    </div>
+      {showIcon && (
+        <span className={`animate-pulse w-2 h-2 rounded-full ${config.color}`} />
+      )}
+      {label || config.label}
+    </span>
   );
 };
+
+export default Badge;

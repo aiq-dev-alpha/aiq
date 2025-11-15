@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 interface ColorpickerProps {
+  className?: string;
   children?: React.ReactNode;
   variant?: 'default' | 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
@@ -39,3 +40,5 @@ export const Colorpicker: React.FC<ColorpickerProps> = (props) => {
     </div>
   );
 };
+
+export default Colorpicker;

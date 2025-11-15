@@ -15,3 +15,5 @@ export const Dialog: React.FC<any> = (props) => {
     </div>
   );
 };
+
+export default Dialog;

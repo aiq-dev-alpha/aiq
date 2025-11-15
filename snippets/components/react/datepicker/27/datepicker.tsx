@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 interface DatePickerProps {
+  className?: string;
   value?: Date;
   onChange?: (date: Date) => void;
   minDate?: Date;
@@ -46,3 +47,5 @@ export const DatePicker: React.FC<DatePickerProps> = ({
     </div>
   );
 };
+
+export default DatePicker;

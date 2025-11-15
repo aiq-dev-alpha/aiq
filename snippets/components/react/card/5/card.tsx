@@ -1,6 +1,7 @@
 import React from 'react';
 
 interface CardProps {
+  className?: string;
   children: React.ReactNode;
   gradient?: 'rainbow' | 'sunset' | 'ocean' | 'forest';
   borderWidth?: number;
@@ -50,3 +51,5 @@ export const Card: React.FC<CardProps> = ({
     </div>
   );
 };
+
+export default Card;

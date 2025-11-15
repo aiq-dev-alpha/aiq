@@ -12,3 +12,5 @@ export const Badge: React.FC<{ count?: number; max?: number; children: React.Rea
     </div>
   );
 };
+
+export default Badge;

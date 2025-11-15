@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 interface ToggleProps {
+  className?: string;
   children?: React.ReactNode;
   variant?: 'default' | 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
@@ -39,3 +40,5 @@ export const Toggle: React.FC<ToggleProps> = (props) => {
     </div>
   );
 };
+
+export default Toggle;

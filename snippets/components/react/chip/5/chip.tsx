@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 interface ChipProps {
+  className?: string;
   label: string;
   selected?: boolean;
   onChange?: (selected: boolean) => void;
@@ -38,3 +39,5 @@ export const Chip: React.FC<ChipProps> = ({
     </button>
   );
 };
+
+export default Chip;

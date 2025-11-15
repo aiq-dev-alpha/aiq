@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 interface AutocompleteProps {
+  className?: string;
   children?: React.ReactNode;
   variant?: 'default' | 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
@@ -39,3 +40,5 @@ export const Autocomplete: React.FC<AutocompleteProps> = (props) => {
     </div>
   );
 };
+
+export default Autocomplete;

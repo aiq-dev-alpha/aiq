@@ -19,14 +19,12 @@ class CustomChip extends StatefulWidget {
     this.backgroundColor,
     this.selectedColor,
   }) : super(key: key);
-
   @override
   State<CustomChip> createState() => _CustomChipState();
 }
 
 class _CustomChipState extends State<CustomChip> {
   bool _isHovered = false;
-
   @override
   Widget build(BuildContext context) {
     final bgColor = widget.selected

@@ -1,146 +1,179 @@
+// Icon Button - Button with only icon, no text
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-interface ButtonTheme {
+
+interface IconButtonTheme {
   primaryColor: string;
   secondaryColor: string;
   backgroundColor: string;
-  textColor: string;
-  borderColor: string;
-  accentColor: string;
+  hoverColor: string;
 }
+
 @Component({
   standalone: true,
   imports: [CommonModule],
   selector: 'app-button',
   template: `
-  <button
-  [ngClass]="['btn', 'btn-' + variant, 'btn-' + size]"
-  [ngStyle]="buttonStyles"
-  [disabled]="disabled || loading"
-  [attr.aria-label]="ariaLabel"
-  [attr.aria-busy]="loading"
-  (click)="handleClick($event)"
-  class="neon-pulse-button">
-  <span *ngIf="loading" class="spinner neon-spinner"></span>
-  <span *ngIf="!loading && iconLeft" class="icon-left">{{ iconLeft }}</span>
-  <span class="btn-content">
-  <ng-content></ng-content>
-  </span>
-  <span *ngIf="!loading && iconRight" class="icon-right">{{ iconRight }}</span>
-  </button>
+    <button
+      class="icon-btn"
+      [ngStyle]="buttonStyles"
+      [disabled]="disabled"
+      [attr.aria-label]="ariaLabel"
+      [class.loading]="loading"
+      (click)="handleClick($event)">
+      <span *ngIf="loading" class="loading-pulse"></span>
+      <span *ngIf="!loading" class="icon-content">{{ icon }}</span>
+      <span *ngIf="badge !== undefined" class="badge" [ngStyle]="badgeStyles">
+        {{ badge }}
+      </span>
+    </button>
   `,
   styles: [`
-  .neon-pulse-button {
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  font-weight: 600;
-  border: none;
-  outline: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
-  }
-  .neon-pulse-button:hover:not(:disabled) {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 0 40px rgba(139, 92, 246, 0.6), 0 0 80px rgba(236, 72, 153, 0.4);
-  animation: neonPulse 1.5s ease-in-out infinite;
-  }
-  .neon-pulse-button:active:not(:disabled) {
-  transform: translateY(0) scale(0.98);
-  }
-  .neon-pulse-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  }
-  @keyframes neonPulse {
-  0%, 100% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.6), 0 0 80px rgba(236, 72, 153, 0.4); }
-  50% { box-shadow: 0 0 60px rgba(139, 92, 246, 0.8), 0 0 120px rgba(236, 72, 153, 0.6); }
-  }
-  .neon-spinner {
-  width: 1em;
-  height: 1em;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: neonSpin 0.8s linear infinite;
-  }
-  @keyframes neonSpin {
-  to { transform: rotate(360deg); }
-  }
-  .btn-content {
-  display: flex;
-  align-items: center;
-  }
-  .btn-sm {
-  padding: 0.5rem 1.25rem;
-  font-size: 0.875rem;
-  border-radius: 0.75rem;
-  }
-  .btn-md {
-  padding: 0.75rem 1.75rem;
-  font-size: 1rem;
-  border-radius: 1rem;
-  }
-  .btn-lg {
-  padding: 1rem 2.5rem;
-  font-size: 1.125rem;
-  border-radius: 1.25rem;
-  }
+    .icon-btn {
+      position: relative;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-size: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .icon-btn:hover:not(:disabled) {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .icon-btn:active:not(:disabled) {
+      transform: scale(0.95) rotate(0deg);
+    }
+
+    .icon-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.4;
+      filter: grayscale(0.6);
+    }
+
+    .icon-btn.loading .icon-content {
+      opacity: 0;
+    }
+
+    .loading-pulse {
+      position: absolute;
+      width: 60%;
+      height: 60%;
+      border: 2px solid currentColor;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: pulse-rotate 1s linear infinite;
+    }
+
+    @keyframes pulse-rotate {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.1); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+
+    .icon-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+    }
+
+    .badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 4px;
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      animation: badge-pop 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    @keyframes badge-pop {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
   `]
 })
 export class ButtonComponent {
-  @Input() theme: Partial<ButtonTheme> = {};
-  @Input() variant: 'default' | 'outlined' | 'filled' | 'ghost' = 'default';
-  @Input() size: 'sm' | 'md' | 'lg' = 'md';
-  @Input() disabled: boolean = false;
-  @Input() loading: boolean = false;
-  @Input() iconLeft: string = '';
-  @Input() iconRight: string = '';
-  @Input() ariaLabel: string = '';
+  @Input() theme: Partial<IconButtonTheme> = {};
+  @Input() icon = '⭐';
+  @Input() size: 'sm' | 'md' | 'lg' | 'xl' = 'md';
+  @Input() variant: 'filled' | 'outlined' | 'ghost' = 'filled';
+  @Input() disabled = false;
+  @Input() loading = false;
+  @Input() ariaLabel?: string;
+  @Input() badge?: number | string;
   @Output() clicked = new EventEmitter<MouseEvent>();
-  private defaultTheme: ButtonTheme = {
-  primaryColor: '#8b5cf6',
-  secondaryColor: '#ec4899',
-  backgroundColor: '#1e1b4b',
-  backdropFilter: 'blur(10px)',
-  textColor: '#ffffff',
-  borderColor: '#8b5cf6',
-  accentColor: '#a78bfa'
+
+  private defaultTheme: IconButtonTheme = {
+    primaryColor: '#ec4899',
+    secondaryColor: '#db2777',
+    backgroundColor: '#fdf2f8',
+    hoverColor: '#f472b6'
   };
-  get appliedTheme(): ButtonTheme {
-  return { ...this.defaultTheme, ...this.theme };
+
+  get appliedTheme(): IconButtonTheme {
+    return { ...this.defaultTheme, ...this.theme };
   }
+
   get buttonStyles() {
-  const variantStyles = {
-  default: {
-  background: `linear-gradient(135deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})`,
-  color: this.appliedTheme.textColor,
-  border: 'none'
-  },
-  outlined: {
-  background: 'transparent',
-  color: this.appliedTheme.primaryColor,
-  border: `2px solid ${this.appliedTheme.primaryColor}`
-  },
-  filled: {
-  background: this.appliedTheme.primaryColor,
-  color: this.appliedTheme.textColor,
-  border: 'none'
-  },
-  ghost: {
-  background: 'rgba(139, 92, 246, 0.1)',
-  color: this.appliedTheme.primaryColor,
-  border: 'none'
+    const t = this.appliedTheme;
+    const sizeMap = {
+      sm: { width: '36px', height: '36px', fontSize: '16px' },
+      md: { width: '48px', height: '48px', fontSize: '20px' },
+      lg: { width: '60px', height: '60px', fontSize: '24px' },
+      xl: { width: '72px', height: '72px', fontSize: '28px' }
+    };
+    const variantMap = {
+      filled: {
+        background: `linear-gradient(135deg, ${t.primaryColor}, ${t.secondaryColor})`,
+        color: '#ffffff',
+        border: 'none'
+      },
+      outlined: {
+        background: 'transparent',
+        color: t.primaryColor,
+        border: `2px solid ${t.primaryColor}`
+      },
+      ghost: {
+        background: t.backgroundColor,
+        color: t.primaryColor,
+        border: 'none'
+      }
+    };
+    return {
+      ...sizeMap[this.size],
+      ...variantMap[this.variant]
+    };
   }
-  };
-  return variantStyles[this.variant];
+
+  get badgeStyles() {
+    const t = this.appliedTheme;
+    return {
+      background: '#ef4444',
+      color: '#ffffff'
+    };
   }
+
   handleClick(event: MouseEvent): void {
-  if (!this.disabled && !this.loading) {
-  this.clicked.emit(event);
-  }
+    if (!this.disabled && !this.loading) {
+      this.clicked.emit(event);
+    }
   }
 }

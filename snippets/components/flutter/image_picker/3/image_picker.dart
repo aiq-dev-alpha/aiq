@@ -13,14 +13,12 @@ class CustomPicker extends StatefulWidget {
     this.width = 200,
     this.height = 200,
   }) : super(key: key);
-
   @override
   State<CustomPicker> createState() => _CustomPickerState();
 }
 
 class _CustomPickerState extends State<CustomPicker> {
   String? _imageUrl;
-
   @override
   void initState() {
     super.initState();
@@ -41,7 +39,6 @@ class _CustomPickerState extends State<CustomPicker> {
     });
     widget.onImageSelected?.call(null);
   }
-
   @override
   Widget build(BuildContext context) {
     return Container(

@@ -9,7 +9,6 @@ class CustomPicker extends StatefulWidget {
     this.initialDateTime,
     this.onDateTimeSelected,
   }) : super(key: key);
-
   @override
   State<CustomPicker> createState() => _CustomPickerState();
 }
@@ -17,14 +16,12 @@ class CustomPicker extends StatefulWidget {
 class _CustomPickerState extends State<CustomPicker> with SingleTickerProviderStateMixin {
   late DateTime _selectedDateTime;
   late TabController _tabController;
-
   @override
   void initState() {
     super.initState();
     _selectedDateTime = widget.initialDateTime ?? DateTime.now();
     _tabController = TabController(length: 2, vsync: this);
   }
-
   @override
   void dispose() {
     _tabController.dispose();
@@ -43,7 +40,6 @@ class _CustomPickerState extends State<CustomPicker> with SingleTickerProviderSt
     });
     widget.onDateTimeSelected?.call(_selectedDateTime);
   }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -143,7 +139,6 @@ class TimePickerSpinner extends StatelessWidget {
     required this.time,
     required this.onTimeChange,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -154,7 +149,7 @@ class TimePickerSpinner extends StatelessWidget {
           time.hour,
           (value) => onTimeChange(int.parse(value), time.minute),
         ),
-        const Text(':', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
+        const Text(':', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
         _buildColumn(
           List.generate(60, (i) => i.toString().padLeft(2, '0')),
           time.minute,

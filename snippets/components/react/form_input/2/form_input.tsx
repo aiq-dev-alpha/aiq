@@ -30,3 +30,5 @@ export const Component: React.FC<ComponentProps> = ({ theme = {}, className = ''
   </div>
   );
 };
+
+export default Component;

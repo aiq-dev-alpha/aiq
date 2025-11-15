@@ -17,7 +17,6 @@ class CustomBadge extends StatelessWidget {
     this.textColor,
     this.size,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     final shouldShow = count != null && (count! > 0 || showZero);
@@ -32,7 +31,7 @@ class CustomBadge extends StatelessWidget {
             top: -8,
             right: -8,
             child: Container(
-              min: badgeSize,
+              constraints: BoxConstraints(minWidth: badgeSize),
               height: badgeSize,
               padding: const EdgeInsets.symmetric(horizontal: 6),
               decoration: BoxDecoration(

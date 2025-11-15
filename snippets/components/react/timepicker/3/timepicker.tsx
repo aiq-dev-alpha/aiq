@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 interface TimepickerProps {
+  className?: string;
   children?: React.ReactNode;
   variant?: 'default' | 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
@@ -39,3 +40,5 @@ export const Timepicker: React.FC<TimepickerProps> = (props) => {
     </div>
   );
 };
+
+export default Timepicker;
