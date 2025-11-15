@@ -1,59 +1,42 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  onChange?: (files: FileList | null) => void;
-  theme?: { primary?: string };
+  items?: Array<{ id: string; label: string }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  accept?: string;
-  multiple?: boolean;
+  onInteract?: (id: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  onChange,
+  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
   theme = {},
   className = '',
-  accept,
-  multiple = false
+  onInteract
 }) => {
-  const [files, setFiles] = useState<FileList | null>(null);
-  const primary = theme.primary || '#ef4444';
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = e.target.files;
-    setFiles(selectedFiles);
-    onChange?.(selectedFiles);
-  };
-  
+  const [selected, setSelected] = useState<string | null>(null);
+  const primary = theme.primary || '#8b5cf6';
+
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '420px' }}>
-      <label
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '14px',
-          padding: '40px',
-          border: `1px dashed ${primary}`,
-          borderRadius: '24px',
-          cursor: 'pointer',
-          backgroundColor: '#fef2f2',
-          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
-        }}
-        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#fee2e2'}
-        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fef2f2'}
-      >
-        <span style={{ fontSize: '14px' }}>📁</span>
-        <span style={{ color: primary, fontWeight: '700', fontSize: '14px' }}>
-          {files ? `${files.length} file(s) selected` : 'Click to upload'}
-        </span>
-        <input
-          type="file"
-          accept={accept}
-          multiple={multiple}
-          onChange={handleChange}
-          style={{ display: 'none' }}
-        />
-      </label>
+    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {items.map(item => (
+        <button
+          key={item.id}
+          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
+          style={{
+            padding: '10px 20px',
+            background: selected === item.id ? primary : 'transparent',
+            color: selected === item.id ? '#fff' : primary,
+            border: `2px solid ${primary}`,
+            borderRadius: '20px',
+            cursor: 'pointer',
+            fontWeight: 600,
+            transition: 'all 200ms ease',
+            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
+          }}
+        >
+          {item.label}
+        </button>
+      ))}
     </div>
   );
 };

@@ -1,56 +1,32 @@
-import React from 'react';
-
-interface BreadcrumbItem {
-  label: string;
-  href?: string;
-}
+import React, { useState, useEffect } from 'react';
 
 export interface ComponentProps {
-  items?: BreadcrumbItem[];
-  theme?: { primary?: string };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  separator?: string;
+  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  items = [
-    { label: 'Home', href: '/' },
-    { label: 'Category', href: '/category' },
-    { label: 'Page' }
-  ],
-  theme = {},
-  className = '',
-  separator = '>'
-}) => {
-  const primary = theme.primary || '#10b981';
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
+  const primary = theme.primary || '#3b82f6';
+
+  const handleClick = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = Date.now();
+    setRipples([...ripples, { x, y, id }]);
+    setTimeout(() => setRipples(r => r.filter(rip => rip.id !== id)), 800);
+    onInteract?.('click');
+  };
 
   return (
-    <nav className={className} style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-      {items.map((item, idx) => (
-        <React.Fragment key={idx}>
-          {item.href ? (
-            <a
-              href={item.href}
-              style={{
-                color: primary,
-                textDecoration: 'none',
-                fontSize: '13px',
-                fontWeight: '400',
-                transition: 'opacity 0.2s'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'}
-              onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
-            >
-              {item.label}
-            </a>
-          ) : (
-            <span style={{ color: '#6b7280', fontSize: '13px' }}>{item.label}</span>
-          )}
-          {idx < items.length - 1 && (
-            <span style={{ color: '#9ca3af', fontSize: '13px' }}> {separator}</span>
-          )}
-        </React.Fragment>
+    <div className={className} onClick={handleClick} style={{ position: 'relative', padding: '18px 28px', background: primary, color: '#fff', borderRadius: '10px', cursor: 'pointer', overflow: 'hidden', fontWeight: 600 }}>
+      {ripples.map(r => (
+        <span key={r.id} style={{ position: 'absolute', left: r.x, top: r.y, width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.6)', transform: 'translate(-50%, -50%)', animation: 'ripple 800ms ease-out' }} />
       ))}
-    </nav>
+      <span style={{ position: 'relative', zIndex: 1 }}>Ripple Effect Component</span>
+      <style>{`@keyframes ripple { to { transform: translate(-50%, -50%) scale(30); opacity: 0; } }`}</style>
+    </div>
   );
 };

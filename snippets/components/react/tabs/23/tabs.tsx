@@ -1,57 +1,57 @@
 import React, { useState } from 'react';
 
-interface Tab {
-  id: string;
-  label: string;
-  content: string;
-}
-
 export interface ComponentProps {
-  tabs?: Tab[];
-  theme?: { primary?: string };
+  title?: string;
+  content?: React.ReactNode;
+  expandable?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
+  onInteract?: (expanded: boolean) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  tabs = [
-    { id: '1', label: 'Tab 1', content: 'Content 1' },
-    { id: '2', label: 'Tab 2', content: 'Content 2' },
-    { id: '3', label: 'Tab 3', content: 'Content 3' }
-  ],
+  title = 'Expandable Card',
+  content = 'This is the expandable content that appears when you click the card.',
+  expandable = true,
   theme = {},
-  className = ''
+  className = '',
+  onInteract
 }) => {
-  const [activeTab, setActiveTab] = useState(tabs[0]?.id);
-  const primary = theme.primary || '#ec4899';
-  
+  const [expanded, setExpanded] = useState(false);
+  const primary = theme.primary || '#f59e0b';
+
+  const toggleExpand = () => {
+    if (!expandable) return;
+    const newState = !expanded;
+    setExpanded(newState);
+    onInteract?.(newState);
+  };
+
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '600px' }}>
-      <div style={{ display: 'flex', gap: '2px', borderBottom: '2px solid #e5e7eb' }}>
-        {tabs.map(tab => {
-          const isActive = tab.id === activeTab;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              style={{
-                padding: '13px 17px',
-                backgroundColor: 'transparent',
-                border: 'none',
-                borderBottom: isActive ? `3px solid ${primary}` : '3px solid transparent',
-                color: isActive ? primary : '#6b7280',
-                cursor: 'pointer',
-                fontWeight: isActive ? '600' : '500',
-                fontSize: '15px',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              {tab.label}
-            </button>
-          );
-        })}
+    <div className={className} style={{ border: \`2px solid \${expanded ? primary : '#e5e7eb'}\`, borderRadius: '12px', overflow: 'hidden', maxWidth: '500px', transition: 'all 300ms ease' }}>
+      <div
+        onClick={toggleExpand}
+        style={{
+          padding: '20px',
+          background: expanded ? \`\${primary}10\` : '#fff',
+          cursor: expandable ? 'pointer' : 'default',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          transition: 'all 200ms ease'
+        }}
+      >
+        <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: expanded ? primary : '#1f2937' }}>{title}</h3>
+        {expandable && (
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 300ms ease' }}>
+            <path d="M5 7.5L10 12.5L15 7.5" stroke={expanded ? primary : '#6b7280'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
       </div>
-      <div style={{ padding: '28px 0', color: '#374151', lineHeight: '1.7' }}>
-        {tabs.find(t => t.id === activeTab)?.content}
+      <div style={{ maxHeight: expanded ? '1000px' : '0', overflow: 'hidden', transition: 'max-height 400ms ease' }}>
+        <div style={{ padding: '20px', borderTop: \`1px solid \${primary}20\`, fontSize: '15px', lineHeight: '1.6', color: '#4b5563' }}>
+          {content}
+        </div>
       </div>
     </div>
   );

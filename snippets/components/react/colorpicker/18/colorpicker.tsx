@@ -1,61 +1,57 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  value?: string;
-  onChange?: (color: string) => void;
-  theme?: { primary?: string };
+  title?: string;
+  content?: React.ReactNode;
+  expandable?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  presetColors?: string[];
+  onInteract?: (expanded: boolean) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  value: controlledValue,
-  onChange,
+  title = 'Expandable Card',
+  content = 'This is the expandable content that appears when you click the card.',
+  expandable = true,
   theme = {},
   className = '',
-  presetColors = ['#ef4444', '#4c1d95', '#f59e0b', '#ef4444', '#8b5cf6']
+  onInteract
 }) => {
-  const [internalValue, setInternalValue] = useState('#ef4444');
-  const value = controlledValue || internalValue;
-  const primary = theme.primary || '#ef4444';
-  
-  const handleChange = (color: string) => {
-    if (!controlledValue) setInternalValue(color);
-    onChange?.(color);
+  const [expanded, setExpanded] = useState(false);
+  const primary = theme.primary || '#f59e0b';
+
+  const toggleExpand = () => {
+    if (!expandable) return;
+    const newState = !expanded;
+    setExpanded(newState);
+    onInteract?.(newState);
   };
-  
+
   return (
-    <div className={className} style={{ display: 'flex', flexDirection: 'column', gap: '2px', maxWidth: '300px' }}>
-      <input
-        type="color"
-        value={value}
-        onChange={(e) => handleChange(e.target.value)}
+    <div className={className} style={{ border: \`2px solid \${expanded ? primary : '#e5e7eb'}\`, borderRadius: '12px', overflow: 'hidden', maxWidth: '500px', transition: 'all 300ms ease' }}>
+      <div
+        onClick={toggleExpand}
         style={{
-          width: '100%',
-          height: '55px',
-          border: `2px solid ${primary}`,
-          borderRadius: '26px',
-          cursor: 'pointer'
+          padding: '20px',
+          background: expanded ? \`\${primary}10\` : '#fff',
+          cursor: expandable ? 'pointer' : 'default',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          transition: 'all 200ms ease'
         }}
-      />
-      <div style={{ display: 'flex', gap: '2px', flexWrap: 'wrap' }}>
-        {presetColors.map((color, idx) => (
-          <button
-            key={idx}
-            onClick={() => handleChange(color)}
-            style={{
-              width: '40px',
-              height: '40px',
-              backgroundColor: color,
-              border: value === color ? `3px solid ${primary}` : 'none',
-              borderRadius: '26px',
-              cursor: 'pointer',
-              transition: 'transform 0.2s'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
-            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
-          />
-        ))}
+      >
+        <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: expanded ? primary : '#1f2937' }}>{title}</h3>
+        {expandable && (
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 300ms ease' }}>
+            <path d="M5 7.5L10 12.5L15 7.5" stroke={expanded ? primary : '#6b7280'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
+      </div>
+      <div style={{ maxHeight: expanded ? '1000px' : '0', overflow: 'hidden', transition: 'max-height 400ms ease' }}>
+        <div style={{ padding: '20px', borderTop: \`1px solid \${primary}20\`, fontSize: '15px', lineHeight: '1.6', color: '#4b5563' }}>
+          {content}
+        </div>
       </div>
     </div>
   );

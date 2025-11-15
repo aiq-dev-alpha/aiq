@@ -1,86 +1,51 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  options?: string[];
-  placeholder?: string;
-  theme?: { primary?: string };
+  tabs?: Array<{ id: string; label: string; content: React.ReactNode }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onSelect?: (value: string) => void;
+  onInteract?: (tabId: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  options = ['Option 1', 'Option 2', 'Option 3'],
-  placeholder = 'Select an option',
+  tabs = [
+    { id: '1', label: 'Tab 1', content: 'Content 1' },
+    { id: '2', label: 'Tab 2', content: 'Content 2' },
+    { id: '3', label: 'Tab 3', content: 'Content 3' }
+  ],
   theme = {},
   className = '',
-  onSelect
+  onInteract
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState<string | null>(null);
-  const primary = theme.primary || '#ec4899';
-  
-  const handleSelect = (option: string) => {
-    setSelected(option);
-    setIsOpen(false);
-    onSelect?.(option);
-  };
-  
+  const [activeTab, setActiveTab] = useState(tabs[0]?.id || '');
+  const primary = theme.primary || '#6366f1';
+
   return (
-    <div className={className} style={{ position: 'relative', width: '100%', maxWidth: '300px' }}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        style={{
-          width: '100%',
-          padding: '15px 22px',
-          backgroundColor: '#fff',
-          border: `2px solid ${primary}`,
-          borderRadius: '13px',
-          cursor: 'pointer',
-          textAlign: 'left',
-          fontSize: '21px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}
-      >
-        <span style={{ color: selected ? '#111' : '#9ca3af' }}>
-          {selected || placeholder}
-        </span>
-        <span style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s' }}>
-          ˅
-        </span>
-      </button>
-      {isOpen && (
-        <div style={{
-          position: 'absolute',
-          top: '100%',
-          left: 0,
-          right: 0,
-          marginTop: '7px',
-          backgroundColor: '#fff',
-          border: `1px solid ${primary}`,
-          borderRadius: '13px',
-          boxShadow: '0 2px 11px rgba(0,0,0,0.12)',
-          zIndex: 1000
-        }}>
-          {options.map((option, idx) => (
-            <div
-              key={idx}
-              onClick={() => handleSelect(option)}
-              style={{
-                padding: '15px 22px',
-                cursor: 'pointer',
-                borderBottom: idx < options.length - 1 ? '1px solid #e5e7eb' : 'none',
-                transition: 'background-color 0.2s'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#fdf2f8'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}
-            >
-              {option}
-            </div>
-          ))}
-        </div>
-      )}
+    <div className={className} style={{ maxWidth: '600px' }}>
+      <div style={{ display: 'flex', gap: '4px', borderBottom: \`2px solid \${primary}20\` }}>
+        {tabs.map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => { setActiveTab(tab.id); onInteract?.(tab.id); }}
+            style={{
+              padding: '12px 24px',
+              background: 'transparent',
+              border: 'none',
+              borderBottom: \`3px solid \${activeTab === tab.id ? primary : 'transparent'}\`,
+              color: activeTab === tab.id ? primary : '#6b7280',
+              fontWeight: activeTab === tab.id ? 700 : 500,
+              cursor: 'pointer',
+              transition: 'all 200ms ease',
+              marginBottom: '-2px'
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+      <div style={{ padding: '24px 0' }}>
+        {tabs.find(t => t.id === activeTab)?.content}
+      </div>
     </div>
   );
 };

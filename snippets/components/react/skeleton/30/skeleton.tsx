@@ -1,53 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 export interface ComponentProps {
-  variant?: 'text' | 'circular' | 'rectangular';
-  width?: string;
-  height?: string;
-  theme?: { primary?: string };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  count?: number;
+  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  variant = 'text',
-  width = '100%',
-  height,
-  theme = {},
-  className = '',
-  count = 1
-}) => {
-  const baseColor = '#e5e7eb';
-  const highlightColor = '#f9fafb';
-  
-  const variants = {
-    text: { height: height || '14px', borderRadius: '26px' },
-    circular: { height: height || '40px', width: height || '40px', borderRadius: '50%' },
-    rectangular: { height: height || '80px', borderRadius: '26px' }
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
+  const primary = theme.primary || '#3b82f6';
+
+  const handleClick = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = Date.now();
+    setRipples([...ripples, { x, y, id }]);
+    setTimeout(() => setRipples(r => r.filter(rip => rip.id !== id)), 800);
+    onInteract?.('click');
   };
-  
-  const variantStyle = variants[variant];
-  
-  const skeletonStyle = {
-    width,
-    ...variantStyle,
-    backgroundColor: baseColor,
-    backgroundImage: `linear-gradient(90deg, ${baseColor} 0px, ${highlightColor} 40px, ${baseColor} 80px)`,
-    backgroundSize: '500px',
-    animation: '1.8s ease-in-out infinite',
-    backgroundPosition: '-500px'
-  };
-  
+
   return (
-    <div className={className} style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-      {Array.from({ length: count }, (_, i) => (
-        <div key={i} style={skeletonStyle} />
+    <div className={className} onClick={handleClick} style={{ position: 'relative', padding: '18px 28px', background: primary, color: '#fff', borderRadius: '10px', cursor: 'pointer', overflow: 'hidden', fontWeight: 600 }}>
+      {ripples.map(r => (
+        <span key={r.id} style={{ position: 'absolute', left: r.x, top: r.y, width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.6)', transform: 'translate(-50%, -50%)', animation: 'ripple 800ms ease-out' }} />
       ))}
-      <style>{`
-        @keyframes skeletonAnimation {
-          to { background-position: calc(500px + 100%); }
-        }
-      `}</style>
+      <span style={{ position: 'relative', zIndex: 1 }}>Ripple Effect Component</span>
+      <style>{`@keyframes ripple { to { transform: translate(-50%, -50%) scale(30); opacity: 0; } }`}</style>
     </div>
   );
 };

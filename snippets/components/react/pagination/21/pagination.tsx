@@ -1,96 +1,42 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  totalPages?: number;
-  currentPage?: number;
-  onPageChange?: (page: number) => void;
-  theme?: { primary?: string };
+  items?: Array<{ id: string; label: string }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
+  onInteract?: (id: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  totalPages = 10,
-  currentPage: controlledPage,
-  onPageChange,
+  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
   theme = {},
-  className = ''
+  className = '',
+  onInteract
 }) => {
-  const [internalPage, setInternalPage] = useState(1);
-  const currentPage = controlledPage || internalPage;
-  const primary = theme.primary || '#14b8a6';
-  
-  const handlePageChange = (page: number) => {
-    if (page < 1 || page > totalPages) return;
-    if (!controlledPage) setInternalPage(page);
-    onPageChange?.(page);
-  };
-  
+  const [selected, setSelected] = useState<string | null>(null);
+  const primary = theme.primary || '#8b5cf6';
+
   return (
-    <div
-      className={className}
-      style={{
-        display: 'flex',
-        gap: '2px',
-        alignItems: 'center',
-        flexWrap: 'wrap'
-      }}
-    >
-      <button
-        onClick={() => handlePageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        style={{
-          padding: '18px 26px',
-          backgroundColor: '#fff',
-          border: `1px solid ${primary}`,
-          borderRadius: '11px',
-          cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-          opacity: currentPage === 1 ? 0.5 : 1,
-          fontWeight: '300'
-        }}
-      >
-        Previous
-      </button>
-      
-      {Array.from({ length: totalPages }, (_, i) => i + 1)
-        .filter(page => 
-          page === 1 || 
-          page === totalPages || 
-          Math.abs(page - currentPage) <= 1
-        )
-        .map(page => (
-          <button
-            key={page}
-            onClick={() => handlePageChange(page)}
-            style={{
-              padding: '18px 26px',
-              backgroundColor: page === currentPage ? primary : '#fff',
-              color: page === currentPage ? '#fff' : '#374151',
-              border: `1px solid ${primary}`,
-              borderRadius: '11px',
-              cursor: 'pointer',
-              fontWeight: '300',
-              minWidth: '42px'
-            }}
-          >
-            {page}
-          </button>
-        ))}
-      
-      <button
-        onClick={() => handlePageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        style={{
-          padding: '18px 26px',
-          backgroundColor: '#fff',
-          border: `1px solid ${primary}`,
-          borderRadius: '11px',
-          cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-          opacity: currentPage === totalPages ? 0.5 : 1,
-          fontWeight: '300'
-        }}
-      >
-        Next
-      </button>
+    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {items.map(item => (
+        <button
+          key={item.id}
+          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
+          style={{
+            padding: '10px 20px',
+            background: selected === item.id ? primary : 'transparent',
+            color: selected === item.id ? '#fff' : primary,
+            border: `2px solid ${primary}`,
+            borderRadius: '20px',
+            cursor: 'pointer',
+            fontWeight: 600,
+            transition: 'all 200ms ease',
+            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
+          }}
+        >
+          {item.label}
+        </button>
+      ))}
     </div>
   );
 };

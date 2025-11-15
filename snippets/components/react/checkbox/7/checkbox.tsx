@@ -1,70 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 export interface ComponentProps {
-  label?: string;
-  checked?: boolean;
-  onChange?: (checked: boolean) => void;
-  theme?: { primary?: string };
+  progress?: number;
+  showLabel?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  disabled?: boolean;
+  onInteract?: (progress: number) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  label = 'Checkbox',
-  checked: controlledChecked,
-  onChange,
+  progress: initialProgress = 0,
+  showLabel = true,
   theme = {},
   className = '',
-  disabled = false
+  onInteract
 }) => {
-  const [internalChecked, setInternalChecked] = useState(false);
-  const isChecked = controlledChecked !== undefined ? controlledChecked : internalChecked;
-  const primary = theme.primary || '#ef4444';
-  
-  const handleChange = () => {
-    if (disabled) return;
-    const newChecked = !isChecked;
-    if (controlledChecked === undefined) {
-      setInternalChecked(newChecked);
+  const [progress, setProgress] = useState(initialProgress);
+  const [animating, setAnimating] = useState(false);
+  const primary = theme.primary || '#10b981';
+
+  useEffect(() => {
+    if (progress !== initialProgress) {
+      setAnimating(true);
+      setTimeout(() => setAnimating(false), 500);
     }
-    onChange?.(newChecked);
-  };
-  
+    setProgress(initialProgress);
+  }, [initialProgress]);
+
   return (
-    <label
-      className={className}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '2px',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        opacity: disabled ? 0.5 : 1
-      }}
-    >
-      <div
-        onClick={handleChange}
-        style={{
-          width: '24px',
-          height: '24px',
-          borderRadius: '21px',
-          border: `2px solid ${isChecked ? primary : '#d1d5db'}`,
-          backgroundColor: isChecked ? primary : '#fff',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'all 0.2s ease',
-          boxShadow: isChecked ? '0 0 0 3px rgba(239,68,68,0.2)' : 'none'
-        }}
-      >
-        {isChecked && (
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-            <path d="M6 10L9 13L14 7" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        )}
+    <div className={className} style={{ width: '100%' }}>
+      {showLabel && <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: primary }}>{progress}%</div>}
+      <div style={{ width: '100%', height: '12px', background: '#e5e7eb', borderRadius: '6px', overflow: 'hidden', position: 'relative' }}>
+        <div
+          style={{
+            width: \`\${progress}%\`,
+            height: '100%',
+            background: \`linear-gradient(90deg, \${primary}, \${primary}dd)\`,
+            borderRadius: '6px',
+            transition: 'width 500ms ease',
+            position: 'relative',
+            overflow: 'hidden'
+          }}
+        >
+          {animating && (
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+              animation: 'shimmer 1s infinite'
+            }} />
+          )}
+        </div>
       </div>
-      <span style={{ fontSize: '13px', color: '#374151', userSelect: 'none' }}>
-        {label}
-      </span>
-    </label>
+      <style>{`@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }`}</style>
+    </div>
   );
 };

@@ -1,56 +1,42 @@
-import React from 'react';
-
-interface BreadcrumbItem {
-  label: string;
-  href?: string;
-}
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  items?: BreadcrumbItem[];
-  theme?: { primary?: string };
+  items?: Array<{ id: string; label: string }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  separator?: string;
+  onInteract?: (id: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  items = [
-    { label: 'Home', href: '/' },
-    { label: 'Category', href: '/category' },
-    { label: 'Page' }
-  ],
+  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
   theme = {},
   className = '',
-  separator = '/'
+  onInteract
 }) => {
-  const primary = theme.primary || '#14b8a6';
+  const [selected, setSelected] = useState<string | null>(null);
+  const primary = theme.primary || '#8b5cf6';
 
   return (
-    <nav className={className} style={{ display: 'flex', alignItems: 'center', gap: '2px', flexWrap: 'wrap' }}>
-      {items.map((item, idx) => (
-        <React.Fragment key={idx}>
-          {item.href ? (
-            <a
-              href={item.href}
-              style={{
-                color: primary,
-                textDecoration: 'none',
-                fontSize: '21px',
-                fontWeight: '700',
-                transition: 'opacity 0.2s'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'}
-              onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
-            >
-              {item.label}
-            </a>
-          ) : (
-            <span style={{ color: '#6b7280', fontSize: '21px' }}>{item.label}</span>
-          )}
-          {idx < items.length - 1 && (
-            <span style={{ color: '#9ca3af', fontSize: '21px' }}> {separator}</span>
-          )}
-        </React.Fragment>
+    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {items.map(item => (
+        <button
+          key={item.id}
+          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
+          style={{
+            padding: '10px 20px',
+            background: selected === item.id ? primary : 'transparent',
+            color: selected === item.id ? '#fff' : primary,
+            border: `2px solid ${primary}`,
+            borderRadius: '20px',
+            cursor: 'pointer',
+            fontWeight: 600,
+            transition: 'all 200ms ease',
+            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
+          }}
+        >
+          {item.label}
+        </button>
       ))}
-    </nav>
+    </div>
   );
 };

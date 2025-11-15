@@ -1,53 +1,51 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  title?: string;
-  content?: string;
-  footer?: string;
-  theme?: { primary?: string; background?: string };
+  tabs?: Array<{ id: string; label: string; content: React.ReactNode }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  hoverable?: boolean;
+  onInteract?: (tabId: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  title = 'Card Title',
-  content = 'Card content goes here',
-  footer,
+  tabs = [
+    { id: '1', label: 'Tab 1', content: 'Content 1' },
+    { id: '2', label: 'Tab 2', content: 'Content 2' },
+    { id: '3', label: 'Tab 3', content: 'Content 3' }
+  ],
   theme = {},
   className = '',
-  hoverable = true
+  onInteract
 }) => {
-  const primary = theme.primary || '#ef4444';
-  const background = theme.background || '#fff';
-  
+  const [activeTab, setActiveTab] = useState(tabs[0]?.id || '');
+  const primary = theme.primary || '#6366f1';
+
   return (
-    <div
-      className={className}
-      style={{
-        backgroundColor: background,
-        borderRadius: '26px',
-        padding: '18px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-        maxWidth: '400px',
-        border: '2px solid #fee2e2',
-        transition: 'all 0.35s ease'
-      }}
-      onMouseEnter={(e) => hoverable && (e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.13)')}
-      onMouseLeave={(e) => hoverable && (e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)')}
-    >
-      {title && (
-        <h3 style={{ margin: '0 0 12px', color: primary, fontSize: '17px', fontWeight: '300' }}>
-          {title}
-        </h3>
-      )}
-      <div style={{ color: '#6b7280', fontSize: '17px', lineHeight: '1.2' }}>
-        {content}
+    <div className={className} style={{ maxWidth: '600px' }}>
+      <div style={{ display: 'flex', gap: '4px', borderBottom: \`2px solid \${primary}20\` }}>
+        {tabs.map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => { setActiveTab(tab.id); onInteract?.(tab.id); }}
+            style={{
+              padding: '12px 24px',
+              background: 'transparent',
+              border: 'none',
+              borderBottom: \`3px solid \${activeTab === tab.id ? primary : 'transparent'}\`,
+              color: activeTab === tab.id ? primary : '#6b7280',
+              fontWeight: activeTab === tab.id ? 700 : 500,
+              cursor: 'pointer',
+              transition: 'all 200ms ease',
+              marginBottom: '-2px'
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
-      {footer && (
-        <div style={{ marginTop: '16px', paddingTop: '12px', borderTop: '1px solid #e5e7eb', color: '#9ca3af', fontSize: '17px' }}>
-          {footer}
-        </div>
-      )}
+      <div style={{ padding: '24px 0' }}>
+        {tabs.find(t => t.id === activeTab)?.content}
+      </div>
     </div>
   );
 };

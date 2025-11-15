@@ -1,75 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  message?: string;
-  type?: 'info' | 'success' | 'warning' | 'error';
-  theme?: { primary?: string };
+  items?: Array<{ id: string; label: string }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onClose?: () => void;
-  icon?: string;
+  onInteract?: (id: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  message = 'Notification message',
-  type = 'info',
+  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
   theme = {},
   className = '',
-  onClose,
-  icon
+  onInteract
 }) => {
-  const colors = {
-    info: '#f59e0b',
-    success: '#10b981',
-    warning: '#f59e0b',
-    error: '#ef4444'
-  };
-  
-  const backgrounds = {
-    info: '#fffbeb',
-    success: '#ecfdf5',
-    warning: '#fffbeb',
-    error: '#fef2f2'
-  };
-  
-  const primary = theme.primary || colors[type];
-  const bg = backgrounds[type];
-  
+  const [selected, setSelected] = useState<string | null>(null);
+  const primary = theme.primary || '#8b5cf6';
+
   return (
-    <div
-      className={className}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '20px',
-        padding: '20px 36px',
-        backgroundColor: bg,
-        borderLeft: `5px solid ${primary}`,
-        borderRadius: '8px',
-        boxShadow: '0 12px 28px rgba(0,0,0,0.25)',
-        maxWidth: '380px',
-        position: 'relative'
-      }}
-    >
-      {icon && <span style={{ fontSize: '18px', flexShrink: 0 }}> {icon}</span>}
-      <div style={{ flex: 1, color: '#374151', fontSize: '14px', lineHeight: '1.5' }}>
-        {message}
-      </div>
-      {onClose && (
+    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {items.map(item => (
         <button
-          onClick={onClose}
+          key={item.id}
+          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
           style={{
-            background: 'none',
-            border: 'none',
-            color: primary,
+            padding: '10px 20px',
+            background: selected === item.id ? primary : 'transparent',
+            color: selected === item.id ? '#fff' : primary,
+            border: `2px solid ${primary}`,
+            borderRadius: '20px',
             cursor: 'pointer',
-            fontSize: '20px',
-            lineHeight: '1',
-            flexShrink: 0
+            fontWeight: 600,
+            transition: 'all 200ms ease',
+            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
           }}
         >
-          ×
+          {item.label}
         </button>
-      )}
+      ))}
     </div>
   );
 };

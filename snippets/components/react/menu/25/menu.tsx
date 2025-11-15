@@ -1,64 +1,32 @@
-import React, { useState } from 'react';
-
-interface MenuItem {
-  label: string;
-  onClick?: () => void;
-  icon?: string;
-}
+import React, { useState, useEffect } from 'react';
 
 export interface ComponentProps {
-  items?: MenuItem[];
-  theme?: { primary?: string };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
+  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  items = [
-    { label: 'Profile', icon: '👤' },
-    { label: 'Settings', icon: '⚙️' },
-    { label: 'Logout', icon: '🚪' }
-  ],
-  theme = {},
-  className = ''
-}) => {
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
-  const primary = theme.primary || '#14b8a6';
-  
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
+  const primary = theme.primary || '#3b82f6';
+
+  const handleClick = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = Date.now();
+    setRipples([...ripples, { x, y, id }]);
+    setTimeout(() => setRipples(r => r.filter(rip => rip.id !== id)), 800);
+    onInteract?.('click');
+  };
+
   return (
-    <div
-      className={className}
-      style={{
-        backgroundColor: '#fff',
-        border: '2px solid #14b8a6',
-        borderRadius: '22px',
-        boxShadow: '0 14px 32px rgba(0,0,0,0.28)',
-        padding: '11px',
-        minWidth: '230px'
-      }}
-    >
-      {items.map((item, idx) => (
-        <div
-          key={idx}
-          onClick={item.onClick}
-          onMouseEnter={() => setHoveredIdx(idx)}
-          onMouseLeave={() => setHoveredIdx(null)}
-          style={{
-            padding: '14px 20px',
-            borderRadius: '22px',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '14px',
-            backgroundColor: hoveredIdx === idx ? '#f0fdfa' : 'transparent',
-            color: hoveredIdx === idx ? primary : '#374151',
-            transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-            marginBottom: idx < items.length - 1 ? '7px' : '0'
-          }}
-        >
-          {item.icon && <span style={{ fontSize: '18px' }}> {item.icon}</span>}
-          <span style={{ fontSize: '18px', fontWeight: '800' }}>{item.label}</span>
-        </div>
+    <div className={className} onClick={handleClick} style={{ position: 'relative', padding: '18px 28px', background: primary, color: '#fff', borderRadius: '10px', cursor: 'pointer', overflow: 'hidden', fontWeight: 600 }}>
+      {ripples.map(r => (
+        <span key={r.id} style={{ position: 'absolute', left: r.x, top: r.y, width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.6)', transform: 'translate(-50%, -50%)', animation: 'ripple 800ms ease-out' }} />
       ))}
+      <span style={{ position: 'relative', zIndex: 1 }}>Ripple Effect Component</span>
+      <style>{`@keyframes ripple { to { transform: translate(-50%, -50%) scale(30); opacity: 0; } }`}</style>
     </div>
   );
 };

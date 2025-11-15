@@ -1,86 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export interface ComponentProps {
-  options?: string[];
-  placeholder?: string;
-  theme?: { primary?: string };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onSelect?: (value: string) => void;
+  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  options = ['Option 1', 'Option 2', 'Option 3'],
-  placeholder = 'Select an option',
-  theme = {},
-  className = '',
-  onSelect
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState<string | null>(null);
-  const primary = theme.primary || '#8b5cf6';
-  
-  const handleSelect = (option: string) => {
-    setSelected(option);
-    setIsOpen(false);
-    onSelect?.(option);
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
+  const primary = theme.primary || '#3b82f6';
+
+  const handleClick = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = Date.now();
+    setRipples([...ripples, { x, y, id }]);
+    setTimeout(() => setRipples(r => r.filter(rip => rip.id !== id)), 800);
+    onInteract?.('click');
   };
-  
+
   return (
-    <div className={className} style={{ position: 'relative', width: '100%', maxWidth: '300px' }}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        style={{
-          width: '100%',
-          padding: '18px 24px',
-          backgroundColor: '#fff',
-          border: `2px solid ${primary}`,
-          borderRadius: '21px',
-          cursor: 'pointer',
-          textAlign: 'left',
-          fontSize: '19px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}
-      >
-        <span style={{ color: selected ? '#111' : '#9ca3af' }}>
-          {selected || placeholder}
-        </span>
-        <span style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s' }}>
-          ▼
-        </span>
-      </button>
-      {isOpen && (
-        <div style={{
-          position: 'absolute',
-          top: '100%',
-          left: 0,
-          right: 0,
-          marginTop: '8px',
-          backgroundColor: '#fff',
-          border: `1px solid ${primary}`,
-          borderRadius: '21px',
-          boxShadow: '0 12px 24px rgba(0,0,0,0.2)',
-          zIndex: 1000
-        }}>
-          {options.map((option, idx) => (
-            <div
-              key={idx}
-              onClick={() => handleSelect(option)}
-              style={{
-                padding: '18px 24px',
-                cursor: 'pointer',
-                borderBottom: idx < options.length - 1 ? '1px solid #e5e7eb' : 'none',
-                transition: 'background-color 0.2s'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#faf5ff'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}
-            >
-              {option}
-            </div>
-          ))}
-        </div>
-      )}
+    <div className={className} onClick={handleClick} style={{ position: 'relative', padding: '18px 28px', background: primary, color: '#fff', borderRadius: '10px', cursor: 'pointer', overflow: 'hidden', fontWeight: 600 }}>
+      {ripples.map(r => (
+        <span key={r.id} style={{ position: 'absolute', left: r.x, top: r.y, width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.6)', transform: 'translate(-50%, -50%)', animation: 'ripple 800ms ease-out' }} />
+      ))}
+      <span style={{ position: 'relative', zIndex: 1 }}>Ripple Effect Component</span>
+      <style>{`@keyframes ripple { to { transform: translate(-50%, -50%) scale(30); opacity: 0; } }`}</style>
     </div>
   );
 };

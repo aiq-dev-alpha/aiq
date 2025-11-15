@@ -1,60 +1,61 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 export interface ComponentProps {
-  label?: string;
-  onClick?: () => void;
-  variant?: 'primary' | 'secondary' | 'outline';
-  size?: 'small' | 'medium' | 'large';
-  theme?: { primary?: string };
+  progress?: number;
+  showLabel?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  disabled?: boolean;
+  onInteract?: (progress: number) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  label = 'Button',
-  onClick,
-  variant = 'primary',
-  size = 'medium',
+  progress: initialProgress = 0,
+  showLabel = true,
   theme = {},
   className = '',
-  disabled = false
+  onInteract
 }) => {
-  const primary = theme.primary || '#ef4444';
-  
-  const variants = {
-    primary: { bg: primary, color: '#fff', border: 'none' },
-    secondary: { bg: '#6b7280', color: '#fff', border: 'none' },
-    outline: { bg: 'transparent', color: primary, border: `2px solid ${primary}` }
-  };
-  
-  const sizes = {
-    small: { padding: '21px 32px', fontSize: '19px' },
-    medium: { padding: '21px 32px', fontSize: '19px' },
-    large: { padding: '21px 32px', fontSize: '19px' }
-  };
-  
-  const variantStyle = variants[variant];
-  const sizeStyle = sizes[size];
-  
+  const [progress, setProgress] = useState(initialProgress);
+  const [animating, setAnimating] = useState(false);
+  const primary = theme.primary || '#10b981';
+
+  useEffect(() => {
+    if (progress !== initialProgress) {
+      setAnimating(true);
+      setTimeout(() => setAnimating(false), 500);
+    }
+    setProgress(initialProgress);
+  }, [initialProgress]);
+
   return (
-    <button
-      className={className}
-      onClick={onClick}
-      disabled={disabled}
-      style={{
-        ...variantStyle,
-        ...sizeStyle,
-        borderRadius: '10px',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        fontWeight: '600',
-        opacity: disabled ? 0.5 : 1,
-        transition: 'all 0.2s ease-in-out',
-        boxShadow: '0 7px 9px rgba(0,0,0,0.07)'
-      }}
-      onMouseEnter={(e) => !disabled && (e.currentTarget.style.transform = 'translateY(-2px)')}
-      onMouseLeave={(e) => !disabled && (e.currentTarget.style.transform = 'translateY(0)')}
-    >
-      {label}
-    </button>
+    <div className={className} style={{ width: '100%' }}>
+      {showLabel && <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: primary }}>{progress}%</div>}
+      <div style={{ width: '100%', height: '12px', background: '#e5e7eb', borderRadius: '6px', overflow: 'hidden', position: 'relative' }}>
+        <div
+          style={{
+            width: \`\${progress}%\`,
+            height: '100%',
+            background: \`linear-gradient(90deg, \${primary}, \${primary}dd)\`,
+            borderRadius: '6px',
+            transition: 'width 500ms ease',
+            position: 'relative',
+            overflow: 'hidden'
+          }}
+        >
+          {animating && (
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+              animation: 'shimmer 1s infinite'
+            }} />
+          )}
+        </div>
+      </div>
+      <style>{`@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }`}</style>
+    </div>
   );
 };

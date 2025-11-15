@@ -1,52 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [state, setState] = useState({{ active: false, count: 0 }});
-  const primary = theme.primary || '#06b6d4';
-  
-  const handleClick = () => {
-  setState(prev => ({ active: !prev.active, count: prev.count + 1 }));
-  onInteract?.('click');
+  const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
+  const primary = theme.primary || '#3b82f6';
+
+  const handleClick = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = Date.now();
+    setRipples([...ripples, { x, y, id }]);
+    setTimeout(() => setRipples(r => r.filter(rip => rip.id !== id)), 800);
+    onInteract?.('click');
   };
-  
+
   return (
-  <div
-  className={className}
-  onClick={handleClick}
-  style={{
-  padding: '17px 30px',
-  background: state.active ? `linear-gradient(210deg, ${primary}, ${primary}dd)` : '#ffffff',
-  color: state.active ? '#ffffff' : primary,
-  border: `6px solid ${state.active ? primary : primary + '40'}`,
-  borderRadius: '13px',
-  fontSize: '19px',
-  fontWeight: 1000,
-  cursor: 'pointer',
-  transition: 'all 300ms cubic-bezier(0.8, 2.0, 0.64, 1)',
-  boxShadow: state.active ? `0 18px 35px ${primary}40` : `0 7px 16px rgba(0,0,0,0.13)`,
-  transform: state.active ? 'translateY(-9px) scale(1.07)' : 'translateY(0) scale(1)',
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '13px'
-  }}
-  >
-  <span>Component V15</span>
-  {state.count > 0 && (
-  <span style={{ 
-  fontSize: '12px', 
-  background: 'rgba(255,255,255,0.40)', 
-  padding: '2px 8px', 
-  borderRadius: '12px' 
-  }}>
-  {state.count}
-  </span>
-  )}
-  </div>
+    <div className={className} onClick={handleClick} style={{ position: 'relative', padding: '18px 28px', background: primary, color: '#fff', borderRadius: '10px', cursor: 'pointer', overflow: 'hidden', fontWeight: 600 }}>
+      {ripples.map(r => (
+        <span key={r.id} style={{ position: 'absolute', left: r.x, top: r.y, width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.6)', transform: 'translate(-50%, -50%)', animation: 'ripple 800ms ease-out' }} />
+      ))}
+      <span style={{ position: 'relative', zIndex: 1 }}>Ripple Effect Component</span>
+      <style>{`@keyframes ripple { to { transform: translate(-50%, -50%) scale(30); opacity: 0; } }`}</style>
+    </div>
   );
 };

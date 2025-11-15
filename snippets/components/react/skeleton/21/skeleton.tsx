@@ -1,53 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  variant?: 'text' | 'circular' | 'rectangular';
-  width?: string;
-  height?: string;
-  theme?: { primary?: string };
+  items?: Array<{ id: string; label: string }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  count?: number;
+  onInteract?: (id: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  variant = 'text',
-  width = '100%',
-  height,
+  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
   theme = {},
   className = '',
-  count = 1
+  onInteract
 }) => {
-  const baseColor = '#d1d5db';
-  const highlightColor = '#e5e7eb';
-  
-  const variants = {
-    text: { height: height || '17px', borderRadius: '24px' },
-    circular: { height: height || '60px', width: height || '60px', borderRadius: '50%' },
-    rectangular: { height: height || '130px', borderRadius: '24px' }
-  };
-  
-  const variantStyle = variants[variant];
-  
-  const skeletonStyle = {
-    width,
-    ...variantStyle,
-    backgroundColor: baseColor,
-    backgroundImage: `linear-gradient(90deg, ${baseColor} 0px, ${highlightColor} 40px, ${baseColor} 80px)`,
-    backgroundSize: '900px',
-    animation: '1.1s ease-in-out infinite',
-    backgroundPosition: '-900px'
-  };
-  
+  const [selected, setSelected] = useState<string | null>(null);
+  const primary = theme.primary || '#8b5cf6';
+
   return (
-    <div className={className} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-      {Array.from({ length: count }, (_, i) => (
-        <div key={i} style={skeletonStyle} />
+    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {items.map(item => (
+        <button
+          key={item.id}
+          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
+          style={{
+            padding: '10px 20px',
+            background: selected === item.id ? primary : 'transparent',
+            color: selected === item.id ? '#fff' : primary,
+            border: `2px solid ${primary}`,
+            borderRadius: '20px',
+            cursor: 'pointer',
+            fontWeight: 600,
+            transition: 'all 200ms ease',
+            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
+          }}
+        >
+          {item.label}
+        </button>
       ))}
-      <style>{`
-        @keyframes skeletonAnimation {
-          to { background-position: calc(900px + 100%); }
-        }
-      `}</style>
     </div>
   );
 };

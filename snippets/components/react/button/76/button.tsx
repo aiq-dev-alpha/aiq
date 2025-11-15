@@ -1,60 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  label?: string;
-  onClick?: () => void;
-  variant?: 'primary' | 'secondary' | 'outline';
-  size?: 'small' | 'medium' | 'large';
-  theme?: { primary?: string };
+  items?: Array<{ id: string; label: string }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  disabled?: boolean;
+  onInteract?: (id: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  label = 'Button',
-  onClick,
-  variant = 'primary',
-  size = 'medium',
+  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
   theme = {},
   className = '',
-  disabled = false
+  onInteract
 }) => {
-  const primary = theme.primary || '#ef4444';
-  
-  const variants = {
-    primary: { bg: primary, color: '#fff', border: 'none' },
-    secondary: { bg: '#6b7280', color: '#fff', border: 'none' },
-    outline: { bg: 'transparent', color: primary, border: `2px solid ${primary}` }
-  };
-  
-  const sizes = {
-    small: { padding: '28px 36px', fontSize: '22px' },
-    medium: { padding: '28px 36px', fontSize: '22px' },
-    large: { padding: '28px 36px', fontSize: '22px' }
-  };
-  
-  const variantStyle = variants[variant];
-  const sizeStyle = sizes[size];
-  
+  const [selected, setSelected] = useState<string | null>(null);
+  const primary = theme.primary || '#8b5cf6';
+
   return (
-    <button
-      className={className}
-      onClick={onClick}
-      disabled={disabled}
-      style={{
-        ...variantStyle,
-        ...sizeStyle,
-        borderRadius: '23px',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        fontWeight: '900',
-        opacity: disabled ? 0.5 : 1,
-        transition: 'all 0.2s ease-in-out',
-        boxShadow: '0 10px 12px rgba(0,0,0,0.07)'
-      }}
-      onMouseEnter={(e) => !disabled && (e.currentTarget.style.transform = 'translateY(-2px)')}
-      onMouseLeave={(e) => !disabled && (e.currentTarget.style.transform = 'translateY(0)')}
-    >
-      {label}
-    </button>
+    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {items.map(item => (
+        <button
+          key={item.id}
+          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
+          style={{
+            padding: '10px 20px',
+            background: selected === item.id ? primary : 'transparent',
+            color: selected === item.id ? '#fff' : primary,
+            border: `2px solid ${primary}`,
+            borderRadius: '20px',
+            cursor: 'pointer',
+            fontWeight: 600,
+            transition: 'all 200ms ease',
+            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
+          }}
+        >
+          {item.label}
+        </button>
+      ))}
+    </div>
   );
 };

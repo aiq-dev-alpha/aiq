@@ -1,94 +1,58 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  options?: string[];
-  placeholder?: string;
-  theme?: { primary?: string; background?: string };
+  title?: string;
+  content?: React.ReactNode;
+  expandable?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onSelect?: (value: string) => void;
+  onInteract?: (expanded: boolean) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  options = ['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry'],
-  placeholder = 'Type to search...',
+  title = 'Expandable Card',
+  content = 'This is the expandable content that appears when you click the card.',
+  expandable = true,
   theme = {},
   className = '',
-  onSelect
+  onInteract
 }) => {
-  const [value, setValue] = useState('');
-  const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const primary = theme.primary || '#f59e0b';
 
-  useEffect(() => {
-    if (value) {
-      const filtered = options.filter(opt =>
-        opt.toLowerCase().includes(value.toLowerCase())
-      );
-      setFilteredOptions(filtered);
-      setIsOpen(filtered.length > 0);
-    } else {
-      setFilteredOptions([]);
-      setIsOpen(false);
-    }
-  }, [value, options]);
-
-  const handleSelect = (option: string) => {
-    setValue(option);
-    setIsOpen(false);
-    onSelect?.(option);
+  const toggleExpand = () => {
+    if (!expandable) return;
+    const newState = !expanded;
+    setExpanded(newState);
+    onInteract?.(newState);
   };
 
   return (
-    <div className={className} style={{ position: 'relative', width: '100%', maxWidth: '400px' }}>
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        placeholder={placeholder}
+    <div className={className} style={{ border: \`2px solid \${expanded ? primary : '#e5e7eb'}\`, borderRadius: '12px', overflow: 'hidden', maxWidth: '500px', transition: 'all 300ms ease' }}>
+      <div
+        onClick={toggleExpand}
         style={{
-          width: '100%',
-          padding: '22px 26px',
-          border: `2px solid ${primary}`,
-          borderRadius: '18px',
-          fontSize: '18px',
-          outline: 'none',
-          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+          padding: '20px',
+          background: expanded ? \`\${primary}10\` : '#fff',
+          cursor: expandable ? 'pointer' : 'default',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          transition: 'all 200ms ease'
         }}
-      />
-      {isOpen && (
-        <div style={{
-          position: 'absolute',
-          top: '100%',
-          left: 0,
-          right: 0,
-          marginTop: '4px',
-          backgroundColor: '#fff',
-          border: `1px solid ${primary}`,
-          borderRadius: '18px',
-          boxShadow: '0 8px 20px rgba(0,0,0,0.2)',
-          maxHeight: '200px',
-          overflowY: 'auto',
-          zIndex: 1000
-        }}>
-          {filteredOptions.map((option, idx) => (
-            <div
-              key={idx}
-              onClick={() => handleSelect(option)}
-              style={{
-                padding: '22px 26px',
-                cursor: 'pointer',
-                borderBottom: idx < filteredOptions.length - 1 ? '1px solid #e5e7eb' : 'none',
-                transition: 'background-color 0.2s'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#fffbeb'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}
-            >
-              {option}
-            </div>
-          ))}
+      >
+        <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: expanded ? primary : '#1f2937' }}>{title}</h3>
+        {expandable && (
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 300ms ease' }}>
+            <path d="M5 7.5L10 12.5L15 7.5" stroke={expanded ? primary : '#6b7280'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
+      </div>
+      <div style={{ maxHeight: expanded ? '1000px' : '0', overflow: 'hidden', transition: 'max-height 400ms ease' }}>
+        <div style={{ padding: '20px', borderTop: \`1px solid \${primary}20\`, fontSize: '15px', lineHeight: '1.6', color: '#4b5563' }}>
+          {content}
         </div>
-      )}
+      </div>
     </div>
   );
 };

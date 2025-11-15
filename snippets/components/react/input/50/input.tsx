@@ -1,66 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export interface ComponentProps {
-  type?: string;
-  placeholder?: string;
-  value?: string;
-  onChange?: (value: string) => void;
-  theme?: { primary?: string };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  label?: string;
-  error?: string;
+  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  type = 'text',
-  placeholder = 'Enter text',
-  value: controlledValue,
-  onChange,
-  theme = {},
-  className = '',
-  label,
-  error
-}) => {
-  const [internalValue, setInternalValue] = useState('');
-  const value = controlledValue !== undefined ? controlledValue : internalValue;
-  const primary = theme.primary || '#f59e0b';
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    if (controlledValue === undefined) {
-      setInternalValue(newValue);
-    }
-    onChange?.(newValue);
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
+  const primary = theme.primary || '#3b82f6';
+
+  const handleClick = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = Date.now();
+    setRipples([...ripples, { x, y, id }]);
+    setTimeout(() => setRipples(r => r.filter(rip => rip.id !== id)), 800);
+    onInteract?.('click');
   };
-  
+
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '400px' }}>
-      {label && (
-        <label style={{ display: 'block', marginBottom: '9px', color: '#374151', fontSize: '14px', fontWeight: '400' }}>
-          {label}
-        </label>
-      )}
-      <input
-        type={type}
-        value={value}
-        onChange={handleChange}
-        placeholder={placeholder}
-        style={{
-          width: '100%',
-          padding: '12px 16px',
-          border: `2px solid ${error ? '#ef4444' : primary}`,
-          borderRadius: '8px',
-          fontSize: '14px',
-          outline: 'none',
-          transition: 'all 0.2s ease',
-          boxShadow: 'none'
-        }}
-      />
-      {error && (
-        <span style={{ display: 'block', marginTop: '5px', color: '#ef4444', fontSize: '14px' }}>
-          {error}
-        </span>
-      )}
+    <div className={className} onClick={handleClick} style={{ position: 'relative', padding: '18px 28px', background: primary, color: '#fff', borderRadius: '10px', cursor: 'pointer', overflow: 'hidden', fontWeight: 600 }}>
+      {ripples.map(r => (
+        <span key={r.id} style={{ position: 'absolute', left: r.x, top: r.y, width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.6)', transform: 'translate(-50%, -50%)', animation: 'ripple 800ms ease-out' }} />
+      ))}
+      <span style={{ position: 'relative', zIndex: 1 }}>Ripple Effect Component</span>
+      <style>{`@keyframes ripple { to { transform: translate(-50%, -50%) scale(30); opacity: 0; } }`}</style>
     </div>
   );
 };

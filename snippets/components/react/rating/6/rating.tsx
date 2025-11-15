@@ -1,53 +1,41 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  value?: number;
-  max?: number;
-  onChange?: (value: number) => void;
-  theme?: { primary?: string };
+  items?: Array<{ id: string; label: string }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  readonly?: boolean;
+  onInteract?: (id: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  value: controlledValue,
-  max = 5,
-  onChange,
+  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
   theme = {},
   className = '',
-  readonly = false
+  onInteract
 }) => {
-  const [internalValue, setInternalValue] = useState(0);
-  const [hoveredValue, setHoveredValue] = useState(0);
-  const value = controlledValue !== undefined ? controlledValue : internalValue;
-  const primary = theme.primary || '#f59e0b';
-  
-  const handleClick = (newValue: number) => {
-    if (readonly) return;
-    if (controlledValue === undefined) setInternalValue(newValue);
-    onChange?.(newValue);
-  };
-  
+  const [selected, setSelected] = useState<string | null>(null);
+  const primary = theme.primary || '#8b5cf6';
+
   return (
-    <div
-      className={className}
-      style={{ display: 'flex', gap: '2px', fontSize: '17px' }}
-      onMouseLeave={() => !readonly && setHoveredValue(0)}
-    >
-      {Array.from({ length: max }, (_, i) => i + 1).map(star => (
-        <span
-          key={star}
-          onClick={() => handleClick(star)}
-          onMouseEnter={() => !readonly && setHoveredValue(star)}
+    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {items.map(item => (
+        <button
+          key={item.id}
+          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
           style={{
-            cursor: readonly ? 'default' : 'pointer',
-            color: star <= (hoveredValue || value) ? primary : '#d1d5db',
-            transition: 'all 0.15s ease',
-            transform: star === hoveredValue ? 'scale(1.05)' : 'scale(1.05)'
+            padding: '10px 20px',
+            background: selected === item.id ? primary : 'transparent',
+            color: selected === item.id ? '#fff' : primary,
+            border: `2px solid ${primary}`,
+            borderRadius: '20px',
+            cursor: 'pointer',
+            fontWeight: 600,
+            transition: 'all 200ms ease',
+            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
           }}
         >
-          ★
-        </span>
+          {item.label}
+        </button>
       ))}
     </div>
   );

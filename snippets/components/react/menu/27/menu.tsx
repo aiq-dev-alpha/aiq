@@ -1,64 +1,61 @@
-import React, { useState } from 'react';
-
-interface MenuItem {
-  label: string;
-  onClick?: () => void;
-  icon?: string;
-}
+import React, { useState, useRef, useEffect } from 'react';
 
 export interface ComponentProps {
-  items?: MenuItem[];
-  theme?: { primary?: string };
+  progress?: number;
+  showLabel?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
+  onInteract?: (progress: number) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  items = [
-    { label: 'Profile', icon: '👤' },
-    { label: 'Settings', icon: '⚙️' },
-    { label: 'Logout', icon: '🚪' }
-  ],
+  progress: initialProgress = 0,
+  showLabel = true,
   theme = {},
-  className = ''
+  className = '',
+  onInteract
 }) => {
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
-  const primary = theme.primary || '#ec4899';
-  
+  const [progress, setProgress] = useState(initialProgress);
+  const [animating, setAnimating] = useState(false);
+  const primary = theme.primary || '#10b981';
+
+  useEffect(() => {
+    if (progress !== initialProgress) {
+      setAnimating(true);
+      setTimeout(() => setAnimating(false), 500);
+    }
+    setProgress(initialProgress);
+  }, [initialProgress]);
+
   return (
-    <div
-      className={className}
-      style={{
-        backgroundColor: '#fff',
-        border: '1px solid #e5e7eb',
-        borderRadius: '22px',
-        boxShadow: '0 16px 30px rgba(0,0,0,0.22)',
-        padding: '14px',
-        minWidth: '200px'
-      }}
-    >
-      {items.map((item, idx) => (
+    <div className={className} style={{ width: '100%' }}>
+      {showLabel && <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: primary }}>{progress}%</div>}
+      <div style={{ width: '100%', height: '12px', background: '#e5e7eb', borderRadius: '6px', overflow: 'hidden', position: 'relative' }}>
         <div
-          key={idx}
-          onClick={item.onClick}
-          onMouseEnter={() => setHoveredIdx(idx)}
-          onMouseLeave={() => setHoveredIdx(null)}
           style={{
-            padding: '22px 30px',
-            borderRadius: '22px',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '20px',
-            backgroundColor: hoveredIdx === idx ? '#fdf2f8' : 'transparent',
-            color: hoveredIdx === idx ? primary : '#374151',
-            transition: 'all 0.3s ease-in-out',
-            marginBottom: idx < items.length - 1 ? '10px' : '0'
+            width: \`\${progress}%\`,
+            height: '100%',
+            background: \`linear-gradient(90deg, \${primary}, \${primary}dd)\`,
+            borderRadius: '6px',
+            transition: 'width 500ms ease',
+            position: 'relative',
+            overflow: 'hidden'
           }}
         >
-          {item.icon && <span style={{ fontSize: '18px' }}> {item.icon}</span>}
-          <span style={{ fontSize: '18px', fontWeight: '900' }}>{item.label}</span>
+          {animating && (
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+              animation: 'shimmer 1s infinite'
+            }} />
+          )}
         </div>
-      ))}
+      </div>
+      <style>{`@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }`}</style>
     </div>
   );
 };

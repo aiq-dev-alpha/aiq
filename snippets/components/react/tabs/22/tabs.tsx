@@ -1,58 +1,61 @@
-import React, { useState } from 'react';
-
-interface Tab {
-  id: string;
-  label: string;
-  content: string;
-}
+import React, { useState, useRef, useEffect } from 'react';
 
 export interface ComponentProps {
-  tabs?: Tab[];
-  theme?: { primary?: string };
+  progress?: number;
+  showLabel?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
+  onInteract?: (progress: number) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  tabs = [
-    { id: '1', label: 'Tab 1', content: 'Content 1' },
-    { id: '2', label: 'Tab 2', content: 'Content 2' },
-    { id: '3', label: 'Tab 3', content: 'Content 3' }
-  ],
+  progress: initialProgress = 0,
+  showLabel = true,
   theme = {},
-  className = ''
+  className = '',
+  onInteract
 }) => {
-  const [activeTab, setActiveTab] = useState(tabs[0]?.id);
-  const primary = theme.primary || '#14b8a6';
-  
+  const [progress, setProgress] = useState(initialProgress);
+  const [animating, setAnimating] = useState(false);
+  const primary = theme.primary || '#10b981';
+
+  useEffect(() => {
+    if (progress !== initialProgress) {
+      setAnimating(true);
+      setTimeout(() => setAnimating(false), 500);
+    }
+    setProgress(initialProgress);
+  }, [initialProgress]);
+
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '600px' }}>
-      <div style={{ display: 'flex', gap: '15px', borderBottom: '1px solid #e5e7eb' }}>
-        {tabs.map(tab => {
-          const isActive = tab.id === activeTab;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              style={{
-                padding: '23px 36px',
-                backgroundColor: 'transparent',
-                border: 'none',
-                borderBottom: isActive ? `5px solid ${primary}` : '5px solid transparent',
-                color: isActive ? primary : '#6b7280',
-                cursor: 'pointer',
-                fontWeight: isActive ? '600' : '500',
-                fontSize: '17px',
-                transition: 'all 0.2s ease-in-out'
-              }}
-            >
-              {tab.label}
-            </button>
-          );
-        })}
+    <div className={className} style={{ width: '100%' }}>
+      {showLabel && <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: primary }}>{progress}%</div>}
+      <div style={{ width: '100%', height: '12px', background: '#e5e7eb', borderRadius: '6px', overflow: 'hidden', position: 'relative' }}>
+        <div
+          style={{
+            width: \`\${progress}%\`,
+            height: '100%',
+            background: \`linear-gradient(90deg, \${primary}, \${primary}dd)\`,
+            borderRadius: '6px',
+            transition: 'width 500ms ease',
+            position: 'relative',
+            overflow: 'hidden'
+          }}
+        >
+          {animating && (
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+              animation: 'shimmer 1s infinite'
+            }} />
+          )}
+        </div>
       </div>
-      <div style={{ padding: '19px 0', color: '#374151', lineHeight: '1.8' }}>
-        {tabs.find(t => t.id === activeTab)?.content}
-      </div>
+      <style>{`@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }`}</style>
     </div>
   );
 };

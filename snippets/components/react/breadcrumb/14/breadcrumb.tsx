@@ -1,56 +1,51 @@
-import React from 'react';
-
-interface BreadcrumbItem {
-  label: string;
-  href?: string;
-}
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  items?: BreadcrumbItem[];
-  theme?: { primary?: string };
+  tabs?: Array<{ id: string; label: string; content: React.ReactNode }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  separator?: string;
+  onInteract?: (tabId: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  items = [
-    { label: 'Home', href: '/' },
-    { label: 'Category', href: '/category' },
-    { label: 'Page' }
+  tabs = [
+    { id: '1', label: 'Tab 1', content: 'Content 1' },
+    { id: '2', label: 'Tab 2', content: 'Content 2' },
+    { id: '3', label: 'Tab 3', content: 'Content 3' }
   ],
   theme = {},
   className = '',
-  separator = '•'
+  onInteract
 }) => {
-  const primary = theme.primary || '#ef4444';
+  const [activeTab, setActiveTab] = useState(tabs[0]?.id || '');
+  const primary = theme.primary || '#6366f1';
 
   return (
-    <nav className={className} style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
-      {items.map((item, idx) => (
-        <React.Fragment key={idx}>
-          {item.href ? (
-            <a
-              href={item.href}
-              style={{
-                color: primary,
-                textDecoration: 'none',
-                fontSize: '16px',
-                fontWeight: '300',
-                transition: 'opacity 0.2s'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'}
-              onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
-            >
-              {item.label}
-            </a>
-          ) : (
-            <span style={{ color: '#6b7280', fontSize: '16px' }}>{item.label}</span>
-          )}
-          {idx < items.length - 1 && (
-            <span style={{ color: '#9ca3af', fontSize: '16px' }}> {separator}</span>
-          )}
-        </React.Fragment>
-      ))}
-    </nav>
+    <div className={className} style={{ maxWidth: '600px' }}>
+      <div style={{ display: 'flex', gap: '4px', borderBottom: \`2px solid \${primary}20\` }}>
+        {tabs.map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => { setActiveTab(tab.id); onInteract?.(tab.id); }}
+            style={{
+              padding: '12px 24px',
+              background: 'transparent',
+              border: 'none',
+              borderBottom: \`3px solid \${activeTab === tab.id ? primary : 'transparent'}\`,
+              color: activeTab === tab.id ? primary : '#6b7280',
+              fontWeight: activeTab === tab.id ? 700 : 500,
+              cursor: 'pointer',
+              transition: 'all 200ms ease',
+              marginBottom: '-2px'
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+      <div style={{ padding: '24px 0' }}>
+        {tabs.find(t => t.id === activeTab)?.content}
+      </div>
+    </div>
   );
 };

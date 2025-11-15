@@ -1,58 +1,61 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 export interface ComponentProps {
-  src?: string;
-  alt?: string;
-  name?: string;
-  size?: 'small' | 'medium' | 'large';
-  theme?: { primary?: string };
+  progress?: number;
+  showLabel?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  shape?: 'circle' | 'square';
+  onInteract?: (progress: number) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  src,
-  alt = 'Avatar',
-  name = 'JD',
-  size = 'medium',
+  progress: initialProgress = 0,
+  showLabel = true,
   theme = {},
   className = '',
-  shape = 'square'
+  onInteract
 }) => {
-  const primary = theme.primary || '#ef4444';
-  const sizes = {
-    small: { width: '32px', height: '32px', fontSize: '12px' },
-    medium: { width: '48px', height: '48px', fontSize: '12px' },
-    large: { width: '64px', height: '64px', fontSize: '12px' }
-  };
+  const [progress, setProgress] = useState(initialProgress);
+  const [animating, setAnimating] = useState(false);
+  const primary = theme.primary || '#10b981';
 
-  const sizeStyle = sizes[size];
-  const borderRadius = shape === 'circle' ? '50%' : '5px';
+  useEffect(() => {
+    if (progress !== initialProgress) {
+      setAnimating(true);
+      setTimeout(() => setAnimating(false), 500);
+    }
+    setProgress(initialProgress);
+  }, [initialProgress]);
 
   return (
-    <div
-      className={className}
-      style={{
-        width: sizeStyle.width,
-        height: sizeStyle.height,
-        borderRadius,
-        backgroundColor: src ? 'transparent' : primary,
-        color: '#fff',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontWeight: '400',
-        fontSize: sizeStyle.fontSize,
-        overflow: 'hidden',
-        border: '2px solid ${primary}',
-        boxShadow: '0 9px 21px rgba(0,0,0,0.2)'
-      }}
-    >
-      {src ? (
-        <img src={src} alt={alt} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-      ) : (
-        <span>{name}</span>
-      )}
+    <div className={className} style={{ width: '100%' }}>
+      {showLabel && <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: primary }}>{progress}%</div>}
+      <div style={{ width: '100%', height: '12px', background: '#e5e7eb', borderRadius: '6px', overflow: 'hidden', position: 'relative' }}>
+        <div
+          style={{
+            width: \`\${progress}%\`,
+            height: '100%',
+            background: \`linear-gradient(90deg, \${primary}, \${primary}dd)\`,
+            borderRadius: '6px',
+            transition: 'width 500ms ease',
+            position: 'relative',
+            overflow: 'hidden'
+          }}
+        >
+          {animating && (
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+              animation: 'shimmer 1s infinite'
+            }} />
+          )}
+        </div>
+      </div>
+      <style>{`@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }`}</style>
     </div>
   );
 };

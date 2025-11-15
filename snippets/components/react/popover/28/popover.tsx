@@ -1,59 +1,58 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  trigger?: React.ReactNode;
+  title?: string;
   content?: React.ReactNode;
-  theme?: { primary?: string };
+  expandable?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  position?: 'top' | 'bottom' | 'left' | 'right';
+  onInteract?: (expanded: boolean) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  trigger = <button>Hover me</button>,
-  content = 'Popover content',
+  title = 'Expandable Card',
+  content = 'This is the expandable content that appears when you click the card.',
+  expandable = true,
   theme = {},
   className = '',
-  position = 'right'
+  onInteract
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const primary = theme.primary || '#f59e0b';
-  
-  const positions = {
-    top: { bottom: '100%', left: '50%', transform: 'translateX(-50%)', marginBottom: '20px' },
-    bottom: { top: '100%', left: '50%', transform: 'translateX(-50%)', marginTop: '6px' },
-    left: { right: '100%', top: '50%', transform: 'translateY(-50%)', marginRight: '6px' },
-    right: { left: '100%', top: '50%', transform: 'translateY(-50%)', marginLeft: '6px' }
+
+  const toggleExpand = () => {
+    if (!expandable) return;
+    const newState = !expanded;
+    setExpanded(newState);
+    onInteract?.(newState);
   };
-  
+
   return (
-    <div
-      className={className}
-      style={{ position: 'relative', display: 'inline-block' }}
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
-    >
-      {trigger}
-      {isOpen && (
-        <div
-          style={{
-            position: 'absolute',
-            ...positions[position],
-            backgroundColor: '#fff',
-            border: `1px solid #f59e0b`,
-            borderRadius: '24px',
-            padding: '18px 29px',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.06)',
-            zIndex: 1000,
-            minWidth: '140px',
-            maxWidth: '280px',
-            fontSize: '17px',
-            color: '#374151',
-            lineHeight: '1.5'
-          }}
-        >
+    <div className={className} style={{ border: \`2px solid \${expanded ? primary : '#e5e7eb'}\`, borderRadius: '12px', overflow: 'hidden', maxWidth: '500px', transition: 'all 300ms ease' }}>
+      <div
+        onClick={toggleExpand}
+        style={{
+          padding: '20px',
+          background: expanded ? \`\${primary}10\` : '#fff',
+          cursor: expandable ? 'pointer' : 'default',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          transition: 'all 200ms ease'
+        }}
+      >
+        <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: expanded ? primary : '#1f2937' }}>{title}</h3>
+        {expandable && (
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 300ms ease' }}>
+            <path d="M5 7.5L10 12.5L15 7.5" stroke={expanded ? primary : '#6b7280'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
+      </div>
+      <div style={{ maxHeight: expanded ? '1000px' : '0', overflow: 'hidden', transition: 'max-height 400ms ease' }}>
+        <div style={{ padding: '20px', borderTop: \`1px solid \${primary}20\`, fontSize: '15px', lineHeight: '1.6', color: '#4b5563' }}>
           {content}
         </div>
-      )}
+      </div>
     </div>
   );
 };

@@ -1,52 +1,51 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string };
+  tabs?: Array<{ id: string; label: string; content: React.ReactNode }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onInteract?: (type: string) => void;
+  onInteract?: (tabId: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [state, setState] = useState({{ active: false, count: 0 }});
-  const primary = theme.primary || '#ef4444';
-  
-  const handleClick = () => {
-  setState(prev => ({ active: !prev.active, count: prev.count + 1 }));
-  onInteract?.('click');
-  };
-  
+export const Component: React.FC<ComponentProps> = ({
+  tabs = [
+    { id: '1', label: 'Tab 1', content: 'Content 1' },
+    { id: '2', label: 'Tab 2', content: 'Content 2' },
+    { id: '3', label: 'Tab 3', content: 'Content 3' }
+  ],
+  theme = {},
+  className = '',
+  onInteract
+}) => {
+  const [activeTab, setActiveTab] = useState(tabs[0]?.id || '');
+  const primary = theme.primary || '#6366f1';
+
   return (
-  <div
-  className={className}
-  onClick={handleClick}
-  style={{
-  padding: '12px 20px',
-  background: state.active ? `linear-gradient(225deg, ${primary}, ${primary}dd)` : '#ffffff',
-  color: state.active ? '#ffffff' : primary,
-  border: `7px solid ${state.active ? primary : primary + '40'}`,
-  borderRadius: '14px',
-  fontSize: '20px',
-  fontWeight: '700',
-  cursor: 'pointer',
-  transition: 'all 310ms cubic-bezier(0.9, 2.2, 0.64, 1)',
-  boxShadow: state.active ? `0 20px 38px ${primary}40` : `0 8px 18px rgba(0,0,0,0.14)`,
-  transform: state.active ? 'translateY(-10px) scale(1.08)' : 'translateY(0) scale(1)',
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '8px'
-  }}
-  >
-  <span>Component V16</span>
-  {state.count > 0 && (
-  <span style={{ 
-  fontSize: '12px', 
-  background: 'rgba(255,255,255,0.45)', 
-  padding: '12px 20px', 
-  borderRadius: '14px' 
-  }}>
-  {state.count}
-  </span>
-  )}
-  </div>
+    <div className={className} style={{ maxWidth: '600px' }}>
+      <div style={{ display: 'flex', gap: '4px', borderBottom: \`2px solid \${primary}20\` }}>
+        {tabs.map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => { setActiveTab(tab.id); onInteract?.(tab.id); }}
+            style={{
+              padding: '12px 24px',
+              background: 'transparent',
+              border: 'none',
+              borderBottom: \`3px solid \${activeTab === tab.id ? primary : 'transparent'}\`,
+              color: activeTab === tab.id ? primary : '#6b7280',
+              fontWeight: activeTab === tab.id ? 700 : 500,
+              cursor: 'pointer',
+              transition: 'all 200ms ease',
+              marginBottom: '-2px'
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+      <div style={{ padding: '24px 0' }}>
+        {tabs.find(t => t.id === activeTab)?.content}
+      </div>
+    </div>
   );
 };

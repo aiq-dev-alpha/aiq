@@ -1,59 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export interface ComponentProps {
-  trigger?: React.ReactNode;
-  content?: React.ReactNode;
-  theme?: { primary?: string };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  position?: 'top' | 'bottom' | 'left' | 'right';
+  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  trigger = <button>Hover me</button>,
-  content = 'Popover content',
-  theme = {},
-  className = '',
-  position = 'bottom'
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const primary = theme.primary || '#8b5cf6';
-  
-  const positions = {
-    top: { bottom: '100%', left: '50%', transform: 'translateX(-50%)', marginBottom: '16px' },
-    bottom: { top: '100%', left: '50%', transform: 'translateX(-50%)', marginTop: '12px' },
-    left: { right: '100%', top: '50%', transform: 'translateY(-50%)', marginRight: '12px' },
-    right: { left: '100%', top: '50%', transform: 'translateY(-50%)', marginLeft: '12px' }
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
+  const primary = theme.primary || '#3b82f6';
+
+  const handleClick = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = Date.now();
+    setRipples([...ripples, { x, y, id }]);
+    setTimeout(() => setRipples(r => r.filter(rip => rip.id !== id)), 800);
+    onInteract?.('click');
   };
-  
+
   return (
-    <div
-      className={className}
-      style={{ position: 'relative', display: 'inline-block' }}
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
-    >
-      {trigger}
-      {isOpen && (
-        <div
-          style={{
-            position: 'absolute',
-            ...positions[position],
-            backgroundColor: '#fff',
-            border: `1px solid #e5e7eb`,
-            borderRadius: '26px',
-            padding: '18px 24px',
-            boxShadow: '0 18px 32px rgba(0,0,0,0.28)',
-            zIndex: 1000,
-            minWidth: '150px',
-            maxWidth: '300px',
-            fontSize: '22px',
-            color: '#374151',
-            lineHeight: '1.8'
-          }}
-        >
-          {content}
-        </div>
-      )}
+    <div className={className} onClick={handleClick} style={{ position: 'relative', padding: '18px 28px', background: primary, color: '#fff', borderRadius: '10px', cursor: 'pointer', overflow: 'hidden', fontWeight: 600 }}>
+      {ripples.map(r => (
+        <span key={r.id} style={{ position: 'absolute', left: r.x, top: r.y, width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.6)', transform: 'translate(-50%, -50%)', animation: 'ripple 800ms ease-out' }} />
+      ))}
+      <span style={{ position: 'relative', zIndex: 1 }}>Ripple Effect Component</span>
+      <style>{`@keyframes ripple { to { transform: translate(-50%, -50%) scale(30); opacity: 0; } }`}</style>
     </div>
   );
 };

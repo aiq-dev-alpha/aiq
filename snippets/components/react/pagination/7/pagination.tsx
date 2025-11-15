@@ -1,96 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 export interface ComponentProps {
-  totalPages?: number;
-  currentPage?: number;
-  onPageChange?: (page: number) => void;
-  theme?: { primary?: string };
+  progress?: number;
+  showLabel?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
+  onInteract?: (progress: number) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  totalPages = 10,
-  currentPage: controlledPage,
-  onPageChange,
+  progress: initialProgress = 0,
+  showLabel = true,
   theme = {},
-  className = ''
+  className = '',
+  onInteract
 }) => {
-  const [internalPage, setInternalPage] = useState(1);
-  const currentPage = controlledPage || internalPage;
-  const primary = theme.primary || '#ef4444';
-  
-  const handlePageChange = (page: number) => {
-    if (page < 1 || page > totalPages) return;
-    if (!controlledPage) setInternalPage(page);
-    onPageChange?.(page);
-  };
-  
+  const [progress, setProgress] = useState(initialProgress);
+  const [animating, setAnimating] = useState(false);
+  const primary = theme.primary || '#10b981';
+
+  useEffect(() => {
+    if (progress !== initialProgress) {
+      setAnimating(true);
+      setTimeout(() => setAnimating(false), 500);
+    }
+    setProgress(initialProgress);
+  }, [initialProgress]);
+
   return (
-    <div
-      className={className}
-      style={{
-        display: 'flex',
-        gap: '2px',
-        alignItems: 'center',
-        flexWrap: 'wrap'
-      }}
-    >
-      <button
-        onClick={() => handlePageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        style={{
-          padding: '22px 36px',
-          backgroundColor: '#fff',
-          border: `1px solid ${primary}`,
-          borderRadius: '21px',
-          cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-          opacity: currentPage === 1 ? 0.5 : 1,
-          fontWeight: '300'
-        }}
-      >
-        «
-      </button>
-      
-      {Array.from({ length: totalPages }, (_, i) => i + 1)
-        .filter(page => 
-          page === 1 || 
-          page === totalPages || 
-          Math.abs(page - currentPage) <= 1
-        )
-        .map(page => (
-          <button
-            key={page}
-            onClick={() => handlePageChange(page)}
-            style={{
-              padding: '22px 36px',
-              backgroundColor: page === currentPage ? primary : '#fff',
-              color: page === currentPage ? '#fff' : '#374151',
-              border: `1px solid ${primary}`,
-              borderRadius: '21px',
-              cursor: 'pointer',
-              fontWeight: '300',
-              minWidth: '44px'
-            }}
-          >
-            {page}
-          </button>
-        ))}
-      
-      <button
-        onClick={() => handlePageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        style={{
-          padding: '22px 36px',
-          backgroundColor: '#fff',
-          border: `1px solid ${primary}`,
-          borderRadius: '21px',
-          cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-          opacity: currentPage === totalPages ? 0.5 : 1,
-          fontWeight: '300'
-        }}
-      >
-        »
-      </button>
+    <div className={className} style={{ width: '100%' }}>
+      {showLabel && <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: primary }}>{progress}%</div>}
+      <div style={{ width: '100%', height: '12px', background: '#e5e7eb', borderRadius: '6px', overflow: 'hidden', position: 'relative' }}>
+        <div
+          style={{
+            width: \`\${progress}%\`,
+            height: '100%',
+            background: \`linear-gradient(90deg, \${primary}, \${primary}dd)\`,
+            borderRadius: '6px',
+            transition: 'width 500ms ease',
+            position: 'relative',
+            overflow: 'hidden'
+          }}
+        >
+          {animating && (
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+              animation: 'shimmer 1s infinite'
+            }} />
+          )}
+        </div>
+      </div>
+      <style>{`@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }`}</style>
     </div>
   );
 };

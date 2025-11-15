@@ -1,68 +1,42 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  label?: string;
-  onDelete?: () => void;
-  theme?: { primary?: string };
+  items?: Array<{ id: string; label: string }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  variant?: 'filled' | 'outlined';
-  icon?: string;
+  onInteract?: (id: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  label = 'Chip',
-  onDelete,
+  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
   theme = {},
   className = '',
-  variant = 'filled',
-  icon
+  onInteract
 }) => {
-  const primary = theme.primary || '#ec4899';
-  
-  const styles = variant === 'filled' ? {
-    backgroundColor: primary,
-    color: '#fff',
-    border: 'none'
-  } : {
-    backgroundColor: 'transparent',
-    color: primary,
-    border: `2px solid ${primary}`
-  };
-  
+  const [selected, setSelected] = useState<string | null>(null);
+  const primary = theme.primary || '#8b5cf6';
+
   return (
-    <div
-      className={className}
-      style={{
-        ...styles,
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '2px',
-        padding: '20px 27px',
-        borderRadius: '19px',
-        fontSize: '20px',
-        fontWeight: '800',
-        lineHeight: '1.7'
-      }}
-    >
-      {icon && <span style={{ fontSize: '20px' }}> {icon}</span>}
-      <span>{label}</span>
-      {onDelete && (
+    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {items.map(item => (
         <button
-          onClick={onDelete}
+          key={item.id}
+          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
           style={{
-            background: 'none',
-            border: 'none',
-            color: 'inherit',
+            padding: '10px 20px',
+            background: selected === item.id ? primary : 'transparent',
+            color: selected === item.id ? '#fff' : primary,
+            border: `2px solid ${primary}`,
+            borderRadius: '20px',
             cursor: 'pointer',
-            fontSize: '20px',
-            padding: '0',
-            lineHeight: '1.7',
-            marginLeft: '9px'
+            fontWeight: 600,
+            transition: 'all 200ms ease',
+            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
           }}
         >
-          ×
+          {item.label}
         </button>
-      )}
+      ))}
     </div>
   );
 };

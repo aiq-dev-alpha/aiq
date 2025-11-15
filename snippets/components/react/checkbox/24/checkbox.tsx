@@ -1,70 +1,51 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  label?: string;
-  checked?: boolean;
-  onChange?: (checked: boolean) => void;
-  theme?: { primary?: string };
+  tabs?: Array<{ id: string; label: string; content: React.ReactNode }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  disabled?: boolean;
+  onInteract?: (tabId: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  label = 'Checkbox',
-  checked: controlledChecked,
-  onChange,
+  tabs = [
+    { id: '1', label: 'Tab 1', content: 'Content 1' },
+    { id: '2', label: 'Tab 2', content: 'Content 2' },
+    { id: '3', label: 'Tab 3', content: 'Content 3' }
+  ],
   theme = {},
   className = '',
-  disabled = false
+  onInteract
 }) => {
-  const [internalChecked, setInternalChecked] = useState(false);
-  const isChecked = controlledChecked !== undefined ? controlledChecked : internalChecked;
-  const primary = theme.primary || '#be185d';
-  
-  const handleChange = () => {
-    if (disabled) return;
-    const newChecked = !isChecked;
-    if (controlledChecked === undefined) {
-      setInternalChecked(newChecked);
-    }
-    onChange?.(newChecked);
-  };
-  
+  const [activeTab, setActiveTab] = useState(tabs[0]?.id || '');
+  const primary = theme.primary || '#6366f1';
+
   return (
-    <label
-      className={className}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '17px',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        opacity: disabled ? 0.5 : 1
-      }}
-    >
-      <div
-        onClick={handleChange}
-        style={{
-          width: '25px',
-          height: '25px',
-          borderRadius: '13px',
-          border: `2px solid ${isChecked ? primary : '#d1d5db'}`,
-          backgroundColor: isChecked ? primary : '#fff',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-          boxShadow: isChecked ? '0 0 0 3px rgba(16,185,129,0.2)' : 'none'
-        }}
-      >
-        {isChecked && (
-          <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-            <path d="M6 10L9 13L14 7" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        )}
+    <div className={className} style={{ maxWidth: '600px' }}>
+      <div style={{ display: 'flex', gap: '4px', borderBottom: \`2px solid \${primary}20\` }}>
+        {tabs.map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => { setActiveTab(tab.id); onInteract?.(tab.id); }}
+            style={{
+              padding: '12px 24px',
+              background: 'transparent',
+              border: 'none',
+              borderBottom: \`3px solid \${activeTab === tab.id ? primary : 'transparent'}\`,
+              color: activeTab === tab.id ? primary : '#6b7280',
+              fontWeight: activeTab === tab.id ? 700 : 500,
+              cursor: 'pointer',
+              transition: 'all 200ms ease',
+              marginBottom: '-2px'
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
-      <span style={{ fontSize: '21px', color: '#374151', userSelect: 'none' }}>
-        {label}
-      </span>
-    </label>
+      <div style={{ padding: '24px 0' }}>
+        {tabs.find(t => t.id === activeTab)?.content}
+      </div>
+    </div>
   );
 };

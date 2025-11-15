@@ -1,76 +1,51 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  isOpen?: boolean;
-  onClose?: () => void;
-  title?: string;
-  content?: string;
-  theme?: { primary?: string };
+  tabs?: Array<{ id: string; label: string; content: React.ReactNode }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
+  onInteract?: (tabId: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  isOpen = true,
-  onClose,
-  title = 'Dialog Title',
-  content = 'Dialog content',
+  tabs = [
+    { id: '1', label: 'Tab 1', content: 'Content 1' },
+    { id: '2', label: 'Tab 2', content: 'Content 2' },
+    { id: '3', label: 'Tab 3', content: 'Content 3' }
+  ],
   theme = {},
-  className = ''
+  className = '',
+  onInteract
 }) => {
-  const primary = theme.primary || '#f59e0b';
-  
-  if (!isOpen) return null;
-  
+  const [activeTab, setActiveTab] = useState(tabs[0]?.id || '');
+  const primary = theme.primary || '#6366f1';
+
   return (
-    <>
-      <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.6)',
-          zIndex: 999
-        }}
-        onClick={onClose}
-      />
-      <div
-        className={className}
-        style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          backgroundColor: '#fff',
-          borderRadius: '20px',
-          padding: '20px',
-          boxShadow: '0 10px 24px rgba(0,0,0,0.22)',
-          maxWidth: '500px',
-          width: '90%',
-          zIndex: 1000
-        }}
-      >
-        <h2 style={{ margin: '0 0 16px', color: primary, fontSize: '12px', fontWeight: '300' }}>
-          {title}
-        </h2>
-        <div style={{ color: '#6b7280', fontSize: '12px', lineHeight: '1.6', marginBottom: '20px' }}>
-          {content}
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '4px' }}>
+    <div className={className} style={{ maxWidth: '600px' }}>
+      <div style={{ display: 'flex', gap: '4px', borderBottom: \`2px solid \${primary}20\` }}>
+        {tabs.map(tab => (
           <button
-            onClick={onClose}
+            key={tab.id}
+            onClick={() => { setActiveTab(tab.id); onInteract?.(tab.id); }}
             style={{
-              padding: '24px 28px',
-              backgroundColor: primary,
-              color: '#fff',
+              padding: '12px 24px',
+              background: 'transparent',
               border: 'none',
-              borderRadius: '20px',
+              borderBottom: \`3px solid \${activeTab === tab.id ? primary : 'transparent'}\`,
+              color: activeTab === tab.id ? primary : '#6b7280',
+              fontWeight: activeTab === tab.id ? 700 : 500,
               cursor: 'pointer',
-              fontWeight: '300'
+              transition: 'all 200ms ease',
+              marginBottom: '-2px'
             }}
           >
-            Close
+            {tab.label}
           </button>
-        </div>
+        ))}
       </div>
-    </>
+      <div style={{ padding: '24px 0' }}>
+        {tabs.find(t => t.id === activeTab)?.content}
+      </div>
+    </div>
   );
 };

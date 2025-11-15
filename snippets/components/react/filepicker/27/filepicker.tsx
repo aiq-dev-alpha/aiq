@@ -1,59 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 export interface ComponentProps {
-  onChange?: (files: FileList | null) => void;
-  theme?: { primary?: string };
+  progress?: number;
+  showLabel?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  accept?: string;
-  multiple?: boolean;
+  onInteract?: (progress: number) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  onChange,
+  progress: initialProgress = 0,
+  showLabel = true,
   theme = {},
   className = '',
-  accept,
-  multiple = false
+  onInteract
 }) => {
-  const [files, setFiles] = useState<FileList | null>(null);
-  const primary = theme.primary || '#ec4899';
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = e.target.files;
-    setFiles(selectedFiles);
-    onChange?.(selectedFiles);
-  };
-  
+  const [progress, setProgress] = useState(initialProgress);
+  const [animating, setAnimating] = useState(false);
+  const primary = theme.primary || '#10b981';
+
+  useEffect(() => {
+    if (progress !== initialProgress) {
+      setAnimating(true);
+      setTimeout(() => setAnimating(false), 500);
+    }
+    setProgress(initialProgress);
+  }, [initialProgress]);
+
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '400px' }}>
-      <label
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '20px',
-          padding: '32px',
-          border: `2px dashed ${primary}`,
-          borderRadius: '22px',
-          cursor: 'pointer',
-          backgroundColor: '#fdf2f8',
-          transition: 'all 0.3s ease-in-out'
-        }}
-        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#fdf2f8'}
-        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fdf2f8'}
-      >
-        <span style={{ fontSize: '18px' }}>📁</span>
-        <span style={{ color: primary, fontWeight: '900', fontSize: '18px' }}>
-          {files ? `${files.length} file(s) selected` : 'Click to upload'}
-        </span>
-        <input
-          type="file"
-          accept={accept}
-          multiple={multiple}
-          onChange={handleChange}
-          style={{ display: 'none' }}
-        />
-      </label>
+    <div className={className} style={{ width: '100%' }}>
+      {showLabel && <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: primary }}>{progress}%</div>}
+      <div style={{ width: '100%', height: '12px', background: '#e5e7eb', borderRadius: '6px', overflow: 'hidden', position: 'relative' }}>
+        <div
+          style={{
+            width: \`\${progress}%\`,
+            height: '100%',
+            background: \`linear-gradient(90deg, \${primary}, \${primary}dd)\`,
+            borderRadius: '6px',
+            transition: 'width 500ms ease',
+            position: 'relative',
+            overflow: 'hidden'
+          }}
+        >
+          {animating && (
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+              animation: 'shimmer 1s infinite'
+            }} />
+          )}
+        </div>
+      </div>
+      <style>{`@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }`}</style>
     </div>
   );
 };

@@ -1,62 +1,42 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  value?: string;
-  onChange?: (color: string) => void;
-  theme?: { primary?: string };
+  items?: Array<{ id: string; label: string }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  presetColors?: string[];
+  onInteract?: (id: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  value: controlledValue,
-  onChange,
+  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
   theme = {},
   className = '',
-  presetColors = ['#5b21b6', '#5b21b6', '#f59e0b', '#ef4444', '#8b5cf6']
+  onInteract
 }) => {
-  const [internalValue, setInternalValue] = useState('#5b21b6');
-  const value = controlledValue || internalValue;
-  const primary = theme.primary || '#5b21b6';
-  
-  const handleChange = (color: string) => {
-    if (!controlledValue) setInternalValue(color);
-    onChange?.(color);
-  };
-  
+  const [selected, setSelected] = useState<string | null>(null);
+  const primary = theme.primary || '#8b5cf6';
+
   return (
-    <div className={className} style={{ display: 'flex', flexDirection: 'column', gap: '2px', maxWidth: '300px' }}>
-      <input
-        type="color"
-        value={value}
-        onChange={(e) => handleChange(e.target.value)}
-        style={{
-          width: '100%',
-          height: '60px',
-          border: `1px solid ${primary}`,
-          borderRadius: '19px',
-          cursor: 'pointer'
-        }}
-      />
-      <div style={{ display: 'flex', gap: '2px', flexWrap: 'wrap' }}>
-        {presetColors.map((color, idx) => (
-          <button
-            key={idx}
-            onClick={() => handleChange(color)}
-            style={{
-              width: '36px',
-              height: '36px',
-              backgroundColor: color,
-              border: value === color ? `3px solid ${primary}` : 'none',
-              borderRadius: '19px',
-              cursor: 'pointer',
-              transition: 'transform 0.2s'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-          />
-        ))}
-      </div>
+    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {items.map(item => (
+        <button
+          key={item.id}
+          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
+          style={{
+            padding: '10px 20px',
+            background: selected === item.id ? primary : 'transparent',
+            color: selected === item.id ? '#fff' : primary,
+            border: `2px solid ${primary}`,
+            borderRadius: '20px',
+            cursor: 'pointer',
+            fontWeight: 600,
+            transition: 'all 200ms ease',
+            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
+          }}
+        >
+          {item.label}
+        </button>
+      ))}
     </div>
   );
 };

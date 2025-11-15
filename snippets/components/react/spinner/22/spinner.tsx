@@ -1,52 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 export interface ComponentProps {
-  theme?: { primary?: string; background?: string; text?: string };
+  progress?: number;
+  showLabel?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onInteract?: (type: string) => void;
+  onInteract?: (progress: number) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [state, setState] = useState({{ active: false, count: 0 }});
-  const primary = theme.primary || '#8b5cf6';
-  
-  const handleClick = () => {
-  setState(prev => ({ active: !prev.active, count: prev.count + 1 }));
-  onInteract?.('click');
-  };
-  
+export const Component: React.FC<ComponentProps> = ({
+  progress: initialProgress = 0,
+  showLabel = true,
+  theme = {},
+  className = '',
+  onInteract
+}) => {
+  const [progress, setProgress] = useState(initialProgress);
+  const [animating, setAnimating] = useState(false);
+  const primary = theme.primary || '#10b981';
+
+  useEffect(() => {
+    if (progress !== initialProgress) {
+      setAnimating(true);
+      setTimeout(() => setAnimating(false), 500);
+    }
+    setProgress(initialProgress);
+  }, [initialProgress]);
+
   return (
-  <div
-  className={className}
-  onClick={handleClick}
-  style={{
-  padding: '14px 24px',
-  background: state.active ? `linear-gradient(165deg, ${primary}, ${primary}dd)` : '#ffffff',
-  color: state.active ? '#ffffff' : primary,
-  border: `3px solid ${state.active ? primary : primary + '40'}`,
-  borderRadius: '10px',
-  fontSize: '16px',
-  fontWeight: 700,
-  cursor: 'pointer',
-  transition: 'all 270ms cubic-bezier(0.5, 1.4, 0.64, 1)',
-  boxShadow: state.active ? `0 12px 26px ${primary}40` : `0 4px 10px rgba(0,0,0,0.10)`,
-  transform: state.active ? 'translateY(-6px) scale(1.04)' : 'translateY(0) scale(1)',
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '10px'
-  }}
-  >
-  <span>Component V12</span>
-  {state.count > 0 && (
-  <span style={{ 
-  fontSize: '12px', 
-  background: 'rgba(255,255,255,0.25)', 
-  padding: '2px 8px', 
-  borderRadius: '12px' 
-  }}>
-  {state.count}
-  </span>
-  )}
-  </div>
+    <div className={className} style={{ width: '100%' }}>
+      {showLabel && <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: primary }}>{progress}%</div>}
+      <div style={{ width: '100%', height: '12px', background: '#e5e7eb', borderRadius: '6px', overflow: 'hidden', position: 'relative' }}>
+        <div
+          style={{
+            width: \`\${progress}%\`,
+            height: '100%',
+            background: \`linear-gradient(90deg, \${primary}, \${primary}dd)\`,
+            borderRadius: '6px',
+            transition: 'width 500ms ease',
+            position: 'relative',
+            overflow: 'hidden'
+          }}
+        >
+          {animating && (
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+              animation: 'shimmer 1s infinite'
+            }} />
+          )}
+        </div>
+      </div>
+      <style>{`@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }`}</style>
+    </div>
   );
 };

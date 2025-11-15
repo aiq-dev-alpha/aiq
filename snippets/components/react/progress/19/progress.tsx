@@ -1,53 +1,50 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  value?: number;
-  max?: number;
-  theme?: { primary?: string };
+  tabs?: Array<{ id: string; label: string; content: React.ReactNode }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  label?: string;
-  showPercentage?: boolean;
+  onInteract?: (tabId: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  value = 50,
-  max = 100,
+  tabs = [
+    { id: '1', label: 'Tab 1', content: 'Content 1' },
+    { id: '2', label: 'Tab 2', content: 'Content 2' },
+    { id: '3', label: 'Tab 3', content: 'Content 3' }
+  ],
   theme = {},
   className = '',
-  label,
-  showPercentage = true
+  onInteract
 }) => {
-  const primary = theme.primary || '#ef4444';
-  const percentage = (value / max) * 100;
-  
+  const [activeTab, setActiveTab] = useState(tabs[0]?.id || '');
+  const primary = theme.primary || '#6366f1';
+
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '420px' }}>
-      {(label || showPercentage) && (
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '14px', color: '#374151' }}>
-          {label && <span style={{ fontWeight: '600' }}> {label}</span>}
-          {showPercentage && <span>{Math.round(percentage)}%</span>}
-        </div>
-      )}
-      <div
-        style={{
-          width: '100%',
-          height: '16px',
-          backgroundColor: '#d1d5db',
-          borderRadius: '12px',
-          overflow: 'hidden',
-          boxShadow: '0 2px 6px rgba(0,0,0,0.08)'
-        }}
-      >
-        <div
-          style={{
-            width: `${percentage}%`,
-            height: '100%',
-            backgroundColor: primary,
-            borderRadius: '12px',
-            transition: 'width 0.4s ease',
-            background: 'linear-gradient(90deg, #ef4444, #f87171)'
-          }}
-        />
+    <div className={className} style={{ maxWidth: '600px' }}>
+      <div style={{ display: 'flex', gap: '4px', borderBottom: \`2px solid \${primary}20\` }}>
+        {tabs.map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => { setActiveTab(tab.id); onInteract?.(tab.id); }}
+            style={{
+              padding: '12px 24px',
+              background: 'transparent',
+              border: 'none',
+              borderBottom: \`3px solid \${activeTab === tab.id ? primary : 'transparent'}\`,
+              color: activeTab === tab.id ? primary : '#6b7280',
+              fontWeight: activeTab === tab.id ? 700 : 500,
+              cursor: 'pointer',
+              transition: 'all 200ms ease',
+              marginBottom: '-2px'
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+      <div style={{ padding: '24px 0' }}>
+        {tabs.find(t => t.id === activeTab)?.content}
       </div>
     </div>
   );

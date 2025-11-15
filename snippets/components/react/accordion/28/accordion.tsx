@@ -1,104 +1,58 @@
 import React, { useState } from 'react';
 
-interface AccordionItem {
-  id: string;
-  title: string;
-  content: string;
-  icon?: string;
-}
-
 export interface ComponentProps {
-  items?: AccordionItem[];
-  theme?: { primary?: string; background?: string; text?: string };
+  title?: string;
+  content?: React.ReactNode;
+  expandable?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  allowMultiple?: boolean;
+  onInteract?: (expanded: boolean) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  items = [
-    { id: '1', title: 'Section 1', content: 'Content 1', icon: '📄' },
-    { id: '2', title: 'Section 2', content: 'Content 2', icon: '📋' },
-    { id: '3', title: 'Section 3', content: 'Content 3', icon: '📝' }
-  ],
+  title = 'Expandable Card',
+  content = 'This is the expandable content that appears when you click the card.',
+  expandable = true,
   theme = {},
   className = '',
-  allowMultiple = false
+  onInteract
 }) => {
-  const [activeIds, setActiveIds] = useState<Set<string>>(new Set());
+  const [expanded, setExpanded] = useState(false);
   const primary = theme.primary || '#f59e0b';
-  const background = theme.background || '#fffbeb';
 
-  const toggleItem = (id: string) => {
-    const newIds = new Set(activeIds);
-    if (newIds.has(id)) {
-      newIds.delete(id);
-    } else {
-      if (!allowMultiple) {
-        newIds.clear();
-      }
-      newIds.add(id);
-    }
-    setActiveIds(newIds);
+  const toggleExpand = () => {
+    if (!expandable) return;
+    const newState = !expanded;
+    setExpanded(newState);
+    onInteract?.(newState);
   };
 
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '700px' }}>
-      {items.map(item => {
-        const isActive = activeIds.has(item.id);
-        return (
-          <div
-            key={item.id}
-            style={{
-              marginBottom: '20px',
-              borderRadius: '24px',
-              overflow: 'hidden',
-              boxShadow: isActive ? '0 10px 30px rgba(245,158,11,0.3)' : '0 4px 12px rgba(0,0,0,0.05)',
-              transition: 'all 0.35s ease'
-            }}
-          >
-            <button
-              onClick={() => toggleItem(item.id)}
-              style={{
-                width: '100%',
-                padding: '18px 29px',
-                backgroundColor: isActive ? primary : '#fff',
-                color: isActive ? '#fff' : '#1f2937',
-                border: 'none',
-                cursor: 'pointer',
-                textAlign: 'left',
-                fontWeight: '300',
-                fontSize: '17px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '2px',
-                transition: 'all 0.35s ease'
-              }}
-            >
-              <span style={{ fontSize: '17px' }}> {item.icon}</span>
-              <span style={{ flex: 1 }}> {item.title}</span>
-              <span style={{
-                transform: isActive ? 'rotate(180deg)' : 'rotate(0deg)',
-                transition: 'transform 0.3s'
-              }}>↓</span>
-            </button>
-            <div style={{
-              maxHeight: isActive ? '1000px' : '0',
-              overflow: 'hidden',
-              transition: 'max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-              backgroundColor: background
-            }}>
-              <div style={{
-                padding: isActive ? '20px 24px' : '0 24px',
-                color: '#4b5563',
-                lineHeight: '1.5',
-                transition: 'padding 0.3s'
-              }}>
-                {item.content}
-              </div>
-            </div>
-          </div>
-        );
-      })}
+    <div className={className} style={{ border: \`2px solid \${expanded ? primary : '#e5e7eb'}\`, borderRadius: '12px', overflow: 'hidden', maxWidth: '500px', transition: 'all 300ms ease' }}>
+      <div
+        onClick={toggleExpand}
+        style={{
+          padding: '20px',
+          background: expanded ? \`\${primary}10\` : '#fff',
+          cursor: expandable ? 'pointer' : 'default',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          transition: 'all 200ms ease'
+        }}
+      >
+        <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: expanded ? primary : '#1f2937' }}>{title}</h3>
+        {expandable && (
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 300ms ease' }}>
+            <path d="M5 7.5L10 12.5L15 7.5" stroke={expanded ? primary : '#6b7280'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
+      </div>
+      <div style={{ maxHeight: expanded ? '1000px' : '0', overflow: 'hidden', transition: 'max-height 400ms ease' }}>
+        <div style={{ padding: '20px', borderTop: \`1px solid \${primary}20\`, fontSize: '15px', lineHeight: '1.6', color: '#4b5563' }}>
+          {content}
+        </div>
+      </div>
     </div>
   );
 };

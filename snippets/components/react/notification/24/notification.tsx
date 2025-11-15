@@ -1,75 +1,51 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  message?: string;
-  type?: 'info' | 'success' | 'warning' | 'error';
-  theme?: { primary?: string };
+  tabs?: Array<{ id: string; label: string; content: React.ReactNode }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onClose?: () => void;
-  icon?: string;
+  onInteract?: (tabId: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  message = 'Notification message',
-  type = 'info',
+  tabs = [
+    { id: '1', label: 'Tab 1', content: 'Content 1' },
+    { id: '2', label: 'Tab 2', content: 'Content 2' },
+    { id: '3', label: 'Tab 3', content: 'Content 3' }
+  ],
   theme = {},
   className = '',
-  onClose,
-  icon
+  onInteract
 }) => {
-  const colors = {
-    info: '#8b5cf6',
-    success: '#be185d',
-    warning: '#f59e0b',
-    error: '#ef4444'
-  };
-  
-  const backgrounds = {
-    info: '#faf5ff',
-    success: '#ecfdf5',
-    warning: '#fffbeb',
-    error: '#fef2f2'
-  };
-  
-  const primary = theme.primary || colors[type];
-  const bg = backgrounds[type];
-  
+  const [activeTab, setActiveTab] = useState(tabs[0]?.id || '');
+  const primary = theme.primary || '#6366f1';
+
   return (
-    <div
-      className={className}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '2px',
-        padding: '15px 22px',
-        backgroundColor: bg,
-        borderLeft: `3px solid ${primary}`,
-        borderRadius: '14px',
-        boxShadow: '0 7px 15px rgba(0,0,0,0.15)',
-        maxWidth: '400px',
-        position: 'relative'
-      }}
-    >
-      {icon && <span style={{ fontSize: '16px', flexShrink: 0 }}> {icon}</span>}
-      <div style={{ flex: 1, color: '#374151', fontSize: '16px', lineHeight: '1.2' }}>
-        {message}
+    <div className={className} style={{ maxWidth: '600px' }}>
+      <div style={{ display: 'flex', gap: '4px', borderBottom: \`2px solid \${primary}20\` }}>
+        {tabs.map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => { setActiveTab(tab.id); onInteract?.(tab.id); }}
+            style={{
+              padding: '12px 24px',
+              background: 'transparent',
+              border: 'none',
+              borderBottom: \`3px solid \${activeTab === tab.id ? primary : 'transparent'}\`,
+              color: activeTab === tab.id ? primary : '#6b7280',
+              fontWeight: activeTab === tab.id ? 700 : 500,
+              cursor: 'pointer',
+              transition: 'all 200ms ease',
+              marginBottom: '-2px'
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
-      {onClose && (
-        <button
-          onClick={onClose}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: primary,
-            cursor: 'pointer',
-            fontSize: '16px',
-            lineHeight: '1.2',
-            flexShrink: 0
-          }}
-        >
-          ×
-        </button>
-      )}
+      <div style={{ padding: '24px 0' }}>
+        {tabs.find(t => t.id === activeTab)?.content}
+      </div>
     </div>
   );
 };

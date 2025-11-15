@@ -1,60 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 export interface ComponentProps {
-  label?: string;
-  onClick?: () => void;
-  variant?: 'primary' | 'secondary' | 'outline';
-  size?: 'small' | 'medium' | 'large';
-  theme?: { primary?: string };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  disabled?: boolean;
+  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  label = 'Button',
-  onClick,
-  variant = 'primary',
-  size = 'medium',
-  theme = {},
-  className = '',
-  disabled = false
-}) => {
-  const primary = theme.primary || '#f59e0b';
-  
-  const variants = {
-    primary: { bg: primary, color: '#fff', border: 'none' },
-    secondary: { bg: '#6b7280', color: '#fff', border: 'none' },
-    outline: { bg: 'transparent', color: primary, border: `2px solid ${primary}` }
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
+  const primary = theme.primary || '#3b82f6';
+
+  const handleClick = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = Date.now();
+    setRipples([...ripples, { x, y, id }]);
+    setTimeout(() => setRipples(r => r.filter(rip => rip.id !== id)), 800);
+    onInteract?.('click');
   };
-  
-  const sizes = {
-    small: { padding: '16px 23px', fontSize: '15px' },
-    medium: { padding: '16px 23px', fontSize: '15px' },
-    large: { padding: '16px 23px', fontSize: '15px' }
-  };
-  
-  const variantStyle = variants[variant];
-  const sizeStyle = sizes[size];
-  
+
   return (
-    <button
-      className={className}
-      onClick={onClick}
-      disabled={disabled}
-      style={{
-        ...variantStyle,
-        ...sizeStyle,
-        borderRadius: '25px',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        fontWeight: '400',
-        opacity: disabled ? 0.5 : 1,
-        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-        boxShadow: '0 7px 17px rgba(0,0,0,0.18)'
-      }}
-      onMouseEnter={(e) => !disabled && (e.currentTarget.style.transform = 'translateY(-2px)')}
-      onMouseLeave={(e) => !disabled && (e.currentTarget.style.transform = 'translateY(0)')}
-    >
-      {label}
-    </button>
+    <div className={className} onClick={handleClick} style={{ position: 'relative', padding: '18px 28px', background: primary, color: '#fff', borderRadius: '10px', cursor: 'pointer', overflow: 'hidden', fontWeight: 600 }}>
+      {ripples.map(r => (
+        <span key={r.id} style={{ position: 'absolute', left: r.x, top: r.y, width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.6)', transform: 'translate(-50%, -50%)', animation: 'ripple 800ms ease-out' }} />
+      ))}
+      <span style={{ position: 'relative', zIndex: 1 }}>Ripple Effect Component</span>
+      <style>{`@keyframes ripple { to { transform: translate(-50%, -50%) scale(30); opacity: 0; } }`}</style>
+    </div>
   );
 };

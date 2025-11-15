@@ -1,53 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  title?: string;
-  content?: string;
-  footer?: string;
-  theme?: { primary?: string; background?: string };
+  items?: Array<{ id: string; label: string }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  hoverable?: boolean;
+  onInteract?: (id: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  title = 'Card Title',
-  content = 'Card content goes here',
-  footer,
+  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
   theme = {},
   className = '',
-  hoverable = true
+  onInteract
 }) => {
-  const primary = theme.primary || '#14b8a6';
-  const background = theme.background || '#fff';
-  
+  const [selected, setSelected] = useState<string | null>(null);
+  const primary = theme.primary || '#8b5cf6';
+
   return (
-    <div
-      className={className}
-      style={{
-        backgroundColor: background,
-        borderRadius: '33px',
-        padding: '32px',
-        boxShadow: '0 3px 12px rgba(0,0,0,0.08)',
-        maxWidth: '400px',
-        border: '1px solid #ccfbf1',
-        transition: 'all 0.15s ease'
-      }}
-      onMouseEnter={(e) => hoverable && (e.currentTarget.style.boxShadow = '0 18px 36px rgba(0,0,0,0.13)')}
-      onMouseLeave={(e) => hoverable && (e.currentTarget.style.boxShadow = '0 3px 18px rgba(0,0,0,0.09)')}
-    >
-      {title && (
-        <h3 style={{ margin: '0 0 18px', color: primary, fontSize: '17px', fontWeight: '900' }}>
-          {title}
-        </h3>
-      )}
-      <div style={{ color: '#6b7280', fontSize: '17px', lineHeight: '1.7' }}>
-        {content}
-      </div>
-      {footer && (
-        <div style={{ marginTop: '22px', paddingTop: '18px', borderTop: '1px solid #e5e7eb', color: '#9ca3af', fontSize: '17px' }}>
-          {footer}
-        </div>
-      )}
+    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {items.map(item => (
+        <button
+          key={item.id}
+          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
+          style={{
+            padding: '10px 20px',
+            background: selected === item.id ? primary : 'transparent',
+            color: selected === item.id ? '#fff' : primary,
+            border: `2px solid ${primary}`,
+            borderRadius: '20px',
+            cursor: 'pointer',
+            fontWeight: 600,
+            transition: 'all 200ms ease',
+            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
+          }}
+        >
+          {item.label}
+        </button>
+      ))}
     </div>
   );
 };

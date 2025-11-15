@@ -1,62 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export interface ComponentProps {
-  value?: string;
-  onChange?: (color: string) => void;
-  theme?: { primary?: string };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  presetColors?: string[];
+  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  value: controlledValue,
-  onChange,
-  theme = {},
-  className = '',
-  presetColors = ['#ef4444', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']
-}) => {
-  const [internalValue, setInternalValue] = useState('#ef4444');
-  const value = controlledValue || internalValue;
-  const primary = theme.primary || '#ef4444';
-  
-  const handleChange = (color: string) => {
-    if (!controlledValue) setInternalValue(color);
-    onChange?.(color);
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
+  const primary = theme.primary || '#3b82f6';
+
+  const handleClick = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = Date.now();
+    setRipples([...ripples, { x, y, id }]);
+    setTimeout(() => setRipples(r => r.filter(rip => rip.id !== id)), 800);
+    onInteract?.('click');
   };
-  
+
   return (
-    <div className={className} style={{ display: 'flex', flexDirection: 'column', gap: '2px', maxWidth: '300px' }}>
-      <input
-        type="color"
-        value={value}
-        onChange={(e) => handleChange(e.target.value)}
-        style={{
-          width: '100%',
-          height: '55px',
-          border: `2px solid ${primary}`,
-          borderRadius: '26px',
-          cursor: 'pointer'
-        }}
-      />
-      <div style={{ display: 'flex', gap: '2px', flexWrap: 'wrap' }}>
-        {presetColors.map((color, idx) => (
-          <button
-            key={idx}
-            onClick={() => handleChange(color)}
-            style={{
-              width: '40px',
-              height: '40px',
-              backgroundColor: color,
-              border: value === color ? `3px solid ${primary}` : 'none',
-              borderRadius: '26px',
-              cursor: 'pointer',
-              transition: 'transform 0.2s'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.00)'}
-            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1.00)'}
-          />
-        ))}
-      </div>
+    <div className={className} onClick={handleClick} style={{ position: 'relative', padding: '18px 28px', background: primary, color: '#fff', borderRadius: '10px', cursor: 'pointer', overflow: 'hidden', fontWeight: 600 }}>
+      {ripples.map(r => (
+        <span key={r.id} style={{ position: 'absolute', left: r.x, top: r.y, width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.6)', transform: 'translate(-50%, -50%)', animation: 'ripple 800ms ease-out' }} />
+      ))}
+      <span style={{ position: 'relative', zIndex: 1 }}>Ripple Effect Component</span>
+      <style>{`@keyframes ripple { to { transform: translate(-50%, -50%) scale(30); opacity: 0; } }`}</style>
     </div>
   );
 };

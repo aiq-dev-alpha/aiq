@@ -1,78 +1,57 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  min?: number;
-  max?: number;
-  value?: [number, number];
-  onChange?: (value: [number, number]) => void;
-  theme?: { primary?: string };
+  title?: string;
+  content?: React.ReactNode;
+  expandable?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  label?: string;
+  onInteract?: (expanded: boolean) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  min = 0,
-  max = 100,
-  value: controlledValue,
-  onChange,
+  title = 'Expandable Card',
+  content = 'This is the expandable content that appears when you click the card.',
+  expandable = true,
   theme = {},
   className = '',
-  label
+  onInteract
 }) => {
-  const [internalValue, setInternalValue] = useState<[number, number]>([25, 75]);
-  const value = controlledValue || internalValue;
-  const primary = theme.primary || '#06b6d4';
-  
-  const handleMinChange = (newMin: number) => {
-    const newValue: [number, number] = [Math.min(newMin, value[1]), value[1]];
-    if (!controlledValue) setInternalValue(newValue);
-    onChange?.(newValue);
+  const [expanded, setExpanded] = useState(false);
+  const primary = theme.primary || '#f59e0b';
+
+  const toggleExpand = () => {
+    if (!expandable) return;
+    const newState = !expanded;
+    setExpanded(newState);
+    onInteract?.(newState);
   };
-  
-  const handleMaxChange = (newMax: number) => {
-    const newValue: [number, number] = [value[0], Math.max(newMax, value[0])];
-    if (!controlledValue) setInternalValue(newValue);
-    onChange?.(newValue);
-  };
-  
+
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '400px' }}>
-      {label && (
-        <label style={{ display: 'block', marginBottom: '20px', color: primary, fontSize: '17px', fontWeight: '300' }}>
-          {label}
-        </label>
-      )}
-      <div style={{ display: 'flex', gap: '2px', alignItems: 'center', marginBottom: '20px' }}>
-        <span style={{ fontSize: '17px', color: '#6b7280', minWidth: '40px' }}> {value[0]}</span>
-        <div style={{ flex: 1, height: '6px', backgroundColor: '#e5e7eb', borderRadius: '24px', position: 'relative' }}>
-          <div style={{
-            position: 'absolute',
-            left: `${(value[0] - min) / (max - min) * 100}%`,
-            right: `${100 - (value[1] - min) / (max - min) * 100}%`,
-            height: '100%',
-            backgroundColor: primary,
-            borderRadius: '24px'
-          }} />
-        </div>
-        <span style={{ fontSize: '17px', color: '#6b7280', minWidth: '40px' }}> {value[1]}</span>
+    <div className={className} style={{ border: \`2px solid \${expanded ? primary : '#e5e7eb'}\`, borderRadius: '12px', overflow: 'hidden', maxWidth: '500px', transition: 'all 300ms ease' }}>
+      <div
+        onClick={toggleExpand}
+        style={{
+          padding: '20px',
+          background: expanded ? \`\${primary}10\` : '#fff',
+          cursor: expandable ? 'pointer' : 'default',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          transition: 'all 200ms ease'
+        }}
+      >
+        <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: expanded ? primary : '#1f2937' }}>{title}</h3>
+        {expandable && (
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 300ms ease' }}>
+            <path d="M5 7.5L10 12.5L15 7.5" stroke={expanded ? primary : '#6b7280'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
       </div>
-      <div style={{ display: 'flex', gap: '2px' }}>
-        <input
-          type="range"
-          min={min}
-          max={max}
-          value={value[0]}
-          onChange={(e) => handleMinChange(Number(e.target.value))}
-          style={{ flex: 1, accentColor: primary }}
-        />
-        <input
-          type="range"
-          min={min}
-          max={max}
-          value={value[1]}
-          onChange={(e) => handleMaxChange(Number(e.target.value))}
-          style={{ flex: 1, accentColor: primary }}
-        />
+      <div style={{ maxHeight: expanded ? '1000px' : '0', overflow: 'hidden', transition: 'max-height 400ms ease' }}>
+        <div style={{ padding: '20px', borderTop: \`1px solid \${primary}20\`, fontSize: '15px', lineHeight: '1.6', color: '#4b5563' }}>
+          {content}
+        </div>
       </div>
     </div>
   );

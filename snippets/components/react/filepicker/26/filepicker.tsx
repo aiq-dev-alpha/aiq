@@ -1,59 +1,42 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  onChange?: (files: FileList | null) => void;
-  theme?: { primary?: string };
+  items?: Array<{ id: string; label: string }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  accept?: string;
-  multiple?: boolean;
+  onInteract?: (id: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  onChange,
+  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
   theme = {},
   className = '',
-  accept,
-  multiple = false
+  onInteract
 }) => {
-  const [files, setFiles] = useState<FileList | null>(null);
-  const primary = theme.primary || '#ec4899';
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = e.target.files;
-    setFiles(selectedFiles);
-    onChange?.(selectedFiles);
-  };
-  
+  const [selected, setSelected] = useState<string | null>(null);
+  const primary = theme.primary || '#8b5cf6';
+
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '410px' }}>
-      <label
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '2px',
-          padding: '35px',
-          border: `2px dashed ${primary}`,
-          borderRadius: '19px',
-          cursor: 'pointer',
-          backgroundColor: '#fdf2f8',
-          transition: 'all 0.3s ease'
-        }}
-        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#fce7f3'}
-        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fdf2f8'}
-      >
-        <span style={{ fontSize: '20px' }}>📁</span>
-        <span style={{ color: primary, fontWeight: '800', fontSize: '20px' }}>
-          {files ? `${files.length} file(s) selected` : 'Click to upload'}
-        </span>
-        <input
-          type="file"
-          accept={accept}
-          multiple={multiple}
-          onChange={handleChange}
-          style={{ display: 'none' }}
-        />
-      </label>
+    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {items.map(item => (
+        <button
+          key={item.id}
+          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
+          style={{
+            padding: '10px 20px',
+            background: selected === item.id ? primary : 'transparent',
+            color: selected === item.id ? '#fff' : primary,
+            border: `2px solid ${primary}`,
+            borderRadius: '20px',
+            cursor: 'pointer',
+            fontWeight: 600,
+            transition: 'all 200ms ease',
+            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
+          }}
+        >
+          {item.label}
+        </button>
+      ))}
     </div>
   );
 };

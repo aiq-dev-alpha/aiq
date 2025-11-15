@@ -1,58 +1,42 @@
 import React, { useState } from 'react';
 
-interface Tab {
-  id: string;
-  label: string;
-  content: string;
-}
-
 export interface ComponentProps {
-  tabs?: Tab[];
-  theme?: { primary?: string };
+  items?: Array<{ id: string; label: string }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
+  onInteract?: (id: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  tabs = [
-    { id: '1', label: 'Tab 1', content: 'Content 1' },
-    { id: '2', label: 'Tab 2', content: 'Content 2' },
-    { id: '3', label: 'Tab 3', content: 'Content 3' }
-  ],
+  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
   theme = {},
-  className = ''
+  className = '',
+  onInteract
 }) => {
-  const [activeTab, setActiveTab] = useState(tabs[0]?.id);
-  const primary = theme.primary || '#f59e0b';
-  
+  const [selected, setSelected] = useState<string | null>(null);
+  const primary = theme.primary || '#8b5cf6';
+
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '600px' }}>
-      <div style={{ display: 'flex', gap: '2px', borderBottom: '2px solid #e5e7eb' }}>
-        {tabs.map(tab => {
-          const isActive = tab.id === activeTab;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              style={{
-                padding: '19px 26px',
-                backgroundColor: 'transparent',
-                border: 'none',
-                borderBottom: isActive ? `2px solid ${primary}` : '2px solid transparent',
-                color: isActive ? primary : '#6b7280',
-                cursor: 'pointer',
-                fontWeight: isActive ? '600' : '500',
-                fontSize: '21px',
-                transition: 'all 0.35s ease'
-              }}
-            >
-              {tab.label}
-            </button>
-          );
-        })}
-      </div>
-      <div style={{ padding: '20px 0', color: '#374151', lineHeight: '1.7' }}>
-        {tabs.find(t => t.id === activeTab)?.content}
-      </div>
+    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {items.map(item => (
+        <button
+          key={item.id}
+          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
+          style={{
+            padding: '10px 20px',
+            background: selected === item.id ? primary : 'transparent',
+            color: selected === item.id ? '#fff' : primary,
+            border: `2px solid ${primary}`,
+            borderRadius: '20px',
+            cursor: 'pointer',
+            fontWeight: 600,
+            transition: 'all 200ms ease',
+            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
+          }}
+        >
+          {item.label}
+        </button>
+      ))}
     </div>
   );
 };

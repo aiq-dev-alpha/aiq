@@ -1,54 +1,51 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  value?: number;
-  max?: number;
-  onChange?: (value: number) => void;
-  theme?: { primary?: string };
+  tabs?: Array<{ id: string; label: string; content: React.ReactNode }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  readonly?: boolean;
+  onInteract?: (tabId: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  value: controlledValue,
-  max = 5,
-  onChange,
+  tabs = [
+    { id: '1', label: 'Tab 1', content: 'Content 1' },
+    { id: '2', label: 'Tab 2', content: 'Content 2' },
+    { id: '3', label: 'Tab 3', content: 'Content 3' }
+  ],
   theme = {},
   className = '',
-  readonly = false
+  onInteract
 }) => {
-  const [internalValue, setInternalValue] = useState(0);
-  const [hoveredValue, setHoveredValue] = useState(0);
-  const value = controlledValue !== undefined ? controlledValue : internalValue;
-  const primary = theme.primary || '#8b5cf6';
-  
-  const handleClick = (newValue: number) => {
-    if (readonly) return;
-    if (controlledValue === undefined) setInternalValue(newValue);
-    onChange?.(newValue);
-  };
-  
+  const [activeTab, setActiveTab] = useState(tabs[0]?.id || '');
+  const primary = theme.primary || '#6366f1';
+
   return (
-    <div
-      className={className}
-      style={{ display: 'flex', gap: '19px', fontSize: '17px' }}
-      onMouseLeave={() => !readonly && setHoveredValue(0)}
-    >
-      {Array.from({ length: max }, (_, i) => i + 1).map(star => (
-        <span
-          key={star}
-          onClick={() => handleClick(star)}
-          onMouseEnter={() => !readonly && setHoveredValue(star)}
-          style={{
-            cursor: readonly ? 'default' : 'pointer',
-            color: star <= (hoveredValue || value) ? primary : '#d1d5db',
-            transition: 'all 0.3s ease-in-out',
-            transform: star === hoveredValue ? 'scale(1.20)' : 'scale(1.20)'
-          }}
-        >
-          ★
-        </span>
-      ))}
+    <div className={className} style={{ maxWidth: '600px' }}>
+      <div style={{ display: 'flex', gap: '4px', borderBottom: \`2px solid \${primary}20\` }}>
+        {tabs.map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => { setActiveTab(tab.id); onInteract?.(tab.id); }}
+            style={{
+              padding: '12px 24px',
+              background: 'transparent',
+              border: 'none',
+              borderBottom: \`3px solid \${activeTab === tab.id ? primary : 'transparent'}\`,
+              color: activeTab === tab.id ? primary : '#6b7280',
+              fontWeight: activeTab === tab.id ? 700 : 500,
+              cursor: 'pointer',
+              transition: 'all 200ms ease',
+              marginBottom: '-2px'
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+      <div style={{ padding: '24px 0' }}>
+        {tabs.find(t => t.id === activeTab)?.content}
+      </div>
     </div>
   );
 };

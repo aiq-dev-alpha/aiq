@@ -1,76 +1,61 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 export interface ComponentProps {
-  isOpen?: boolean;
-  onClose?: () => void;
-  title?: string;
-  content?: string;
-  theme?: { primary?: string };
+  progress?: number;
+  showLabel?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
+  onInteract?: (progress: number) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  isOpen = true,
-  onClose,
-  title = 'Dialog Title',
-  content = 'Dialog content',
+  progress: initialProgress = 0,
+  showLabel = true,
   theme = {},
-  className = ''
+  className = '',
+  onInteract
 }) => {
-  const primary = theme.primary || '#ec4899';
-  
-  if (!isOpen) return null;
-  
+  const [progress, setProgress] = useState(initialProgress);
+  const [animating, setAnimating] = useState(false);
+  const primary = theme.primary || '#10b981';
+
+  useEffect(() => {
+    if (progress !== initialProgress) {
+      setAnimating(true);
+      setTimeout(() => setAnimating(false), 500);
+    }
+    setProgress(initialProgress);
+  }, [initialProgress]);
+
   return (
-    <>
-      <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          zIndex: 999
-        }}
-        onClick={onClose}
-      />
-      <div
-        className={className}
-        style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          backgroundColor: '#fff',
-          borderRadius: '22px',
-          padding: '30px',
-          boxShadow: '0 16px 30px rgba(0,0,0,0.22)',
-          maxWidth: '500px',
-          width: '90%',
-          zIndex: 1000
-        }}
-      >
-        <h2 style={{ margin: '0 0 22px', color: primary, fontSize: '18px', fontWeight: '900' }}>
-          {title}
-        </h2>
-        <div style={{ color: '#6b7280', fontSize: '18px', lineHeight: '1.6', marginBottom: '10px' }}>
-          {content}
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '20px' }}>
-          <button
-            onClick={onClose}
-            style={{
-              padding: '22px 30px',
-              backgroundColor: primary,
-              color: '#fff',
-              border: 'none',
-              borderRadius: '22px',
-              cursor: 'pointer',
-              fontWeight: '900'
-            }}
-          >
-            Close
-          </button>
+    <div className={className} style={{ width: '100%' }}>
+      {showLabel && <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: primary }}>{progress}%</div>}
+      <div style={{ width: '100%', height: '12px', background: '#e5e7eb', borderRadius: '6px', overflow: 'hidden', position: 'relative' }}>
+        <div
+          style={{
+            width: \`\${progress}%\`,
+            height: '100%',
+            background: \`linear-gradient(90deg, \${primary}, \${primary}dd)\`,
+            borderRadius: '6px',
+            transition: 'width 500ms ease',
+            position: 'relative',
+            overflow: 'hidden'
+          }}
+        >
+          {animating && (
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+              animation: 'shimmer 1s infinite'
+            }} />
+          )}
         </div>
       </div>
-    </>
+      <style>{`@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }`}</style>
+    </div>
   );
 };

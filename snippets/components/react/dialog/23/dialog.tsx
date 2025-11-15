@@ -1,76 +1,58 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  isOpen?: boolean;
-  onClose?: () => void;
   title?: string;
-  content?: string;
-  theme?: { primary?: string };
+  content?: React.ReactNode;
+  expandable?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
+  onInteract?: (expanded: boolean) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  isOpen = true,
-  onClose,
-  title = 'Dialog Title',
-  content = 'Dialog content',
+  title = 'Expandable Card',
+  content = 'This is the expandable content that appears when you click the card.',
+  expandable = true,
   theme = {},
-  className = ''
+  className = '',
+  onInteract
 }) => {
-  const primary = theme.primary || '#8b5cf6';
-  
-  if (!isOpen) return null;
-  
+  const [expanded, setExpanded] = useState(false);
+  const primary = theme.primary || '#f59e0b';
+
+  const toggleExpand = () => {
+    if (!expandable) return;
+    const newState = !expanded;
+    setExpanded(newState);
+    onInteract?.(newState);
+  };
+
   return (
-    <>
+    <div className={className} style={{ border: \`2px solid \${expanded ? primary : '#e5e7eb'}\`, borderRadius: '12px', overflow: 'hidden', maxWidth: '500px', transition: 'all 300ms ease' }}>
       <div
+        onClick={toggleExpand}
         style={{
-          position: 'fixed',
-          inset: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          zIndex: 999
-        }}
-        onClick={onClose}
-      />
-      <div
-        className={className}
-        style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          backgroundColor: '#fff',
-          borderRadius: '30px',
-          padding: '28px',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-          maxWidth: '500px',
-          width: '90%',
-          zIndex: 1000
+          padding: '20px',
+          background: expanded ? \`\${primary}10\` : '#fff',
+          cursor: expandable ? 'pointer' : 'default',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          transition: 'all 200ms ease'
         }}
       >
-        <h2 style={{ margin: '0 0 18px', color: primary, fontSize: '18px', fontWeight: '500' }}>
-          {title}
-        </h2>
-        <div style={{ color: '#6b7280', fontSize: '18px', lineHeight: '1.4', marginBottom: '26px' }}>
+        <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: expanded ? primary : '#1f2937' }}>{title}</h3>
+        {expandable && (
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 300ms ease' }}>
+            <path d="M5 7.5L10 12.5L15 7.5" stroke={expanded ? primary : '#6b7280'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
+      </div>
+      <div style={{ maxHeight: expanded ? '1000px' : '0', overflow: 'hidden', transition: 'max-height 400ms ease' }}>
+        <div style={{ padding: '20px', borderTop: \`1px solid \${primary}20\`, fontSize: '15px', lineHeight: '1.6', color: '#4b5563' }}>
           {content}
         </div>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px' }}>
-          <button
-            onClick={onClose}
-            style={{
-              padding: '13px 17px',
-              backgroundColor: primary,
-              color: '#fff',
-              border: 'none',
-              borderRadius: '30px',
-              cursor: 'pointer',
-              fontWeight: '500'
-            }}
-          >
-            Close
-          </button>
-        </div>
       </div>
-    </>
+    </div>
   );
 };

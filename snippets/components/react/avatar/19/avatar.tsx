@@ -1,58 +1,51 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  src?: string;
-  alt?: string;
-  name?: string;
-  size?: 'small' | 'medium' | 'large';
-  theme?: { primary?: string };
+  tabs?: Array<{ id: string; label: string; content: React.ReactNode }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  shape?: 'circle' | 'square';
+  onInteract?: (tabId: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  src,
-  alt = 'Avatar',
-  name = 'JD',
-  size = 'medium',
+  tabs = [
+    { id: '1', label: 'Tab 1', content: 'Content 1' },
+    { id: '2', label: 'Tab 2', content: 'Content 2' },
+    { id: '3', label: 'Tab 3', content: 'Content 3' }
+  ],
   theme = {},
   className = '',
-  shape = 'square'
+  onInteract
 }) => {
-  const primary = theme.primary || '#10b981';
-  const sizes = {
-    small: { width: '32px', height: '32px', fontSize: '12px' },
-    medium: { width: '48px', height: '48px', fontSize: '12px' },
-    large: { width: '64px', height: '64px', fontSize: '12px' }
-  };
-
-  const sizeStyle = sizes[size];
-  const borderRadius = shape === 'circle' ? '50%' : '6px';
+  const [activeTab, setActiveTab] = useState(tabs[0]?.id || '');
+  const primary = theme.primary || '#6366f1';
 
   return (
-    <div
-      className={className}
-      style={{
-        width: sizeStyle.width,
-        height: sizeStyle.height,
-        borderRadius,
-        backgroundColor: src ? 'transparent' : primary,
-        color: '#fff',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontWeight: '300',
-        fontSize: sizeStyle.fontSize,
-        overflow: 'hidden',
-        border: '1px solid ${primary}',
-        boxShadow: '0 10px 24px rgba(0,0,0,0.22)'
-      }}
-    >
-      {src ? (
-        <img src={src} alt={alt} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-      ) : (
-        <span>{name}</span>
-      )}
+    <div className={className} style={{ maxWidth: '600px' }}>
+      <div style={{ display: 'flex', gap: '4px', borderBottom: \`2px solid \${primary}20\` }}>
+        {tabs.map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => { setActiveTab(tab.id); onInteract?.(tab.id); }}
+            style={{
+              padding: '12px 24px',
+              background: 'transparent',
+              border: 'none',
+              borderBottom: \`3px solid \${activeTab === tab.id ? primary : 'transparent'}\`,
+              color: activeTab === tab.id ? primary : '#6b7280',
+              fontWeight: activeTab === tab.id ? 700 : 500,
+              cursor: 'pointer',
+              transition: 'all 200ms ease',
+              marginBottom: '-2px'
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+      <div style={{ padding: '24px 0' }}>
+        {tabs.find(t => t.id === activeTab)?.content}
+      </div>
     </div>
   );
 };

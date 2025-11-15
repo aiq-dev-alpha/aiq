@@ -1,54 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export interface ComponentProps {
-  value?: number;
-  max?: number;
-  onChange?: (value: number) => void;
-  theme?: { primary?: string };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  readonly?: boolean;
+  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  value: controlledValue,
-  max = 5,
-  onChange,
-  theme = {},
-  className = '',
-  readonly = false
-}) => {
-  const [internalValue, setInternalValue] = useState(0);
-  const [hoveredValue, setHoveredValue] = useState(0);
-  const value = controlledValue !== undefined ? controlledValue : internalValue;
-  const primary = theme.primary || '#14b8a6';
-  
-  const handleClick = (newValue: number) => {
-    if (readonly) return;
-    if (controlledValue === undefined) setInternalValue(newValue);
-    onChange?.(newValue);
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
+  const primary = theme.primary || '#3b82f6';
+
+  const handleClick = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = Date.now();
+    setRipples([...ripples, { x, y, id }]);
+    setTimeout(() => setRipples(r => r.filter(rip => rip.id !== id)), 800);
+    onInteract?.('click');
   };
-  
+
   return (
-    <div
-      className={className}
-      style={{ display: 'flex', gap: '2px', fontSize: '23px' }}
-      onMouseLeave={() => !readonly && setHoveredValue(0)}
-    >
-      {Array.from({ length: max }, (_, i) => i + 1).map(star => (
-        <span
-          key={star}
-          onClick={() => handleClick(star)}
-          onMouseEnter={() => !readonly && setHoveredValue(star)}
-          style={{
-            cursor: readonly ? 'default' : 'pointer',
-            color: star <= (hoveredValue || value) ? primary : '#e5e7eb',
-            transition: 'all 0.35s ease',
-            transform: star === hoveredValue ? 'scale(1.00)' : 'scale(1.00)'
-          }}
-        >
-          ✓
-        </span>
+    <div className={className} onClick={handleClick} style={{ position: 'relative', padding: '18px 28px', background: primary, color: '#fff', borderRadius: '10px', cursor: 'pointer', overflow: 'hidden', fontWeight: 600 }}>
+      {ripples.map(r => (
+        <span key={r.id} style={{ position: 'absolute', left: r.x, top: r.y, width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.6)', transform: 'translate(-50%, -50%)', animation: 'ripple 800ms ease-out' }} />
       ))}
+      <span style={{ position: 'relative', zIndex: 1 }}>Ripple Effect Component</span>
+      <style>{`@keyframes ripple { to { transform: translate(-50%, -50%) scale(30); opacity: 0; } }`}</style>
     </div>
   );
 };

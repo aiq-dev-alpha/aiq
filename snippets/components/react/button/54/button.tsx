@@ -1,60 +1,51 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  label?: string;
-  onClick?: () => void;
-  variant?: 'primary' | 'secondary' | 'outline';
-  size?: 'small' | 'medium' | 'large';
-  theme?: { primary?: string };
+  tabs?: Array<{ id: string; label: string; content: React.ReactNode }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  disabled?: boolean;
+  onInteract?: (tabId: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  label = 'Button',
-  onClick,
-  variant = 'primary',
-  size = 'medium',
+  tabs = [
+    { id: '1', label: 'Tab 1', content: 'Content 1' },
+    { id: '2', label: 'Tab 2', content: 'Content 2' },
+    { id: '3', label: 'Tab 3', content: 'Content 3' }
+  ],
   theme = {},
   className = '',
-  disabled = false
+  onInteract
 }) => {
-  const primary = theme.primary || '#14b8a6';
-  
-  const variants = {
-    primary: { bg: primary, color: '#fff', border: 'none' },
-    secondary: { bg: '#6b7280', color: '#fff', border: 'none' },
-    outline: { bg: 'transparent', color: primary, border: `2px solid ${primary}` }
-  };
-  
-  const sizes = {
-    small: { padding: '13px 17px', fontSize: '23px' },
-    medium: { padding: '13px 17px', fontSize: '23px' },
-    large: { padding: '13px 17px', fontSize: '23px' }
-  };
-  
-  const variantStyle = variants[variant];
-  const sizeStyle = sizes[size];
-  
+  const [activeTab, setActiveTab] = useState(tabs[0]?.id || '');
+  const primary = theme.primary || '#6366f1';
+
   return (
-    <button
-      className={className}
-      onClick={onClick}
-      disabled={disabled}
-      style={{
-        ...variantStyle,
-        ...sizeStyle,
-        borderRadius: '15px',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        fontWeight: '800',
-        opacity: disabled ? 0.5 : 1,
-        transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-        boxShadow: '0 2px 13px rgba(0,0,0,0.12)'
-      }}
-      onMouseEnter={(e) => !disabled && (e.currentTarget.style.transform = 'translateY(-2px)')}
-      onMouseLeave={(e) => !disabled && (e.currentTarget.style.transform = 'translateY(0)')}
-    >
-      {label}
-    </button>
+    <div className={className} style={{ maxWidth: '600px' }}>
+      <div style={{ display: 'flex', gap: '4px', borderBottom: \`2px solid \${primary}20\` }}>
+        {tabs.map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => { setActiveTab(tab.id); onInteract?.(tab.id); }}
+            style={{
+              padding: '12px 24px',
+              background: 'transparent',
+              border: 'none',
+              borderBottom: \`3px solid \${activeTab === tab.id ? primary : 'transparent'}\`,
+              color: activeTab === tab.id ? primary : '#6b7280',
+              fontWeight: activeTab === tab.id ? 700 : 500,
+              cursor: 'pointer',
+              transition: 'all 200ms ease',
+              marginBottom: '-2px'
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+      <div style={{ padding: '24px 0' }}>
+        {tabs.find(t => t.id === activeTab)?.content}
+      </div>
+    </div>
   );
 };

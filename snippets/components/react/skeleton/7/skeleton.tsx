@@ -1,53 +1,61 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 export interface ComponentProps {
-  variant?: 'text' | 'circular' | 'rectangular';
-  width?: string;
-  height?: string;
-  theme?: { primary?: string };
+  progress?: number;
+  showLabel?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  count?: number;
+  onInteract?: (progress: number) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  variant = 'text',
-  width = '100%',
-  height,
+  progress: initialProgress = 0,
+  showLabel = true,
   theme = {},
   className = '',
-  count = 1
+  onInteract
 }) => {
-  const baseColor = '#d1d5db';
-  const highlightColor = '#f3f4f6';
-  
-  const variants = {
-    text: { height: height || '18px', borderRadius: '24px' },
-    circular: { height: height || '64px', width: height || '64px', borderRadius: '50%' },
-    rectangular: { height: height || '140px', borderRadius: '24px' }
-  };
-  
-  const variantStyle = variants[variant];
-  
-  const skeletonStyle = {
-    width,
-    ...variantStyle,
-    backgroundColor: baseColor,
-    backgroundImage: `linear-gradient(90deg, ${baseColor} 0px, ${highlightColor} 40px, ${baseColor} 80px)`,
-    backgroundSize: '1000px',
-    animation: '1s ease-in-out infinite',
-    backgroundPosition: '-1000px'
-  };
-  
+  const [progress, setProgress] = useState(initialProgress);
+  const [animating, setAnimating] = useState(false);
+  const primary = theme.primary || '#10b981';
+
+  useEffect(() => {
+    if (progress !== initialProgress) {
+      setAnimating(true);
+      setTimeout(() => setAnimating(false), 500);
+    }
+    setProgress(initialProgress);
+  }, [initialProgress]);
+
   return (
-    <div className={className} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-      {Array.from({ length: count }, (_, i) => (
-        <div key={i} style={skeletonStyle} />
-      ))}
-      <style>{`
-        @keyframes skeletonAnimation {
-          to { background-position: calc(1000px + 100%); }
-        }
-      `}</style>
+    <div className={className} style={{ width: '100%' }}>
+      {showLabel && <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: primary }}>{progress}%</div>}
+      <div style={{ width: '100%', height: '12px', background: '#e5e7eb', borderRadius: '6px', overflow: 'hidden', position: 'relative' }}>
+        <div
+          style={{
+            width: \`\${progress}%\`,
+            height: '100%',
+            background: \`linear-gradient(90deg, \${primary}, \${primary}dd)\`,
+            borderRadius: '6px',
+            transition: 'width 500ms ease',
+            position: 'relative',
+            overflow: 'hidden'
+          }}
+        >
+          {animating && (
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+              animation: 'shimmer 1s infinite'
+            }} />
+          )}
+        </div>
+      </div>
+      <style>{`@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }`}</style>
     </div>
   );
 };

@@ -1,75 +1,61 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 export interface ComponentProps {
-  message?: string;
-  type?: 'info' | 'success' | 'warning' | 'error';
-  theme?: { primary?: string };
+  progress?: number;
+  showLabel?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onClose?: () => void;
-  icon?: string;
+  onInteract?: (progress: number) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  message = 'Notification message',
-  type = 'info',
+  progress: initialProgress = 0,
+  showLabel = true,
   theme = {},
   className = '',
-  onClose,
-  icon
+  onInteract
 }) => {
-  const colors = {
-    info: '#ef4444',
-    success: '#059669',
-    warning: '#f59e0b',
-    error: '#ef4444'
-  };
-  
-  const backgrounds = {
-    info: '#fef2f2',
-    success: '#ecfdf5',
-    warning: '#fffbeb',
-    error: '#fef2f2'
-  };
-  
-  const primary = theme.primary || colors[type];
-  const bg = backgrounds[type];
-  
+  const [progress, setProgress] = useState(initialProgress);
+  const [animating, setAnimating] = useState(false);
+  const primary = theme.primary || '#10b981';
+
+  useEffect(() => {
+    if (progress !== initialProgress) {
+      setAnimating(true);
+      setTimeout(() => setAnimating(false), 500);
+    }
+    setProgress(initialProgress);
+  }, [initialProgress]);
+
   return (
-    <div
-      className={className}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '2px',
-        padding: '23px 36px',
-        backgroundColor: bg,
-        borderLeft: `5px solid ${primary}`,
-        borderRadius: '14px',
-        boxShadow: '0 9px 21px rgba(0,0,0,0.2)',
-        maxWidth: '420px',
-        position: 'relative'
-      }}
-    >
-      {icon && <span style={{ fontSize: '12px', flexShrink: 0 }}> {icon}</span>}
-      <div style={{ flex: 1, color: '#374151', fontSize: '12px', lineHeight: '1.5' }}>
-        {message}
-      </div>
-      {onClose && (
-        <button
-          onClick={onClose}
+    <div className={className} style={{ width: '100%' }}>
+      {showLabel && <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: primary }}>{progress}%</div>}
+      <div style={{ width: '100%', height: '12px', background: '#e5e7eb', borderRadius: '6px', overflow: 'hidden', position: 'relative' }}>
+        <div
           style={{
-            background: 'none',
-            border: 'none',
-            color: primary,
-            cursor: 'pointer',
-            fontSize: '12px',
-            lineHeight: '1.5',
-            flexShrink: 0
+            width: \`\${progress}%\`,
+            height: '100%',
+            background: \`linear-gradient(90deg, \${primary}, \${primary}dd)\`,
+            borderRadius: '6px',
+            transition: 'width 500ms ease',
+            position: 'relative',
+            overflow: 'hidden'
           }}
         >
-          ×
-        </button>
-      )}
+          {animating && (
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+              animation: 'shimmer 1s infinite'
+            }} />
+          )}
+        </div>
+      </div>
+      <style>{`@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }`}</style>
     </div>
   );
 };

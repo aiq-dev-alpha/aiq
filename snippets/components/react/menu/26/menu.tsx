@@ -1,63 +1,41 @@
 import React, { useState } from 'react';
 
-interface MenuItem {
-  label: string;
-  onClick?: () => void;
-  icon?: string;
-}
-
 export interface ComponentProps {
-  items?: MenuItem[];
-  theme?: { primary?: string };
+  items?: Array<{ id: string; label: string }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
+  onInteract?: (id: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  items = [
-    { label: 'Profile', icon: '👤' },
-    { label: 'Settings', icon: '⚙️' },
-    { label: 'Logout', icon: '🚪' }
-  ],
+  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
   theme = {},
-  className = ''
+  className = '',
+  onInteract
 }) => {
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
-  const primary = theme.primary || '#ec4899';
-  
+  const [selected, setSelected] = useState<string | null>(null);
+  const primary = theme.primary || '#8b5cf6';
+
   return (
-    <div
-      className={className}
-      style={{
-        backgroundColor: '#fff',
-        border: '1px solid #e5e7eb',
-        borderRadius: '29px',
-        boxShadow: '0 3px 11px rgba(0,0,0,0.08)',
-        padding: '15px',
-        minWidth: '220px'
-      }}
-    >
-      {items.map((item, idx) => (
-        <div
-          key={idx}
-          onClick={item.onClick}
-          onMouseEnter={() => setHoveredIdx(idx)}
-          onMouseLeave={() => setHoveredIdx(null)}
+    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {items.map(item => (
+        <button
+          key={item.id}
+          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
           style={{
-            padding: '20px 27px',
-            borderRadius: '29px',
+            padding: '10px 20px',
+            background: selected === item.id ? primary : 'transparent',
+            color: selected === item.id ? '#fff' : primary,
+            border: `2px solid ${primary}`,
+            borderRadius: '20px',
             cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '2px',
-            backgroundColor: hoveredIdx === idx ? '#fdf2f8' : 'transparent',
-            color: hoveredIdx === idx ? primary : '#374151',
-            transition: 'all 0.3s ease',
-            marginBottom: idx < items.length - 1 ? '11px' : '0'
+            fontWeight: 600,
+            transition: 'all 200ms ease',
+            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
           }}
         >
-          {item.icon && <span style={{ fontSize: '20px' }}> {item.icon}</span>}
-          <span style={{ fontSize: '20px', fontWeight: '800' }}>{item.label}</span>
-        </div>
+          {item.label}
+        </button>
       ))}
     </div>
   );

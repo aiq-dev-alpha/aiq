@@ -1,100 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export interface ComponentProps {
-  min?: number;
-  max?: number;
-  value?: number;
-  onChange?: (value: number) => void;
-  theme?: { primary?: string };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  label?: string;
-  showValue?: boolean;
-  step?: number;
+  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  min = 0,
-  max = 100,
-  value: controlledValue,
-  onChange,
-  theme = {},
-  className = '',
-  label,
-  showValue = true,
-  step = 1
-}) => {
-  const [internalValue, setInternalValue] = useState(50);
-  const value = controlledValue !== undefined ? controlledValue : internalValue;
-  const primary = theme.primary || '#8b5cf6';
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = Number(e.target.value);
-    if (controlledValue === undefined) setInternalValue(newValue);
-    onChange?.(newValue);
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
+  const primary = theme.primary || '#3b82f6';
+
+  const handleClick = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = Date.now();
+    setRipples([...ripples, { x, y, id }]);
+    setTimeout(() => setRipples(r => r.filter(rip => rip.id !== id)), 800);
+    onInteract?.('click');
   };
-  
-  const percentage = ((value - min) / (max - min)) * 100;
-  
+
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '400px' }}>
-      {(label || showValue) && (
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '14px', fontSize: '20px' }}>
-          {label && <span style={{ color: '#374151', fontWeight: '900' }}> {label}</span>}
-          {showValue && (
-            <span style={{ color: primary, fontWeight: '900', fontSize: '20px' }}>
-              {value}
-            </span>
-          )}
-        </div>
-      )}
-      <div style={{ position: 'relative', height: '13px' }}>
-        <div style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-          backgroundColor: '#e5e7eb',
-          borderRadius: '30px',
-          overflow: 'hidden'
-        }}>
-          <div style={{
-            width: `${percentage}%`,
-            height: '100%',
-            backgroundColor: primary,
-            borderRadius: '30px',
-            transition: 'width 0.2s ease'
-          }} />
-        </div>
-        <input
-          type="range"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          onChange={handleChange}
-          style={{
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            opacity: 0.7,
-            cursor: 'pointer',
-            top: 0,
-            left: 0
-          }}
-        />
-        <div style={{
-          position: 'absolute',
-          left: `${percentage}%`,
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '26px',
-          height: '26px',
-          backgroundColor: primary,
-          borderRadius: '50%',
-          border: '2px solid #fff',
-          boxShadow: '0 12px 22px rgba(0,0,0,0.18)',
-          pointerEvents: 'none'
-        }} />
-      </div>
+    <div className={className} onClick={handleClick} style={{ position: 'relative', padding: '18px 28px', background: primary, color: '#fff', borderRadius: '10px', cursor: 'pointer', overflow: 'hidden', fontWeight: 600 }}>
+      {ripples.map(r => (
+        <span key={r.id} style={{ position: 'absolute', left: r.x, top: r.y, width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.6)', transform: 'translate(-50%, -50%)', animation: 'ripple 800ms ease-out' }} />
+      ))}
+      <span style={{ position: 'relative', zIndex: 1 }}>Ripple Effect Component</span>
+      <style>{`@keyframes ripple { to { transform: translate(-50%, -50%) scale(30); opacity: 0; } }`}</style>
     </div>
   );
 };

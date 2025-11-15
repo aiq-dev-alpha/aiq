@@ -1,111 +1,57 @@
 import React, { useState } from 'react';
 
-interface SelectOption {
-  label: string;
-  value: string;
-}
-
 export interface ComponentProps {
-  options?: SelectOption[];
-  value?: string;
-  onChange?: (value: string) => void;
-  theme?: { primary?: string };
+  title?: string;
+  content?: React.ReactNode;
+  expandable?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  placeholder?: string;
-  label?: string;
+  onInteract?: (expanded: boolean) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  options = [
-    { label: 'Option 1', value: '1' },
-    { label: 'Option 2', value: '2' },
-    { label: 'Option 3', value: '3' }
-  ],
-  value: controlledValue,
-  onChange,
+  title = 'Expandable Card',
+  content = 'This is the expandable content that appears when you click the card.',
+  expandable = true,
   theme = {},
   className = '',
-  placeholder = 'Select option',
-  label
+  onInteract
 }) => {
-  const [internalValue, setInternalValue] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
-  const value = controlledValue || internalValue;
-  const primary = theme.primary || '#ef4444';
-  
-  const selectedOption = options.find(opt => opt.value === value);
-  
-  const handleSelect = (optionValue: string) => {
-    if (!controlledValue) setInternalValue(optionValue);
-    onChange?.(optionValue);
-    setIsOpen(false);
+  const [expanded, setExpanded] = useState(false);
+  const primary = theme.primary || '#f59e0b';
+
+  const toggleExpand = () => {
+    if (!expandable) return;
+    const newState = !expanded;
+    setExpanded(newState);
+    onInteract?.(newState);
   };
-  
+
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '320px' }}>
-      {label && (
-        <label style={{ display: 'block', marginBottom: '20px', color: primary, fontSize: '16px', fontWeight: '700' }}>
-          {label}
-        </label>
-      )}
-      <div style={{ position: 'relative' }}>
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          style={{
-            width: '100%',
-            padding: '18px 23px',
-            backgroundColor: '#fff',
-            border: `1px solid ${primary}`,
-            borderRadius: '25px',
-            cursor: 'pointer',
-            textAlign: 'left',
-            fontSize: '16px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}
-        >
-          <span style={{ color: selectedOption ? '#111' : '#9ca3af' }}>
-            {selectedOption?.label || placeholder}
-          </span>
-          <span style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s' }}>
-            ⌄
-          </span>
-        </button>
-        {isOpen && (
-          <div style={{
-            position: 'absolute',
-            top: 'calc(100% + 12px)',
-            left: 0,
-            right: 0,
-            backgroundColor: '#fff',
-            border: `1px solid ${primary}`,
-            borderRadius: '25px',
-            boxShadow: '0 14px 28px rgba(0,0,0,0.22)',
-            zIndex: 1000,
-            maxHeight: '220px',
-            overflowY: 'auto'
-          }}>
-            {options.map((option) => (
-              <div
-                key={option.value}
-                onClick={() => handleSelect(option.value)}
-                style={{
-                  padding: '18px 23px',
-                  cursor: 'pointer',
-                  backgroundColor: option.value === value ? '#fef2f2' : '#fff',
-                  color: option.value === value ? primary : '#374151',
-                  borderBottom: '1px solid #e5e7eb',
-                  transition: 'background-color 0.2s'
-                }}
-                onMouseEnter={(e) => option.value !== value && (e.currentTarget.style.backgroundColor = '#fee2e2')}
-                onMouseLeave={(e) => option.value !== value && (e.currentTarget.style.backgroundColor = '#fff')}
-              >
-                {option.label}
-              </div>
-            ))}
-          </div>
+    <div className={className} style={{ border: \`2px solid \${expanded ? primary : '#e5e7eb'}\`, borderRadius: '12px', overflow: 'hidden', maxWidth: '500px', transition: 'all 300ms ease' }}>
+      <div
+        onClick={toggleExpand}
+        style={{
+          padding: '20px',
+          background: expanded ? \`\${primary}10\` : '#fff',
+          cursor: expandable ? 'pointer' : 'default',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          transition: 'all 200ms ease'
+        }}
+      >
+        <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: expanded ? primary : '#1f2937' }}>{title}</h3>
+        {expandable && (
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 300ms ease' }}>
+            <path d="M5 7.5L10 12.5L15 7.5" stroke={expanded ? primary : '#6b7280'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
         )}
+      </div>
+      <div style={{ maxHeight: expanded ? '1000px' : '0', overflow: 'hidden', transition: 'max-height 400ms ease' }}>
+        <div style={{ padding: '20px', borderTop: \`1px solid \${primary}20\`, fontSize: '15px', lineHeight: '1.6', color: '#4b5563' }}>
+          {content}
+        </div>
       </div>
     </div>
   );

@@ -1,70 +1,42 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  label?: string;
-  checked?: boolean;
-  onChange?: (checked: boolean) => void;
-  theme?: { primary?: string };
+  items?: Array<{ id: string; label: string }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  disabled?: boolean;
+  onInteract?: (id: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  label = 'Checkbox',
-  checked: controlledChecked,
-  onChange,
+  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
   theme = {},
   className = '',
-  disabled = false
+  onInteract
 }) => {
-  const [internalChecked, setInternalChecked] = useState(false);
-  const isChecked = controlledChecked !== undefined ? controlledChecked : internalChecked;
-  const primary = theme.primary || '#14b8a6';
-  
-  const handleChange = () => {
-    if (disabled) return;
-    const newChecked = !isChecked;
-    if (controlledChecked === undefined) {
-      setInternalChecked(newChecked);
-    }
-    onChange?.(newChecked);
-  };
-  
+  const [selected, setSelected] = useState<string | null>(null);
+  const primary = theme.primary || '#8b5cf6';
+
   return (
-    <label
-      className={className}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '10px',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        opacity: disabled ? 0.5 : 1
-      }}
-    >
-      <div
-        onClick={handleChange}
-        style={{
-          width: '22px',
-          height: '22px',
-          borderRadius: '6px',
-          border: `2px solid ${isChecked ? primary : '#d1d5db'}`,
-          backgroundColor: isChecked ? primary : '#fff',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'all 0.35s',
-          boxShadow: isChecked ? '0 0 0 3px rgba(20,184,166,0.2)' : 'none'
-        }}
-      >
-        {isChecked && (
-          <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-            <path d="M6 10L9 13L14 7" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        )}
-      </div>
-      <span style={{ fontSize: '14px', color: '#374151', userSelect: 'none' }}>
-        {label}
-      </span>
-    </label>
+    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {items.map(item => (
+        <button
+          key={item.id}
+          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
+          style={{
+            padding: '10px 20px',
+            background: selected === item.id ? primary : 'transparent',
+            color: selected === item.id ? '#fff' : primary,
+            border: `2px solid ${primary}`,
+            borderRadius: '20px',
+            cursor: 'pointer',
+            fontWeight: 600,
+            transition: 'all 200ms ease',
+            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
+          }}
+        >
+          {item.label}
+        </button>
+      ))}
+    </div>
   );
 };

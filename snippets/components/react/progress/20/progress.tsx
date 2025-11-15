@@ -1,54 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 export interface ComponentProps {
-  value?: number;
-  max?: number;
-  theme?: { primary?: string };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  label?: string;
-  showPercentage?: boolean;
+  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  value = 50,
-  max = 100,
-  theme = {},
-  className = '',
-  label,
-  showPercentage = true
-}) => {
-  const primary = theme.primary || '#8b5cf6';
-  const percentage = (value / max) * 100;
-  
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
+  const primary = theme.primary || '#3b82f6';
+
+  const handleClick = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = Date.now();
+    setRipples([...ripples, { x, y, id }]);
+    setTimeout(() => setRipples(r => r.filter(rip => rip.id !== id)), 800);
+    onInteract?.('click');
+  };
+
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '400px' }}>
-      {(label || showPercentage) && (
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '14px', fontSize: '20px', color: '#374151' }}>
-          {label && <span style={{ fontWeight: '900' }}> {label}</span>}
-          {showPercentage && <span>{Math.round(percentage)}%</span>}
-        </div>
-      )}
-      <div
-        style={{
-          width: '100%',
-          height: '16px',
-          backgroundColor: '#e5e7eb',
-          borderRadius: '30px',
-          overflow: 'hidden',
-          boxShadow: '0 12px 22px rgba(0,0,0,0.18)'
-        }}
-      >
-        <div
-          style={{
-            width: `${percentage}%`,
-            height: '100%',
-            backgroundColor: primary,
-            borderRadius: '30px',
-            transition: 'width 0.3s ease',
-            background: 'linear-gradient(90deg, #8b5cf6, #a78bfa)'
-          }}
-        />
-      </div>
+    <div className={className} onClick={handleClick} style={{ position: 'relative', padding: '18px 28px', background: primary, color: '#fff', borderRadius: '10px', cursor: 'pointer', overflow: 'hidden', fontWeight: 600 }}>
+      {ripples.map(r => (
+        <span key={r.id} style={{ position: 'absolute', left: r.x, top: r.y, width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.6)', transform: 'translate(-50%, -50%)', animation: 'ripple 800ms ease-out' }} />
+      ))}
+      <span style={{ position: 'relative', zIndex: 1 }}>Ripple Effect Component</span>
+      <style>{`@keyframes ripple { to { transform: translate(-50%, -50%) scale(30); opacity: 0; } }`}</style>
     </div>
   );
 };

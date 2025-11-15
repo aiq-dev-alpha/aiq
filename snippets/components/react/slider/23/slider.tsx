@@ -1,99 +1,57 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  min?: number;
-  max?: number;
-  value?: number;
-  onChange?: (value: number) => void;
-  theme?: { primary?: string };
+  title?: string;
+  content?: React.ReactNode;
+  expandable?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  label?: string;
-  showValue?: boolean;
-  step?: number;
+  onInteract?: (expanded: boolean) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  min = 0,
-  max = 100,
-  value: controlledValue,
-  onChange,
+  title = 'Expandable Card',
+  content = 'This is the expandable content that appears when you click the card.',
+  expandable = true,
   theme = {},
   className = '',
-  label,
-  showValue = true,
-  step = 1
+  onInteract
 }) => {
-  const [internalValue, setInternalValue] = useState(50);
-  const value = controlledValue !== undefined ? controlledValue : internalValue;
-  const primary = theme.primary || '#14b8a6';
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = Number(e.target.value);
-    if (controlledValue === undefined) setInternalValue(newValue);
-    onChange?.(newValue);
+  const [expanded, setExpanded] = useState(false);
+  const primary = theme.primary || '#f59e0b';
+
+  const toggleExpand = () => {
+    if (!expandable) return;
+    const newState = !expanded;
+    setExpanded(newState);
+    onInteract?.(newState);
   };
-  
-  const percentage = ((value - min) / (max - min)) * 100;
-  
+
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '440px' }}>
-      {(label || showValue) && (
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', fontSize: '15px' }}>
-          {label && <span style={{ color: '#374151', fontWeight: '500' }}> {label}</span>}
-          {showValue && (
-            <span style={{ color: primary, fontWeight: '500', fontSize: '15px' }}>
-              {value}
-            </span>
-          )}
+    <div className={className} style={{ border: \`2px solid \${expanded ? primary : '#e5e7eb'}\`, borderRadius: '12px', overflow: 'hidden', maxWidth: '500px', transition: 'all 300ms ease' }}>
+      <div
+        onClick={toggleExpand}
+        style={{
+          padding: '20px',
+          background: expanded ? \`\${primary}10\` : '#fff',
+          cursor: expandable ? 'pointer' : 'default',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          transition: 'all 200ms ease'
+        }}
+      >
+        <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: expanded ? primary : '#1f2937' }}>{title}</h3>
+        {expandable && (
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 300ms ease' }}>
+            <path d="M5 7.5L10 12.5L15 7.5" stroke={expanded ? primary : '#6b7280'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
+      </div>
+      <div style={{ maxHeight: expanded ? '1000px' : '0', overflow: 'hidden', transition: 'max-height 400ms ease' }}>
+        <div style={{ padding: '20px', borderTop: \`1px solid \${primary}20\`, fontSize: '15px', lineHeight: '1.6', color: '#4b5563' }}>
+          {content}
         </div>
-      )}
-      <div style={{ position: 'relative', height: '11px' }}>
-        <div style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-          backgroundColor: '#d1d5db',
-          borderRadius: '17px',
-          overflow: 'hidden'
-        }}>
-          <div style={{
-            width: `${percentage}%`,
-            height: '100%',
-            backgroundColor: primary,
-            borderRadius: '17px',
-            transition: 'width 0.3s ease'
-          }} />
-        </div>
-        <input
-          type="range"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          onChange={handleChange}
-          style={{
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            opacity: 1.0,
-            cursor: 'pointer',
-            top: 0,
-            left: 0
-          }}
-        />
-        <div style={{
-          position: 'absolute',
-          left: `${percentage}%`,
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '25px',
-          height: '25px',
-          backgroundColor: primary,
-          borderRadius: '50%',
-          border: '3px solid #fff',
-          boxShadow: '0 14px 30px rgba(0,0,0,0.25)',
-          pointerEvents: 'none'
-        }} />
       </div>
     </div>
   );

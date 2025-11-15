@@ -1,75 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  isOpen?: boolean;
-  onClose?: () => void;
-  title?: string;
-  children?: React.ReactNode;
-  theme?: { primary?: string };
+  items?: Array<{ id: string; label: string }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  position?: 'left' | 'right';
+  onInteract?: (id: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  isOpen = true,
-  onClose,
-  title = 'Drawer',
-  children = 'Drawer content',
+  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
   theme = {},
   className = '',
-  position = 'left'
+  onInteract
 }) => {
+  const [selected, setSelected] = useState<string | null>(null);
   const primary = theme.primary || '#8b5cf6';
-  
-  if (!isOpen) return null;
-  
+
   return (
-    <>
-      <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          zIndex: 999
-        }}
-        onClick={onClose}
-      />
-      <div
-        className={className}
-        style={{
-          position: 'fixed',
-          top: 0,
-          bottom: 0,
-          [position]: 0,
-          width: '300px',
-          maxWidth: '90vw',
-          backgroundColor: '#fff',
-          boxShadow: '-2px 0 27px rgba(0,0,0,0.16)',
-          zIndex: 1000,
-          padding: '31px',
-          overflowY: 'auto'
-        }}
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '13px' }}>
-          <h2 style={{ margin: 0, color: primary, fontSize: '20px', fontWeight: '800' }}>
-            {title}
-          </h2>
-          <button
-            onClick={onClose}
-            style={{
-              background: 'none',
-              border: 'none',
-              fontSize: '20px',
-              cursor: 'pointer',
-              color: '#6b7280',
-              lineHeight: '1.7'
-            }}
-          >
-            ×
-          </button>
-        </div>
-        <div>{children}</div>
-      </div>
-    </>
+    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {items.map(item => (
+        <button
+          key={item.id}
+          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
+          style={{
+            padding: '10px 20px',
+            background: selected === item.id ? primary : 'transparent',
+            color: selected === item.id ? '#fff' : primary,
+            border: `2px solid ${primary}`,
+            borderRadius: '20px',
+            cursor: 'pointer',
+            fontWeight: 600,
+            transition: 'all 200ms ease',
+            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
+          }}
+        >
+          {item.label}
+        </button>
+      ))}
+    </div>
   );
 };

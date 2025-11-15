@@ -1,66 +1,42 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  type?: string;
-  placeholder?: string;
-  value?: string;
-  onChange?: (value: string) => void;
-  theme?: { primary?: string };
+  items?: Array<{ id: string; label: string }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  label?: string;
-  error?: string;
+  onInteract?: (id: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  type = 'text',
-  placeholder = 'Enter text',
-  value: controlledValue,
-  onChange,
+  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
   theme = {},
   className = '',
-  label,
-  error
+  onInteract
 }) => {
-  const [internalValue, setInternalValue] = useState('');
-  const value = controlledValue !== undefined ? controlledValue : internalValue;
-  const primary = theme.primary || '#991b1b';
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    if (controlledValue === undefined) {
-      setInternalValue(newValue);
-    }
-    onChange?.(newValue);
-  };
-  
+  const [selected, setSelected] = useState<string | null>(null);
+  const primary = theme.primary || '#8b5cf6';
+
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '400px' }}>
-      {label && (
-        <label style={{ display: 'block', marginBottom: '15px', color: '#374151', fontSize: '17px', fontWeight: '600' }}>
-          {label}
-        </label>
-      )}
-      <input
-        type={type}
-        value={value}
-        onChange={handleChange}
-        placeholder={placeholder}
-        style={{
-          width: '100%',
-          padding: '19px 30px',
-          border: `1px solid ${error ? '#ef4444' : primary}`,
-          borderRadius: '10px',
-          fontSize: '17px',
-          outline: 'none',
-          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-          boxShadow: '0 17px 32px rgba(0,0,0,0.28)'
-        }}
-      />
-      {error && (
-        <span style={{ display: 'block', marginTop: '7px', color: '#ef4444', fontSize: '17px' }}>
-          {error}
-        </span>
-      )}
+    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {items.map(item => (
+        <button
+          key={item.id}
+          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
+          style={{
+            padding: '10px 20px',
+            background: selected === item.id ? primary : 'transparent',
+            color: selected === item.id ? '#fff' : primary,
+            border: `2px solid ${primary}`,
+            borderRadius: '20px',
+            cursor: 'pointer',
+            fontWeight: 600,
+            transition: 'all 200ms ease',
+            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
+          }}
+        >
+          {item.label}
+        </button>
+      ))}
     </div>
   );
 };

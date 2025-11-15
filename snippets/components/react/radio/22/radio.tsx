@@ -1,87 +1,61 @@
-import React, { useState } from 'react';
-
-interface RadioOption {
-  label: string;
-  value: string;
-}
+import React, { useState, useRef, useEffect } from 'react';
 
 export interface ComponentProps {
-  options?: RadioOption[];
-  value?: string;
-  onChange?: (value: string) => void;
-  theme?: { primary?: string };
+  progress?: number;
+  showLabel?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  disabled?: boolean;
+  onInteract?: (progress: number) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  options = [
-    { label: 'Option 1', value: '1' },
-    { label: 'Option 2', value: '2' },
-    { label: 'Option 3', value: '3' }
-  ],
-  value: controlledValue,
-  onChange,
+  progress: initialProgress = 0,
+  showLabel = true,
   theme = {},
   className = '',
-  disabled = false
+  onInteract
 }) => {
-  const [internalValue, setInternalValue] = useState('');
-  const value = controlledValue || internalValue;
-  const primary = theme.primary || '#059669';
-  
-  const handleChange = (newValue: string) => {
-    if (disabled) return;
-    if (!controlledValue) setInternalValue(newValue);
-    onChange?.(newValue);
-  };
-  
+  const [progress, setProgress] = useState(initialProgress);
+  const [animating, setAnimating] = useState(false);
+  const primary = theme.primary || '#10b981';
+
+  useEffect(() => {
+    if (progress !== initialProgress) {
+      setAnimating(true);
+      setTimeout(() => setAnimating(false), 500);
+    }
+    setProgress(initialProgress);
+  }, [initialProgress]);
+
   return (
-    <div className={className} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-      {options.map((option) => {
-        const isSelected = value === option.value;
-        return (
-          <label
-            key={option.value}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '15px',
-              cursor: disabled ? 'not-allowed' : 'pointer',
-              opacity: disabled ? 0.5 : 1
-            }}
-          >
-            <div
-              onClick={() => handleChange(option.value)}
-              style={{
-                width: '23px',
-                height: '23px',
-                borderRadius: '50%',
-                border: `2px solid ${isSelected ? primary : '#d1d5db'}`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.2s ease-in-out',
-                boxShadow: isSelected ? '0 0 0 5px rgba(16,185,129,0.2)' : 'none'
-              }}
-            >
-              {isSelected && (
-                <div
-                  style={{
-                    width: '13px',
-                    height: '13px',
-                    borderRadius: '50%',
-                    backgroundColor: primary
-                  }}
-                />
-              )}
-            </div>
-            <span style={{ fontSize: '17px', color: '#374151', fontWeight: '400' }}>
-              {option.label}
-            </span>
-          </label>
-        );
-      })}
+    <div className={className} style={{ width: '100%' }}>
+      {showLabel && <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: primary }}>{progress}%</div>}
+      <div style={{ width: '100%', height: '12px', background: '#e5e7eb', borderRadius: '6px', overflow: 'hidden', position: 'relative' }}>
+        <div
+          style={{
+            width: \`\${progress}%\`,
+            height: '100%',
+            background: \`linear-gradient(90deg, \${primary}, \${primary}dd)\`,
+            borderRadius: '6px',
+            transition: 'width 500ms ease',
+            position: 'relative',
+            overflow: 'hidden'
+          }}
+        >
+          {animating && (
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+              animation: 'shimmer 1s infinite'
+            }} />
+          )}
+        </div>
+      </div>
+      <style>{`@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }`}</style>
     </div>
   );
 };

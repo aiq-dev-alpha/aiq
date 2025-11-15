@@ -1,58 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 export interface ComponentProps {
-  src?: string;
-  alt?: string;
-  name?: string;
-  size?: 'small' | 'medium' | 'large';
-  theme?: { primary?: string };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  shape?: 'circle' | 'square';
+  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  src,
-  alt = 'Avatar',
-  name = 'JD',
-  size = 'medium',
-  theme = {},
-  className = '',
-  shape = 'circle'
-}) => {
-  const primary = theme.primary || '#f59e0b';
-  const sizes = {
-    small: { width: '32px', height: '32px', fontSize: '23px' },
-    medium: { width: '48px', height: '48px', fontSize: '23px' },
-    large: { width: '64px', height: '64px', fontSize: '23px' }
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
+  const primary = theme.primary || '#3b82f6';
+
+  const handleClick = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = Date.now();
+    setRipples([...ripples, { x, y, id }]);
+    setTimeout(() => setRipples(r => r.filter(rip => rip.id !== id)), 800);
+    onInteract?.('click');
   };
 
-  const sizeStyle = sizes[size];
-  const borderRadius = shape === 'circle' ? '50%' : '18px';
-
   return (
-    <div
-      className={className}
-      style={{
-        width: sizeStyle.width,
-        height: sizeStyle.height,
-        borderRadius,
-        backgroundColor: src ? 'transparent' : primary,
-        color: '#fff',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontWeight: '900',
-        fontSize: sizeStyle.fontSize,
-        overflow: 'hidden',
-        border: '3px solid ${primary}',
-        boxShadow: '0 18px 34px rgba(0,0,0,0.25)'
-      }}
-    >
-      {src ? (
-        <img src={src} alt={alt} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-      ) : (
-        <span>{name}</span>
-      )}
+    <div className={className} onClick={handleClick} style={{ position: 'relative', padding: '18px 28px', background: primary, color: '#fff', borderRadius: '10px', cursor: 'pointer', overflow: 'hidden', fontWeight: 600 }}>
+      {ripples.map(r => (
+        <span key={r.id} style={{ position: 'absolute', left: r.x, top: r.y, width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.6)', transform: 'translate(-50%, -50%)', animation: 'ripple 800ms ease-out' }} />
+      ))}
+      <span style={{ position: 'relative', zIndex: 1 }}>Ripple Effect Component</span>
+      <style>{`@keyframes ripple { to { transform: translate(-50%, -50%) scale(30); opacity: 0; } }`}</style>
     </div>
   );
 };

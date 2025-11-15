@@ -1,59 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 export interface ComponentProps {
-  trigger?: React.ReactNode;
-  content?: React.ReactNode;
-  theme?: { primary?: string };
+  progress?: number;
+  showLabel?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  position?: 'top' | 'bottom' | 'left' | 'right';
+  onInteract?: (progress: number) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  trigger = <button>Hover me</button>,
-  content = 'Popover content',
+  progress: initialProgress = 0,
+  showLabel = true,
   theme = {},
   className = '',
-  position = 'left'
+  onInteract
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const primary = theme.primary || '#ef4444';
-  
-  const positions = {
-    top: { bottom: '100%', left: '50%', transform: 'translateX(-50%)', marginBottom: '12px' },
-    bottom: { top: '100%', left: '50%', transform: 'translateX(-50%)', marginTop: '12px' },
-    left: { right: '100%', top: '50%', transform: 'translateY(-50%)', marginRight: '12px' },
-    right: { left: '100%', top: '50%', transform: 'translateY(-50%)', marginLeft: '12px' }
-  };
-  
+  const [progress, setProgress] = useState(initialProgress);
+  const [animating, setAnimating] = useState(false);
+  const primary = theme.primary || '#10b981';
+
+  useEffect(() => {
+    if (progress !== initialProgress) {
+      setAnimating(true);
+      setTimeout(() => setAnimating(false), 500);
+    }
+    setProgress(initialProgress);
+  }, [initialProgress]);
+
   return (
-    <div
-      className={className}
-      style={{ position: 'relative', display: 'inline-block' }}
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
-    >
-      {trigger}
-      {isOpen && (
+    <div className={className} style={{ width: '100%' }}>
+      {showLabel && <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: primary }}>{progress}%</div>}
+      <div style={{ width: '100%', height: '12px', background: '#e5e7eb', borderRadius: '6px', overflow: 'hidden', position: 'relative' }}>
         <div
           style={{
-            position: 'absolute',
-            ...positions[position],
-            backgroundColor: '#fff',
-            border: `2px solid #e5e7eb`,
-            borderRadius: '24px',
-            padding: '22px 36px',
-            boxShadow: '0 4px 6px rgba(0,0,0,0.07)',
-            zIndex: 1000,
-            minWidth: '200px',
-            maxWidth: '320px',
-            fontSize: '16px',
-            color: '#374151',
-            lineHeight: '1.8'
+            width: \`\${progress}%\`,
+            height: '100%',
+            background: \`linear-gradient(90deg, \${primary}, \${primary}dd)\`,
+            borderRadius: '6px',
+            transition: 'width 500ms ease',
+            position: 'relative',
+            overflow: 'hidden'
           }}
         >
-          {content}
+          {animating && (
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+              animation: 'shimmer 1s infinite'
+            }} />
+          )}
         </div>
-      )}
+      </div>
+      <style>{`@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }`}</style>
     </div>
   );
 };

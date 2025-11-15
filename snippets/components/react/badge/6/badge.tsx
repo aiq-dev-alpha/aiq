@@ -1,55 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  label?: string;
-  variant?: 'primary' | 'success' | 'warning' | 'error';
-  theme?: { primary?: string };
+  items?: Array<{ id: string; label: string }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  dot?: boolean;
+  onInteract?: (id: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  label = 'Badge',
-  variant = 'primary',
+  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
   theme = {},
   className = '',
-  dot = false
+  onInteract
 }) => {
-  const variants = {
-    primary: { bg: '#f59e0b', color: '#fff' },
-    success: { bg: '#10b981', color: '#fff' },
-    warning: { bg: '#f59e0b', color: '#fff' },
-    error: { bg: '#ef4444', color: '#fff' }
-  };
-
-  const style = variants[variant];
-  const primary = theme.primary || style.bg;
+  const [selected, setSelected] = useState<string | null>(null);
+  const primary = theme.primary || '#8b5cf6';
 
   return (
-    <span
-      className={className}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '16px',
-        padding: '18px 32px',
-        backgroundColor: primary,
-        color: style.color,
-        borderRadius: '14px',
-        fontSize: '12px',
-        fontWeight: '500',
-        lineHeight: '1'
-      }}
-    >
-      {dot && (
-        <span style={{
-          width: '6px',
-          height: '6px',
-          borderRadius: '50%',
-          backgroundColor: 'currentColor'
-        }} />
-      )}
-      {label}
-    </span>
+    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {items.map(item => (
+        <button
+          key={item.id}
+          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
+          style={{
+            padding: '10px 20px',
+            background: selected === item.id ? primary : 'transparent',
+            color: selected === item.id ? '#fff' : primary,
+            border: `2px solid ${primary}`,
+            borderRadius: '20px',
+            cursor: 'pointer',
+            fontWeight: 600,
+            transition: 'all 200ms ease',
+            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
+          }}
+        >
+          {item.label}
+        </button>
+      ))}
+    </div>
   );
 };

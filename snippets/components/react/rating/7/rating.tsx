@@ -1,54 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 export interface ComponentProps {
-  value?: number;
-  max?: number;
-  onChange?: (value: number) => void;
-  theme?: { primary?: string };
+  progress?: number;
+  showLabel?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  readonly?: boolean;
+  onInteract?: (progress: number) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  value: controlledValue,
-  max = 5,
-  onChange,
+  progress: initialProgress = 0,
+  showLabel = true,
   theme = {},
   className = '',
-  readonly = false
+  onInteract
 }) => {
-  const [internalValue, setInternalValue] = useState(0);
-  const [hoveredValue, setHoveredValue] = useState(0);
-  const value = controlledValue !== undefined ? controlledValue : internalValue;
-  const primary = theme.primary || '#ef4444';
-  
-  const handleClick = (newValue: number) => {
-    if (readonly) return;
-    if (controlledValue === undefined) setInternalValue(newValue);
-    onChange?.(newValue);
-  };
-  
+  const [progress, setProgress] = useState(initialProgress);
+  const [animating, setAnimating] = useState(false);
+  const primary = theme.primary || '#10b981';
+
+  useEffect(() => {
+    if (progress !== initialProgress) {
+      setAnimating(true);
+      setTimeout(() => setAnimating(false), 500);
+    }
+    setProgress(initialProgress);
+  }, [initialProgress]);
+
   return (
-    <div
-      className={className}
-      style={{ display: 'flex', gap: '14px', fontSize: '16px' }}
-      onMouseLeave={() => !readonly && setHoveredValue(0)}
-    >
-      {Array.from({ length: max }, (_, i) => i + 1).map(star => (
-        <span
-          key={star}
-          onClick={() => handleClick(star)}
-          onMouseEnter={() => !readonly && setHoveredValue(star)}
+    <div className={className} style={{ width: '100%' }}>
+      {showLabel && <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: primary }}>{progress}%</div>}
+      <div style={{ width: '100%', height: '12px', background: '#e5e7eb', borderRadius: '6px', overflow: 'hidden', position: 'relative' }}>
+        <div
           style={{
-            cursor: readonly ? 'default' : 'pointer',
-            color: star <= (hoveredValue || value) ? primary : '#e5e7eb',
-            transition: 'all 0.2s ease-in-out',
-            transform: star === hoveredValue ? 'scale(1.10)' : 'scale(1.10)'
+            width: \`\${progress}%\`,
+            height: '100%',
+            background: \`linear-gradient(90deg, \${primary}, \${primary}dd)\`,
+            borderRadius: '6px',
+            transition: 'width 500ms ease',
+            position: 'relative',
+            overflow: 'hidden'
           }}
         >
-          ❤
-        </span>
-      ))}
+          {animating && (
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+              animation: 'shimmer 1s infinite'
+            }} />
+          )}
+        </div>
+      </div>
+      <style>{`@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }`}</style>
     </div>
   );
 };

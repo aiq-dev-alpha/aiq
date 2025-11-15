@@ -1,61 +1,50 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  value?: string;
-  onChange?: (color: string) => void;
-  theme?: { primary?: string };
+  tabs?: Array<{ id: string; label: string; content: React.ReactNode }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  presetColors?: string[];
+  onInteract?: (tabId: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  value: controlledValue,
-  onChange,
+  tabs = [
+    { id: '1', label: 'Tab 1', content: 'Content 1' },
+    { id: '2', label: 'Tab 2', content: 'Content 2' },
+    { id: '3', label: 'Tab 3', content: 'Content 3' }
+  ],
   theme = {},
   className = '',
-  presetColors = ['#047857', '#047857', '#f59e0b', '#ef4444', '#8b5cf6']
+  onInteract
 }) => {
-  const [internalValue, setInternalValue] = useState('#047857');
-  const value = controlledValue || internalValue;
-  const primary = theme.primary || '#047857';
-  
-  const handleChange = (color: string) => {
-    if (!controlledValue) setInternalValue(color);
-    onChange?.(color);
-  };
-  
+  const [activeTab, setActiveTab] = useState(tabs[0]?.id || '');
+  const primary = theme.primary || '#6366f1';
+
   return (
-    <div className={className} style={{ display: 'flex', flexDirection: 'column', gap: '2px', maxWidth: '300px' }}>
-      <input
-        type="color"
-        value={value}
-        onChange={(e) => handleChange(e.target.value)}
-        style={{
-          width: '100%',
-          height: '60px',
-          border: `1px solid ${primary}`,
-          borderRadius: '29px',
-          cursor: 'pointer'
-        }}
-      />
-      <div style={{ display: 'flex', gap: '2px', flexWrap: 'wrap' }}>
-        {presetColors.map((color, idx) => (
+    <div className={className} style={{ maxWidth: '600px' }}>
+      <div style={{ display: 'flex', gap: '4px', borderBottom: \`2px solid \${primary}20\` }}>
+        {tabs.map(tab => (
           <button
-            key={idx}
-            onClick={() => handleChange(color)}
+            key={tab.id}
+            onClick={() => { setActiveTab(tab.id); onInteract?.(tab.id); }}
             style={{
-              width: '36px',
-              height: '36px',
-              backgroundColor: color,
-              border: value === color ? `3px solid ${primary}` : 'none',
-              borderRadius: '29px',
+              padding: '12px 24px',
+              background: 'transparent',
+              border: 'none',
+              borderBottom: \`3px solid \${activeTab === tab.id ? primary : 'transparent'}\`,
+              color: activeTab === tab.id ? primary : '#6b7280',
+              fontWeight: activeTab === tab.id ? 700 : 500,
               cursor: 'pointer',
-              transition: 'transform 0.2s'
+              transition: 'all 200ms ease',
+              marginBottom: '-2px'
             }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.20)'}
-            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1.20)'}
-          />
+          >
+            {tab.label}
+          </button>
         ))}
+      </div>
+      <div style={{ padding: '24px 0' }}>
+        {tabs.find(t => t.id === activeTab)?.content}
       </div>
     </div>
   );

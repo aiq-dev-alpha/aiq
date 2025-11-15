@@ -1,20 +1,42 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
+  items?: Array<{ id: string; label: string }>;
   theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  onInteract?: (type: string) => void;
+  onInteract?: (id: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
-  const [morphed, setMorphed] = useState(false);
-  const primary = theme.primary || '#0891b2';
+export const Component: React.FC<ComponentProps> = ({
+  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
+  theme = {},
+  className = '',
+  onInteract
+}) => {
+  const [selected, setSelected] = useState<string | null>(null);
+  const primary = theme.primary || '#8b5cf6';
+
   return (
-  <button className={className} onClick={() => { setMorphed(!morphed); onInteract?.('morph'); }}
-  style={{ padding: morphed ? '8px 16px' : '16px 48px', background: primary, color: '#fff',
-  border: 'none', borderRadius: morphed ? '50%' : '12px', fontSize: '14px', fontWeight: 700,
-  cursor: 'pointer', transition: 'all 500ms cubic-bezier(0.68, -0.55, 0.265, 1.55)', outline: 'none' }}>
-  {morphed ? '●' : 'Morph'}
-  </button>
+    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {items.map(item => (
+        <button
+          key={item.id}
+          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
+          style={{
+            padding: '10px 20px',
+            background: selected === item.id ? primary : 'transparent',
+            color: selected === item.id ? '#fff' : primary,
+            border: `2px solid ${primary}`,
+            borderRadius: '20px',
+            cursor: 'pointer',
+            fontWeight: 600,
+            transition: 'all 200ms ease',
+            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
+          }}
+        >
+          {item.label}
+        </button>
+      ))}
+    </div>
   );
 };

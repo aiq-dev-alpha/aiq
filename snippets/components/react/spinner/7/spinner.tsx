@@ -1,50 +1,61 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 export interface ComponentProps {
-  size?: 'small' | 'medium' | 'large';
-  theme?: { primary?: string };
+  progress?: number;
+  showLabel?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  label?: string;
+  onInteract?: (progress: number) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  size = 'medium',
+  progress: initialProgress = 0,
+  showLabel = true,
   theme = {},
   className = '',
-  label
+  onInteract
 }) => {
-  const primary = theme.primary || '#ef4444';
-  
-  const sizes = {
-    small: '20px',
-    medium: '40px',
-    large: '60px'
-  };
-  
-  const spinnerSize = sizes[size];
-  
+  const [progress, setProgress] = useState(initialProgress);
+  const [animating, setAnimating] = useState(false);
+  const primary = theme.primary || '#10b981';
+
+  useEffect(() => {
+    if (progress !== initialProgress) {
+      setAnimating(true);
+      setTimeout(() => setAnimating(false), 500);
+    }
+    setProgress(initialProgress);
+  }, [initialProgress]);
+
   return (
-    <div className={className} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px' }}>
-      <div
-        style={{
-          width: spinnerSize,
-          height: spinnerSize,
-          border: `5px solid #d1d5db`,
-          borderTopColor: primary,
-          borderRadius: '50%',
-          animation: `spin 0.6s ease-in-out infinite`
-        }}
-      />
-      {label && (
-        <span style={{ color: primary, fontSize: '16px', fontWeight: '300' }}>
-          {label}
-        </span>
-      )}
-      <style>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
+    <div className={className} style={{ width: '100%' }}>
+      {showLabel && <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: primary }}>{progress}%</div>}
+      <div style={{ width: '100%', height: '12px', background: '#e5e7eb', borderRadius: '6px', overflow: 'hidden', position: 'relative' }}>
+        <div
+          style={{
+            width: \`\${progress}%\`,
+            height: '100%',
+            background: \`linear-gradient(90deg, \${primary}, \${primary}dd)\`,
+            borderRadius: '6px',
+            transition: 'width 500ms ease',
+            position: 'relative',
+            overflow: 'hidden'
+          }}
+        >
+          {animating && (
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+              animation: 'shimmer 1s infinite'
+            }} />
+          )}
+        </div>
+      </div>
+      <style>{`@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }`}</style>
     </div>
   );
 };

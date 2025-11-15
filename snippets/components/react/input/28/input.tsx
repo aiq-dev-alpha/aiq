@@ -1,66 +1,58 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  type?: string;
-  placeholder?: string;
-  value?: string;
-  onChange?: (value: string) => void;
-  theme?: { primary?: string };
+  title?: string;
+  content?: React.ReactNode;
+  expandable?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  label?: string;
-  error?: string;
+  onInteract?: (expanded: boolean) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  type = 'text',
-  placeholder = 'Enter text',
-  value: controlledValue,
-  onChange,
+  title = 'Expandable Card',
+  content = 'This is the expandable content that appears when you click the card.',
+  expandable = true,
   theme = {},
   className = '',
-  label,
-  error
+  onInteract
 }) => {
-  const [internalValue, setInternalValue] = useState('');
-  const value = controlledValue !== undefined ? controlledValue : internalValue;
-  const primary = theme.primary || '#ec4899';
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    if (controlledValue === undefined) {
-      setInternalValue(newValue);
-    }
-    onChange?.(newValue);
+  const [expanded, setExpanded] = useState(false);
+  const primary = theme.primary || '#f59e0b';
+
+  const toggleExpand = () => {
+    if (!expandable) return;
+    const newState = !expanded;
+    setExpanded(newState);
+    onInteract?.(newState);
   };
-  
+
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '400px' }}>
-      {label && (
-        <label style={{ display: 'block', marginBottom: '6px', color: '#374151', fontSize: '15px', fontWeight: '300' }}>
-          {label}
-        </label>
-      )}
-      <input
-        type={type}
-        value={value}
-        onChange={handleChange}
-        placeholder={placeholder}
+    <div className={className} style={{ border: \`2px solid \${expanded ? primary : '#e5e7eb'}\`, borderRadius: '12px', overflow: 'hidden', maxWidth: '500px', transition: 'all 300ms ease' }}>
+      <div
+        onClick={toggleExpand}
         style={{
-          width: '100%',
-          padding: '12px 18px',
-          border: `2px solid ${error ? '#ef4444' : primary}`,
-          borderRadius: '23px',
-          fontSize: '15px',
-          outline: 'none',
-          transition: 'all 0.3s ease',
-          boxShadow: 'none'
+          padding: '20px',
+          background: expanded ? \`\${primary}10\` : '#fff',
+          cursor: expandable ? 'pointer' : 'default',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          transition: 'all 200ms ease'
         }}
-      />
-      {error && (
-        <span style={{ display: 'block', marginTop: '4px', color: '#ef4444', fontSize: '15px' }}>
-          {error}
-        </span>
-      )}
+      >
+        <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: expanded ? primary : '#1f2937' }}>{title}</h3>
+        {expandable && (
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 300ms ease' }}>
+            <path d="M5 7.5L10 12.5L15 7.5" stroke={expanded ? primary : '#6b7280'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
+      </div>
+      <div style={{ maxHeight: expanded ? '1000px' : '0', overflow: 'hidden', transition: 'max-height 400ms ease' }}>
+        <div style={{ padding: '20px', borderTop: \`1px solid \${primary}20\`, fontSize: '15px', lineHeight: '1.6', color: '#4b5563' }}>
+          {content}
+        </div>
+      </div>
     </div>
   );
 };

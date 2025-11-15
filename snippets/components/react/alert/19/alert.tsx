@@ -1,68 +1,51 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  message?: string;
-  type?: 'info' | 'success' | 'warning' | 'error';
-  theme?: { primary?: string; background?: string };
+  tabs?: Array<{ id: string; label: string; content: React.ReactNode }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  dismissible?: boolean;
-  onDismiss?: () => void;
+  onInteract?: (tabId: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  message = 'This is an alert message',
-  type = 'info',
+  tabs = [
+    { id: '1', label: 'Tab 1', content: 'Content 1' },
+    { id: '2', label: 'Tab 2', content: 'Content 2' },
+    { id: '3', label: 'Tab 3', content: 'Content 3' }
+  ],
   theme = {},
   className = '',
-  dismissible = false,
-  onDismiss
+  onInteract
 }) => {
-  const colors = {
-    info: { bg: '#fffbeb', color: '#f59e0b', border: '#f59e0b' },
-    success: { bg: '#ecfdf5', color: '#1d4ed8', border: '#1d4ed8' },
-    warning: { bg: '#fffbeb', color: '#f59e0b', border: '#f59e0b' },
-    error: { bg: '#fef2f2', color: '#ef4444', border: '#ef4444' }
-  };
-
-  const currentColor = colors[type];
-  const primary = theme.primary || currentColor.color;
-  const background = theme.background || currentColor.bg;
+  const [activeTab, setActiveTab] = useState(tabs[0]?.id || '');
+  const primary = theme.primary || '#6366f1';
 
   return (
-    <div
-      className={className}
-      style={{
-        padding: '21px 32px',
-        backgroundColor: background,
-        border: `3px solid ${primary}`,
-        borderRadius: '31px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: '19px',
-        maxWidth: '600px',
-        boxShadow: '0 9px 11px rgba(0,0,0,0.07)'
-      }}
-    >
-      <div style={{ color: primary, fontWeight: '800', flex: 1 }}>
-        {message}
+    <div className={className} style={{ maxWidth: '600px' }}>
+      <div style={{ display: 'flex', gap: '4px', borderBottom: \`2px solid \${primary}20\` }}>
+        {tabs.map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => { setActiveTab(tab.id); onInteract?.(tab.id); }}
+            style={{
+              padding: '12px 24px',
+              background: 'transparent',
+              border: 'none',
+              borderBottom: \`3px solid \${activeTab === tab.id ? primary : 'transparent'}\`,
+              color: activeTab === tab.id ? primary : '#6b7280',
+              fontWeight: activeTab === tab.id ? 700 : 500,
+              cursor: 'pointer',
+              transition: 'all 200ms ease',
+              marginBottom: '-2px'
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
-      {dismissible && (
-        <button
-          onClick={onDismiss}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: primary,
-            cursor: 'pointer',
-            fontSize: '17px',
-            padding: '0',
-            lineHeight: '1.8'
-          }}
-        >
-          ×
-        </button>
-      )}
+      <div style={{ padding: '24px 0' }}>
+        {tabs.find(t => t.id === activeTab)?.content}
+      </div>
     </div>
   );
 };

@@ -1,53 +1,57 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  value?: number;
-  max?: number;
-  theme?: { primary?: string };
+  title?: string;
+  content?: React.ReactNode;
+  expandable?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  label?: string;
-  showPercentage?: boolean;
+  onInteract?: (expanded: boolean) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  value = 50,
-  max = 100,
+  title = 'Expandable Card',
+  content = 'This is the expandable content that appears when you click the card.',
+  expandable = true,
   theme = {},
   className = '',
-  label,
-  showPercentage = true
+  onInteract
 }) => {
+  const [expanded, setExpanded] = useState(false);
   const primary = theme.primary || '#f59e0b';
-  const percentage = (value / max) * 100;
-  
+
+  const toggleExpand = () => {
+    if (!expandable) return;
+    const newState = !expanded;
+    setExpanded(newState);
+    onInteract?.(newState);
+  };
+
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '380px' }}>
-      {(label || showPercentage) && (
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', fontSize: '16px', color: '#374151' }}>
-          {label && <span style={{ fontWeight: '700' }}> {label}</span>}
-          {showPercentage && <span>{Math.round(percentage)}%</span>}
-        </div>
-      )}
+    <div className={className} style={{ border: \`2px solid \${expanded ? primary : '#e5e7eb'}\`, borderRadius: '12px', overflow: 'hidden', maxWidth: '500px', transition: 'all 300ms ease' }}>
       <div
+        onClick={toggleExpand}
         style={{
-          width: '100%',
-          height: '10px',
-          backgroundColor: '#e5e7eb',
-          borderRadius: '25px',
-          overflow: 'hidden',
-          boxShadow: 'none'
+          padding: '20px',
+          background: expanded ? \`\${primary}10\` : '#fff',
+          cursor: expandable ? 'pointer' : 'default',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          transition: 'all 200ms ease'
         }}
       >
-        <div
-          style={{
-            width: `${percentage}%`,
-            height: '100%',
-            backgroundColor: primary,
-            borderRadius: '25px',
-            transition: 'width 0.2s ease',
-            background: 'none'
-          }}
-        />
+        <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: expanded ? primary : '#1f2937' }}>{title}</h3>
+        {expandable && (
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 300ms ease' }}>
+            <path d="M5 7.5L10 12.5L15 7.5" stroke={expanded ? primary : '#6b7280'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
+      </div>
+      <div style={{ maxHeight: expanded ? '1000px' : '0', overflow: 'hidden', transition: 'max-height 400ms ease' }}>
+        <div style={{ padding: '20px', borderTop: \`1px solid \${primary}20\`, fontSize: '15px', lineHeight: '1.6', color: '#4b5563' }}>
+          {content}
+        </div>
       </div>
     </div>
   );

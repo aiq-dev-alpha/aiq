@@ -1,70 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export interface ComponentProps {
-  label?: string;
-  checked?: boolean;
-  onChange?: (checked: boolean) => void;
-  theme?: { primary?: string };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  disabled?: boolean;
+  onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  label = 'Checkbox',
-  checked: controlledChecked,
-  onChange,
-  theme = {},
-  className = '',
-  disabled = false
-}) => {
-  const [internalChecked, setInternalChecked] = useState(false);
-  const isChecked = controlledChecked !== undefined ? controlledChecked : internalChecked;
-  const primary = theme.primary || '#84cc16';
-  
-  const handleChange = () => {
-    if (disabled) return;
-    const newChecked = !isChecked;
-    if (controlledChecked === undefined) {
-      setInternalChecked(newChecked);
-    }
-    onChange?.(newChecked);
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
+  const primary = theme.primary || '#3b82f6';
+
+  const handleClick = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = Date.now();
+    setRipples([...ripples, { x, y, id }]);
+    setTimeout(() => setRipples(r => r.filter(rip => rip.id !== id)), 800);
+    onInteract?.('click');
   };
-  
+
   return (
-    <label
-      className={className}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '20px',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        opacity: disabled ? 0.5 : 1
-      }}
-    >
-      <div
-        onClick={handleChange}
-        style={{
-          width: '26px',
-          height: '26px',
-          borderRadius: '30px',
-          border: `2px solid ${isChecked ? primary : '#d1d5db'}`,
-          backgroundColor: isChecked ? primary : '#fff',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-          boxShadow: isChecked ? '0 0 0 3px rgba(59,130,246,0.2)' : 'none'
-        }}
-      >
-        {isChecked && (
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
-            <path d="M6 10L9 13L14 7" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        )}
-      </div>
-      <span style={{ fontSize: '20px', color: '#374151', userSelect: 'none' }}>
-        {label}
-      </span>
-    </label>
+    <div className={className} onClick={handleClick} style={{ position: 'relative', padding: '18px 28px', background: primary, color: '#fff', borderRadius: '10px', cursor: 'pointer', overflow: 'hidden', fontWeight: 600 }}>
+      {ripples.map(r => (
+        <span key={r.id} style={{ position: 'absolute', left: r.x, top: r.y, width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.6)', transform: 'translate(-50%, -50%)', animation: 'ripple 800ms ease-out' }} />
+      ))}
+      <span style={{ position: 'relative', zIndex: 1 }}>Ripple Effect Component</span>
+      <style>{`@keyframes ripple { to { transform: translate(-50%, -50%) scale(30); opacity: 0; } }`}</style>
+    </div>
   );
 };

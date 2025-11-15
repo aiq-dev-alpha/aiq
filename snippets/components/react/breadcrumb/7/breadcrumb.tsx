@@ -1,56 +1,61 @@
-import React from 'react';
-
-interface BreadcrumbItem {
-  label: string;
-  href?: string;
-}
+import React, { useState, useRef, useEffect } from 'react';
 
 export interface ComponentProps {
-  items?: BreadcrumbItem[];
-  theme?: { primary?: string };
+  progress?: number;
+  showLabel?: boolean;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  separator?: string;
+  onInteract?: (progress: number) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  items = [
-    { label: 'Home', href: '/' },
-    { label: 'Category', href: '/category' },
-    { label: 'Page' }
-  ],
+  progress: initialProgress = 0,
+  showLabel = true,
   theme = {},
   className = '',
-  separator = '•'
+  onInteract
 }) => {
-  const primary = theme.primary || '#ef4444';
+  const [progress, setProgress] = useState(initialProgress);
+  const [animating, setAnimating] = useState(false);
+  const primary = theme.primary || '#10b981';
+
+  useEffect(() => {
+    if (progress !== initialProgress) {
+      setAnimating(true);
+      setTimeout(() => setAnimating(false), 500);
+    }
+    setProgress(initialProgress);
+  }, [initialProgress]);
 
   return (
-    <nav className={className} style={{ display: 'flex', alignItems: 'center', gap: '2px', flexWrap: 'wrap' }}>
-      {items.map((item, idx) => (
-        <React.Fragment key={idx}>
-          {item.href ? (
-            <a
-              href={item.href}
-              style={{
-                color: primary,
-                textDecoration: 'none',
-                fontSize: '13px',
-                fontWeight: '300',
-                transition: 'opacity 0.2s'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'}
-              onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
-            >
-              {item.label}
-            </a>
-          ) : (
-            <span style={{ color: '#6b7280', fontSize: '13px' }}>{item.label}</span>
+    <div className={className} style={{ width: '100%' }}>
+      {showLabel && <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: primary }}>{progress}%</div>}
+      <div style={{ width: '100%', height: '12px', background: '#e5e7eb', borderRadius: '6px', overflow: 'hidden', position: 'relative' }}>
+        <div
+          style={{
+            width: \`\${progress}%\`,
+            height: '100%',
+            background: \`linear-gradient(90deg, \${primary}, \${primary}dd)\`,
+            borderRadius: '6px',
+            transition: 'width 500ms ease',
+            position: 'relative',
+            overflow: 'hidden'
+          }}
+        >
+          {animating && (
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+              animation: 'shimmer 1s infinite'
+            }} />
           )}
-          {idx < items.length - 1 && (
-            <span style={{ color: '#9ca3af', fontSize: '13px' }}> {separator}</span>
-          )}
-        </React.Fragment>
-      ))}
-    </nav>
+        </div>
+      </div>
+      <style>{`@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }`}</style>
+    </div>
   );
 };

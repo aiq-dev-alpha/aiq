@@ -1,100 +1,42 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  min?: number;
-  max?: number;
-  value?: number;
-  onChange?: (value: number) => void;
-  theme?: { primary?: string };
+  items?: Array<{ id: string; label: string }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  label?: string;
-  showValue?: boolean;
-  step?: number;
+  onInteract?: (id: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  min = 0,
-  max = 100,
-  value: controlledValue,
-  onChange,
+  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
   theme = {},
   className = '',
-  label,
-  showValue = true,
-  step = 1
+  onInteract
 }) => {
-  const [internalValue, setInternalValue] = useState(50);
-  const value = controlledValue !== undefined ? controlledValue : internalValue;
-  const primary = theme.primary || '#f59e0b';
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = Number(e.target.value);
-    if (controlledValue === undefined) setInternalValue(newValue);
-    onChange?.(newValue);
-  };
-  
-  const percentage = ((value - min) / (max - min)) * 100;
-  
+  const [selected, setSelected] = useState<string | null>(null);
+  const primary = theme.primary || '#8b5cf6';
+
   return (
-    <div className={className} style={{ width: '100%', maxWidth: '380px' }}>
-      {(label || showValue) && (
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '20px' }}>
-          {label && <span style={{ color: '#374151', fontWeight: '500' }}> {label}</span>}
-          {showValue && (
-            <span style={{ color: primary, fontWeight: '500', fontSize: '20px' }}>
-              {value}
-            </span>
-          )}
-        </div>
-      )}
-      <div style={{ position: 'relative', height: '7px' }}>
-        <div style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-          backgroundColor: '#e5e7eb',
-          borderRadius: '24px',
-          overflow: 'hidden'
-        }}>
-          <div style={{
-            width: `${percentage}%`,
-            height: '100%',
-            backgroundColor: primary,
-            borderRadius: '24px',
-            transition: 'width 0.15s ease'
-          }} />
-        </div>
-        <input
-          type="range"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          onChange={handleChange}
+    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {items.map(item => (
+        <button
+          key={item.id}
+          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
           style={{
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            opacity: 0.9,
+            padding: '10px 20px',
+            background: selected === item.id ? primary : 'transparent',
+            color: selected === item.id ? '#fff' : primary,
+            border: `2px solid ${primary}`,
+            borderRadius: '20px',
             cursor: 'pointer',
-            top: 0,
-            left: 0
+            fontWeight: 600,
+            transition: 'all 200ms ease',
+            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
           }}
-        />
-        <div style={{
-          position: 'absolute',
-          left: `${percentage}%`,
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '18px',
-          height: '18px',
-          backgroundColor: primary,
-          borderRadius: '50%',
-          border: '2px solid #fff',
-          boxShadow: '0 16px 32px rgba(0,0,0,0.28)',
-          pointerEvents: 'none'
-        }} />
-      </div>
+        >
+          {item.label}
+        </button>
+      ))}
     </div>
   );
 };

@@ -1,50 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ComponentProps {
-  size?: 'small' | 'medium' | 'large';
-  theme?: { primary?: string };
+  items?: Array<{ id: string; label: string }>;
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
-  label?: string;
+  onInteract?: (id: string) => void;
 }
 
 export const Component: React.FC<ComponentProps> = ({
-  size = 'medium',
+  items = [{ id: '1', label: 'Item 1' }, { id: '2', label: 'Item 2' }, { id: '3', label: 'Item 3' }],
   theme = {},
   className = '',
-  label
+  onInteract
 }) => {
-  const primary = theme.primary || '#f59e0b';
-  
-  const sizes = {
-    small: '26px',
-    medium: '40px',
-    large: '60px'
-  };
-  
-  const spinnerSize = sizes[size];
-  
+  const [selected, setSelected] = useState<string | null>(null);
+  const primary = theme.primary || '#8b5cf6';
+
   return (
-    <div className={className} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
-      <div
-        style={{
-          width: spinnerSize,
-          height: spinnerSize,
-          border: `2px solid #e5e7eb`,
-          borderTopColor: primary,
-          borderRadius: '50%',
-          animation: `spin 1.2s linear infinite`
-        }}
-      />
-      {label && (
-        <span style={{ color: primary, fontSize: '17px', fontWeight: '900' }}>
-          {label}
-        </span>
-      )}
-      <style>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
+    <div className={className} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {items.map(item => (
+        <button
+          key={item.id}
+          onClick={() => { setSelected(item.id); onInteract?.(item.id); }}
+          style={{
+            padding: '10px 20px',
+            background: selected === item.id ? primary : 'transparent',
+            color: selected === item.id ? '#fff' : primary,
+            border: `2px solid ${primary}`,
+            borderRadius: '20px',
+            cursor: 'pointer',
+            fontWeight: 600,
+            transition: 'all 200ms ease',
+            transform: selected === item.id ? 'scale(1.05)' : 'scale(1)'
+          }}
+        >
+          {item.label}
+        </button>
+      ))}
     </div>
   );
 };
