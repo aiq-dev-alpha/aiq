@@ -1,102 +1,159 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
-interface BrandPalette {
-  light: string;
-  main: string;
-  dark: string;
-  contrast: string;
+interface ButtonTheme {
+  primaryColor: string;
+  secondaryColor: string;
+  backgroundColor: string;
+  textColor: string;
+  borderColor: string;
+  accentColor: string;
 }
-
-type SurfaceType = 'matte' | 'glossy' | 'metallic' | 'frosted';
-type SizeScale = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
 
 @Component({
   selector: 'app-button',
   template: `
-    <button [ngStyle]="dynamicStyles" [disabled]="isDisabled" [ngClass]="classList" (click)="emit($event)" class="btn-root">
-      <span *ngIf="isLoading" class="loader-ring"></span>
-      <ng-container *ngIf="!isLoading">
-        <span *ngIf="leading" class="lead-content">{{ leading }}</span>
-        <span class="main-text"><ng-content></ng-content></span>
-        <span *ngIf="trailing" class="trail-content">{{ trailing }}</span>
-      </ng-container>
+    <button
+      [ngClass]="['btn', 'btn-' + variant, 'btn-' + size]"
+      [ngStyle]="buttonStyles"
+      [disabled]="disabled || loading"
+      [attr.aria-label]="ariaLabel"
+      [attr.aria-busy]="loading"
+      (click)="handleClick($event)"
+      class="magnetic-button">
+      <span *ngIf="loading" class="spinner atom-spinner"></span>
+      <span *ngIf="!loading && iconLeft" class="icon-left">{{ iconLeft }}</span>
+      <span class="btn-content">
+        <ng-content></ng-content>
+      </span>
+      <span *ngIf="!loading && iconRight" class="icon-right">{{ iconRight }}</span>
     </button>
   `,
   styles: [`
-    .btn-root { border: none; font-family: inherit; cursor: pointer; position: relative; overflow: hidden; outline: none; transition: all 0.25s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.625rem; }
-    .btn-root:disabled { cursor: not-allowed; opacity: 0.5; }
-    .btn-root::before { content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity 0.3s; }
-    .btn-root:hover:not(:disabled)::before { opacity: 0.1; background: currentColor; }
-    .btn-root:active:not(:disabled) { transform: scale(0.96); }
-    .loader-ring { width: 18px; height: 18px; border: 3px solid currentColor; border-top-color: transparent; border-radius: 50%; animation: ring-spin 0.7s linear infinite; }
-    @keyframes ring-spin { to { transform: rotate(360deg); } }
-    .main-text { font-weight: inherit; letter-spacing: 0.3px; }
-    .lead-content, .trail-content { display: flex; align-items: center; font-size: 1.1em; }
+    .magnetic-button {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      font-weight: 600;
+      border: none;
+      outline: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 5px 20px #c2410c66;
+    }
+
+    .magnetic-button:hover:not(:disabled) {
+      box-shadow: 0 8px 35px #c2410c99;
+      transform: translateY(-2px) scale(1.02);
+      animation: magneticAnim 0.5s ease;
+    }
+
+    .magnetic-button:active:not(:disabled) {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .magnetic-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    @keyframes magneticAnim {
+      0%, 100% { transform: translateY(-2px) scale(1.02); }
+      50% { transform: translateY(-4px) scale(1.04) rotate(1deg); }
+    }
+
+    .atom-spinner {
+      width: 1em;
+      height: 1em;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: currentColor;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .btn-content {
+      display: flex;
+      align-items: center;
+    }
+
+    .btn-sm {
+      padding: 0.5rem 1.5rem;
+      font-size: 0.875rem;
+      border-radius: 0.625rem;
+    }
+
+    .btn-md {
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
+      border-radius: 0.875rem;
+    }
+
+    .btn-lg {
+      padding: 1rem 2.5rem;
+      font-size: 1.125rem;
+      border-radius: 1.125rem;
+    }
   `]
 })
 export class ButtonComponent {
-  @Input() surface: SurfaceType = 'matte';
-  @Input() scale: SizeScale = 'md';
-  @Input() palette: Partial<BrandPalette> = {};
-  @Input() isDisabled = false;
-  @Input() isLoading = false;
-  @Input() leading?: string;
-  @Input() trailing?: string;
-  @Input() elevated = false;
-  @Input() pill = false;
-  @Output() btnClick = new EventEmitter<MouseEvent>();
+  @Input() theme: Partial<ButtonTheme> = {};
+  @Input() variant: 'default' | 'outlined' | 'filled' | 'magnetic' = 'default';
+  @Input() size: 'sm' | 'md' | 'lg' = 'md';
+  @Input() disabled: boolean = false;
+  @Input() loading: boolean = false;
+  @Input() iconLeft: string = '';
+  @Input() iconRight: string = '';
+  @Input() ariaLabel: string = '';
+  @Output() clicked = new EventEmitter<MouseEvent>();
 
-  private basePalette: BrandPalette = {
-    light: '#a78bfa',
-    main: '#8b5cf6',
-    dark: '#6d28d9',
-    contrast: '#ffffff'
+  private defaultTheme: ButtonTheme = {
+    primaryColor: '#c2410c',
+    secondaryColor: '#9a3412',
+    backgroundColor: '#fff7ed',
+    textColor: '#ffffff',
+    borderColor: '#c2410c',
+    accentColor: '#fdba74'
   };
 
-  get brand(): BrandPalette {
-    return { ...this.basePalette, ...this.palette };
+  get appliedTheme(): ButtonTheme {
+    return { ...this.defaultTheme, ...this.theme };
   }
 
-  get scaleStyles(): Record<string, string> {
-    const scales = {
-      xs: { padding: '5px 11px', fontSize: '11px', minHeight: '26px' },
-      sm: { padding: '7px 15px', fontSize: '12px', minHeight: '32px' },
-      md: { padding: '11px 22px', fontSize: '14px', minHeight: '42px' },
-      lg: { padding: '13px 26px', fontSize: '16px', minHeight: '50px' },
-      xl: { padding: '15px 32px', fontSize: '18px', minHeight: '58px' },
-      xxl: { padding: '18px 40px', fontSize: '20px', minHeight: '66px' }
+  get buttonStyles() {
+    const variantStyles = {
+      default: {
+        background: `linear-gradient(135deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})`,
+        color: this.appliedTheme.textColor,
+        border: 'none'
+      },
+      outlined: {
+        background: 'transparent',
+        color: this.appliedTheme.primaryColor,
+        border: `2px solid ${this.appliedTheme.primaryColor}`
+      },
+      filled: {
+        background: this.appliedTheme.primaryColor,
+        color: this.appliedTheme.textColor,
+        border: 'none'
+      },
+      magnetic: {
+        background: `linear-gradient(90deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.accentColor})`,
+        color: this.appliedTheme.textColor,
+        border: 'none'
+      }
     };
-    return scales[this.scale];
+
+    return variantStyles[this.variant];
   }
 
-  get surfaceStyles(): Record<string, string> {
-    const b = this.brand;
-    const surfaces = {
-      matte: { background: b.main, color: b.contrast, boxShadow: 'none' },
-      glossy: { background: `linear-gradient(135deg, ${b.light}, ${b.dark})`, color: b.contrast, boxShadow: `0 8px 16px ${b.main}40` },
-      metallic: { background: `linear-gradient(180deg, ${b.light}, ${b.main}, ${b.dark})`, color: b.contrast, boxShadow: `inset 0 1px 0 ${b.light}60, inset 0 -1px 0 ${b.dark}60` },
-      frosted: { background: `${b.main}cc`, backdropFilter: 'blur(10px)', color: b.contrast, boxShadow: `0 4px 24px ${b.main}30`, border: `1px solid ${b.light}50` }
-    };
-    return surfaces[this.surface];
-  }
-
-  get dynamicStyles(): Record<string, string> {
-    return {
-      ...this.scaleStyles,
-      ...this.surfaceStyles,
-      borderRadius: this.pill ? '999px' : '11px',
-      boxShadow: this.elevated ? `0 6px 20px ${this.brand.main}35` : this.surfaceStyles.boxShadow,
-      fontWeight: '600'
-    };
-  }
-
-  get classList(): string[] {
-    return [`surface-${this.surface}`, `scale-${this.scale}`, this.pill ? 'pill' : '', this.elevated ? 'elevated' : ''].filter(Boolean);
-  }
-
-  emit(event: MouseEvent): void {
-    if (!this.isDisabled && !this.isLoading) {
-      this.btnClick.emit(event);
+  handleClick(event: MouseEvent): void {
+    if (!this.disabled && !this.loading) {
+      this.clicked.emit(event);
     }
   }
 }

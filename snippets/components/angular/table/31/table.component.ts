@@ -1,13 +1,13 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 interface TableTheme {
-  background: string;
-  headerBackground: string;
-  headerText: string;
-  rowText: string;
-  border: string;
-  hoverBackground: string;
-  selectedBackground: string;
+  primaryColor: string;
+  secondaryColor: string;
+  backgroundColor: string;
+  textColor: string;
+  borderColor: string;
+  headerBgColor: string;
+  hoverColor: string;
 }
 
 interface TableColumn {
@@ -15,297 +15,430 @@ interface TableColumn {
   label: string;
   sortable?: boolean;
   width?: string;
-  align?: 'left' | 'center' | 'right';
-  format?: (value: any) => string;
 }
 
-interface SortConfig {
-  column: string;
-  direction: 'asc' | 'desc' | null;
+interface TableRow {
+  [key: string]: any;
+  id: string | number;
 }
-
-type TableVariant = 'default' | 'striped' | 'bordered' | 'borderless' | 'compact';
-type TableDensity = 'compact' | 'normal' | 'comfortable';
 
 @Component({
   selector: 'app-table',
   template: `
-    <div class="table-wrapper" [ngStyle]="wrapperStyles">
-      <table [ngStyle]="tableStyles" [ngClass]="tableClasses" class="data-table">
-        <thead [ngStyle]="headerStyles">
-          <tr>
-            <th *ngIf="selectable" class="select-column">
-              <input type="checkbox" [checked]="allSelected" (change)="toggleSelectAll()" />
-            </th>
-            <th *ngFor="let column of columns"
-                [ngStyle]="columnHeaderStyles(column)"
-                [class.sortable]="column.sortable"
-                (click)="column.sortable ? onSort(column.key) : null">
-              <div class="header-content">
-                <span>{{ column.label }}</span>
-                <span *ngIf="column.sortable && sortConfig.column === column.key" class="sort-icon">
-                  {{ sortConfig.direction === 'asc' ? '↑' : '↓' }}
-                </span>
-              </div>
-            </th>
-            <th *ngIf="hasActions" class="actions-column">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let row of sortedData; let i = index"
-              [ngStyle]="rowStyles(row, i)"
-              [class.selected]="isSelected(row)"
-              (click)="onRowClick(row)">
-            <td *ngIf="selectable" class="select-column">
-              <input type="checkbox" [checked]="isSelected(row)" (change)="toggleSelect(row)" (click)="$event.stopPropagation()" />
-            </td>
-            <td *ngFor="let column of columns" [ngStyle]="cellStyles(column)">
-              {{ column.format ? column.format(row[column.key]) : row[column.key] }}
-            </td>
-            <td *ngIf="hasActions" class="actions-column">
-              <ng-content select="[tableActions]" [ngTemplateOutlet]="actionsTemplate" [ngTemplateOutletContext]="{$implicit: row}"></ng-content>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div *ngIf="!data || data.length === 0" class="empty-state" [ngStyle]="emptyStyles">
-        <ng-content select="[emptyState]"></ng-content>
-        <p *ngIf="!hasEmptyState">No data available</p>
+    <div [ngStyle]="containerStyles">
+      <div *ngIf="searchable" [ngStyle]="searchBarStyles">
+        <input type="text" [ngStyle]="searchInputStyles" [(ngModel)]="searchTerm" (input)="onSearch()" placeholder="Enter query..." aria-label="Search table">
+      </div>
+      <div *ngIf="loading" [ngStyle]="loadingStyles">
+        <div [ngStyle]="spinnerStyles"></div>
+        <p>Loading...</p>
+      </div>
+      <div *ngIf="!loading" [ngStyle]="tableWrapperStyles">
+        <table [ngStyle]="tableStyles">
+          <thead [ngStyle]="theadStyles">
+            <tr>
+              <th *ngIf="selectable" [ngStyle]="thStyles"><input type="checkbox" [checked]="allSelected" (change)="toggleSelectAll()" aria-label="Select all"></th>
+              <th *ngFor="let col of columns" [ngStyle]="thStyles" [style.width]="col.width" scope="col" [attr.aria-sort]="getSortDirection(col.key)">
+                <div [ngStyle]="thContentStyles">
+                  <span>{{ col.label }}</span>
+                  <button *ngIf="col.sortable" (click)="onSort(col.key)" [ngStyle]="sortButtonStyles" [attr.aria-label]="'Sort by ' + col.label">{{ getSortIcon(col.key) }}</button>
+                </div>
+              </th>
+              <th *ngIf="hasActions" [ngStyle]="thStyles" scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="filteredData.length === 0">
+              <td [attr.colspan]="totalColumns" [ngStyle]="emptyStateStyles"><p>No data available</p></td>
+            </tr>
+            <ng-container *ngFor="let row of paginatedData; let i = index; let even = even">
+              <tr [ngStyle]="getTrStyles(row, even)" (click)="onRowClick(row)" [attr.aria-selected]="isSelected(row.id)">
+                <td *ngIf="selectable" [ngStyle]="tdStyles"><input type="checkbox" [checked]="isSelected(row.id)" (change)="toggleSelect(row.id)" (click)="$event.stopPropagation()" [attr.aria-label]="'Select row ' + (i + 1)"></td>
+                <td *ngFor="let col of columns" [ngStyle]="tdStyles">{{ row[col.key] }}</td>
+                <td *ngIf="hasActions" [ngStyle]="tdStyles">
+                  <div [ngStyle]="actionButtonGroupStyles">
+                    <button [ngStyle]="actionButtonStyles" (click)="onEdit(row); $event.stopPropagation()">Edit</button>
+                    <button [ngStyle]="deleteButtonStyles" (click)="onDelete(row); $event.stopPropagation()">Delete</button>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="expandable && expandedRows.has(row.id)" [ngStyle]="expandedRowStyles">
+                <td [attr.colspan]="totalColumns" [ngStyle]="expandedContentStyles"><ng-content></ng-content></td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="paginate && filteredData.length > 0" [ngStyle]="paginationStyles">
+        <div [ngStyle]="paginationInfoStyles">Showing {{ startIndex + 1 }}-{{ endIndex }} of {{ filteredData.length }}</div>
+        <div [ngStyle]="paginationButtonGroupStyles">
+          <button [ngStyle]="paginationButtonStyles" (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
+          <span [ngStyle]="pageNumberStyles">Page {{ currentPage }} of {{ totalPages }}</span>
+          <button [ngStyle]="paginationButtonStyles" (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+        </div>
       </div>
     </div>
-  `,
-  styles: [`
-    .table-wrapper {
-      width: 100%;
-      overflow-x: auto;
-      border-radius: 8px;
-    }
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-family: system-ui, -apple-system, sans-serif;
-    }
-    .data-table thead {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    .header-content {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      justify-content: space-between;
-    }
-    .sortable {
-      cursor: pointer;
-      user-select: none;
-    }
-    .sortable:hover {
-      opacity: 0.8;
-    }
-    .sort-icon {
-      font-size: 0.875rem;
-    }
-    .select-column {
-      width: 40px;
-      text-align: center;
-    }
-    .actions-column {
-      width: 100px;
-      text-align: center;
-    }
-    .empty-state {
-      padding: 3rem;
-      text-align: center;
-      color: #6b7280;
-    }
-    .striped tbody tr:nth-child(even) {
-      background: rgba(0, 0, 0, 0.02);
-    }
-    .bordered {
-      border: 1px solid;
-    }
-    .bordered th,
-    .bordered td {
-      border: 1px solid;
-    }
-    .compact th,
-    .compact td {
-      padding: 0.5rem !important;
-    }
-  `]
+  `
 })
 export class TableComponent {
-  @Input() variant: TableVariant = 'default';
-  @Input() density: TableDensity = 'normal';
   @Input() theme: Partial<TableTheme> = {};
   @Input() columns: TableColumn[] = [];
-  @Input() data: any[] = [];
-  @Input() selectable = false;
-  @Input() hoverable = true;
-  @Input() hasActions = false;
-  @Input() hasEmptyState = false;
-  @Output() rowClick = new EventEmitter<any>();
-  @Output() sort = new EventEmitter<SortConfig>();
-  @Output() selectionChange = new EventEmitter<any[]>();
+  @Input() data: TableRow[] = [];
+  @Input() selectable: boolean = false;
+  @Input() searchable: boolean = true;
+  @Input() paginate: boolean = true;
+  @Input() pageSize: number = 10;
+  @Input() striped: boolean = true;
+  @Input() bordered: boolean = false;
+  @Input() size: 'compact' | 'comfortable' | 'spacious' = 'comfortable';
+  @Input() stickyHeader: boolean = true;
+  @Input() expandable: boolean = false;
+  @Input() hasActions: boolean = true;
+  @Input() loading: boolean = false;
 
-  selectedRows: any[] = [];
-  sortConfig: SortConfig = { column: '', direction: null };
+  @Output() rowClick = new EventEmitter<TableRow>();
+  @Output() edit = new EventEmitter<TableRow>();
+  @Output() delete = new EventEmitter<TableRow>();
+  @Output() selectionChange = new EventEmitter<(string | number)[]>();
+
+  searchTerm: string = '';
+  sortKey: string = '';
+  sortDirection: 'asc' | 'desc' | null = null;
+  currentPage: number = 1;
+  selectedRows: Set<string | number> = new Set();
+  expandedRows: Set<string | number> = new Set();
 
   private defaultTheme: TableTheme = {
-    background: '#ffffff',
-    headerBackground: '#f8fafc',
-    headerText: '#0f172a',
-    rowText: '#334155',
-    border: '#e2e8f0',
-    hoverBackground: '#f1f5f9',
-    selectedBackground: '#dbeafe'
+    primaryColor: '#0284c7',
+    secondaryColor: '#0369a1',
+    backgroundColor: '#f0f9ff',
+    textColor: '#0c4a6e',
+    borderColor: '#7dd3fc',
+    headerBgColor: '#e0f2fe',
+    hoverColor: '#bae6fd'
   };
 
   get appliedTheme(): TableTheme {
     return { ...this.defaultTheme, ...this.theme };
   }
 
+  get filteredData(): TableRow[] {
+    let result = [...this.data];
+    if (this.searchTerm) {
+      result = result.filter(row =>
+        Object.values(row).some(val => String(val).toLowerCase().includes(this.searchTerm.toLowerCase()))
+      );
+    }
+    if (this.sortKey && this.sortDirection) {
+      result.sort((a, b) => {
+        const aVal = a[this.sortKey];
+        const bVal = b[this.sortKey];
+        const modifier = this.sortDirection === 'asc' ? 1 : -1;
+        return aVal > bVal ? modifier : aVal < bVal ? -modifier : 0;
+      });
+    }
+    return result;
+  }
+
+  get paginatedData(): TableRow[] {
+    if (!this.paginate) return this.filteredData;
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredData.slice(start, start + this.pageSize);
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.filteredData.length / this.pageSize);
+  }
+
+  get startIndex(): number {
+    return (this.currentPage - 1) * this.pageSize;
+  }
+
+  get endIndex(): number {
+    return Math.min(this.startIndex + this.pageSize, this.filteredData.length);
+  }
+
   get allSelected(): boolean {
-    return this.data.length > 0 && this.selectedRows.length === this.data.length;
+    return this.paginatedData.length > 0 && this.paginatedData.every(row => this.selectedRows.has(row.id));
   }
 
-  get tableClasses(): string[] {
-    return [
-      this.variant,
-      `density-${this.density}`,
-      this.hoverable ? 'hoverable' : ''
-    ].filter(Boolean);
+  get totalColumns(): number {
+    return this.columns.length + (this.selectable ? 1 : 0) + (this.hasActions ? 1 : 0);
   }
 
-  get sortedData(): any[] {
-    if (!this.sortConfig.column || !this.sortConfig.direction) {
-      return this.data;
-    }
-
-    return [...this.data].sort((a, b) => {
-      const aVal = a[this.sortConfig.column];
-      const bVal = b[this.sortConfig.column];
-      const modifier = this.sortConfig.direction === 'asc' ? 1 : -1;
-
-      if (aVal < bVal) return -1 * modifier;
-      if (aVal > bVal) return 1 * modifier;
-      return 0;
-    });
-  }
-
-  get wrapperStyles(): Record<string, string> {
-    const t = this.appliedTheme;
+  get containerStyles() {
     return {
-      background: t.background,
-      borderColor: this.variant === 'bordered' ? t.border : 'transparent'
+      width: '100%',
+      backgroundColor: this.appliedTheme.backgroundColor,
+      borderRadius: '10px',
+      boxShadow: '0 4px 11px rgba(0,0,0,0.10)',
+      overflow: 'hidden'
     };
   }
 
-  get tableStyles(): Record<string, string> {
+  get searchBarStyles() {
     return {
-      fontSize: '0.875rem'
+      padding: '16px',
+      borderBottom: `1px solid ${this.appliedTheme.borderColor}`
     };
   }
 
-  get headerStyles(): Record<string, string> {
-    const t = this.appliedTheme;
+  get searchInputStyles() {
     return {
-      background: t.headerBackground,
-      color: t.headerText,
-      borderBottom: `2px solid ${t.border}`
+      width: '100%',
+      padding: '10px 14px',
+      border: `1px solid ${this.appliedTheme.borderColor}`,
+      borderRadius: '8px',
+      fontSize: '14px'
     };
   }
 
-  columnHeaderStyles(column: TableColumn): Record<string, string> {
-    const densityMap = {
-      compact: '0.5rem',
-      normal: '0.75rem',
-      comfortable: '1rem'
-    };
-
+  get tableWrapperStyles() {
     return {
-      padding: densityMap[this.density],
-      textAlign: column.align || 'left',
+      overflowX: 'auto',
+      maxHeight: this.stickyHeader ? '610px' : 'none',
+      overflowY: this.stickyHeader ? 'auto' : 'visible'
+    };
+  }
+
+  get tableStyles() {
+    return {
+      width: '100%',
+      borderCollapse: 'collapse' as const,
+      fontSize: this.size === 'compact' ? '13px' : this.size === 'comfortable' ? '14px' : '16px'
+    };
+  }
+
+  get theadStyles() {
+    return {
+      backgroundColor: this.appliedTheme.headerBgColor,
+      position: this.stickyHeader ? 'sticky' as const : 'static' as const,
+      top: '0',
+      zIndex: '10'
+    };
+  }
+
+  get thStyles() {
+    const padding = this.size === 'compact' ? '8px 12px' : this.size === 'comfortable' ? '12px 16px' : '16px 20px';
+    return {
+      padding,
+      textAlign: 'left' as const,
       fontWeight: '600',
-      fontSize: '0.8125rem',
-      textTransform: 'uppercase',
-      letterSpacing: '0.05em',
-      width: column.width || 'auto'
+      color: this.appliedTheme.textColor,
+      borderBottom: `2px solid ${this.appliedTheme.borderColor}`,
+      borderRight: this.bordered ? `1px solid ${this.appliedTheme.borderColor}` : 'none'
     };
   }
 
-  rowStyles(row: any, index: number): Record<string, string> {
-    const t = this.appliedTheme;
-    const densityMap = {
-      compact: '0.5rem',
-      normal: '0.75rem',
-      comfortable: '1rem'
-    };
-
+  get thContentStyles() {
     return {
-      background: this.isSelected(row) ? t.selectedBackground : 'transparent',
-      color: t.rowText,
-      borderBottom: `1px solid ${t.border}`,
-      cursor: this.hoverable ? 'pointer' : 'default',
-      transition: 'background 0.15s ease'
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px'
     };
   }
 
-  cellStyles(column: TableColumn): Record<string, string> {
-    const densityMap = {
-      compact: '0.5rem',
-      normal: '0.75rem',
-      comfortable: '1rem'
-    };
-
+  get sortButtonStyles() {
     return {
-      padding: densityMap[this.density],
-      textAlign: column.align || 'left'
+      background: 'none',
+      border: 'none',
+      cursor: 'pointer',
+      fontSize: '12px',
+      color: this.appliedTheme.primaryColor
     };
   }
 
-  get emptyStyles(): Record<string, string> {
+  getTrStyles(row: TableRow, even: boolean) {
+    const isRowSelected = this.selectedRows.has(row.id);
+    const bgColor = isRowSelected ? this.appliedTheme.hoverColor : (this.striped && even ? '#f9fafb' : this.appliedTheme.backgroundColor);
     return {
-      padding: '3rem',
-      textAlign: 'center'
+      backgroundColor: bgColor,
+      cursor: 'pointer',
+      transition: 'background-color 0.2s'
     };
   }
 
-  isSelected(row: any): boolean {
-    return this.selectedRows.includes(row);
+  get tdStyles() {
+    const padding = this.size === 'compact' ? '8px 12px' : this.size === 'comfortable' ? '12px 16px' : '16px 20px';
+    return {
+      padding,
+      borderBottom: `1px solid ${this.appliedTheme.borderColor}`,
+      borderRight: this.bordered ? `1px solid ${this.appliedTheme.borderColor}` : 'none',
+      color: this.appliedTheme.textColor
+    };
   }
 
-  toggleSelect(row: any): void {
-    const index = this.selectedRows.indexOf(row);
-    if (index > -1) {
-      this.selectedRows.splice(index, 1);
+  get emptyStateStyles() {
+    return {
+      padding: '50px 16px',
+      textAlign: 'center' as const,
+      color: '#9ca3af'
+    };
+  }
+
+  get loadingStyles() {
+    return {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      alignItems: 'center',
+      padding: '50px',
+      gap: '16px'
+    };
+  }
+
+  get spinnerStyles() {
+    return {
+      width: '40px',
+      height: '40px',
+      border: `4px solid ${this.appliedTheme.borderColor}`,
+      borderTop: `4px solid ${this.appliedTheme.primaryColor}`,
+      borderRadius: '50%',
+      animation: 'spin 1s linear infinite'
+    };
+  }
+
+  get paginationStyles() {
+    return {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '16px',
+      borderTop: `1px solid ${this.appliedTheme.borderColor}`
+    };
+  }
+
+  get paginationInfoStyles() {
+    return {
+      color: this.appliedTheme.textColor,
+      fontSize: '14px'
+    };
+  }
+
+  get paginationButtonGroupStyles() {
+    return {
+      display: 'flex',
+      gap: '12px',
+      alignItems: 'center'
+    };
+  }
+
+  get paginationButtonStyles() {
+    return {
+      padding: '6px 12px',
+      border: `1px solid ${this.appliedTheme.borderColor}`,
+      borderRadius: '6px',
+      backgroundColor: this.appliedTheme.backgroundColor,
+      color: this.appliedTheme.primaryColor,
+      cursor: 'pointer'
+    };
+  }
+
+  get pageNumberStyles() {
+    return {
+      color: this.appliedTheme.textColor
+    };
+  }
+
+  get actionButtonGroupStyles() {
+    return {
+      display: 'flex',
+      gap: '8px'
+    };
+  }
+
+  get actionButtonStyles() {
+    return {
+      padding: '4px 8px',
+      border: 'none',
+      borderRadius: '4px',
+      backgroundColor: this.appliedTheme.primaryColor,
+      color: '#ffffff',
+      cursor: 'pointer',
+      fontSize: '12px'
+    };
+  }
+
+  get deleteButtonStyles() {
+    return {
+      padding: '4px 8px',
+      border: 'none',
+      borderRadius: '4px',
+      backgroundColor: '#ef4444',
+      color: '#ffffff',
+      cursor: 'pointer',
+      fontSize: '12px'
+    };
+  }
+
+  get expandedRowStyles() {
+    return {
+      backgroundColor: '#f9fafb'
+    };
+  }
+
+  get expandedContentStyles() {
+    return {
+      padding: '16px'
+    };
+  }
+
+  onSearch() { this.currentPage = 1; }
+  onSort(key: string) {
+    if (this.sortKey === key) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : this.sortDirection === 'desc' ? null : 'asc';
+      if (this.sortDirection === null) this.sortKey = '';
     } else {
-      this.selectedRows.push(row);
+      this.sortKey = key;
+      this.sortDirection = 'asc';
     }
-    this.selectionChange.emit(this.selectedRows);
   }
-
-  toggleSelectAll(): void {
+  getSortIcon(key: string): string {
+    if (this.sortKey !== key) return '↑';
+    return this.sortDirection === 'asc' ? '↑' : '↓';
+  }
+  getSortDirection(key: string): string | null {
+    if (this.sortKey !== key) return null;
+    return this.sortDirection === 'asc' ? 'ascending' : 'descending';
+  }
+  toggleSelect(id: string | number) {
+    if (this.selectedRows.has(id)) {
+      this.selectedRows.delete(id);
+    } else {
+      this.selectedRows.add(id);
+    }
+    this.selectionChange.emit(Array.from(this.selectedRows));
+  }
+  toggleSelectAll() {
     if (this.allSelected) {
-      this.selectedRows = [];
+      this.paginatedData.forEach(row => this.selectedRows.delete(row.id));
     } else {
-      this.selectedRows = [...this.data];
+      this.paginatedData.forEach(row => this.selectedRows.add(row.id));
     }
-    this.selectionChange.emit(this.selectedRows);
+    this.selectionChange.emit(Array.from(this.selectedRows));
   }
-
-  onSort(column: string): void {
-    if (this.sortConfig.column === column) {
-      this.sortConfig.direction = this.sortConfig.direction === 'asc' ? 'desc' : this.sortConfig.direction === 'desc' ? null : 'asc';
-    } else {
-      this.sortConfig = { column, direction: 'asc' };
+  isSelected(id: string | number): boolean {
+    return this.selectedRows.has(id);
+  }
+  onRowClick(row: TableRow) {
+    if (this.expandable) {
+      if (this.expandedRows.has(row.id)) {
+        this.expandedRows.delete(row.id);
+      } else {
+        this.expandedRows.add(row.id);
+      }
     }
-    this.sort.emit(this.sortConfig);
-  }
-
-  onRowClick(row: any): void {
     this.rowClick.emit(row);
+  }
+  onEdit(row: TableRow) { this.edit.emit(row); }
+  onDelete(row: TableRow) { this.delete.emit(row); }
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
   }
 }

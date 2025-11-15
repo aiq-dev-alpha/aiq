@@ -1,100 +1,217 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ButtonTheme {
-  brandHue: number;
-  saturation: number;
-  neutralColor: string;
-  fontFamily: string;
+  primary: string;
+  secondary: string;
+  success: string;
+  danger: string;
+  warning: string;
+  info: string;
 }
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  kind?: 'standard' | 'emphasized' | 'subdued' | 'plain';
-  dimension?: 'xs' | 's' | 'm' | 'l' | 'xl';
-  rounded?: boolean;
+  variant?: 'solid' | 'outline' | 'minimal' | 'elevated' | 'neumorphic';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  fullWidth?: boolean;
+  loading?: boolean;
+  icon?: React.ReactNode;
+  iconPosition?: 'left' | 'right';
+  disabled?: boolean;
+  glass?: boolean;
   theme?: Partial<ButtonTheme>;
-  leftSlot?: React.ReactNode;
-  rightSlot?: React.ReactNode;
-  fullSpan?: boolean;
 }
 
 const defaultTheme: ButtonTheme = {
-  brandHue: 260,
-  saturation: 75,
-  neutralColor: '#737373',
-  fontFamily: 'system-ui, sans-serif'
+  primary: 'hsl(264, 70%, 50%)',
+  secondary: 'hsl(294, 70%, 60%)',
+  success: '#10b981',
+  danger: '#ef4444',
+  warning: '#f59e0b',
+  info: '#06b6d4'
 };
 
 export const Button: React.FC<ButtonProps> = ({
-  kind = 'standard',
-  dimension = 'm',
-  rounded = false,
-  theme = {},
-  leftSlot,
-  rightSlot,
-  fullSpan = false,
   children,
+  variant = 'solid',
+  size = 'md',
+  fullWidth = false,
+  loading = false,
+  icon,
+  iconPosition = 'left',
+  disabled = false,
+  glass = false,
+  theme = {},
   style,
   ...props
 }) => {
+  const [hovered, setHovered] = useState(false);
+  const [active, setActive] = useState(false);
   const appliedTheme = { ...defaultTheme, ...theme };
-  const brandColor = `hsl(${appliedTheme.brandHue}, ${appliedTheme.saturation}%, 55%)`;
 
-  const dimensionMap = {
-    xs: { padding: '0.375rem 0.75rem', fontSize: '0.75rem', height: '1.75rem' },
-    s: { padding: '0.5rem 1rem', fontSize: '0.875rem', height: '2.25rem' },
-    m: { padding: '0.625rem 1.25rem', fontSize: '1rem', height: '2.75rem' },
-    l: { padding: '0.75rem 1.5rem', fontSize: '1.125rem', height: '3.25rem' },
-    xl: { padding: '1rem 2rem', fontSize: '1.25rem', height: '3.75rem' }
+  const sizeStyles: Record<string, React.CSSProperties> = {
+    xs: { padding: '0.375rem 0.75rem', fontSize: '0.75rem', gap: '0.25rem' },
+    sm: { padding: '0.5rem 1rem', fontSize: '0.875rem', gap: '0.375rem' },
+    md: { padding: '0.625rem 1.25rem', fontSize: '1rem', gap: '0.5rem' },
+    lg: { padding: '0.75rem 1.5rem', fontSize: '1.125rem', gap: '0.625rem' },
+    xl: { padding: '1rem 2rem', fontSize: '1.25rem', gap: '0.75rem' }
   };
 
-  const kindMap = {
-    standard: {
-      backgroundColor: brandColor,
+  const variantStyles: Record<string, React.CSSProperties> = {
+    solid: {
+      background: appliedTheme.primary,
       color: '#ffffff',
       border: 'none',
-      fontWeight: 600
+      boxShadow: `0 4px 6px ${appliedTheme.primary}30`,
+      transform: hovered ? 'translateY(-2px)' : 'translateY(0)'
     },
-    emphasized: {
-      background: `linear-gradient(135deg, ${brandColor}, hsl(${appliedTheme.brandHue}, ${appliedTheme.saturation}%, 65%))`,
+    outline: {
+      background: 'transparent',
+      color: appliedTheme.primary,
+      border: `2px solid ${appliedTheme.primary}`,
+      boxShadow: hovered ? `0 0 0 3px ${appliedTheme.primary}20` : 'none'
+    },
+    ghost: {
+      background: hovered ? `${appliedTheme.primary}15` : 'transparent',
+      color: appliedTheme.primary,
+      border: 'none',
+      boxShadow: 'none'
+    },
+    gradient: {
+      background: `linear-gradient(135deg, ${appliedTheme.primary}, ${appliedTheme.secondary})`,
       color: '#ffffff',
       border: 'none',
-      fontWeight: 700,
-      boxShadow: `0 4px 12px ${brandColor}40`
+      boxShadow: `0 4px 15px ${appliedTheme.primary}50`
     },
-    subdued: {
-      backgroundColor: `${brandColor}20`,
-      color: brandColor,
+    glass: {
+      background: 'rgba(255, 255, 255, 0.1)',
+      backdropFilter: 'blur(10px)',
+      color: appliedTheme.primary,
+      border: `1px solid ${appliedTheme.primary}40`,
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
+    },
+    soft: {
+      background: `${appliedTheme.primary}20`,
+      color: appliedTheme.primary,
       border: 'none',
-      fontWeight: 500
+      boxShadow: 'none'
     },
-    plain: {
-      backgroundColor: 'transparent',
-      color: brandColor,
-      border: `1px solid ${brandColor}`,
-      fontWeight: 500
+    neon: {
+      background: '#000000',
+      color: appliedTheme.primary,
+      border: `2px solid ${appliedTheme.primary}`,
+      boxShadow: hovered ? `0 0 20px ${appliedTheme.primary}, 0 0 40px ${appliedTheme.primary}80` : `0 0 10px ${appliedTheme.primary}`
+    },
+    neumorphic: {
+      background: '#e0e5ec',
+      color: '#4a5568',
+      border: 'none',
+      boxShadow: active ? 'inset 5px 5px 10px #a3b1c6, inset -5px -5px 10px #ffffff' : '5px 5px 10px #a3b1c6, -5px -5px 10px #ffffff'
+    },
+    raised: {
+      background: appliedTheme.primary,
+      color: '#ffffff',
+      border: 'none',
+      boxShadow: `0 6px 0 ${appliedTheme.secondary}, 0 8px 15px rgba(0, 0, 0, 0.2)`,
+      transform: active ? 'translateY(4px)' : 'translateY(0)'
+    },
+    pulse: {
+      background: appliedTheme.primary,
+      color: '#ffffff',
+      border: 'none',
+      boxShadow: hovered ? `0 0 0 8px ${appliedTheme.primary}30` : 'none',
+      animation: hovered ? 'pulse 1.5s infinite' : 'none'
+    },
+    shimmer: {
+      background: `linear-gradient(135deg, ${appliedTheme.primary}, ${appliedTheme.secondary}, ${appliedTheme.primary})`,
+      backgroundSize: '200% 100%',
+      color: '#ffffff',
+      border: 'none',
+      animation: hovered ? 'shimmer 2s infinite' : 'none'
+    },
+    glow: {
+      background: appliedTheme.primary,
+      color: '#ffffff',
+      border: 'none',
+      boxShadow: hovered ? `0 0 20px ${appliedTheme.primary}, 0 0 40px ${appliedTheme.primary}80` : `0 4px 6px ${appliedTheme.primary}30`
+    },
+    'border-glow': {
+      background: 'transparent',
+      color: appliedTheme.primary,
+      border: `2px solid ${appliedTheme.primary}`,
+      boxShadow: hovered ? `0 0 15px ${appliedTheme.primary}, inset 0 0 15px ${appliedTheme.primary}40` : 'none'
+    },
+    minimal: {
+      background: 'transparent',
+      color: appliedTheme.primary,
+      border: 'none',
+      boxShadow: 'none',
+      textDecoration: hovered ? 'underline' : 'none'
+    },
+    elevated: {
+      background: appliedTheme.primary,
+      color: '#ffffff',
+      border: 'none',
+      boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
+      transform: hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0)'
     }
   };
 
   const baseStyles: React.CSSProperties = {
+    position: 'relative',
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '0.5rem',
-    fontFamily: appliedTheme.fontFamily,
-    borderRadius: rounded ? '9999px' : '0.5rem',
-    cursor: 'pointer',
-    transition: 'all 0.2s ease',
-    width: fullSpan ? '100%' : 'auto',
-    ...dimensionMap[dimension],
-    ...kindMap[kind],
+    borderRadius: variant === 'neumorphic' ? '1rem' : '0.5rem',
+    fontFamily: 'system-ui, -apple-system, sans-serif',
+    fontWeight: 600,
+    cursor: disabled || loading ? 'not-allowed' : 'pointer',
+    opacity: disabled ? 0.5 : 1,
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    width: fullWidth ? '100%' : 'auto',
+    overflow: 'hidden',
+    ...sizeStyles[size],
+    ...variantStyles[variant],
     ...style
   };
 
+  const spinnerStyle: React.CSSProperties = {
+    width: '1em',
+    height: '1em',
+    border: '2px solid rgba(255, 255, 255, 0.3)',
+    borderTopColor: '#ffffff',
+    borderRadius: '50%',
+    animation: 'ripple48 0.6s linear infinite'
+  };
+
   return (
-    <button style={baseStyles} {...props}>
-      {leftSlot && <span style={{ display: 'flex' }}>{leftSlot}</span>}
-      <span>{children}</span>
-      {rightSlot && <span style={{ display: 'flex' }}>{rightSlot}</span>}
-    </button>
+    <>
+      <style>{`
+        @keyframes ripple48 {
+          to { transform: rotate(360deg); }
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+        @keyframes shimmer {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+      `}</style>
+      <button
+        style={baseStyles}
+        disabled={disabled || loading}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => { setHovered(false); setActive(false); }}
+        onMouseDown={() => setActive(true)}
+        onMouseUp={() => setActive(false)}
+        {...props}
+      >
+        {loading && <span style={spinnerStyle} />}
+        {!loading && icon && iconPosition === 'left' && <span style={{ display: 'flex' }}>{icon}</span>}
+        {!loading && <span>{children}</span>}
+        {!loading && icon && iconPosition === 'right' && <span style={{ display: 'flex' }}>{icon}</span>}
+      </button>
+    </>
   );
 };

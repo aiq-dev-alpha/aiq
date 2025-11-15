@@ -1,11 +1,9 @@
-import React, { useEffect, CSSProperties, ReactNode } from 'react';
+import React, { useEffect, useRef, CSSProperties, ReactNode } from 'react';
 
 interface ModalTheme {
-  overlay: string;
   background: string;
-  text: string;
+  overlay: string;
   border: string;
-  accent: string;
   shadow: string;
 }
 
@@ -14,40 +12,41 @@ interface ModalProps {
   onClose: () => void;
   title?: string;
   children: ReactNode;
-  footer?: ReactNode;
-  size?: 'small' | 'medium' | 'large' | 'full';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
+  variant?: 'default' | 'centered' | 'drawer' | 'fullscreen' | 'bottom-sheet';
   closeOnOverlay?: boolean;
+  closeOnEsc?: boolean;
   showCloseButton?: boolean;
   theme?: Partial<ModalTheme>;
-  position?: 'center' | 'top' | 'bottom';
 }
 
 const defaultTheme: ModalTheme = {
-  overlay: 'rgba(0, 0, 0, 0.6)',
   background: '#ffffff',
-  text: '#0f172a',
+  overlay: 'rgba(0, 0, 0, 0.6)',
   border: '#e2e8f0',
-  accent: '#3b82f6',
-  shadow: 'rgba(0, 0, 0, 0.2)'
+  shadow: 'rgba(0, 0, 0, 0.25)'
 };
 
 export const Modal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
-  title,
+  title = 'Modal Title',
   children,
-  footer,
-  size = 'medium',
+  size = 'md',
+  variant = 'default',
   closeOnOverlay = true,
+  closeOnEsc = true,
   showCloseButton = true,
-  theme = {},
-  position = 'center'
+  theme = {}
 }) => {
   const appliedTheme = { ...defaultTheme, ...theme };
+  const modalRef = useRef<HTMLDivElement>(null);
+  const firstFocusableRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      firstFocusableRef.current?.focus();
     } else {
       document.body.style.overflow = '';
     }
@@ -56,91 +55,165 @@ export const Modal: React.FC<ModalProps> = ({
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (closeOnEsc && e.key === 'Escape') {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      document.addEventListener('keydown', handleEsc);
+    }
+    return () => document.removeEventListener('keydown', handleEsc);
+  }, [isOpen, closeOnEsc, onClose]);
+
+  useEffect(() => {
+    if (!isOpen || !modalRef.current) return;
+
+    const focusableElements = modalRef.current.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstElement = focusableElements[0] as HTMLElement;
+    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+    const handleTab = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          lastElement?.focus();
+          e.preventDefault();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          firstElement?.focus();
+          e.preventDefault();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleTab);
+    return () => document.removeEventListener('keydown', handleTab);
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const sizeMap: Record<string, CSSProperties> = {
-    small: { maxWidth: '400px', width: '90%' },
-    medium: { maxWidth: '600px', width: '90%' },
-    large: { maxWidth: '900px', width: '90%' },
-    full: { maxWidth: '95vw', width: '95%', height: '95vh' }
+    sm: { maxWidth: '400px', width: '90%' },
+    md: { maxWidth: '600px', width: '90%' },
+    lg: { maxWidth: '900px', width: '90%' },
+    xl: { maxWidth: '1200px', width: '95%' },
+    full: { maxWidth: '100vw', width: '100%', height: '100vh', borderRadius: 0 }
   };
 
-  const positionMap: Record<string, CSSProperties> = {
-    center: { alignItems: 'center', justifyContent: 'center' },
-    top: { alignItems: 'flex-start', justifyContent: 'center', paddingTop: '60px' },
-    bottom: { alignItems: 'flex-end', justifyContent: 'center', paddingBottom: '60px' }
+  const variantStyles: Record<string, CSSProperties> = {
+    default: { transform: 'none' },
+    centered: { margin: 'auto' },
+    drawer: { marginLeft: 'auto', height: '100vh', borderRadius: '0' },
+    fullscreen: { width: '100vw', height: '100vh', borderRadius: '0', maxWidth: '100vw' },
+    'bottom-sheet': { marginTop: 'auto', borderRadius: '24px 24px 0 0', maxHeight: '85vh' }
   };
 
   const overlayStyle: CSSProperties = {
     position: 'fixed',
     inset: 0,
     background: appliedTheme.overlay,
-    backdropFilter: 'blur(4px)',
+    backdropFilter: 'blur(8px)',
     display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     zIndex: 9999,
-    animation: 'fadeIn 0.2s ease-out',
-    ...positionMap[position]
+    animation: 'fadeIn 0.3s ease-out'
   };
 
   const modalStyle: CSSProperties = {
     ...sizeMap[size],
+    ...variantStyles[variant],
     background: appliedTheme.background,
-    borderRadius: '16px',
-    boxShadow: `0 20px 60px ${appliedTheme.shadow}`,
+    borderRadius: '20px',
+    boxShadow: `0 25px 50px -12px ${appliedTheme.shadow}`,
     display: 'flex',
     flexDirection: 'column',
-    maxHeight: position === 'center' ? '90vh' : undefined,
-    animation: position === 'center' ? 'scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)' : 'slideUp 0.3s ease-out',
-    border: `1px solid ${appliedTheme.border}20`
+    maxHeight: variant === 'bottom-sheet' ? '85vh' : '90vh',
+    animation: 'bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+    border: `1px solid ${appliedTheme.border}`,
+    position: 'relative'
   };
 
   const headerStyle: CSSProperties = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '24px 28px',
+    padding: '24px 32px',
     borderBottom: `2px solid ${appliedTheme.border}`,
-    color: appliedTheme.text
+    background: `linear-gradient(135deg, ${appliedTheme.background} 0%, #f8fafc 100%)`
   };
 
   const titleStyle: CSSProperties = {
     margin: 0,
-    fontSize: '20px',
-    fontWeight: 700,
-    color: appliedTheme.text,
-    letterSpacing: '0.3px'
+    fontSize: '24px',
+    fontWeight: 800,
+    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    letterSpacing: '-0.5px'
   };
 
   const closeButtonStyle: CSSProperties = {
-    background: 'transparent',
+    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     border: 'none',
-    fontSize: '24px',
+    borderRadius: '50%',
+    width: '36px',
+    height: '36px',
+    fontSize: '20px',
     cursor: 'pointer',
-    padding: '4px 8px',
-    borderRadius: '6px',
-    color: appliedTheme.text,
-    transition: 'all 0.2s ease',
-    lineHeight: 1,
+    color: '#fff',
+    transition: 'all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    boxShadow: '0 4px 12px rgba(102, 126, 234, 0.4)'
   };
 
   const contentStyle: CSSProperties = {
-    padding: '28px',
+    padding: '32px',
     flex: 1,
     overflow: 'auto',
-    color: appliedTheme.text,
-    fontSize: '15px',
-    lineHeight: 1.6
+    fontSize: '16px',
+    lineHeight: 1.7,
+    color: '#334155'
   };
 
   const footerStyle: CSSProperties = {
-    padding: '20px 28px',
+    padding: '20px 32px',
     borderTop: `2px solid ${appliedTheme.border}`,
     display: 'flex',
     gap: '12px',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    background: '#f8fafc'
+  };
+
+  const buttonStyle: CSSProperties = {
+    padding: '12px 28px',
+    borderRadius: '12px',
+    border: 'none',
+    fontSize: '15px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'all 0.3s ease'
+  };
+
+  const primaryButtonStyle: CSSProperties = {
+    ...buttonStyle,
+    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    color: '#fff',
+    boxShadow: '0 4px 12px rgba(102, 126, 234, 0.4)'
+  };
+
+  const secondaryButtonStyle: CSSProperties = {
+    ...buttonStyle,
+    background: '#e2e8f0',
+    color: '#475569'
   };
 
   return (
@@ -150,40 +223,52 @@ export const Modal: React.FC<ModalProps> = ({
           from { opacity: 0; }
           to { opacity: 1; }
         }
-        @keyframes scaleIn {
-          from { opacity: 0; transform: scale(0.9); }
-          to { opacity: 1; transform: scale(1); }
+        @keyframes bounceIn {
+          0% { opacity: 0; transform: scale(0.3) rotate(-10deg); }
+          50% { opacity: 1; transform: scale(1.05) rotate(2deg); }
+          70% { transform: scale(0.9) rotate(-1deg); }
+          100% { transform: scale(1) rotate(0deg); }
         }
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(40px); }
-          to { opacity: 1; transform: translateY(0); }
+        .modal-v1-close-btn:hover {
+          transform: scale(1.15) rotate(90deg);
+          box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
         }
-        .modal-close-btn:hover {
-          background: ${appliedTheme.border}40 !important;
-          transform: rotate(90deg);
+        .modal-v1-primary-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(102, 126, 234, 0.6);
+        }
+        .modal-v1-secondary-btn:hover {
+          background: #cbd5e1;
+          transform: translateY(-2px);
         }
       `}</style>
       <div style={overlayStyle} onClick={closeOnOverlay ? onClose : undefined}>
-        <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
-          {(title || showCloseButton) && (
-            <div style={headerStyle}>
-              {title && <h2 style={titleStyle}>{title}</h2>}
-              {showCloseButton && (
-                <button
-                  className="modal-close-btn"
-                  style={closeButtonStyle}
-                  onClick={onClose}
-                  aria-label="Close modal"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-          )}
+        <div ref={modalRef} style={modalStyle} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="modal-title">
+          <div style={headerStyle}>
+            <h2 id="modal-title" style={titleStyle}>{title}</h2>
+            {showCloseButton && (
+              <button
+                ref={firstFocusableRef}
+                className="modal-v1-close-btn"
+                style={closeButtonStyle}
+                onClick={onClose}
+                aria-label="Close modal"
+              >
+                ✕
+              </button>
+            )}
+          </div>
 
           <div style={contentStyle}>{children}</div>
 
-          {footer && <div style={footerStyle}>{footer}</div>}
+          <div style={footerStyle}>
+            <button className="modal-v1-secondary-btn" style={secondaryButtonStyle} onClick={onClose}>
+              Cancel
+            </button>
+            <button className="modal-v1-primary-btn" style={primaryButtonStyle} onClick={onClose}>
+              Confirm
+            </button>
+          </div>
         </div>
       </div>
     </>

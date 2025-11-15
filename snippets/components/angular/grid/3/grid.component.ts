@@ -1,68 +1,118 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
-interface ComponentTheme {
+interface GridItem {
+  id: string | number;
+  content: string;
+  image?: string;
+  title?: string;
+  description?: string;
+}
+
+interface GridTheme {
   primaryColor: string;
-  secondaryColor: string;
   backgroundColor: string;
+  cardColor: string;
   textColor: string;
   borderColor: string;
+  shadowColor: string;
 }
 
 @Component({
-  selector: 'app-component',
+  selector: 'app-grid',
   template: `
-    <div [ngStyle]="componentStyles">
-      <ng-content></ng-content>
+    <div class="grid-container" [ngStyle]="containerStyles">
+      <div *ngIf="loading" class="grid-wrapper" [ngStyle]="gridStyles">
+        <div *ngFor="let item of [1,2,3,4,5,6]" class="grid-item skeleton" [ngStyle]="skeletonStyles"></div>
+      </div>
+      <div *ngIf="!loading" class="grid-wrapper minimal" [ngStyle]="gridStyles">
+        <div *ngFor="let item of items"
+             class="grid-item card-flat"
+             [ngStyle]="itemStyles"
+             (click)="onItemClick(item)">
+          <div class="overlay" *ngIf="item.image" [ngStyle]="{'background-image': 'url(' + item.image + ')'}">
+            <div class="overlay-content">
+              <h3 *ngIf="item.title" class="item-title">{{ item.title }}</h3>
+              <p class="item-text">{{ item.content }}</p>
+            </div>
+          </div>
+          <div *ngIf="!item.image" class="no-image-content">
+            <h3 *ngIf="item.title" class="item-title">{{ item.title }}</h3>
+            <p class="item-text">{{ item.content }}</p>
+          </div>
+        </div>
+      </div>
     </div>
-  `
+  `,
+  styles: [`
+    .grid-container { width: 100%; height: 100%; min-height: 100vh; }
+    .grid-wrapper { display: grid; width: 100%; }
+    .minimal .grid-item { aspect-ratio: 1; }
+    .grid-item { cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden; }
+    .grid-item:hover { transform: rotate(-2deg) scale(1.08); }
+    .card-flat { box-shadow: none; }
+    .overlay { width: 100%; height: 100%; background-size: cover; background-position: center; position: relative; }
+    .overlay::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%); }
+    .overlay-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 1.5rem; z-index: 1; color: white; }
+    .no-image-content { padding: 1.5rem; }
+    .item-title { font-size: 1.375rem; font-weight: 700; margin: 0 0 0.5rem 0; }
+    .item-text { font-size: 0.9375rem; line-height: 1.5; margin: 0; }
+    .skeleton { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; border-radius: 0.5rem; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  `]
 })
-export class ComponentComponent {
-  @Input() theme: Partial<ComponentTheme> = {};
-  @Input() variant: 'default' | 'outlined' | 'filled' = 'default';
-  @Input() size: 'sm' | 'md' | 'lg' = 'md';
+export class GridComponent {
+  @Input() items: GridItem[] = [];
+  @Input() theme: Partial<GridTheme> = {};
+  @Input() columns: 1 | 2 | 3 | 4 | 6 | 12 = 3;
+  @Input() gap: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'sm';
+  @Input() variant: 'masonry' | 'uniform' | 'card' | 'minimal' | 'detailed' = 'minimal';
+  @Input() loading: boolean = false;
+  @Output() itemClicked = new EventEmitter<GridItem>();
 
-  private defaultTheme: ComponentTheme = {
-    primaryColor: '#3b82f6',
-    secondaryColor: '#8b5cf6',
-    backgroundColor: '#ffffff',
-    textColor: '#111827',
-    borderColor: '#e5e7eb'
+  private defaultTheme: GridTheme = {
+    primaryColor: '#f59e0b',
+    backgroundColor: '#fffbeb',
+    cardColor: '#fef3c7',
+    textColor: '#78350f',
+    borderColor: '#fcd34d',
+    shadowColor: 'rgba(245, 158, 11, 0.2)'
   };
 
-  get appliedTheme(): ComponentTheme {
+  get appliedTheme(): GridTheme {
     return { ...this.defaultTheme, ...this.theme };
   }
 
-  get componentStyles() {
-    const sizeMap = {
-      sm: { padding: '0.5rem 1rem', fontSize: '0.875rem' },
-      md: { padding: '0.75rem 1.5rem', fontSize: '1rem' },
-      lg: { padding: '1rem 2rem', fontSize: '1.125rem' }
-    };
-
-    const variantMap = {
-      default: {
-        backgroundColor: this.appliedTheme.backgroundColor,
-        border: `1px solid ${this.appliedTheme.borderColor}`
-      },
-      outlined: {
-        backgroundColor: 'transparent',
-        border: `2px solid ${this.appliedTheme.primaryColor}`
-      },
-      filled: {
-        backgroundColor: this.appliedTheme.primaryColor,
-        color: '#ffffff'
-      }
-    };
-
+  get containerStyles() {
     return {
-      ...sizeMap[this.size],
-      ...variantMap[this.variant],
-      color: this.appliedTheme.textColor,
-      borderRadius: '0.5rem',
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center'
+      backgroundColor: this.appliedTheme.backgroundColor,
+      padding: '1.5rem'
     };
+  }
+
+  get gridStyles() {
+    const gapMap = { xs: '0.5rem', sm: '1rem', md: '1.5rem', lg: '2rem', xl: '3rem' };
+    return {
+      gap: gapMap[this.gap],
+      gridTemplateColumns: `repeat(${this.columns}, 1fr)`
+    };
+  }
+
+  get itemStyles() {
+    return {
+      backgroundColor: this.appliedTheme.cardColor,
+      color: this.appliedTheme.textColor,
+      borderRadius: '0.5rem'
+    };
+  }
+
+  get skeletonStyles() {
+    return {
+      backgroundColor: this.appliedTheme.cardColor,
+      minHeight: '300px'
+    };
+  }
+
+  onItemClick(item: GridItem) {
+    this.itemClicked.emit(item);
   }
 }

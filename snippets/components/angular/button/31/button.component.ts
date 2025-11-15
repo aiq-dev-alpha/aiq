@@ -1,181 +1,154 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
-interface ThemeConfig {
+interface ButtonTheme {
   primaryColor: string;
   secondaryColor: string;
+  backgroundColor: string;
   textColor: string;
-  borderRadius: string;
-  fontSize: string;
-  fontWeight: string;
-  shadowColor: string;
+  borderColor: string;
+  accentColor: string;
 }
-
-type ButtonStyle = 'glass' | 'neumorphic' | 'brutalist' | 'minimal';
-type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 @Component({
   selector: 'app-button',
   template: `
     <button
-      [ngStyle]="getButtonStyles()"
+      [ngClass]="['btn', 'btn-' + variant, 'btn-' + size]"
+      [ngStyle]="buttonStyles"
       [disabled]="disabled || loading"
-      (click)="handleClick($event)"
       [attr.aria-label]="ariaLabel"
-      [class.pulse]="pulse">
-      <span *ngIf="loading" class="loader"></span>
-      <span *ngIf="prefixIcon && !loading" class="icon-prefix">{{ prefixIcon }}</span>
-      <span class="button-content"><ng-content></ng-content></span>
-      <span *ngIf="suffixIcon && !loading" class="icon-suffix">{{ suffixIcon }}</span>
+      [attr.aria-busy]="loading"
+      (click)="handleClick($event)"
+      class="float-button">
+      <span *ngIf="loading" class="spinner infinity-spinner"></span>
+      <span *ngIf="!loading && iconLeft" class="icon-left">{{ iconLeft }}</span>
+      <span class="btn-content">
+        <ng-content></ng-content>
+      </span>
+      <span *ngIf="!loading && iconRight" class="icon-right">{{ iconRight }}</span>
     </button>
   `,
   styles: [`
-    button {
-      border: none;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    .float-button {
       position: relative;
       overflow: hidden;
-      font-family: inherit;
-    }
-    button::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.4);
-      transform: translate(-50%, -50%);
-      transition: width 0.6s, height 0.6s;
-    }
-    button:active::before {
-      width: 300px;
-      height: 300px;
-    }
-    button:disabled {
-      cursor: not-allowed;
-      opacity: 0.5;
-      filter: grayscale(0.4);
-    }
-    button:hover:not(:disabled) {
-      transform: translateY(-3px);
-      filter: brightness(1.05);
-    }
-    button:active:not(:disabled) {
-      transform: translateY(-1px);
-    }
-    .pulse {
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.8; }
-    }
-    .loader {
-      display: inline-block;
-      width: 14px;
-      height: 14px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-radius: 50%;
-      border-top-color: #fff;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    .button-content {
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      font-weight: 600;
+      border: none;
+      outline: none;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
+      box-shadow: 0 5px 20px #ea580c66;
     }
-    .icon-prefix, .icon-suffix {
-      display: inline-flex;
+
+    .float-button:hover:not(:disabled) {
+      box-shadow: 0 8px 35px #ea580c99;
+      transform: translateY(-2px) scale(1.02);
+      animation: floatAnim 0.5s ease;
+    }
+
+    .float-button:active:not(:disabled) {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .float-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    @keyframes floatAnim {
+      0%, 100% { transform: translateY(-2px) scale(1.02); }
+      50% { transform: translateY(-4px) scale(1.04) rotate(1deg); }
+    }
+
+    .infinity-spinner {
+      width: 1em;
+      height: 1em;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: currentColor;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .btn-content {
+      display: flex;
       align-items: center;
+    }
+
+    .btn-sm {
+      padding: 0.5rem 1.5rem;
+      font-size: 0.875rem;
+      border-radius: 0.625rem;
+    }
+
+    .btn-md {
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
+      border-radius: 0.875rem;
+    }
+
+    .btn-lg {
+      padding: 1rem 2.5rem;
+      font-size: 1.125rem;
+      border-radius: 1.125rem;
     }
   `]
 })
 export class ButtonComponent {
-  @Input() styleVariant: ButtonStyle = 'glass';
-  @Input() size: ButtonSize = 'md';
-  @Input() theme: Partial<ThemeConfig> = {};
-  @Input() disabled = false;
-  @Input() loading = false;
-  @Input() fullWidth = false;
-  @Input() pulse = false;
-  @Input() prefixIcon?: string;
-  @Input() suffixIcon?: string;
-  @Input() ariaLabel?: string;
+  @Input() theme: Partial<ButtonTheme> = {};
+  @Input() variant: 'default' | 'outlined' | 'filled' | 'float' = 'default';
+  @Input() size: 'sm' | 'md' | 'lg' = 'md';
+  @Input() disabled: boolean = false;
+  @Input() loading: boolean = false;
+  @Input() iconLeft: string = '';
+  @Input() iconRight: string = '';
+  @Input() ariaLabel: string = '';
   @Output() clicked = new EventEmitter<MouseEvent>();
 
-  private defaultTheme: ThemeConfig = {
-    primaryColor: '#667eea',
-    secondaryColor: '#764ba2',
+  private defaultTheme: ButtonTheme = {
+    primaryColor: '#ea580c',
+    secondaryColor: '#c2410c',
+    backgroundColor: '#fff7ed',
     textColor: '#ffffff',
-    borderRadius: '12px',
-    fontSize: '16px',
-    fontWeight: '600',
-    shadowColor: 'rgba(102, 126, 234, 0.4)'
+    borderColor: '#ea580c',
+    accentColor: '#fb923c'
   };
 
-  get appliedTheme(): ThemeConfig {
+  get appliedTheme(): ButtonTheme {
     return { ...this.defaultTheme, ...this.theme };
   }
 
-  getButtonStyles(): Record<string, string> {
-    const t = this.appliedTheme;
-    const sizeMap = {
-      xs: { padding: '6px 12px', fontSize: '12px', minHeight: '28px' },
-      sm: { padding: '8px 16px', fontSize: '14px', minHeight: '32px' },
-      md: { padding: '12px 24px', fontSize: '16px', minHeight: '40px' },
-      lg: { padding: '16px 32px', fontSize: '18px', minHeight: '48px' },
-      xl: { padding: '20px 40px', fontSize: '20px', minHeight: '56px' }
-    };
-
-    const styleMap = {
-      glass: {
-        background: `linear-gradient(135deg, ${t.primaryColor}dd, ${t.secondaryColor}dd)`,
-        backdropFilter: 'blur(16px) saturate(180%)',
-        border: '1px solid rgba(255, 255, 255, 0.18)',
-        boxShadow: `0 8px 32px ${t.shadowColor}, inset 0 1px 0 rgba(255, 255, 255, 0.3)`,
-        WebkitBackdropFilter: 'blur(16px) saturate(180%)'
+  get buttonStyles() {
+    const variantStyles = {
+      default: {
+        background: `linear-gradient(135deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})`,
+        color: this.appliedTheme.textColor,
+        border: 'none'
       },
-      neumorphic: {
-        background: 'linear-gradient(145deg, #f0f0f0, #cacaca)',
-        color: '#444',
-        boxShadow: '10px 10px 20px #a3a3a3, -10px -10px 20px #ffffff',
-        border: '1px solid #e0e0e0'
-      },
-      brutalist: {
-        background: t.primaryColor,
-        border: '4px solid #000',
-        boxShadow: '8px 8px 0 #000',
-        borderRadius: '0',
-        textTransform: 'uppercase',
-        letterSpacing: '2px'
-      },
-      minimal: {
+      outlined: {
         background: 'transparent',
-        color: t.primaryColor,
-        border: `2px solid ${t.primaryColor}`,
-        boxShadow: 'none',
-        position: 'relative',
-        overflow: 'hidden'
+        color: this.appliedTheme.primaryColor,
+        border: `2px solid ${this.appliedTheme.primaryColor}`
+      },
+      filled: {
+        background: this.appliedTheme.primaryColor,
+        color: this.appliedTheme.textColor,
+        border: 'none'
+      },
+      float: {
+        background: `linear-gradient(90deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.accentColor})`,
+        color: this.appliedTheme.textColor,
+        border: 'none'
       }
     };
 
-    return {
-      ...sizeMap[this.size],
-      ...styleMap[this.styleVariant],
-      color: this.styleVariant === 'neumorphic' ? '#666' : t.textColor,
-      borderRadius: this.styleVariant === 'brutalist' ? '0' : t.borderRadius,
-      fontWeight: t.fontWeight,
-      width: this.fullWidth ? '100%' : 'auto',
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: '8px'
-    };
+    return variantStyles[this.variant];
   }
 
   handleClick(event: MouseEvent): void {

@@ -1,182 +1,154 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
-interface AnimationConfig {
-  duration: string;
-  easing: string;
-  hoverScale: number;
-  activeScale: number;
-}
-
-interface StyleTheme {
-  primary: string;
-  secondary: string;
-  text: string;
-  shadow: string;
+interface ButtonTheme {
+  primaryColor: string;
+  secondaryColor: string;
+  backgroundColor: string;
+  textColor: string;
+  borderColor: string;
+  accentColor: string;
 }
 
 @Component({
   selector: 'app-button',
   template: `
     <button
-      [ngStyle]="buttonStyle"
-      [disabled]="disabled"
+      [ngClass]="['btn', 'btn-' + variant, 'btn-' + size]"
+      [ngStyle]="buttonStyles"
+      [disabled]="disabled || loading"
+      [attr.aria-label]="ariaLabel"
+      [attr.aria-busy]="loading"
       (click)="handleClick($event)"
-      [ngClass]="computedClasses">
-      <span *ngIf="loading" class="spinner"></span>
-      <ng-container *ngIf="!loading">
-        <span *ngIf="icon && iconPosition === 'start'" class="btn-icon">{{ icon }}</span>
-        <span class="btn-text"><ng-content></ng-content></span>
-        <span *ngIf="icon && iconPosition === 'end'" class="btn-icon">{{ icon }}</span>
-      </ng-container>
+      class="flash-button">
+      <span *ngIf="loading" class="spinner lightning-spinner"></span>
+      <span *ngIf="!loading && iconLeft" class="icon-left">{{ iconLeft }}</span>
+      <span class="btn-content">
+        <ng-content></ng-content>
+      </span>
+      <span *ngIf="!loading && iconRight" class="icon-right">{{ iconRight }}</span>
     </button>
   `,
   styles: [`
-    button {
-      border: none;
-      cursor: pointer;
+    .flash-button {
       position: relative;
       overflow: hidden;
-      font-family: system-ui, -apple-system, sans-serif;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      font-weight: 600;
+      border: none;
       outline: none;
-    }
-    button:disabled {
-      cursor: not-allowed;
-      opacity: 0.6;
-    }
-    button::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.3);
-      transform: translate(-50%, -50%);
-      transition: width 0.6s, height 0.6s;
-    }
-    button:active::before {
-      width: 300px;
-      height: 300px;
-    }
-    .spinner {
-      width: 16px;
-      height: 16px;
-      border: 3px solid rgba(255,255,255,0.2);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: rotate 0.8s linear infinite;
-    }
-    @keyframes rotate {
-      to { transform: rotate(360deg); }
-    }
-    .btn-text {
-      position: relative;
-      z-index: 1;
-    }
-    .btn-icon {
-      position: relative;
-      z-index: 1;
       display: inline-flex;
       align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 5px 20px #c026d366;
+    }
+
+    .flash-button:hover:not(:disabled) {
+      box-shadow: 0 8px 35px #c026d399;
+      transform: translateY(-2px) scale(1.02);
+      animation: flashAnim 0.5s ease;
+    }
+
+    .flash-button:active:not(:disabled) {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .flash-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    @keyframes flashAnim {
+      0%, 100% { transform: translateY(-2px) scale(1.02); }
+      50% { transform: translateY(-4px) scale(1.04) rotate(1deg); }
+    }
+
+    .lightning-spinner {
+      width: 1em;
+      height: 1em;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: currentColor;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .btn-content {
+      display: flex;
+      align-items: center;
+    }
+
+    .btn-sm {
+      padding: 0.5rem 1.5rem;
+      font-size: 0.875rem;
+      border-radius: 0.625rem;
+    }
+
+    .btn-md {
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
+      border-radius: 0.875rem;
+    }
+
+    .btn-lg {
+      padding: 1rem 2.5rem;
+      font-size: 1.125rem;
+      border-radius: 1.125rem;
     }
   `]
 })
 export class ButtonComponent {
-  @Input() variant: 'solid' | 'outline' | 'ghost' | 'link' = 'solid';
-  @Input() theme: Partial<StyleTheme> = {};
-  @Input() animation: Partial<AnimationConfig> = {};
-  @Input() disabled = false;
-  @Input() loading = false;
-  @Input() block = false;
-  @Input() icon?: string;
-  @Input() iconPosition: 'start' | 'end' = 'start';
-  @Input() shape: 'rounded' | 'pill' | 'square' = 'rounded';
+  @Input() theme: Partial<ButtonTheme> = {};
+  @Input() variant: 'default' | 'outlined' | 'filled' | 'flash' = 'default';
+  @Input() size: 'sm' | 'md' | 'lg' = 'md';
+  @Input() disabled: boolean = false;
+  @Input() loading: boolean = false;
+  @Input() iconLeft: string = '';
+  @Input() iconRight: string = '';
+  @Input() ariaLabel: string = '';
   @Output() clicked = new EventEmitter<MouseEvent>();
 
-  private defaultTheme: StyleTheme = {
-    primary: '#7c3aed',
-    secondary: '#a78bfa',
-    text: '#ffffff',
-    shadow: 'rgba(124, 58, 237, 0.3)'
+  private defaultTheme: ButtonTheme = {
+    primaryColor: '#c026d3',
+    secondaryColor: '#a21caf',
+    backgroundColor: '#fae8ff',
+    textColor: '#ffffff',
+    borderColor: '#c026d3',
+    accentColor: '#e879f9'
   };
 
-  private defaultAnimation: AnimationConfig = {
-    duration: '0.3s',
-    easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
-    hoverScale: 1.05,
-    activeScale: 0.95
-  };
-
-  get appliedTheme(): StyleTheme {
+  get appliedTheme(): ButtonTheme {
     return { ...this.defaultTheme, ...this.theme };
   }
 
-  get appliedAnimation(): AnimationConfig {
-    return { ...this.defaultAnimation, ...this.animation };
-  }
-
-  get computedClasses(): string[] {
-    return [
-      `variant-${this.variant}`,
-      `shape-${this.shape}`,
-      this.block ? 'block' : '',
-      this.loading ? 'loading' : ''
-    ].filter(Boolean);
-  }
-
-  get buttonStyle(): Record<string, string> {
-    const t = this.appliedTheme;
-    const a = this.appliedAnimation;
-
-    const shapeStyles = {
-      rounded: '8px',
-      pill: '50px',
-      square: '0'
-    };
-
+  get buttonStyles() {
     const variantStyles = {
-      solid: {
-        background: `linear-gradient(135deg, ${t.primary}, ${t.secondary})`,
-        color: t.text,
-        border: 'none',
-        boxShadow: `0 4px 12px ${t.shadow}`
+      default: {
+        background: `linear-gradient(135deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})`,
+        color: this.appliedTheme.textColor,
+        border: 'none'
       },
-      outline: {
+      outlined: {
         background: 'transparent',
-        color: t.primary,
-        border: `2px solid ${t.primary}`,
-        boxShadow: 'none'
+        color: this.appliedTheme.primaryColor,
+        border: `2px solid ${this.appliedTheme.primaryColor}`
       },
-      ghost: {
-        background: `${t.primary}15`,
-        color: t.primary,
-        border: 'none',
-        boxShadow: 'none'
+      filled: {
+        background: this.appliedTheme.primaryColor,
+        color: this.appliedTheme.textColor,
+        border: 'none'
       },
-      link: {
-        background: 'transparent',
-        color: t.primary,
-        border: 'none',
-        boxShadow: 'none',
-        textDecoration: 'underline'
+      flash: {
+        background: `linear-gradient(90deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.accentColor})`,
+        color: this.appliedTheme.textColor,
+        border: 'none'
       }
     };
 
-    return {
-      ...variantStyles[this.variant],
-      padding: '12px 24px',
-      fontSize: '14px',
-      fontWeight: '600',
-      borderRadius: shapeStyles[this.shape],
-      transition: `all ${a.duration} ${a.easing}`,
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: '8px',
-      width: this.block ? '100%' : 'auto',
-      minHeight: '44px'
-    };
+    return variantStyles[this.variant];
   }
 
   handleClick(event: MouseEvent): void {

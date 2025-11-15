@@ -1,60 +1,63 @@
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
 
 interface InputTheme {
-  background: string;
-  border: string;
-  text: string;
-  label: string;
-  focus: string;
-  error: string;
-  success: string;
+  primaryColor: string;
+  secondaryColor: string;
+  backgroundColor: string;
+  textColor: string;
+  borderColor: string;
+  accentColor: string;
+  errorColor: string;
+  successColor: string;
 }
-
-type InputVariant = 'outlined' | 'filled' | 'underlined' | 'floating';
-type InputSize = 'sm' | 'md' | 'lg';
 
 @Component({
   selector: 'app-input',
   template: `
-    <div class="input-wrapper" [ngStyle]="wrapperStyles" [ngClass]="wrapperClasses">
-      <label *ngIf="label && variant !== 'floating'" class="input-label" [ngStyle]="labelStyles">
+    <div class="input-wrapper" [ngStyle]="wrapperStyles">
+      <label *ngIf="label" [for]="inputId" class="label" [ngStyle]="labelStyles" [class.floated]="isFocused || value">
         {{ label }}
-        <span *ngIf="required" class="required-mark">*</span>
+        <span *ngIf="required" class="required">*</span>
       </label>
-
-      <div class="input-container" [ngStyle]="containerStyles">
-        <span *ngIf="prefixIcon" class="input-prefix">{{ prefixIcon }}</span>
-
+      <div class="input-container" [ngStyle]="containerStyles" [class.focused]="isFocused" [class.error]="hasError" [class.success]="showSuccess">
+        <div class="animated-border"></div>
+        <span *ngIf="leftIcon" class="left-icon" [ngStyle]="iconStyles">{{ leftIcon }}</span>
         <input
           #inputElement
-          [type]="type"
-          [value]="value"
-          [placeholder]="variant === 'floating' ? ' ' : placeholder"
+          [id]="inputId"
+          [type]="inputType"
+          [placeholder]="placeholder"
           [disabled]="disabled"
           [readonly]="readonly"
+          [value]="value"
+          [maxlength]="maxLength"
           [ngStyle]="inputStyles"
           (input)="onInput($event)"
-          (blur)="onBlur()"
           (focus)="onFocus()"
+          (blur)="onBlur()"
           [attr.aria-label]="ariaLabel || label"
           [attr.aria-invalid]="hasError"
-          class="input-field" />
-
-        <label *ngIf="variant === 'floating' && label" class="floating-label" [ngStyle]="floatingLabelStyles">
-          {{ label }}
-          <span *ngIf="required" class="required-mark">*</span>
-        </label>
-
-        <span *ngIf="suffixIcon" class="input-suffix">{{ suffixIcon }}</span>
+          [attr.aria-describedby]="helperTextId"
+          [attr.aria-required]="required"
+          class="input-field"
+        />
+        <span *ngIf="rightIcon" class="right-icon" [ngStyle]="iconStyles">{{ rightIcon }}</span>
+        <button *ngIf="showClearButton && value && !disabled && !readonly" type="button" class="clear-button" (click)="clearInput()" [ngStyle]="clearButtonStyles" aria-label="Clear input">
+          ✕
+        </button>
+        <span *ngIf="showCharCounter && maxLength" class="char-counter" [ngStyle]="charCounterStyles">
+          {{ value.length }}/{{ maxLength }}
+        </span>
       </div>
-
-      <div *ngIf="helperText && !hasError" class="helper-text" [ngStyle]="helperStyles">
+      <div *ngIf="helperText && !hasError" [id]="helperTextId" class="helper-text" [ngStyle]="helperStyles">
         {{ helperText }}
       </div>
-
-      <div *ngIf="errorMessage && hasError" class="error-text" [ngStyle]="errorStyles">
+      <div *ngIf="hasError && errorMessage" [id]="helperTextId" class="error-text" [ngStyle]="errorStyles">
         {{ errorMessage }}
+      </div>
+      <div *ngIf="showSuccess && successMessage" class="success-text" [ngStyle]="successStyles">
+        {{ successMessage }}
       </div>
     </div>
   `,
@@ -62,218 +65,346 @@ type InputSize = 'sm' | 'md' | 'lg';
     .input-wrapper {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 8px;
       width: 100%;
+      position: relative;
+    }
+    .label {
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: left top;
+    }
+    .label.floated {
+      transform: translateY(-8px) scale(0.85);
+      font-weight: 600;
+    }
+    .required {
+      color: #e63946;
+      margin-left: 3px;
     }
     .input-container {
       position: relative;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      overflow: visible;
+      border-radius: 4px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .animated-border {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #006994, #00a8cc);
+      transform: scaleX(0);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 4px;
+    }
+    .input-container.focused .animated-border {
+      transform: scaleX(1);
+      animation: wave 1.5s ease-in-out infinite;
+    }
+    .input-container.error .animated-border {
+      background: linear-gradient(90deg, #e63946, #e63946dd);
+      transform: scaleX(1);
+    }
+    .input-container.success .animated-border {
+      background: linear-gradient(90deg, #06ffa5, #06ffa5dd);
+      transform: scaleX(1);
     }
     .input-field {
-      flex: 1;
+      width: 100%;
+      border: none;
       outline: none;
       font-family: inherit;
-      transition: all 0.2s ease;
+      background: transparent;
+      transition: all 0.3s ease;
+      font-weight: 400;
     }
-    .input-field:focus {
-      outline: none;
+    .input-field::placeholder {
+      opacity: 0.5;
+      transition: opacity 0.3s;
     }
-    .input-label {
-      font-weight: 600;
-      font-size: 0.875rem;
-      display: block;
+    .input-field:focus::placeholder {
+      opacity: 0.7;
     }
-    .floating-label {
-      position: absolute;
-      left: 12px;
-      transition: all 0.2s ease;
-      pointer-events: none;
-      font-size: 0.875rem;
+    .input-field:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
     }
-    .input-field:not(:placeholder-shown) ~ .floating-label,
-    .input-field:focus ~ .floating-label {
-      top: -10px;
-      left: 8px;
-      font-size: 0.75rem;
-      padding: 0 4px;
+    .input-field:read-only {
+      cursor: default;
+      opacity: 0.8;
+      background: rgba(0, 0, 0, 0.02);
     }
-    .input-prefix,
-    .input-suffix {
+    .left-icon, .right-icon {
       display: flex;
       align-items: center;
-      font-size: 1.125rem;
+      opacity: 0.6;
+      transition: all 0.3s;
+      flex-shrink: 0;
+      font-size: 22px;
     }
-    .required-mark {
-      color: #ef4444;
-      margin-left: 2px;
+    .input-container.focused .left-icon,
+    .input-container.focused .right-icon {
+      opacity: 1;
+      transform: scale(1.15);
     }
-    .helper-text,
+    .clear-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: all 0.2s;
+      padding: 4px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+    }
+    .clear-button:hover {
+      opacity: 1;
+      background: rgba(0, 0, 0, 0.08);
+      transform: rotate(90deg);
+    }
+    .char-counter {
+      font-size: 11px;
+      opacity: 0.6;
+      white-space: nowrap;
+      flex-shrink: 0;
+      font-weight: 500;
+    }
+    .helper-text, .error-text, .success-text {
+      font-size: 12px;
+      opacity: 0.9;
+      transition: all 0.2s;
+      padding-left: 4px;
+    }
     .error-text {
-      font-size: 0.75rem;
-      line-height: 1.4;
+      animation: shake 0.4s;
+    }
+    .success-text {
+      animation: slideIn 0.3s;
+    }
+    @keyframes wave {
+      0%, 100% { opacity: 1; transform: scaleX(1); }
+      50% { opacity: 0.8; transform: scaleX(1.02); }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 0.9; transform: translateY(0); }
     }
   `],
-  providers: [{
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => InputComponent),
-    multi: true
-  }]
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => InputComponent),
+      multi: true
+    }
+  ]
 })
 export class InputComponent implements ControlValueAccessor {
-  @Input() variant: InputVariant = 'outlined';
-  @Input() size: InputSize = 'md';
   @Input() theme: Partial<InputTheme> = {};
+  @Input() type: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' = 'text';
+  @Input() variant: 'default' | 'filled' | 'outlined' | 'underlined' = 'default';
   @Input() label?: string;
-  @Input() placeholder = '';
+  @Input() placeholder: string = '';
   @Input() helperText?: string;
   @Input() errorMessage?: string;
-  @Input() type = 'text';
+  @Input() successMessage?: string;
   @Input() disabled = false;
   @Input() readonly = false;
   @Input() required = false;
-  @Input() prefixIcon?: string;
-  @Input() suffixIcon?: string;
+  @Input() leftIcon?: string;
+  @Input() rightIcon?: string;
   @Input() ariaLabel?: string;
-  @Input() hasError = false;
+  @Input() size: 'sm' | 'md' | 'lg' = 'md';
+  @Input() showClearButton = true;
+  @Input() showCharCounter = false;
+  @Input() maxLength?: number;
+  @Input() formControl?: FormControl;
   @Output() valueChange = new EventEmitter<string>();
+  @Output() focus = new EventEmitter<void>();
+  @Output() blur = new EventEmitter<void>();
+  @Output() clear = new EventEmitter<void>();
 
-  value = '';
+  value: string = '';
   isFocused = false;
+  inputId = `input-${Math.random().toString(36).substr(2, 9)}`;
+  helperTextId = `helper-${this.inputId}`;
+  inputType: string = this.type;
 
   private onChange: (value: string) => void = () => {};
   private onTouched: () => void = () => {};
 
   private defaultTheme: InputTheme = {
-    background: '#ffffff',
-    border: '#d1d5db',
-    text: '#0f172a',
-    label: '#334155',
-    focus: '#3b82f6',
-    error: '#ef4444',
-    success: '#10b981'
+    primaryColor: '#006994',
+    secondaryColor: '#00a8cc',
+    backgroundColor: '#e8f4f8',
+    textColor: '#003d5b',
+    borderColor: '#80d0c7',
+    accentColor: '#0abfbc',
+    errorColor: '#e63946',
+    successColor: '#06ffa5'
   };
 
   get appliedTheme(): InputTheme {
     return { ...this.defaultTheme, ...this.theme };
   }
 
-  get wrapperClasses(): string[] {
-    return [
-      `variant-${this.variant}`,
-      `size-${this.size}`,
-      this.hasError ? 'has-error' : '',
-      this.isFocused ? 'is-focused' : '',
-      this.disabled ? 'is-disabled' : ''
-    ].filter(Boolean);
+  get hasError(): boolean {
+    return !!this.errorMessage || (this.formControl ? this.formControl.invalid && this.formControl.touched : false);
   }
 
-  get wrapperStyles(): Record<string, string> {
+  get showSuccess(): boolean {
+    return !!this.successMessage || (this.formControl ? this.formControl.valid && this.formControl.touched && !!this.value : false);
+  }
+
+  get wrapperStyles() {
     return {
-      opacity: this.disabled ? '0.6' : '1'
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
     };
   }
 
-  get containerStyles(): Record<string, string> {
+  get labelStyles() {
+    const t = this.appliedTheme;
+    return {
+      color: this.hasError ? t.errorColor : this.isFocused ? t.primaryColor : t.textColor
+    };
+  }
+
+  get containerStyles() {
     const t = this.appliedTheme;
     const sizeMap = {
-      sm: { minHeight: '36px' },
-      md: { minHeight: '44px' },
-      lg: { minHeight: '52px' }
+      sm: { padding: '8px 12px', gap: '6px' },
+      md: { padding: '12px 16px', gap: '10px' },
+      lg: { padding: '16px 20px', gap: '14px' }
     };
 
-    const variantMap = {
-      outlined: {
-        border: `2px solid ${this.hasError ? t.error : this.isFocused ? t.focus : t.border}`,
-        borderRadius: '8px',
-        background: t.background
+    const variantStyles = {
+      default: {
+        backgroundColor: t.backgroundColor,
+        borderBottom: `2px solid ${this.hasError ? t.errorColor : this.showSuccess ? t.successColor : t.borderColor}`,
       },
       filled: {
-        border: 'none',
-        borderRadius: '8px 8px 0 0',
-        background: `${t.border}40`,
-        borderBottom: `2px solid ${this.hasError ? t.error : this.isFocused ? t.focus : t.border}`
+        backgroundColor: t.backgroundColor,
+        border: `1px solid ${this.hasError ? t.errorColor : this.showSuccess ? t.successColor : t.borderColor}`,
+        borderRadius: '4px'
+      },
+      outlined: {
+        backgroundColor: 'transparent',
+        border: `2px solid ${this.hasError ? t.errorColor : this.showSuccess ? t.successColor : t.borderColor}`,
+        borderRadius: '4px'
       },
       underlined: {
-        border: 'none',
-        borderBottom: `2px solid ${this.hasError ? t.error : this.isFocused ? t.focus : t.border}`,
-        borderRadius: '0',
-        background: 'transparent'
-      },
-      floating: {
-        border: `2px solid ${this.hasError ? t.error : this.isFocused ? t.focus : t.border}`,
-        borderRadius: '8px',
-        background: t.background
+        backgroundColor: 'transparent',
+        borderBottom: `2px solid ${this.hasError ? t.errorColor : this.showSuccess ? t.successColor : t.borderColor}`,
+        borderRadius: '0'
       }
     };
 
     return {
       ...sizeMap[this.size],
-      ...variantMap[this.variant],
-      padding: '0 12px'
+      ...variantStyles[this.variant],
+      display: 'flex',
+      alignItems: 'center',
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      filter: this.isFocused ? 'brightness(1.05)' : 'brightness(1)'
     };
   }
 
-  get inputStyles(): Record<string, string> {
+  get inputStyles() {
     const t = this.appliedTheme;
     const sizeMap = {
       sm: { fontSize: '13px' },
-      md: { fontSize: '14px' },
-      lg: { fontSize: '16px' }
+      md: { fontSize: '15px' },
+      lg: { fontSize: '17px' }
     };
 
     return {
       ...sizeMap[this.size],
-      background: 'transparent',
-      border: 'none',
-      color: t.text,
-      width: '100%'
+      color: t.textColor
     };
   }
 
-  get labelStyles(): Record<string, string> {
+  get iconStyles() {
+    const t = this.appliedTheme;
     return {
-      color: this.appliedTheme.label
+      color: this.hasError ? t.errorColor : this.showSuccess ? t.successColor : t.primaryColor
     };
   }
 
-  get floatingLabelStyles(): Record<string, string> {
+  get helperStyles() {
+    const t = this.appliedTheme;
     return {
-      color: this.hasError ? this.appliedTheme.error : this.isFocused ? this.appliedTheme.focus : this.appliedTheme.label,
-      background: this.appliedTheme.background,
-      top: '50%',
-      transform: 'translateY(-50%)'
+      color: t.textColor
     };
   }
 
-  get helperStyles(): Record<string, string> {
+  get errorStyles() {
+    const t = this.appliedTheme;
     return {
-      color: this.appliedTheme.label,
-      opacity: '0.7'
+      color: t.errorColor,
+      fontWeight: '500'
     };
   }
 
-  get errorStyles(): Record<string, string> {
+  get successStyles() {
+    const t = this.appliedTheme;
     return {
-      color: this.appliedTheme.error
+      color: t.successColor,
+      fontWeight: '500'
+    };
+  }
+
+  get clearButtonStyles() {
+    const t = this.appliedTheme;
+    return {
+      color: t.textColor
+    };
+  }
+
+  get charCounterStyles() {
+    const t = this.appliedTheme;
+    const isAtLimit = this.maxLength && this.value.length === this.maxLength;
+    return {
+      color: isAtLimit ? t.errorColor : t.textColor,
+      fontWeight: isAtLimit ? '600' : '400'
     };
   }
 
   onInput(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.value = target.value;
-    this.onChange(this.value);
-    this.valueChange.emit(this.value);
+    const value = (event.target as HTMLInputElement).value;
+    this.value = value;
+    this.onChange(value);
+    this.valueChange.emit(value);
   }
 
   onFocus(): void {
     this.isFocused = true;
+    this.focus.emit();
   }
 
   onBlur(): void {
     this.isFocused = false;
     this.onTouched();
+    this.blur.emit();
+  }
+
+  clearInput(): void {
+    this.value = '';
+    this.onChange('');
+    this.valueChange.emit('');
+    this.clear.emit();
   }
 
   writeValue(value: string): void {

@@ -1,37 +1,52 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, HostListener } from '@angular/core';
 
 interface ModalTheme {
-  overlayColor: string;
+  primaryColor: string;
+  secondaryColor: string;
   backgroundColor: string;
   textColor: string;
   borderColor: string;
-  shadowColor: string;
+  overlayColor: string;
 }
 
-type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
-type ModalAnimation = 'fade' | 'slide-up' | 'slide-down' | 'zoom' | 'flip';
+type ModalSize = 'small' | 'medium' | 'large' | 'full';
+type ModalPosition = 'center' | 'top' | 'bottom' | 'left' | 'right';
 
 @Component({
   selector: 'app-modal',
   template: `
-    <div *ngIf="isOpen" class="modal-overlay" [ngStyle]="overlayStyles" (click)="onOverlayClick()">
-      <div class="modal-container" [ngStyle]="containerStyles" [ngClass]="animationClass" (click)="$event.stopPropagation()">
-        <div *ngIf="showHeader" class="modal-header" [ngStyle]="headerStyles">
-          <div class="header-content">
-            <h2 *ngIf="title" class="modal-title">{{ title }}</h2>
-            <p *ngIf="subtitle" class="modal-subtitle">{{ subtitle }}</p>
-          </div>
-          <button *ngIf="closable" class="close-button" (click)="close()" aria-label="Close">
-            <span class="close-icon">&times;</span>
+    <div class="modal-overlay"
+         *ngIf="isOpen"
+         [ngStyle]="overlayStyles"
+         (click)="onOverlayClick()"
+         role="presentation">
+      <div class="modal-container"
+           [ngStyle]="containerStyles"
+           (click)="$event.stopPropagation()"
+           role="dialog"
+           aria-modal="true"
+           [attr.aria-labelledby]="'modal-title-' + modalId"
+           [attr.aria-describedby]="'modal-body-' + modalId">
+
+        <div class="modal-header" [ngStyle]="headerStyles">
+          <h2 [id]="'modal-title-' + modalId" [ngStyle]="titleStyles">{{ title }}</h2>
+          <button class="close-button"
+                  [ngStyle]="closeButtonStyles"
+                  (click)="close()"
+                  aria-label="Close modal"
+                  type="button">
+            <span aria-hidden="true">&times;</span>
           </button>
         </div>
 
-        <div class="modal-body" [ngStyle]="bodyStyles">
+        <div class="modal-body"
+             [id]="'modal-body-' + modalId"
+             [ngStyle]="bodyStyles">
           <ng-content></ng-content>
         </div>
 
-        <div *ngIf="showFooter" class="modal-footer" [ngStyle]="footerStyles">
-          <ng-content select="[modalFooter]"></ng-content>
+        <div class="modal-footer" [ngStyle]="footerStyles" *ngIf="showFooter">
+          <ng-content select="[footer]"></ng-content>
         </div>
       </div>
     </div>
@@ -39,205 +54,245 @@ type ModalAnimation = 'fade' | 'slide-up' | 'slide-down' | 'zoom' | 'flip';
   styles: [`
     .modal-overlay {
       position: fixed;
-      inset: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       display: flex;
-      align-items: center;
-      justify-content: center;
       z-index: 1000;
-      padding: 1rem;
-      animation: fadeIn 0.3s ease;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      overflow: auto;
     }
     .modal-container {
-      position: relative;
-      width: 100%;
-      max-height: 90vh;
-      overflow: hidden;
+      margin: auto;
       display: flex;
       flex-direction: column;
-    }
-    .fade {
-      animation: modalFade 0.3s ease;
-    }
-    @keyframes modalFade {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    .slide-up {
-      animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    @keyframes slideUp {
-      from { transform: translateY(100px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-    .slide-down {
-      animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    @keyframes slideDown {
-      from { transform: translateY(-100px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-    .zoom {
-      animation: zoomIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    @keyframes zoomIn {
-      from { transform: scale(0.8); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-    .flip {
-      animation: flipIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    @keyframes flipIn {
-      from { transform: rotateX(-90deg); opacity: 0; }
-      to { transform: rotateX(0); opacity: 1; }
+      max-height: 90vh;
+      animation: warpIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .modal-header {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      gap: 1rem;
+      align-items: center;
       flex-shrink: 0;
-    }
-    .header-content {
-      flex: 1;
-    }
-    .modal-title {
-      margin: 0;
-      font-size: 1.625rem;
-      font-weight: 700;
-      line-height: 1.2;
-      letter-spacing: -0.02em;
-    }
-    .modal-subtitle {
-      margin: 0.5rem 0 0;
-      font-size: 0.875rem;
-      opacity: 0.7;
-    }
-    .close-button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 0.5rem;
-      border-radius: 50%;
-      transition: all 0.2s;
-      line-height: 1;
-      color: inherit;
-      opacity: 0.6;
-    }
-    .close-button:hover {
-      background: rgba(0, 0, 0, 0.08);
-      opacity: 1;
-      transform: scale(1.1);
-    }
-    .close-button:active {
-      transform: scale(0.95);
-    }
-    .close-icon {
-      font-size: 1.5rem;
-      font-weight: 300;
     }
     .modal-body {
       flex: 1;
       overflow-y: auto;
+      scrollbar-width: thin;
     }
     .modal-footer {
       flex-shrink: 0;
-      display: flex;
-      gap: 0.75rem;
-      justify-content: flex-end;
-      align-items: center;
-      flex-wrap: wrap;
+    }
+    .close-button {
+      background: none;
+      border: none;
+      font-size: 1.75rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      line-height: 1;
+      border-radius: 0.375rem;
+      transition: all 0.2s ease;
+    }
+    .close-button:hover {
+      transform: scale(1.1);
+      opacity: 1 !important;
+    }
+    .close-button:focus {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
     }
   `]
 })
-export class ModalComponent {
+export class ModalComponent implements OnInit, OnDestroy {
   @Input() isOpen = false;
-  @Input() size: ModalSize = 'md';
-  @Input() animation: ModalAnimation = 'slide-up';
+  @Input() title = 'Modal Title';
+  @Input() size: ModalSize = 'medium';
+  @Input() position: ModalPosition = 'center';
+  @Input() closeOnOverlayClick = true;
+  @Input() showFooter = true;
   @Input() theme: Partial<ModalTheme> = {};
-  @Input() title?: string;
-  @Input() subtitle?: string;
-  @Input() closable = true;
-  @Input() closeOnOverlay = true;
-  @Input() showHeader = true;
-  @Input() showFooter = false;
-  @Output() closeModal = new EventEmitter<void>();
+
+  @Output() modalClose = new EventEmitter<void>();
+  @Output() modalOpen = new EventEmitter<void>();
+
+  modalId = `modal-${Math.random().toString(36).substr(2, 9)}`;
+  private previouslyFocusedElement: HTMLElement | null = null;
 
   private defaultTheme: ModalTheme = {
-    overlayColor: 'rgba(0, 0, 0, 0.5)',
+    primaryColor: '#059669',
+    secondaryColor: '#047857',
     backgroundColor: '#ffffff',
-    textColor: '#111827',
+    textColor: '#1f2937',
     borderColor: '#e5e7eb',
-    shadowColor: 'rgba(0, 0, 0, 0.25)'
+    overlayColor: 'rgba(5, 150, 105, 0.1)'
   };
 
   get appliedTheme(): ModalTheme {
     return { ...this.defaultTheme, ...this.theme };
   }
 
-  get animationClass(): string {
-    return this.animation;
-  }
+  get overlayStyles() {
+    const positionMap = {
+      center: { alignItems: 'center', justifyContent: 'center' },
+      top: { alignItems: 'flex-start', justifyContent: 'center', paddingTop: '2rem' },
+      bottom: { alignItems: 'flex-end', justifyContent: 'center', paddingBottom: '2rem' },
+      left: { alignItems: 'center', justifyContent: 'flex-start', paddingLeft: '2rem' },
+      right: { alignItems: 'center', justifyContent: 'flex-end', paddingRight: '2rem' }
+    };
 
-  get overlayStyles(): Record<string, string> {
     return {
       backgroundColor: this.appliedTheme.overlayColor,
-      backdropFilter: 'blur(8px) saturate(120%)',
-      WebkitBackdropFilter: 'blur(8px) saturate(120%)'
+      backdropFilter: 'blur(2px)',
+      ...positionMap[this.position],
+      animation: 'fadeIn 0.25s ease-out'
     };
   }
 
-  get containerStyles(): Record<string, string> {
-    const t = this.appliedTheme;
+  get containerStyles() {
     const sizeMap = {
-      sm: { maxWidth: '400px' },
-      md: { maxWidth: '600px' },
-      lg: { maxWidth: '800px' },
-      xl: { maxWidth: '1200px' },
-      full: { maxWidth: 'calc(100% - 2rem)' }
+      small: { width: '400px', maxWidth: '90vw' },
+      medium: { width: '600px', maxWidth: '90vw' },
+      large: { width: '800px', maxWidth: '90vw' },
+      full: { width: '95vw', height: '95vh' }
     };
 
     return {
       ...sizeMap[this.size],
-      backgroundColor: t.backgroundColor,
-      color: t.textColor,
-      borderRadius: '20px',
-      boxShadow: `0 25px 50px -12px ${t.shadowColor}, 0 0 0 1px ${t.borderColor}40`,
-      border: `1px solid ${t.borderColor}50`
+      backgroundColor: this.appliedTheme.backgroundColor,
+      borderRadius: '1.5rem',
+      boxShadow: '0 22px 49px rgba(0, 0, 0, 0.2)',
+      border: `4px outset ${this.appliedTheme.primaryColor}`
     };
   }
 
-  get headerStyles(): Record<string, string> {
+  get headerStyles() {
     return {
       padding: '1.5rem',
-      borderBottom: `1px solid ${this.appliedTheme.borderColor}`
+      borderBottom: `2px solid ${this.appliedTheme.borderColor}`,
+      background: `linear-gradient(135deg, ${this.appliedTheme.primaryColor}10, transparent)`
     };
   }
 
-  get bodyStyles(): Record<string, string> {
+  get titleStyles() {
+    return {
+      margin: '0',
+      fontSize: '1.5rem',
+      fontWeight: '700',
+      color: this.appliedTheme.primaryColor,
+      letterSpacing: '-0.025em'
+    };
+  }
+
+  get bodyStyles() {
     return {
       padding: '1.5rem',
-      color: this.appliedTheme.textColor
+      color: this.appliedTheme.textColor,
+      lineHeight: '1.6'
     };
   }
 
-  get footerStyles(): Record<string, string> {
+  get footerStyles() {
     return {
-      padding: '1.5rem',
-      borderTop: `1px solid ${this.appliedTheme.borderColor}`
+      padding: '1rem 1.5rem',
+      borderTop: `1px solid ${this.appliedTheme.borderColor}`,
+      display: 'flex',
+      justifyContent: 'flex-end',
+      gap: '0.75rem',
+      backgroundColor: '#f9fafb'
     };
   }
 
-  close(): void {
-    this.closeModal.emit();
+  get closeButtonStyles() {
+    return {
+      color: this.appliedTheme.primaryColor,
+      opacity: '0.7'
+    };
   }
 
-  onOverlayClick(): void {
-    if (this.closeOnOverlay && this.closable) {
+  ngOnInit() {
+    if (this.isOpen) {
+      this.onOpen();
+    }
+  }
+
+  ngOnDestroy() {
+    this.restoreFocus();
+    this.unlockBodyScroll();
+  }
+
+  ngOnChanges(changes: any) {
+    if (changes.isOpen) {
+      if (changes.isOpen.currentValue) {
+        this.onOpen();
+      } else {
+        this.onClose();
+      }
+    }
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapeKey() {
+    if (this.isOpen) {
       this.close();
+    }
+  }
+
+  onOverlayClick() {
+    if (this.closeOnOverlayClick) {
+      this.close();
+    }
+  }
+
+  close() {
+    this.isOpen = false;
+    this.onClose();
+    this.modalClose.emit();
+  }
+
+  open() {
+    this.isOpen = true;
+    this.onOpen();
+    this.modalOpen.emit();
+  }
+
+  private onOpen() {
+    this.saveFocus();
+    this.lockBodyScroll();
+    setTimeout(() => this.setFocusTrap(), 100);
+  }
+
+  private onClose() {
+    this.restoreFocus();
+    this.unlockBodyScroll();
+  }
+
+  private saveFocus() {
+    this.previouslyFocusedElement = document.activeElement as HTMLElement;
+  }
+
+  private restoreFocus() {
+    if (this.previouslyFocusedElement) {
+      this.previouslyFocusedElement.focus();
+    }
+  }
+
+  private lockBodyScroll() {
+    document.body.style.overflow = 'hidden';
+  }
+
+  private unlockBodyScroll() {
+    document.body.style.overflow = '';
+  }
+
+  private setFocusTrap() {
+    const modalElement = document.querySelector(`[id="${this.modalId}"]`);
+    if (modalElement) {
+      const focusableElements = modalElement.querySelectorAll(
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusableElements.length > 0) {
+        (focusableElements[0] as HTMLElement).focus();
+      }
     }
   }
 }

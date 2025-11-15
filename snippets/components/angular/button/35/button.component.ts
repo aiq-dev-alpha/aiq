@@ -1,177 +1,159 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
-interface BrandTheme {
-  name: string;
-  palette: {
-    base: string;
-    contrast: string;
-    surface: string;
-    accent: string;
-  };
-  radius: string;
-  shadow: string;
+interface ButtonTheme {
+  primaryColor: string;
+  secondaryColor: string;
+  backgroundColor: string;
+  textColor: string;
+  borderColor: string;
+  accentColor: string;
 }
-
-type Presentation = 'filled' | 'tinted' | 'outlined' | 'text' | 'elevated';
-type Density = 'compact' | 'default' | 'comfortable';
 
 @Component({
   selector: 'app-button',
   template: `
     <button
-      [ngStyle]="getComputedStyles()"
-      [disabled]="disabled || processing"
-      [attr.aria-busy]="processing"
+      [ngClass]="['btn', 'btn-' + variant, 'btn-' + size]"
+      [ngStyle]="buttonStyles"
+      [disabled]="disabled || loading"
       [attr.aria-label]="ariaLabel"
-      (click)="onButtonClick($event)">
-      <span class="button-inner">
-        <span *ngIf="startIcon && !processing" class="start-icon">{{ startIcon }}</span>
-        <span *ngIf="processing" class="process-spinner"></span>
-        <span *ngIf="label || hasContent" class="button-label">
-          <ng-content *ngIf="hasContent; else defaultLabel"></ng-content>
-          <ng-template #defaultLabel>{{ label }}</ng-template>
-        </span>
-        <span *ngIf="endIcon && !processing" class="end-icon">{{ endIcon }}</span>
+      [attr.aria-busy]="loading"
+      (click)="handleClick($event)"
+      class="jiggle-button">
+      <span *ngIf="loading" class="spinner brackets-spinner"></span>
+      <span *ngIf="!loading && iconLeft" class="icon-left">{{ iconLeft }}</span>
+      <span class="btn-content">
+        <ng-content></ng-content>
       </span>
+      <span *ngIf="!loading && iconRight" class="icon-right">{{ iconRight }}</span>
     </button>
   `,
   styles: [`
-    button {
-      border: none;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      cursor: pointer;
+    .jiggle-button {
       position: relative;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      font-weight: 600;
+      border: none;
       outline: none;
-      user-select: none;
-    }
-    button:disabled {
-      cursor: not-allowed;
-      opacity: 0.6;
-    }
-    button:hover:not(:disabled) {
-      transform: translateY(-1px);
-    }
-    button:active:not(:disabled) {
-      transform: translateY(0);
-    }
-    .button-inner {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
       gap: 0.5rem;
+      box-shadow: 0 5px 20px #9333ea66;
     }
-    .start-icon, .end-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+
+    .jiggle-button:hover:not(:disabled) {
+      box-shadow: 0 8px 35px #9333ea99;
+      transform: translateY(-2px) scale(1.02);
+      animation: jiggleAnim 0.5s ease;
     }
-    .process-spinner {
-      width: 14px;
-      height: 14px;
-      border: 2px solid currentColor;
-      border-top-color: transparent;
+
+    .jiggle-button:active:not(:disabled) {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .jiggle-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    @keyframes jiggleAnim {
+      0%, 100% { transform: translateY(-2px) scale(1.02); }
+      50% { transform: translateY(-4px) scale(1.04) rotate(1deg); }
+    }
+
+    .brackets-spinner {
+      width: 1em;
+      height: 1em;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: currentColor;
       border-radius: 50%;
-      animation: spin-animation 0.7s linear infinite;
+      animation: spin 0.8s linear infinite;
     }
-    @keyframes spin-animation {
+
+    @keyframes spin {
       to { transform: rotate(360deg); }
     }
-    .button-label {
-      line-height: 1;
+
+    .btn-content {
+      display: flex;
+      align-items: center;
+    }
+
+    .btn-sm {
+      padding: 0.5rem 1.5rem;
+      font-size: 0.875rem;
+      border-radius: 0.625rem;
+    }
+
+    .btn-md {
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
+      border-radius: 0.875rem;
+    }
+
+    .btn-lg {
+      padding: 1rem 2.5rem;
+      font-size: 1.125rem;
+      border-radius: 1.125rem;
     }
   `]
 })
 export class ButtonComponent {
-  @Input() presentation: Presentation = 'filled';
-  @Input() density: Density = 'default';
-  @Input() brandTheme: Partial<BrandTheme> = {};
-  @Input() disabled = false;
-  @Input() processing = false;
-  @Input() label?: string;
-  @Input() startIcon?: string;
-  @Input() endIcon?: string;
-  @Input() ariaLabel?: string;
-  @Input() stretch = false;
-  @Input() hasContent = false;
-  @Output() clickEvent = new EventEmitter<MouseEvent>();
+  @Input() theme: Partial<ButtonTheme> = {};
+  @Input() variant: 'default' | 'outlined' | 'filled' | 'jiggle' = 'default';
+  @Input() size: 'sm' | 'md' | 'lg' = 'md';
+  @Input() disabled: boolean = false;
+  @Input() loading: boolean = false;
+  @Input() iconLeft: string = '';
+  @Input() iconRight: string = '';
+  @Input() ariaLabel: string = '';
+  @Output() clicked = new EventEmitter<MouseEvent>();
 
-  private defaultBrand: BrandTheme = {
-    name: 'default',
-    palette: {
-      base: '#6366f1',
-      contrast: '#ffffff',
-      surface: '#f9fafb',
-      accent: '#818cf8'
-    },
-    radius: '10px',
-    shadow: '0 4px 12px rgba(99, 102, 241, 0.25)'
+  private defaultTheme: ButtonTheme = {
+    primaryColor: '#9333ea',
+    secondaryColor: '#7e22ce',
+    backgroundColor: '#faf5ff',
+    textColor: '#ffffff',
+    borderColor: '#9333ea',
+    accentColor: '#c084fc'
   };
 
-  get brand(): BrandTheme {
-    return {
-      ...this.defaultBrand,
-      ...this.brandTheme,
-      palette: { ...this.defaultBrand.palette, ...this.brandTheme.palette }
-    };
+  get appliedTheme(): ButtonTheme {
+    return { ...this.defaultTheme, ...this.theme };
   }
 
-  getComputedStyles(): Record<string, string> {
-    const b = this.brand;
-    const densityMap = {
-      compact: { padding: '8px 16px', fontSize: '13px', minHeight: '32px' },
-      default: { padding: '10px 20px', fontSize: '14px', minHeight: '40px' },
-      comfortable: { padding: '14px 28px', fontSize: '15px', minHeight: '48px' }
-    };
-
-    const presentationMap = {
-      filled: {
-        background: b.palette.base,
-        color: b.palette.contrast,
-        border: 'none',
-        boxShadow: b.shadow
-      },
-      tinted: {
-        background: `${b.palette.base}20`,
-        color: b.palette.base,
-        border: 'none',
-        boxShadow: 'none'
+  get buttonStyles() {
+    const variantStyles = {
+      default: {
+        background: `linear-gradient(135deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})`,
+        color: this.appliedTheme.textColor,
+        border: 'none'
       },
       outlined: {
         background: 'transparent',
-        color: b.palette.base,
-        border: `1.5px solid ${b.palette.base}`,
-        boxShadow: 'none'
+        color: this.appliedTheme.primaryColor,
+        border: `2px solid ${this.appliedTheme.primaryColor}`
       },
-      text: {
-        background: 'transparent',
-        color: b.palette.base,
-        border: 'none',
-        boxShadow: 'none'
+      filled: {
+        background: this.appliedTheme.primaryColor,
+        color: this.appliedTheme.textColor,
+        border: 'none'
       },
-      elevated: {
-        background: b.palette.surface,
-        color: b.palette.base,
-        border: `1px solid ${b.palette.base}30`,
-        boxShadow: '0 8px 16px rgba(0,0,0,0.1)'
+      jiggle: {
+        background: `linear-gradient(90deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.accentColor})`,
+        color: this.appliedTheme.textColor,
+        border: 'none'
       }
     };
 
-    return {
-      ...densityMap[this.density],
-      ...presentationMap[this.presentation],
-      borderRadius: b.radius,
-      fontWeight: '600',
-      width: this.stretch ? '100%' : 'auto',
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center'
-    };
+    return variantStyles[this.variant];
   }
 
-  onButtonClick(event: MouseEvent): void {
-    if (!this.disabled && !this.processing) {
-      this.clickEvent.emit(event);
+  handleClick(event: MouseEvent): void {
+    if (!this.disabled && !this.loading) {
+      this.clicked.emit(event);
     }
   }
 }

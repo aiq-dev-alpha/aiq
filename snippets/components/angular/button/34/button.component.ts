@@ -1,161 +1,159 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
-interface DesignTokens {
-  spacing: { xs: string; sm: string; md: string; lg: string; xl: string };
-  colors: { primary: string; secondary: string; accent: string; text: string };
-  typography: { size: string; weight: string; family: string };
-  effects: { shadow: string; blur: string; glow: string };
+interface ButtonTheme {
+  primaryColor: string;
+  secondaryColor: string;
+  backgroundColor: string;
+  textColor: string;
+  borderColor: string;
+  accentColor: string;
 }
-
-type ButtonMode = 'flat' | 'raised' | 'stroked' | 'icon';
-type ButtonTone = 'primary' | 'secondary' | 'success' | 'warning' | 'error';
 
 @Component({
   selector: 'app-button',
   template: `
     <button
-      [ngStyle]="styles"
-      [disabled]="isDisabled"
-      [type]="type"
-      (click)="emitClick($event)"
-      class="custom-button">
-      <span *ngIf="leadingIcon && !isLoading" class="leading">{{ leadingIcon }}</span>
-      <span *ngIf="isLoading" class="loading-indicator"></span>
-      <span *ngIf="!iconOnly" class="content"><ng-content></ng-content></span>
-      <span *ngIf="trailingIcon && !isLoading" class="trailing">{{ trailingIcon }}</span>
+      [ngClass]="['btn', 'btn-' + variant, 'btn-' + size]"
+      [ngStyle]="buttonStyles"
+      [disabled]="disabled || loading"
+      [attr.aria-label]="ariaLabel"
+      [attr.aria-busy]="loading"
+      (click)="handleClick($event)"
+      class="rubber-button">
+      <span *ngIf="loading" class="spinner arrows-spinner"></span>
+      <span *ngIf="!loading && iconLeft" class="icon-left">{{ iconLeft }}</span>
+      <span class="btn-content">
+        <ng-content></ng-content>
+      </span>
+      <span *ngIf="!loading && iconRight" class="icon-right">{{ iconRight }}</span>
     </button>
   `,
   styles: [`
-    .custom-button {
-      border: none;
-      cursor: pointer;
-      font-family: inherit;
+    .rubber-button {
       position: relative;
       overflow: hidden;
-      transition: all 0.25s ease-in-out;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      font-weight: 600;
+      border: none;
+      outline: none;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
       gap: 0.5rem;
-      white-space: nowrap;
+      box-shadow: 0 5px 20px #0d948866;
     }
-    .custom-button:disabled {
-      cursor: not-allowed;
+
+    .rubber-button:hover:not(:disabled) {
+      box-shadow: 0 8px 35px #0d948899;
+      transform: translateY(-2px) scale(1.02);
+      animation: rubberAnim 0.5s ease;
+    }
+
+    .rubber-button:active:not(:disabled) {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .rubber-button:disabled {
       opacity: 0.5;
-      filter: saturate(0.5);
+      cursor: not-allowed;
     }
-    .custom-button:hover:not(:disabled) {
-      filter: brightness(1.1);
+
+    @keyframes rubberAnim {
+      0%, 100% { transform: translateY(-2px) scale(1.02); }
+      50% { transform: translateY(-4px) scale(1.04) rotate(1deg); }
     }
-    .custom-button:active:not(:disabled) {
-      transform: scale(0.98);
-    }
-    .loading-indicator {
-      width: 14px;
-      height: 14px;
-      border: 2px solid currentColor;
-      border-top-color: transparent;
+
+    .arrows-spinner {
+      width: 1em;
+      height: 1em;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: currentColor;
       border-radius: 50%;
-      animation: spin 0.6s linear infinite;
+      animation: spin 0.8s linear infinite;
     }
+
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
-    .leading, .trailing {
-      display: inline-flex;
-      font-size: 1.1em;
+
+    .btn-content {
+      display: flex;
+      align-items: center;
     }
-    .content {
-      font-weight: inherit;
+
+    .btn-sm {
+      padding: 0.5rem 1.5rem;
+      font-size: 0.875rem;
+      border-radius: 0.625rem;
+    }
+
+    .btn-md {
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
+      border-radius: 0.875rem;
+    }
+
+    .btn-lg {
+      padding: 1rem 2.5rem;
+      font-size: 1.125rem;
+      border-radius: 1.125rem;
     }
   `]
 })
 export class ButtonComponent {
-  @Input() mode: ButtonMode = 'flat';
-  @Input() tone: ButtonTone = 'primary';
-  @Input() tokens: Partial<DesignTokens> = {};
-  @Input() isDisabled = false;
-  @Input() isLoading = false;
-  @Input() iconOnly = false;
-  @Input() leadingIcon?: string;
-  @Input() trailingIcon?: string;
-  @Input() type: 'button' | 'submit' | 'reset' = 'button';
-  @Input() fullWidth = false;
-  @Output() buttonClicked = new EventEmitter<MouseEvent>();
+  @Input() theme: Partial<ButtonTheme> = {};
+  @Input() variant: 'default' | 'outlined' | 'filled' | 'rubber' = 'default';
+  @Input() size: 'sm' | 'md' | 'lg' = 'md';
+  @Input() disabled: boolean = false;
+  @Input() loading: boolean = false;
+  @Input() iconLeft: string = '';
+  @Input() iconRight: string = '';
+  @Input() ariaLabel: string = '';
+  @Output() clicked = new EventEmitter<MouseEvent>();
 
-  private defaultTokens: DesignTokens = {
-    spacing: { xs: '6px', sm: '10px', md: '14px', lg: '18px', xl: '22px' },
-    colors: { primary: '#10b981', secondary: '#3b82f6', accent: '#f59e0b', text: '#ffffff' },
-    typography: { size: '14px', weight: '600', family: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif' },
-    effects: { shadow: '0 4px 12px rgba(0,0,0,0.12)', blur: '10px', glow: '0 0 20px' }
+  private defaultTheme: ButtonTheme = {
+    primaryColor: '#0d9488',
+    secondaryColor: '#0f766e',
+    backgroundColor: '#f0fdfa',
+    textColor: '#ffffff',
+    borderColor: '#0d9488',
+    accentColor: '#2dd4bf'
   };
 
-  get designTokens(): DesignTokens {
-    return {
-      spacing: { ...this.defaultTokens.spacing, ...this.tokens.spacing },
-      colors: { ...this.defaultTokens.colors, ...this.tokens.colors },
-      typography: { ...this.defaultTokens.typography, ...this.tokens.typography },
-      effects: { ...this.defaultTokens.effects, ...this.tokens.effects }
-    };
+  get appliedTheme(): ButtonTheme {
+    return { ...this.defaultTheme, ...this.theme };
   }
 
-  get styles(): Record<string, string> {
-    const dt = this.designTokens;
-    const toneColors = {
-      primary: dt.colors.primary,
-      secondary: dt.colors.secondary,
-      success: '#10b981',
-      warning: '#f59e0b',
-      error: '#ef4444'
-    };
-
-    const modeStyles = {
-      flat: {
-        background: toneColors[this.tone],
-        color: dt.colors.text,
-        border: 'none',
-        boxShadow: 'none'
+  get buttonStyles() {
+    const variantStyles = {
+      default: {
+        background: `linear-gradient(135deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})`,
+        color: this.appliedTheme.textColor,
+        border: 'none'
       },
-      raised: {
-        background: toneColors[this.tone],
-        color: dt.colors.text,
-        border: 'none',
-        boxShadow: dt.effects.shadow
-      },
-      stroked: {
+      outlined: {
         background: 'transparent',
-        color: toneColors[this.tone],
-        border: `2px solid ${toneColors[this.tone]}`,
-        boxShadow: 'none'
+        color: this.appliedTheme.primaryColor,
+        border: `2px solid ${this.appliedTheme.primaryColor}`
       },
-      icon: {
-        background: 'transparent',
-        color: toneColors[this.tone],
-        border: 'none',
-        boxShadow: 'none',
-        padding: dt.spacing.sm
+      filled: {
+        background: this.appliedTheme.primaryColor,
+        color: this.appliedTheme.textColor,
+        border: 'none'
+      },
+      rubber: {
+        background: `linear-gradient(90deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.accentColor})`,
+        color: this.appliedTheme.textColor,
+        border: 'none'
       }
     };
 
-    const padding = this.iconOnly
-      ? `${dt.spacing.md} ${dt.spacing.md}`
-      : `${dt.spacing.md} ${dt.spacing.xl}`;
-
-    return {
-      ...modeStyles[this.mode],
-      padding,
-      fontSize: dt.typography.size,
-      fontWeight: dt.typography.weight,
-      fontFamily: dt.typography.family,
-      borderRadius: '10px',
-      width: this.fullWidth ? '100%' : 'auto',
-      minHeight: '42px'
-    };
+    return variantStyles[this.variant];
   }
 
-  emitClick(event: MouseEvent): void {
-    if (!this.isDisabled && !this.isLoading) {
-      this.buttonClicked.emit(event);
+  handleClick(event: MouseEvent): void {
+    if (!this.disabled && !this.loading) {
+      this.clicked.emit(event);
     }
   }
 }

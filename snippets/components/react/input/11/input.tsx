@@ -1,117 +1,249 @@
-import React from 'react';
+import React, { useState, CSSProperties, ReactNode, forwardRef } from 'react';
 
-export interface InputTheme {
-  accentColor: string;
-  backgroundColor: string;
-  textColor: string;
-  borderColor: string;
-  focusColor: string;
+interface InputTheme {
+  primary: string;
+  background: string;
+  border: string;
+  text: string;
+  error: string;
+  success: string;
 }
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  variant?: 'standard' | 'filled' | 'outlined';
-  inputSize?: 'sm' | 'md' | 'lg';
-  theme?: Partial<InputTheme>;
+export type InputSize = 'sm' | 'md' | 'lg';
+export type InputVariant = 'default' | 'filled' | 'outlined' | 'underlined' | 'floating';
+export type IconPosition = 'left' | 'right';
+
+interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   label?: string;
   helperText?: string;
-  errorText?: string;
-  prefixIcon?: React.ReactNode;
-  suffixIcon?: React.ReactNode;
-  fullWidth?: boolean;
+  error?: string;
+  variant?: InputVariant;
+  size?: InputSize;
+  theme?: Partial<InputTheme>;
+  icon?: ReactNode;
+  iconPosition?: IconPosition;
+  showClearButton?: boolean;
+  showCharacterCount?: boolean;
+  maxLength?: number;
 }
 
 const defaultTheme: InputTheme = {
-  accentColor: '#8b5cf6',
-  backgroundColor: '#f8fafc',
-  textColor: '#0f172a',
-  borderColor: '#cbd5e1',
-  focusColor: '#8b5cf6'
+  primary: '#ef4444',
+  background: '#fef2f2',
+  border: '#fecaca',
+  text: '#7f1d1d',
+  error: '#dc2626',
+  success: '#059669'
 };
 
-export const Input: React.FC<InputProps> = ({
-  variant = 'outlined',
-  inputSize = 'md',
-  theme = {},
+export const Input = forwardRef<HTMLInputElement, InputProps>(({
   label,
   helperText,
-  errorText,
-  prefixIcon,
-  suffixIcon,
-  fullWidth = false,
-  style,
+  error,
+  variant = 'default',
+  size = 'md',
+  theme = {},
+  icon,
+  iconPosition = 'left',
+  showClearButton = false,
+  showCharacterCount = false,
+  maxLength,
+  value = '',
+  onChange,
+  disabled = false,
+  required = false,
   ...props
-}) => {
-  const [isFocused, setIsFocused] = React.useState(false);
+}, ref) => {
+  const [isFocused, setIsFocused] = useState(false);
+  const [internalValue, setInternalValue] = useState(value);
   const appliedTheme = { ...defaultTheme, ...theme };
 
-  const sizeConfig = {
-    sm: { padding: '0.5rem 0.875rem', fontSize: '0.875rem' },
-    md: { padding: '0.625rem 1rem', fontSize: '1rem' },
-    lg: { padding: '0.75rem 1.25rem', fontSize: '1.125rem' }
+  const currentValue = value !== undefined ? value : internalValue;
+  const characterCount = String(currentValue).length;
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInternalValue(e.target.value);
+    onChange?.(e);
   };
 
-  const variantStyles = {
-    standard: {
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderBottom: `2px solid ${errorText ? '#ef4444' : isFocused ? appliedTheme.focusColor : appliedTheme.borderColor}`,
-      borderRadius: '0'
+  const handleClear = () => {
+    const event = {
+      target: { value: '' }
+    } as React.ChangeEvent<HTMLInputElement>;
+    setInternalValue('');
+    onChange?.(event);
+  };
+
+  const sizeStyles: Record<InputSize, CSSProperties> = {
+    sm: { padding: '6px 12px', fontSize: '13px', minHeight: '34px' },
+    md: { padding: '10px 16px', fontSize: '15px', minHeight: '42px' },
+    lg: { padding: '14px 20px', fontSize: '17px', minHeight: '50px' }
+  };
+
+  const variantStyles: Record<InputVariant, CSSProperties> = {
+    default: {
+      background: appliedTheme.background,
+      border: `2px solid ${error ? appliedTheme.error : isFocused ? appliedTheme.primary : appliedTheme.border}`,
+      borderRadius: '9px'
     },
     filled: {
-      backgroundColor: appliedTheme.backgroundColor,
-      border: 'none',
-      borderBottom: `2px solid ${errorText ? '#ef4444' : isFocused ? appliedTheme.focusColor : 'transparent'}`,
-      borderRadius: '0.375rem 0.375rem 0 0'
+      background: appliedTheme.background,
+      border: `2px solid transparent`,
+      borderBottom: `3px solid ${error ? appliedTheme.error : isFocused ? appliedTheme.primary : appliedTheme.border}`,
+      borderRadius: '11px 11px 0 0'
     },
     outlined: {
-      backgroundColor: 'transparent',
-      border: `2px solid ${errorText ? '#ef4444' : isFocused ? appliedTheme.focusColor : appliedTheme.borderColor}`,
-      borderRadius: '0.5rem'
+      background: 'transparent',
+      border: `2px solid ${error ? appliedTheme.error : isFocused ? appliedTheme.primary : appliedTheme.border}`,
+      borderRadius: '9px'
+    },
+    underlined: {
+      background: 'transparent',
+      border: 'none',
+      borderBottom: `3px solid ${error ? appliedTheme.error : isFocused ? appliedTheme.primary : appliedTheme.border}`,
+      borderRadius: '0',
+      paddingLeft: '0',
+      paddingRight: '0'
+    },
+    floating: {
+      background: 'white',
+      border: `2px solid ${error ? appliedTheme.error : isFocused ? appliedTheme.primary : appliedTheme.border}`,
+      borderRadius: '9px'
     }
   };
 
-  const containerStyles: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
-    width: fullWidth ? '100%' : 'auto',
-    gap: '0.375rem'
+  const inputStyle: CSSProperties = {
+    ...sizeStyles[size],
+    ...variantStyles[variant],
+    width: '100%',
+    color: appliedTheme.text,
+    fontFamily: 'inherit',
+    outline: 'none',
+    transition: 'all 0.3s ease',
+    paddingLeft: (icon && iconPosition === 'left') && variant !== 'underlined' ? '40px' : variant === 'underlined' ? '0' : sizeStyles[size].padding,
+    paddingRight: ((icon && iconPosition === 'right') || showClearButton) && variant !== 'underlined' ? '40px' : variant === 'underlined' ? '0' : sizeStyles[size].padding,
+    opacity: disabled ? 0.5 : 1,
+    cursor: disabled ? 'not-allowed' : 'text',
+    boxShadow: isFocused ? `0 2px 8px ${appliedTheme.primary}20` : 'none'
   };
 
-  const wrapperStyles: React.CSSProperties = {
+  const labelStyle: CSSProperties = {
+    fontSize: variant === 'floating' && (isFocused || currentValue) ? '11px' : '14px',
+    fontWeight: 600,
+    color: error ? appliedTheme.error : isFocused ? appliedTheme.primary : appliedTheme.text,
+    marginBottom: '6px',
+    transition: 'all 0.3s ease',
+    display: 'block'
+  };
+
+  const iconStyle: CSSProperties = {
+    position: 'absolute',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    [iconPosition]: '14px',
+    color: isFocused ? appliedTheme.primary : appliedTheme.border,
+    transition: 'color 0.3s ease',
+    pointerEvents: 'none'
+  };
+
+  const clearButtonStyle: CSSProperties = {
+    position: 'absolute',
+    right: '12px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    background: 'transparent',
+    border: `1px solid ${appliedTheme.border}`,
+    color: appliedTheme.text,
+    cursor: 'pointer',
+    padding: '4px',
+    borderRadius: '4px',
     display: 'flex',
     alignItems: 'center',
-    gap: '0.5rem',
-    ...variantStyles[variant]
+    justifyContent: 'center',
+    width: '20px',
+    height: '20px',
+    fontSize: '12px',
+    transition: 'all 0.2s ease'
   };
 
-  const inputStyles: React.CSSProperties = {
-    flex: 1,
-    border: 'none',
-    outline: 'none',
-    backgroundColor: 'transparent',
-    color: appliedTheme.textColor,
-    ...sizeConfig[inputSize],
-    ...style
+  const helperTextStyle: CSSProperties = {
+    fontSize: '12px',
+    color: error ? appliedTheme.error : appliedTheme.text,
+    marginTop: '6px',
+    opacity: 0.8
+  };
+
+  const counterStyle: CSSProperties = {
+    fontSize: '11px',
+    color: appliedTheme.text,
+    opacity: 0.7,
+    textAlign: 'right',
+    marginTop: '4px'
   };
 
   return (
-    <div style={containerStyles}>
-      {label && <label style={{ fontSize: '0.875rem', fontWeight: 600, color: appliedTheme.textColor }}>{label}</label>}
-      <div style={wrapperStyles}>
-        {prefixIcon && <span style={{ display: 'flex', paddingLeft: variant === 'outlined' ? '0.75rem' : '0' }}>{prefixIcon}</span>}
+    <div style={{ width: '100%' }}>
+      {label && variant !== 'floating' && (
+        <label style={labelStyle}>
+          {label}
+          {required && <span style={{ color: appliedTheme.error, marginLeft: '4px' }}>*</span>}
+        </label>
+      )}
+      <div style={{ position: 'relative' }}>
+        {variant === 'floating' && label && (
+          <label style={{
+            ...labelStyle,
+            position: 'absolute',
+            left: icon && iconPosition === 'left' ? '40px' : '16px',
+            top: (isFocused || currentValue) ? '-9px' : '50%',
+            transform: (isFocused || currentValue) ? 'translateY(0)' : 'translateY(-50%)',
+            background: 'white',
+            padding: '0 6px',
+            pointerEvents: 'none',
+            zIndex: 1
+          }}>
+            {label}
+            {required && <span style={{ color: appliedTheme.error, marginLeft: '4px' }}>*</span>}
+          </label>
+        )}
+        {icon && <span style={iconStyle}>{icon}</span>}
         <input
+          ref={ref}
+          value={currentValue}
+          onChange={handleChange}
+          disabled={disabled}
+          required={required}
+          maxLength={maxLength}
+          style={inputStyle}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          style={inputStyles}
           {...props}
         />
-        {suffixIcon && <span style={{ display: 'flex', paddingRight: variant === 'outlined' ? '0.75rem' : '0' }}>{suffixIcon}</span>}
+        {showClearButton && currentValue && !disabled && (
+          <button
+            type="button"
+            onClick={handleClear}
+            style={clearButtonStyle}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = appliedTheme.primary;
+              e.currentTarget.style.color = 'white';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'transparent';
+              e.currentTarget.style.color = appliedTheme.text;
+            }}
+          >
+            ✕
+          </button>
+        )}
       </div>
-      {(errorText || helperText) && (
-        <span style={{ fontSize: '0.75rem', color: errorText ? '#ef4444' : '#64748b' }}>
-          {errorText || helperText}
-        </span>
+      {error && <div style={helperTextStyle}>{error}</div>}
+      {!error && helperText && <div style={helperTextStyle}>{helperText}</div>}
+      {showCharacterCount && maxLength && (
+        <div style={counterStyle}>{characterCount}/{maxLength}</div>
       )}
     </div>
   );
-};
+});
+
+Input.displayName = 'Input';

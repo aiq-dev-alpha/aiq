@@ -1,153 +1,249 @@
-import React, { useState, CSSProperties, InputHTMLAttributes } from 'react';
+import React, { useState, CSSProperties, ReactNode, forwardRef } from 'react';
 
 interface InputTheme {
   primary: string;
   background: string;
   border: string;
   text: string;
-  placeholder: string;
   error: string;
   success: string;
 }
 
-interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
+export type InputSize = 'sm' | 'md' | 'lg';
+export type InputVariant = 'default' | 'filled' | 'outlined' | 'underlined' | 'floating';
+export type IconPosition = 'left' | 'right';
+
+interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   label?: string;
-  hint?: string;
+  helperText?: string;
   error?: string;
-  success?: string;
-  variant?: 'outlined' | 'filled' | 'underlined' | 'flushed';
-  inputSize?: 'sm' | 'md' | 'lg';
+  variant?: InputVariant;
+  size?: InputSize;
   theme?: Partial<InputTheme>;
-  leftAddon?: React.ReactNode;
-  rightAddon?: React.ReactNode;
-  fullWidth?: boolean;
+  icon?: ReactNode;
+  iconPosition?: IconPosition;
+  showClearButton?: boolean;
+  showCharacterCount?: boolean;
+  maxLength?: number;
 }
 
 const defaultTheme: InputTheme = {
-  primary: '#3b82f6',
-  background: '#ffffff',
-  border: '#d1d5db',
-  text: '#111827',
-  placeholder: '#9ca3af',
-  error: '#ef4444',
-  success: '#10b981'
+  primary: '#7c3aed',
+  background: '#ede9fe',
+  border: '#c4b5fd',
+  text: '#5b21b6',
+  error: '#dc2626',
+  success: '#059669'
 };
 
-export const Input: React.FC<InputProps> = ({
+export const Input = forwardRef<HTMLInputElement, InputProps>(({
   label,
-  hint,
+  helperText,
   error,
-  success,
-  variant = 'outlined',
-  inputSize = 'md',
+  variant = 'default',
+  size = 'md',
   theme = {},
-  leftAddon,
-  rightAddon,
-  fullWidth = false,
-  className = '',
-  disabled,
+  icon,
+  iconPosition = 'left',
+  showClearButton = false,
+  showCharacterCount = false,
+  maxLength,
+  value = '',
+  onChange,
+  disabled = false,
+  required = false,
   ...props
-}) => {
+}, ref) => {
   const [isFocused, setIsFocused] = useState(false);
+  const [internalValue, setInternalValue] = useState(value);
   const appliedTheme = { ...defaultTheme, ...theme };
 
-  const sizeMap: Record<string, CSSProperties> = {
-    sm: { padding: '8px 12px', fontSize: '13px', minHeight: '36px' },
-    md: { padding: '10px 14px', fontSize: '14px', minHeight: '42px' },
-    lg: { padding: '12px 16px', fontSize: '16px', minHeight: '50px' }
+  const currentValue = value !== undefined ? value : internalValue;
+  const characterCount = String(currentValue).length;
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInternalValue(e.target.value);
+    onChange?.(e);
   };
 
-  const variantMap: Record<string, CSSProperties> = {
-    outlined: {
-      border: `2px solid ${error ? appliedTheme.error : success ? appliedTheme.success : isFocused ? appliedTheme.primary : appliedTheme.border}`,
-      borderRadius: '12px',
+  const handleClear = () => {
+    const event = {
+      target: { value: '' }
+    } as React.ChangeEvent<HTMLInputElement>;
+    setInternalValue('');
+    onChange?.(event);
+  };
+
+  const sizeStyles: Record<InputSize, CSSProperties> = {
+    sm: { padding: '6px 12px', fontSize: '13px', minHeight: '34px' },
+    md: { padding: '10px 16px', fontSize: '15px', minHeight: '42px' },
+    lg: { padding: '14px 20px', fontSize: '17px', minHeight: '50px' }
+  };
+
+  const variantStyles: Record<InputVariant, CSSProperties> = {
+    default: {
       background: appliedTheme.background,
-      boxShadow: isFocused ? `0 0 0 3px ${appliedTheme.primary}20` : 'none'
+      border: `2px solid ${error ? appliedTheme.error : isFocused ? appliedTheme.primary : appliedTheme.border}`,
+      borderRadius: '25px'
     },
     filled: {
-      border: 'none',
-      borderBottom: `2px solid ${error ? appliedTheme.error : success ? appliedTheme.success : isFocused ? appliedTheme.primary : appliedTheme.border}`,
-      borderRadius: '12px 12px 0 0',
-      background: isFocused ? `${appliedTheme.border}50` : `${appliedTheme.border}40`
+      background: appliedTheme.background,
+      border: `2px solid transparent`,
+      borderBottom: `3px solid ${error ? appliedTheme.error : isFocused ? appliedTheme.primary : appliedTheme.border}`,
+      borderRadius: '11px 11px 0 0'
+    },
+    outlined: {
+      background: 'transparent',
+      border: `2px solid ${error ? appliedTheme.error : isFocused ? appliedTheme.primary : appliedTheme.border}`,
+      borderRadius: '25px'
     },
     underlined: {
-      border: 'none',
-      borderBottom: `2px solid ${error ? appliedTheme.error : success ? appliedTheme.success : isFocused ? appliedTheme.primary : appliedTheme.border}`,
-      borderRadius: '0',
-      background: 'transparent'
-    },
-    flushed: {
-      border: 'none',
-      borderBottom: `2px solid ${error ? appliedTheme.error : success ? appliedTheme.success : isFocused ? appliedTheme.primary : appliedTheme.border}`,
-      borderRadius: '0',
       background: 'transparent',
-      padding: '8px 0'
+      border: 'none',
+      borderBottom: `3px solid ${error ? appliedTheme.error : isFocused ? appliedTheme.primary : appliedTheme.border}`,
+      borderRadius: '0',
+      paddingLeft: '0',
+      paddingRight: '0'
+    },
+    floating: {
+      background: 'white',
+      border: `2px solid ${error ? appliedTheme.error : isFocused ? appliedTheme.primary : appliedTheme.border}`,
+      borderRadius: '25px'
     }
   };
 
-  const wrapperStyle: CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '6px',
-    width: fullWidth ? '100%' : 'auto',
-    fontFamily: 'system-ui, -apple-system, sans-serif'
+  const inputStyle: CSSProperties = {
+    ...sizeStyles[size],
+    ...variantStyles[variant],
+    width: '100%',
+    color: appliedTheme.text,
+    fontFamily: 'inherit',
+    outline: 'none',
+    transition: 'all 0.3s ease',
+    paddingLeft: (icon && iconPosition === 'left') && variant !== 'underlined' ? '40px' : variant === 'underlined' ? '0' : sizeStyles[size].padding,
+    paddingRight: ((icon && iconPosition === 'right') || showClearButton) && variant !== 'underlined' ? '40px' : variant === 'underlined' ? '0' : sizeStyles[size].padding,
+    opacity: disabled ? 0.5 : 1,
+    cursor: disabled ? 'not-allowed' : 'text',
+    boxShadow: isFocused ? `0 2px 8px ${appliedTheme.primary}20` : 'none'
   };
 
   const labelStyle: CSSProperties = {
-    fontSize: '14px',
+    fontSize: variant === 'floating' && (isFocused || currentValue) ? '11px' : '14px',
     fontWeight: 600,
-    color: error ? appliedTheme.error : success ? appliedTheme.success : appliedTheme.text,
-    marginBottom: '4px',
-    transition: 'color 0.2s ease'
+    color: error ? appliedTheme.error : isFocused ? appliedTheme.primary : appliedTheme.text,
+    marginBottom: '6px',
+    transition: 'all 0.3s ease',
+    display: 'block'
   };
 
-  const containerStyle: CSSProperties = {
-    ...sizeMap[inputSize],
-    ...variantMap[variant],
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    transition: 'all 0.2s ease',
-    opacity: disabled ? 0.6 : 1
+  const iconStyle: CSSProperties = {
+    position: 'absolute',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    [iconPosition]: '14px',
+    color: isFocused ? appliedTheme.primary : appliedTheme.border,
+    transition: 'color 0.3s ease',
+    pointerEvents: 'none'
   };
 
-  const inputStyle: CSSProperties = {
-    flex: 1,
-    border: 'none',
-    outline: 'none',
+  const clearButtonStyle: CSSProperties = {
+    position: 'absolute',
+    right: '12px',
+    top: '50%',
+    transform: 'translateY(-50%)',
     background: 'transparent',
+    border: `1px solid ${appliedTheme.border}`,
     color: appliedTheme.text,
-    fontSize: 'inherit',
-    fontFamily: 'inherit'
-  };
-
-  const messageStyle: CSSProperties = {
-    fontSize: '12px',
-    marginTop: '4px',
-    color: error ? appliedTheme.error : success ? appliedTheme.success : appliedTheme.placeholder,
-    fontWeight: error || success ? 500 : 400,
+    cursor: 'pointer',
+    padding: '4px',
+    borderRadius: '4px',
     display: 'flex',
     alignItems: 'center',
-    gap: '4px'
+    justifyContent: 'center',
+    width: '20px',
+    height: '20px',
+    fontSize: '12px',
+    transition: 'all 0.2s ease'
+  };
+
+  const helperTextStyle: CSSProperties = {
+    fontSize: '12px',
+    color: error ? appliedTheme.error : appliedTheme.text,
+    marginTop: '6px',
+    opacity: 0.8
+  };
+
+  const counterStyle: CSSProperties = {
+    fontSize: '11px',
+    color: appliedTheme.text,
+    opacity: 0.7,
+    textAlign: 'right',
+    marginTop: '4px'
   };
 
   return (
-    <div style={wrapperStyle} className={className}>
-      {label && <label style={labelStyle}>{label}</label>}
-      <div style={containerStyle}>
-        {leftAddon && <span>{leftAddon}</span>}
+    <div style={{ width: '100%' }}>
+      {label && variant !== 'floating' && (
+        <label style={labelStyle}>
+          {label}
+          {required && <span style={{ color: appliedTheme.error, marginLeft: '4px' }}>*</span>}
+        </label>
+      )}
+      <div style={{ position: 'relative' }}>
+        {variant === 'floating' && label && (
+          <label style={{
+            ...labelStyle,
+            position: 'absolute',
+            left: icon && iconPosition === 'left' ? '40px' : '16px',
+            top: (isFocused || currentValue) ? '-9px' : '50%',
+            transform: (isFocused || currentValue) ? 'translateY(0)' : 'translateY(-50%)',
+            background: 'white',
+            padding: '0 6px',
+            pointerEvents: 'none',
+            zIndex: 1
+          }}>
+            {label}
+            {required && <span style={{ color: appliedTheme.error, marginLeft: '4px' }}>*</span>}
+          </label>
+        )}
+        {icon && <span style={iconStyle}>{icon}</span>}
         <input
+          ref={ref}
+          value={currentValue}
+          onChange={handleChange}
+          disabled={disabled}
+          required={required}
+          maxLength={maxLength}
           style={inputStyle}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          disabled={disabled}
           {...props}
         />
-        {rightAddon && <span>{rightAddon}</span>}
+        {showClearButton && currentValue && !disabled && (
+          <button
+            type="button"
+            onClick={handleClear}
+            style={clearButtonStyle}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = appliedTheme.primary;
+              e.currentTarget.style.color = 'white';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'transparent';
+              e.currentTarget.style.color = appliedTheme.text;
+            }}
+          >
+            ✕
+          </button>
+        )}
       </div>
-      {(hint || error || success) && (
-        <span style={messageStyle}>{error || success || hint}</span>
+      {error && <div style={helperTextStyle}>{error}</div>}
+      {!error && helperText && <div style={helperTextStyle}>{helperText}</div>}
+      {showCharacterCount && maxLength && (
+        <div style={counterStyle}>{characterCount}/{maxLength}</div>
       )}
     </div>
   );
-};
+});
+
+Input.displayName = 'Input';

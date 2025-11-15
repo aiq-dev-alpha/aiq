@@ -1,70 +1,217 @@
 import React from 'react';
 
-type Elevation = 'none' | 'sm' | 'md' | 'lg' | 'xl';
-type Radius = 'none' | 'sm' | 'md' | 'lg' | 'full';
+// Card Variant 7: Volcanic
 
-interface Props {
-  children: React.ReactNode;
-  elevation?: Elevation;
-  radius?: Radius;
-  bordered?: boolean;
-  hoverable?: boolean;
-  title?: React.ReactNode;
-  actions?: React.ReactNode;
-  style?: React.CSSProperties;
+export interface CardTheme {
+  background: string;
+  foreground: string;
+  border: string;
+  accent: string;
+  shadow: string;
 }
 
-export const Card: React.FC<Props> = ({
-  children,
-  elevation = 'md',
-  radius = 'md',
-  bordered = false,
-  hoverable = false,
+export interface CardAction {
+  label: string;
+  onClick: () => void;
+  variant?: 'primary' | 'secondary';
+}
+
+export interface CardProps {
+  variant?: 'default' | 'elevated' | 'outlined' | 'gradient' | 'glass' | 'neumorphic';
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  image?: string;
+  imageAlt?: string;
+  hoverable?: boolean;
+  clickable?: boolean;
+  onClick?: () => void;
+  actions?: CardAction[];
+  theme?: Partial<CardTheme>;
+  children?: React.ReactNode;
+}
+
+const defaultTheme: CardTheme = {
+  background: 'linear-gradient(135deg, #c21500 0%, #ffc500 100%)',
+  foreground: '#ffffff',
+  border: '#ff6b35',
+  accent: '#ff8c42',
+  shadow: 'rgba(194, 21, 0, 0.4)'
+};
+
+export const Card: React.FC<CardProps> = ({
+  variant = 'elevated',
   title,
+  subtitle,
+  description,
+  image,
+  imageAlt = '',
+  hoverable = true,
+  clickable = false,
+  onClick,
   actions,
-  style = {}
+  theme,
+  children
 }) => {
-  const elevations: Record<Elevation, string> = {
-    none: 'none',
-    sm: '0 1px 2px rgba(0,0,0,0.05)',
-    md: '0 4px 6px rgba(0,0,0,0.07)',
-    lg: '0 10px 15px rgba(0,0,0,0.1)',
-    xl: '0 20px 25px rgba(0,0,0,0.15)'
+  const finalTheme = { ...defaultTheme, ...theme };
+
+  const baseStyle: React.CSSProperties = {
+    background: finalTheme.background,
+    color: finalTheme.foreground,
+    borderRadius: '20px',
+    overflow: 'hidden',
+    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+    cursor: clickable || onClick ? 'pointer' : 'default',
+    position: 'relative',
+    maxWidth: '400px',
+    fontFamily: 'system-ui, -apple-system, sans-serif'
   };
 
-  const radii: Record<Radius, string> = {
-    none: '0',
-    sm: '0.375rem',
-    md: '0.75rem',
-    lg: '1rem',
-    full: '9999px'
+  const variantStyles: Record<string, React.CSSProperties> = {
+    default: {
+      boxShadow: `0 4px 12px ${finalTheme.shadow}`
+    },
+    elevated: {
+      boxShadow: `0 12px 32px ${finalTheme.shadow}, 0 4px 12px ${finalTheme.shadow}`
+    },
+    outlined: {
+      background: 'transparent',
+      border: `2px solid ${finalTheme.border}`,
+      color: finalTheme.border
+    },
+    gradient: {
+      boxShadow: `0 8px 24px ${finalTheme.shadow}`
+    },
+    glass: {
+      background: `${finalTheme.background}25`,
+      backdropFilter: 'blur(14px)',
+      border: `1px solid ${finalTheme.accent}50`
+    },
+    neumorphic: {
+      background: '#e0e5ec',
+      color: '#333333',
+      boxShadow: `9px 9px 18px ${finalTheme.shadow}, -9px -9px 18px rgba(255, 255, 255, 0.75)`
+    }
   };
+
+  const hoverStyle: React.CSSProperties = hoverable ? {
+    transform: 'scale(1.02) translateY(-4px)',
+    boxShadow: `0 20px 40px ${finalTheme.shadow}`
+  } : {};
+
+  const [isHovered, setIsHovered] = React.useState(false);
 
   return (
     <div
       style={{
-        backgroundColor: '#fff',
-        borderRadius: radii[radius],
-        boxShadow: elevations[elevation],
-        border: bordered ? '1px solid #e5e7eb' : 'none',
-        overflow: 'hidden',
-        cursor: hoverable ? 'pointer' : 'default',
-        transition: hoverable ? 'all 0.2s' : 'none',
-        fontFamily: 'system-ui, sans-serif',
-        ...style
+        ...baseStyle,
+        ...variantStyles[variant],
+        ...(isHovered ? hoverStyle : {})
       }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={onClick}
     >
-      {title && (
-        <div style={{ padding: '1.25rem', borderBottom: '1px solid #e5e7eb', fontWeight: 600, fontSize: '1.125rem' }}>
-          {title}
+      {image && (
+        <div style={{ position: 'relative', width: '100%', height: '220px', overflow: 'hidden' }}>
+          <img
+            src={image}
+            alt={imageAlt}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              transition: 'transform 0.4s ease',
+              transform: isHovered ? 'scale(1.1) rotate(2deg)' : 'scale(1)'
+            }}
+          />
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '100%',
+            background: 'linear-gradient(135deg, rgba(100,100,100,0.2), transparent)'
+          }} />
         </div>
-      )}
-      <div style={{ padding: '1.25rem' }}>{children}</div>
-      {actions && (
-        <div style={{ padding: '1rem 1.25rem', borderTop: '1px solid #e5e7eb', display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
-          {actions}
+      ))}
+
+      <div style={{ padding: '28px' }}>
+        {(title || subtitle) && (
+          <div style={{ marginBottom: '20px' }}>
+            {title && (
+              <h3 style={{
+                margin: '0 0 10px 0',
+                fontSize: '26px',
+                fontWeight: '800',
+                color: variant === 'neumorphic' ? '#333333' : finalTheme.foreground
+              }}>
+                {title}
+              </h3>
+            ))}
+            {subtitle && (
+              <p style={{
+                margin: 0,
+                fontSize: '15px',
+                color: variant === 'neumorphic' ? '#666666' : finalTheme.foreground,
+                opacity: 0.8
+              }}>
+                {subtitle}
+              </p>
+            ))}
+          </div>
+        ))}
+
+        <div style={{ marginBottom: actions ? '24px' : 0 }}>
+          {description && (
+            <p style={{
+              margin: '0 0 16px 0',
+              fontSize: '16px',
+              lineHeight: '1.6',
+              color: variant === 'neumorphic' ? '#666666' : finalTheme.foreground,
+              opacity: 0.9
+            }}>
+              {description}
+            </p>
+          ))}
+          {children}
         </div>
-      )}
+
+        {actions && actions.length > 0 && (
+          <div style={{
+            display: 'flex',
+            gap: '12px',
+            paddingTop: '16px',
+            borderTop: `1px solid ${variant === 'neumorphic' ? '#cccccc' : finalTheme.accent}50`
+          }}>
+            {actions.map((action, index) => (
+              <button
+                key={index}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  action.onClick();
+                }}
+                style={{
+                  padding: '10px 20px',
+                  borderRadius: '12px',
+                  border: 'none',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  background: action.variant === 'primary' ? finalTheme.accent : 'rgba(255,255,255,0.18)',
+                  color: '#ffffff',
+                  boxShadow: action.variant === 'primary' ? `0 3px 10px ${finalTheme.shadow}` : 'none'
+                }}
+              >
+                {action.label}
+              </button>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
+
+export default Card;

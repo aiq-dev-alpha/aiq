@@ -1,155 +1,217 @@
 import React from 'react';
 
-export type CardVariant = 'standard' | 'outlined' | 'filled' | 'glass' | 'gradient';
-export type CardPadding = 'none' | 'tight' | 'normal' | 'loose' | 'spacious';
+// Card Variant 5: Midnight Blue
 
-interface CardConfig {
-  palette: {
-    background: string;
-    text: string;
-    accent: string;
-    border: string;
-  };
-  geometry: {
-    borderRadius: string;
-    borderWidth: string;
-  };
-  effects: {
-    shadow: string;
-    blur: string;
-  };
+export interface CardTheme {
+  background: string;
+  foreground: string;
+  border: string;
+  accent: string;
+  shadow: string;
 }
 
-interface CardProps {
-  children: React.ReactNode;
-  variant?: CardVariant;
-  padding?: CardPadding;
+export interface CardAction {
+  label: string;
+  onClick: () => void;
+  variant?: 'primary' | 'secondary';
+}
+
+export interface CardProps {
+  variant?: 'default' | 'elevated' | 'outlined' | 'gradient' | 'glass' | 'neumorphic';
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  image?: string;
+  imageAlt?: string;
   hoverable?: boolean;
-  titleSlot?: React.ReactNode;
-  actionsSlot?: React.ReactNode;
-  config?: Partial<CardConfig>;
-  styleOverrides?: React.CSSProperties;
-  onInteract?: () => void;
+  clickable?: boolean;
+  onClick?: () => void;
+  actions?: CardAction[];
+  theme?: Partial<CardTheme>;
+  children?: React.ReactNode;
 }
 
-const defaultConfig: CardConfig = {
-  palette: {
-    background: '#ffffff',
-    text: '#1e293b',
-    accent: '#3b82f6',
-    border: '#cbd5e1'
-  },
-  geometry: {
-    borderRadius: '1rem',
-    borderWidth: '1px'
-  },
-  effects: {
-    shadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
-    blur: 'blur(12px)'
-  }
+const defaultTheme: CardTheme = {
+  background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%)',
+  foreground: '#ffffff',
+  border: '#4c6ef5',
+  accent: '#5c7cfa',
+  shadow: 'rgba(30, 60, 114, 0.45)'
 };
 
 export const Card: React.FC<CardProps> = ({
-  children,
-  variant = 'standard',
-  padding = 'normal',
-  hoverable = false,
-  titleSlot,
-  actionsSlot,
-  config = {},
-  styleOverrides = {},
-  onInteract
+  variant = 'gradient',
+  title,
+  subtitle,
+  description,
+  image,
+  imageAlt = '',
+  hoverable = true,
+  clickable = false,
+  onClick,
+  actions,
+  theme,
+  children
 }) => {
-  const cfg = { ...defaultConfig, ...config };
+  const finalTheme = { ...defaultTheme, ...theme };
 
-  const paddingMap: Record<CardPadding, string> = {
-    none: '0',
-    tight: '0.75rem',
-    normal: '1.5rem',
-    loose: '2rem',
-    spacious: '2.5rem'
+  const baseStyle: React.CSSProperties = {
+    background: finalTheme.background,
+    color: finalTheme.foreground,
+    borderRadius: '16px',
+    overflow: 'hidden',
+    transition: 'all 0.35s ease',
+    cursor: clickable || onClick ? 'pointer' : 'default',
+    position: 'relative',
+    maxWidth: '400px',
+    fontFamily: 'system-ui, -apple-system, sans-serif'
   };
 
-  const variantStyles: Record<CardVariant, React.CSSProperties> = {
-    standard: {
-      backgroundColor: cfg.palette.background,
-      border: 'none',
-      boxShadow: cfg.effects.shadow
+  const variantStyles: Record<string, React.CSSProperties> = {
+    default: {
+      boxShadow: `0 4px 14px ${finalTheme.shadow}`
+    },
+    elevated: {
+      boxShadow: `0 12px 30px ${finalTheme.shadow}, 0 4px 14px ${finalTheme.shadow}`
     },
     outlined: {
-      backgroundColor: cfg.palette.background,
-      border: `${cfg.geometry.borderWidth} solid ${cfg.palette.border}`,
-      boxShadow: 'none'
-    },
-    filled: {
-      backgroundColor: `${cfg.palette.accent}15`,
-      border: 'none',
-      boxShadow: 'none'
-    },
-    glass: {
-      backgroundColor: `${cfg.palette.background}80`,
-      border: `${cfg.geometry.borderWidth} solid ${cfg.palette.border}40`,
-      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-      backdropFilter: cfg.effects.blur
+      background: 'transparent',
+      border: `2px solid ${finalTheme.border}`,
+      color: finalTheme.border
     },
     gradient: {
-      background: `linear-gradient(135deg, ${cfg.palette.background}, ${cfg.palette.accent}20)`,
-      border: 'none',
-      boxShadow: cfg.effects.shadow
+      boxShadow: `0 8px 26px ${finalTheme.shadow}`
+    },
+    glass: {
+      background: `${finalTheme.background}25`,
+      backdropFilter: 'blur(14px)',
+      border: `1px solid ${finalTheme.accent}50`
+    },
+    neumorphic: {
+      background: '#e3e8f0',
+      color: '#1e3c72',
+      boxShadow: `9px 9px 18px ${finalTheme.shadow}, -9px -9px 18px rgba(255, 255, 255, 0.75)`
     }
   };
 
-  const baseStyles: React.CSSProperties = {
-    color: cfg.palette.text,
-    borderRadius: cfg.geometry.borderRadius,
-    overflow: 'hidden',
-    transition: hoverable ? 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
-    cursor: hoverable ? 'pointer' : 'default',
-    fontFamily: 'system-ui, sans-serif',
-    ...variantStyles[variant],
-    ...styleOverrides
-  };
+  const hoverStyle: React.CSSProperties = hoverable ? {
+    transform: 'translateY(-8px)',
+    boxShadow: `0 20px 45px ${finalTheme.shadow}`
+  } : {};
 
-  const titleStyles: React.CSSProperties = {
-    padding: paddingMap[padding],
-    borderBottom: `${cfg.geometry.borderWidth} solid ${cfg.palette.border}`,
-    fontWeight: 600,
-    fontSize: '1.125rem',
-    color: cfg.palette.text
-  };
-
-  const contentStyles: React.CSSProperties = {
-    padding: paddingMap[padding]
-  };
-
-  const actionsStyles: React.CSSProperties = {
-    padding: `${paddingMap[padding]}`,
-    borderTop: `${cfg.geometry.borderWidth} solid ${cfg.palette.border}`,
-    display: 'flex',
-    gap: '0.75rem',
-    justifyContent: 'flex-end'
-  };
+  const [isHovered, setIsHovered] = React.useState(false);
 
   return (
     <div
-      style={baseStyles}
-      onClick={onInteract}
-      onMouseEnter={(e) => {
-        if (hoverable) {
-          e.currentTarget.style.transform = 'scale(1.02)';
-          e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.15)';
-        }
+      style={{
+        ...baseStyle,
+        ...variantStyles[variant],
+        ...(isHovered ? hoverStyle : {})
       }}
-      onMouseLeave={(e) => {
-        if (hoverable) {
-          e.currentTarget.style.transform = 'scale(1)';
-          e.currentTarget.style.boxShadow = cfg.effects.shadow;
-        }
-      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={onClick}
     >
-      {titleSlot && <div style={titleStyles}>{titleSlot}</div>}
-      <div style={contentStyles}>{children}</div>
-      {actionsSlot && <div style={actionsStyles}>{actionsSlot}</div>}
+      {image && (
+        <div style={{ position: 'relative', width: '100%', height: '205px', overflow: 'hidden' }}>
+          <img
+            src={image}
+            alt={imageAlt}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              transition: 'transform 0.45s ease',
+              transform: isHovered ? 'scale(1.07)' : 'scale(1)'
+            }}
+          />
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '100%',
+            background: 'linear-gradient(135deg, rgba(100,100,200,0.25), transparent)'
+          }} />
+        </div>
+      ))}
+
+      <div style={{ padding: '25px' }}>
+        {(title || subtitle) && (
+          <div style={{ marginBottom: '18px' }}>
+            {title && (
+              <h3 style={{
+                margin: '0 0 9px 0',
+                fontSize: '25px',
+                fontWeight: '750',
+                color: variant === 'neumorphic' ? '#1e3c72' : finalTheme.foreground
+              }}>
+                {title}
+              </h3>
+            ))}
+            {subtitle && (
+              <p style={{
+                margin: 0,
+                fontSize: '14px',
+                color: variant === 'neumorphic' ? '#4c6ef5' : finalTheme.foreground,
+                opacity: 0.8
+              }}>
+                {subtitle}
+              </p>
+            ))}
+          </div>
+        ))}
+
+        <div style={{ marginBottom: actions ? '21px' : 0 }}>
+          {description && (
+            <p style={{
+              margin: '0 0 16px 0',
+              fontSize: '16px',
+              lineHeight: '1.6',
+              color: variant === 'neumorphic' ? '#4c6ef5' : finalTheme.foreground,
+              opacity: 0.9
+            }}>
+              {description}
+            </p>
+          ))}
+          {children}
+        </div>
+
+        {actions && actions.length > 0 && (
+          <div style={{
+            display: 'flex',
+            gap: '12px',
+            paddingTop: '16px',
+            borderTop: `1px solid ${variant === 'neumorphic' ? '#c5d4e8' : finalTheme.accent}50`
+          }}>
+            {actions.map((action, index) => (
+              <button
+                key={index}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  action.onClick();
+                }}
+                style={{
+                  padding: '10px 20px',
+                  borderRadius: '11px',
+                  border: 'none',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  background: action.variant === 'primary' ? finalTheme.accent : 'rgba(255,255,255,0.18)',
+                  color: '#ffffff',
+                  boxShadow: action.variant === 'primary' ? `0 3px 10px ${finalTheme.shadow}` : 'none'
+                }}
+              >
+                {action.label}
+              </button>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
+
+export default Card;

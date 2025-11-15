@@ -1,44 +1,48 @@
 <template>
   <div
+    :class="['card', `card--${variant}`, { 'card--hoverable': hoverable, 'card--clickable': clickable }]"
     :style="cardStyles"
-    :class="cardClasses"
     @click="handleClick"
-    @mouseenter="isHovered = true"
-    @mouseleave="isHovered = false">
-    <div v-if="badge" class="card-badge">{{ badge }}</div>
-
-    <div v-if="image" class="card-image">
-      <img :src="image" :alt="imageAlt" />
+  >
+    <div v-if="image" class="card__media">
+      <img :src="image" :alt="imageAlt || title" class="card__image" />
+      <div v-if="$slots.overlay" class="card__overlay">
+        <slot name="overlay" />
+      </div>
     </div>
 
-    <div class="card-content">
-      <header v-if="title || subtitle || $slots.header" class="card-header">
-        <div class="header-text">
-          <p v-if="subtitle" class="card-subtitle">{{ subtitle }}</p>
-          <h3 v-if="title" class="card-title">{{ title }}</h3>
-        </div>
-        <div v-if="$slots.headerAction" class="header-action">
-          <slot name="headerAction"></slot>
-        </div>
-        <slot name="header"></slot>
-      </header>
-
-      <div class="card-body">
-        <slot></slot>
+    <div class="card__header" v-if="title || subtitle || $slots.actions">
+      <div class="card__header-content">
+        <h3 v-if="title" class="card__title">{{ title }}</h3>
+        <p v-if="subtitle" class="card__subtitle">{{ subtitle }}</p>
       </div>
+      <div v-if="$slots.actions" class="card__actions">
+        <slot name="actions" />
+      </div>
+    </div>
 
-      <footer v-if="$slots.footer || actions" class="card-footer">
-        <slot name="footer"></slot>
-        <div v-if="actions" class="footer-actions">
-          <slot name="actions"></slot>
-        </div>
-      </footer>
+    <div class="card__body">
+      <p v-if="description" class="card__description">{{ description }}</p>
+      <slot />
+    </div>
+
+    <div v-if="$slots.footer || actions?.length" class="card__footer">
+      <slot name="footer">
+        <button
+          v-for="(action, index) in actions"
+          :key="index"
+          @click.stop="action.onClick"
+          class="card__button"
+        >
+          {{ action.label }}
+        </button>
+      </slot>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, PropType } from 'vue';
+import { defineComponent, computed, PropType } from 'vue';
 
 interface CardTheme {
   background: string;
@@ -46,26 +50,30 @@ interface CardTheme {
   border: string;
   accent: string;
   shadow: string;
+  muted: string;
 }
 
-type CardVariant = 'flat' | 'elevated' | 'outlined' | 'filled';
+interface CardAction {
+  label: string;
+  onClick: () => void;
+}
 
 export default defineComponent({
   name: 'Card',
   props: {
     variant: {
-      type: String as PropType<CardVariant>,
-      default: 'elevated'
-    },
-    theme: {
-      type: Object as PropType<Partial<CardTheme>>,
-      default: () => ({})
+      type: String as PropType<'default' | 'elevated' | 'outlined' | 'gradient' | 'glass' | 'neumorphic'>,
+      default: 'default'
     },
     title: {
       type: String,
       default: ''
     },
     subtitle: {
+      type: String,
+      default: ''
+    },
+    description: {
       type: String,
       default: ''
     },
@@ -77,180 +85,205 @@ export default defineComponent({
       type: String,
       default: ''
     },
-    badge: {
-      type: String,
-      default: ''
-    },
     hoverable: {
       type: Boolean,
-      default: false
+      default: true
     },
     clickable: {
       type: Boolean,
       default: false
     },
     actions: {
-      type: Boolean,
-      default: false
+      type: Array as PropType<CardAction[]>,
+      default: () => []
     },
-    padding: {
-      type: String,
-      default: 'md'
+    theme: {
+      type: Object as PropType<Partial<CardTheme>>,
+      default: () => ({})
     }
   },
   emits: ['click'],
   setup(props, { emit }) {
-    const isHovered = ref(false);
-
+    // Neon Theme
     const defaultTheme: CardTheme = {
-      background: '#fafafa',
-      foreground: '#18181b',
-      border: '#d4d4d8',
-      accent: '#8b5cf6',
-      shadow: 'rgba(139, 92, 246, 0.15)'
+      background: 'linear-gradient(135deg, #14b8a6 0%, #06b6d4 50%, #0ea5e9 100%)',
+      foreground: '#cffafe',
+      border: '#06b6d4',
+      accent: '#22d3ee',
+      shadow: 'rgba(6, 182, 212, 0.4)',
+      muted: '#67e8f9'
     };
 
-    const appliedTheme = computed(() => ({
-      ...defaultTheme,
-      ...props.theme
-    }));
-
-    const paddingMap: Record<string, string> = {
-      none: '0',
-      sm: '12px',
-      md: '16px',
-      lg: '24px',
-      xl: '32px'
-    };
-
-    const variantMap = computed(() => {
-      const t = appliedTheme.value;
-      return {
-        flat: {
-          background: t.background,
-          border: 'none',
-          boxShadow: 'none'
-        },
-        elevated: {
-          background: t.background,
-          border: 'none',
-          boxShadow: `0 8px 16px ${t.shadow}, 0 2px 4px rgba(0, 0, 0, 0.06)`
-        },
-        outlined: {
-          background: t.background,
-          border: `2px solid ${t.border}`,
-          boxShadow: `0 2px 4px rgba(0, 0, 0, 0.04)`
-        },
-        filled: {
-          background: `linear-gradient(135deg, ${t.accent}12, ${t.accent}20)`,
-          border: `1px solid ${t.accent}25`,
-          boxShadow: `0 4px 8px ${t.shadow}`
-        }
-      };
-    });
+    const appliedTheme = { ...defaultTheme, ...props.theme };
 
     const cardStyles = computed(() => ({
-      ...variantMap.value[props.variant],
-      color: appliedTheme.value.foreground,
-      borderRadius: '16px',
-      overflow: 'hidden',
-      cursor: props.clickable ? 'pointer' : 'default',
-      transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
-      transform: props.hoverable && isHovered.value ? 'translateY(-6px) scale(1.01)' : 'none',
-      boxShadow: props.hoverable && isHovered.value
-        ? `0 16px 32px ${appliedTheme.value.shadow}, 0 4px 8px rgba(0, 0, 0, 0.1)`
-        : variantMap.value[props.variant].boxShadow
+      '--card-background': appliedTheme.background,
+      '--card-foreground': appliedTheme.foreground,
+      '--card-border': appliedTheme.border,
+      '--card-accent': appliedTheme.accent,
+      '--card-shadow': appliedTheme.shadow,
+      '--card-muted': appliedTheme.muted,
     }));
 
-    const cardClasses = computed(() => ({
-      [`variant-${props.variant}`]: true,
-      'is-hoverable': props.hoverable,
-      'is-clickable': props.clickable,
-      'is-hovered': isHovered.value
-    }));
-
-    const handleClick = (event: MouseEvent) => {
+    const handleClick = () => {
       if (props.clickable) {
-        emit('click', event);
+        emit('click');
       }
     };
 
-    return {
-      isHovered,
-      cardStyles,
-      cardClasses,
-      handleClick,
-      paddingMap
-    };
+    return { cardStyles, handleClick };
   }
 });
 </script>
 
 <style scoped>
-.card-badge {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-  color: white;
-  padding: 5px 14px;
-  border-radius: 14px;
-  font-size: 12px;
-  font-weight: 700;
-  z-index: 1;
-  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
-  letter-spacing: 0.5px;
+.card {
+  background: var(--card-background);
+  color: var(--card-foreground);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
 }
-.card-image {
+
+.card--default {
+  box-shadow: 0 4px 6px -1px var(--card-shadow);
+}
+
+.card--elevated {
+  box-shadow: 0 13px 35px -6px var(--card-shadow);
+  transform: translateY(0);
+}
+
+.card--outlined {
+  border: 3px solid var(--card-border);
+  box-shadow: none;
+}
+
+.card--gradient {
+  background: var(--card-background);
+  box-shadow: 0 8px 16px var(--card-shadow);
+}
+
+.card--glass {
+  background: rgba(275, 243, 294, 0.61);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(262, 251, 240, 0.16);
+  box-shadow: 0 8px 32px var(--card-shadow);
+}
+
+.card--neumorphic {
+  background: #06b6d4;
+  box-shadow:
+    10px 10px 28px rgba(6, 182, 212, 0.4),
+    -10px -10px 28px rgba(255, 255, 255, 0.3);
+}
+
+.card--hoverable:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px -10px var(--card-shadow);
+}
+
+.card--clickable {
+  cursor: pointer;
+}
+
+.card--clickable:active {
+  transform: translateY(-2px);
+}
+
+.card__media {
+  position: relative;
   width: 100%;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
 }
-.card-image img {
+
+.card__image {
   width: 100%;
-  height: 200px;
+  height: 100%;
   object-fit: cover;
-  display: block;
+  transition: transform 0.4s ease;
 }
-.card-content {
-  padding: 16px;
+
+.card--hoverable:hover .card__image {
+  transform: scale(1.06);
 }
-.card-header {
+
+.card__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(6, 182, 212, 0.4, 0.8) 0%, transparent 100%);
+  display: flex;
+  align-items: flex-end;
+  padding: 1.5rem;
+}
+
+.card__header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  padding: 1.5rem 1.5rem 0;
   gap: 1rem;
-  margin-bottom: 16px;
 }
-.header-text {
+
+.card__header-content {
   flex: 1;
 }
-.card-subtitle {
-  margin: 0 0 8px;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  opacity: 0.7;
-  font-weight: 600;
-}
-.card-title {
+
+.card__title {
   margin: 0;
-  font-size: 1.25rem;
-  font-weight: 700;
-  line-height: 1.3;
+  font-size: 1.875rem;
+  font-weight: 800;
+  color: var(--card-foreground);
+  letter-spacing: -0.030000000000000002em;
 }
-.card-body {
+
+.card__subtitle {
+  margin: 0.5rem 0 0;
   font-size: 0.875rem;
-  line-height: 1.6;
-  opacity: 0.9;
+  color: var(--card-muted);
+  font-weight: 500;
 }
-.card-footer {
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-}
-.footer-actions {
+
+.card__actions {
   display: flex;
-  gap: 12px;
-  align-items: center;
+  gap: 0.5rem;
+}
+
+.card__body {
+  padding: 1.5rem;
+}
+
+.card__description {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--card-muted);
+}
+
+.card__footer {
+  padding: 1rem 1.5rem 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  border-top: 1px solid rgba(200, 220, 240, 0.11);
+}
+
+.card__button {
+  padding: 0.625rem 1.25rem;
+  background: var(--card-accent);
+  color: #cffafe;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.card__button:hover {
+  background: var(--card-border);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px var(--card-shadow);
 }
 </style>

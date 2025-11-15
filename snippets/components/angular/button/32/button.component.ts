@@ -1,150 +1,159 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
-interface ColorScheme {
-  background: string;
-  foreground: string;
-  accent: string;
-  border: string;
+interface ButtonTheme {
+  primaryColor: string;
+  secondaryColor: string;
+  backgroundColor: string;
+  textColor: string;
+  borderColor: string;
+  accentColor: string;
 }
-
-type VisualStyle = 'gradient-shift' | 'outlined-thick' | 'soft-shadow' | 'neon-glow';
 
 @Component({
   selector: 'app-button',
   template: `
     <button
-      [ngStyle]="computedStyles"
-      [disabled]="isDisabled"
-      (click)="onClick($event)"
-      (mouseenter)="onHover(true)"
-      (mouseleave)="onHover(false)"
-      class="btn-base">
-      <span *ngIf="iconLeft" class="icon-left">{{ iconLeft }}</span>
-      <span class="label"><ng-content></ng-content></span>
-      <span *ngIf="iconRight" class="icon-right">{{ iconRight }}</span>
-      <span *ngIf="badge" class="badge">{{ badge }}</span>
+      [ngClass]="['btn', 'btn-' + variant, 'btn-' + size]"
+      [ngStyle]="buttonStyles"
+      [disabled]="disabled || loading"
+      [attr.aria-label]="ariaLabel"
+      [attr.aria-busy]="loading"
+      (click)="handleClick($event)"
+      class="sink-button">
+      <span *ngIf="loading" class="spinner chevron-spinner"></span>
+      <span *ngIf="!loading && iconLeft" class="icon-left">{{ iconLeft }}</span>
+      <span class="btn-content">
+        <ng-content></ng-content>
+      </span>
+      <span *ngIf="!loading && iconRight" class="icon-right">{{ iconRight }}</span>
     </button>
   `,
   styles: [`
-    .btn-base {
+    .sink-button {
       position: relative;
-      border: none;
+      overflow: hidden;
       cursor: pointer;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      transition: all 0.4s ease;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      font-weight: 600;
+      border: none;
+      outline: none;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
       gap: 0.5rem;
+      box-shadow: 0 5px 20px #0284c766;
     }
-    .btn-base:disabled {
-      cursor: not-allowed;
-      filter: grayscale(1);
+
+    .sink-button:hover:not(:disabled) {
+      box-shadow: 0 8px 35px #0284c799;
+      transform: translateY(-2px) scale(1.02);
+      animation: sinkAnim 0.5s ease;
+    }
+
+    .sink-button:active:not(:disabled) {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .sink-button:disabled {
       opacity: 0.5;
+      cursor: not-allowed;
     }
-    .icon-left, .icon-right {
-      display: inline-flex;
+
+    @keyframes sinkAnim {
+      0%, 100% { transform: translateY(-2px) scale(1.02); }
+      50% { transform: translateY(-4px) scale(1.04) rotate(1deg); }
+    }
+
+    .chevron-spinner {
+      width: 1em;
+      height: 1em;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: currentColor;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .btn-content {
+      display: flex;
       align-items: center;
-      font-size: 1.2em;
     }
-    .badge {
-      position: absolute;
-      top: -8px;
-      right: -8px;
-      background: #ff4757;
-      color: white;
-      border-radius: 10px;
-      padding: 2px 6px;
-      font-size: 10px;
-      font-weight: bold;
+
+    .btn-sm {
+      padding: 0.5rem 1.5rem;
+      font-size: 0.875rem;
+      border-radius: 0.625rem;
     }
-    .label {
-      letter-spacing: 0.5px;
+
+    .btn-md {
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
+      border-radius: 0.875rem;
+    }
+
+    .btn-lg {
+      padding: 1rem 2.5rem;
+      font-size: 1.125rem;
+      border-radius: 1.125rem;
     }
   `]
 })
 export class ButtonComponent {
-  @Input() visualStyle: VisualStyle = 'gradient-shift';
-  @Input() colorScheme: Partial<ColorScheme> = {};
-  @Input() isDisabled = false;
-  @Input() rounded = true;
-  @Input() elevated = false;
-  @Input() iconLeft?: string;
-  @Input() iconRight?: string;
-  @Input() badge?: string | number;
-  @Input() customClass = '';
-  @Output() buttonClick = new EventEmitter<MouseEvent>();
+  @Input() theme: Partial<ButtonTheme> = {};
+  @Input() variant: 'default' | 'outlined' | 'filled' | 'sink' = 'default';
+  @Input() size: 'sm' | 'md' | 'lg' = 'md';
+  @Input() disabled: boolean = false;
+  @Input() loading: boolean = false;
+  @Input() iconLeft: string = '';
+  @Input() iconRight: string = '';
+  @Input() ariaLabel: string = '';
+  @Output() clicked = new EventEmitter<MouseEvent>();
 
-  private isHovered = false;
-  private defaultColors: ColorScheme = {
-    background: '#3b82f6',
-    foreground: '#ffffff',
-    accent: '#60a5fa',
-    border: '#2563eb'
+  private defaultTheme: ButtonTheme = {
+    primaryColor: '#0284c7',
+    secondaryColor: '#0369a1',
+    backgroundColor: '#f0f9ff',
+    textColor: '#ffffff',
+    borderColor: '#0284c7',
+    accentColor: '#38bdf8'
   };
 
-  get colors(): ColorScheme {
-    return { ...this.defaultColors, ...this.colorScheme };
+  get appliedTheme(): ButtonTheme {
+    return { ...this.defaultTheme, ...this.theme };
   }
 
-  get computedStyles(): Record<string, string> {
-    const styles = this.getStyleVariant();
-    return {
-      ...styles,
-      borderRadius: this.rounded ? '16px' : '4px',
-      padding: '14px 28px',
-      fontSize: '15px',
-      fontWeight: '600',
-      boxShadow: this.elevated ? '0 10px 25px rgba(0,0,0,0.15)' : 'none'
-    };
-  }
-
-  getStyleVariant(): Record<string, string> {
-    const c = this.colors;
-    const variants = {
-      'gradient-shift': {
-        background: `linear-gradient(45deg, ${c.background}, ${c.accent})`,
-        color: c.foreground,
-        border: 'none',
-        backgroundSize: '200% 200%',
-        backgroundPosition: this.isHovered ? 'right center' : 'left center',
-        transition: 'background-position 0.5s ease'
+  get buttonStyles() {
+    const variantStyles = {
+      default: {
+        background: `linear-gradient(135deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.secondaryColor})`,
+        color: this.appliedTheme.textColor,
+        border: 'none'
       },
-      'outlined-thick': {
-        background: this.isHovered ? `${c.background}15` : 'transparent',
-        color: c.background,
-        border: `3px solid ${c.background}`,
-        fontWeight: '700',
-        transition: 'all 0.3s ease'
+      outlined: {
+        background: 'transparent',
+        color: this.appliedTheme.primaryColor,
+        border: `2px solid ${this.appliedTheme.primaryColor}`
       },
-      'soft-shadow': {
-        background: c.background,
-        color: c.foreground,
-        border: 'none',
-        boxShadow: this.isHovered ? `0 8px 20px ${c.background}80` : `0 4px 14px ${c.background}66`,
-        transition: 'box-shadow 0.3s ease'
+      filled: {
+        background: this.appliedTheme.primaryColor,
+        color: this.appliedTheme.textColor,
+        border: 'none'
       },
-      'neon-glow': {
-        background: '#0a0a0a',
-        color: c.accent,
-        border: `2px solid ${c.accent}`,
-        boxShadow: this.isHovered
-          ? `0 0 30px ${c.accent}, inset 0 0 30px ${c.accent}60`
-          : `0 0 20px ${c.accent}80, inset 0 0 20px ${c.accent}40`,
-        textShadow: `0 0 10px ${c.accent}`,
-        transition: 'all 0.3s ease'
+      sink: {
+        background: `linear-gradient(90deg, ${this.appliedTheme.primaryColor}, ${this.appliedTheme.accentColor})`,
+        color: this.appliedTheme.textColor,
+        border: 'none'
       }
     };
-    return variants[this.visualStyle];
+
+    return variantStyles[this.variant];
   }
 
-  onClick(event: MouseEvent): void {
-    if (!this.isDisabled) {
-      this.buttonClick.emit(event);
+  handleClick(event: MouseEvent): void {
+    if (!this.disabled && !this.loading) {
+      this.clicked.emit(event);
     }
-  }
-
-  onHover(state: boolean): void {
-    this.isHovered = state;
   }
 }

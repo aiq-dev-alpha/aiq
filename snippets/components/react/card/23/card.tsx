@@ -1,112 +1,217 @@
 import React from 'react';
 
+// Card Variant 23: Tangerine
+
 export interface CardTheme {
   background: string;
+  foreground: string;
   border: string;
-  text: string;
-  heading: string;
   accent: string;
+  shadow: string;
 }
 
-export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  elevation?: 0 | 1 | 2 | 3 | 4;
-  padding?: 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+export interface CardAction {
+  label: string;
+  onClick: () => void;
+  variant?: 'primary' | 'secondary';
+}
+
+export interface CardProps {
+  variant?: 'default' | 'elevated' | 'outlined' | 'gradient' | 'glass' | 'neumorphic';
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  image?: string;
+  imageAlt?: string;
+  hoverable?: boolean;
+  clickable?: boolean;
+  onClick?: () => void;
+  actions?: CardAction[];
   theme?: Partial<CardTheme>;
-  headerContent?: React.ReactNode;
-  footerContent?: React.ReactNode;
-  isInteractive?: boolean;
-  hasBorder?: boolean;
+  children?: React.ReactNode;
 }
 
 const defaultTheme: CardTheme = {
-  background: '#ffffff',
-  border: '#e2e8f0',
-  text: '#475569',
-  heading: '#0f172a',
-  accent: '#3b82f6'
+  background: 'linear-gradient(135deg, #ff8008 0%, #ffc837 100%)',
+  foreground: '#3e2723',
+  border: '#ff9800',
+  accent: '#ffb300',
+  shadow: 'rgba(255, 128, 8, 0.4)'
 };
 
 export const Card: React.FC<CardProps> = ({
-  elevation = 1,
-  padding = 'md',
-  theme = {},
-  headerContent,
-  footerContent,
-  isInteractive = false,
-  hasBorder = false,
-  children,
-  style,
-  ...props
+  variant = 'elevated',
+  title,
+  subtitle,
+  description,
+  image,
+  imageAlt = '',
+  hoverable = true,
+  clickable = false,
+  onClick,
+  actions,
+  theme,
+  children
 }) => {
-  const appliedTheme = { ...defaultTheme, ...theme };
+  const finalTheme = { ...defaultTheme, ...theme };
 
-  const elevationMap = {
-    0: 'none',
-    1: '0 1px 3px rgba(0, 0, 0, 0.1)',
-    2: '0 4px 6px rgba(0, 0, 0, 0.1)',
-    3: '0 10px 15px rgba(0, 0, 0, 0.1)',
-    4: '0 20px 25px rgba(0, 0, 0, 0.15)'
-  };
-
-  const paddingMap = {
-    none: '0',
-    xs: '0.5rem',
-    sm: '1rem',
-    md: '1.5rem',
-    lg: '2rem',
-    xl: '3rem'
-  };
-
-  const cardStyles: React.CSSProperties = {
-    backgroundColor: appliedTheme.background,
-    borderRadius: '1rem',
-    border: hasBorder ? `1px solid ${appliedTheme.border}` : 'none',
-    boxShadow: elevationMap[elevation],
+  const baseStyle: React.CSSProperties = {
+    background: finalTheme.background,
+    color: finalTheme.foreground,
+    borderRadius: '24px',
     overflow: 'hidden',
-    transition: isInteractive ? 'all 0.3s ease' : 'none',
-    cursor: isInteractive ? 'pointer' : 'default',
-    ...style
+    transition: 'all 0.35s ease-in-out',
+    cursor: clickable || onClick ? 'pointer' : 'default',
+    position: 'relative',
+    maxWidth: '400px',
+    fontFamily: 'system-ui, -apple-system, sans-serif'
   };
+
+  const variantStyles: Record<string, React.CSSProperties> = {
+    default: {
+      boxShadow: `0 4px 16px ${finalTheme.shadow}`
+    },
+    elevated: {
+      boxShadow: `0 10px 30px ${finalTheme.shadow}, 0 4px 16px ${finalTheme.shadow}`
+    },
+    outlined: {
+      background: 'transparent',
+      border: `2px solid ${finalTheme.border}`,
+      color: finalTheme.border
+    },
+    gradient: {
+      boxShadow: `0 8px 28px ${finalTheme.shadow}`
+    },
+    glass: {
+      background: `${finalTheme.background}25`,
+      backdropFilter: 'blur(14px)',
+      border: `1px solid ${finalTheme.accent}50`
+    },
+    neumorphic: {
+      background: '#f0e6e6',
+      color: '#2d1f1f',
+      boxShadow: `9px 9px 18px ${finalTheme.shadow}, -9px -9px 18px rgba(255, 255, 255, 0.75)`
+    }
+  };
+
+  const hoverStyle: React.CSSProperties = hoverable ? {
+    transform: 'translateY(-6px) scale(1.01)',
+    boxShadow: `0 24px 48px ${finalTheme.shadow}`
+  } : {};
+
+  const [isHovered, setIsHovered] = React.useState(false);
 
   return (
     <div
-      style={cardStyles}
-      onMouseEnter={(e) => {
-        if (isInteractive) {
-          e.currentTarget.style.transform = 'translateY(-4px)';
-          e.currentTarget.style.boxShadow = '0 12px 20px rgba(0, 0, 0, 0.15)';
-        }
+      style={{
+        ...baseStyle,
+        ...variantStyles[variant],
+        ...(isHovered ? hoverStyle : {})
       }}
-      onMouseLeave={(e) => {
-        if (isInteractive) {
-          e.currentTarget.style.transform = 'translateY(0)';
-          e.currentTarget.style.boxShadow = elevationMap[elevation];
-        }
-      }}
-      {...props}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={onClick}
     >
-      {headerContent && (
-        <div style={{
-          padding: paddingMap[padding],
-          borderBottom: `1px solid ${appliedTheme.border}`,
-          fontWeight: 700,
-          color: appliedTheme.heading
-        }}>
-          {headerContent}
+      {image && (
+        <div style={{ position: 'relative', width: '100%', height: '210px', overflow: 'hidden' }}>
+          <img
+            src={image}
+            alt={imageAlt}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              transition: 'transform 0.5s ease',
+              transform: isHovered ? 'scale(1.08)' : 'scale(1)'
+            }}
+          />
+          <div style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: '40%',
+            background: 'linear-gradient(to bottom, transparent, rgba(0,0,0,0.3))'
+          }} />
         </div>
-      )}
-      <div style={{ padding: paddingMap[padding], color: appliedTheme.text }}>
-        {children}
+      ))}
+
+      <div style={{ padding: '26px' }}>
+        {(title || subtitle) && (
+          <div style={{ marginBottom: '18px' }}>
+            {title && (
+              <h3 style={{
+                margin: '0 0 8px 0',
+                fontSize: '25px',
+                fontWeight: '800',
+                color: variant === 'neumorphic' ? '#2d1f1f' : finalTheme.foreground
+              }}>
+                {title}
+              </h3>
+            ))}
+            {subtitle && (
+              <p style={{
+                margin: 0,
+                fontSize: '14px',
+                color: variant === 'neumorphic' ? '#5a4a4a' : finalTheme.foreground,
+                opacity: 0.8
+              }}>
+                {subtitle}
+              </p>
+            ))}
+          </div>
+        ))}
+
+        <div style={{ marginBottom: actions ? '22px' : 0 }}>
+          {description && (
+            <p style={{
+              margin: '0 0 16px 0',
+              fontSize: '16px',
+              lineHeight: '1.6',
+              color: variant === 'neumorphic' ? '#5a4a4a' : finalTheme.foreground,
+              opacity: 0.9
+            }}>
+              {description}
+            </p>
+          ))}
+          {children}
+        </div>
+
+        {actions && actions.length > 0 && (
+          <div style={{
+            display: 'flex',
+            gap: '12px',
+            paddingTop: '16px',
+            borderTop: `1px solid ${variant === 'neumorphic' ? '#d9c9c9' : finalTheme.accent}50`
+          }}>
+            {actions.map((action, index) => (
+              <button
+                key={index}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  action.onClick();
+                }}
+                style={{
+                  padding: '10px 20px',
+                  borderRadius: '16px',
+                  border: 'none',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  background: action.variant === 'primary' ? finalTheme.accent : 'rgba(255,255,255,0.18)',
+                  color: '#ffffff',
+                  boxShadow: action.variant === 'primary' ? `0 3px 10px ${finalTheme.shadow}` : 'none'
+                }}
+              >
+                {action.label}
+              </button>
+            ))}
+          </div>
+        ))}
       </div>
-      {footerContent && (
-        <div style={{
-          padding: paddingMap[padding],
-          borderTop: `1px solid ${appliedTheme.border}`,
-          backgroundColor: `${appliedTheme.border}30`
-        }}>
-          {footerContent}
-        </div>
-      )}
     </div>
   );
 };
+
+export default Card;
