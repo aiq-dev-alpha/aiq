@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 interface DesignSystem {
   colors: {
   surface: string;
@@ -24,6 +25,8 @@ interface DesignSystem {
 }
 type LayoutStyle = 'vertical' | 'horizontal' | 'compact' | 'feature';
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-card',
   template: `
   <article [ngStyle]="computedStyle" [ngClass]="layoutClass" class="card">

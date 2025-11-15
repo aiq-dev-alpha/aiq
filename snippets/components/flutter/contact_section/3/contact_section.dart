@@ -1,42 +1,117 @@
 import 'package:flutter/material.dart';
-class CustomSection extends StatefulWidget {
-  final Widget? child;
-  final VoidCallback? onTap;
+
+class CustomSection extends StatelessWidget {
+  final String title;
+  final String? subtitle;
+  final List<ContactMethod> methods;
+  final Color? backgroundColor;
+
   const CustomSection({
-  Key? key,
-  this.child,
-  this.onTap,
+    Key? key,
+    required this.title,
+    this.subtitle,
+    required this.methods,
+    this.backgroundColor,
   }) : super(key: key);
-  @override
-  State<CustomSection> createState() => _CustomSectionState();
-}
-class _CustomSectionState extends State<CustomSection> {
-  bool _isHovered = false;
+
   @override
   Widget build(BuildContext context) {
-  return MouseRegion(
-  onEnter: (_) => setState(() => _isHovered = true),
-  onExit: (_) => setState(() => _isHovered = false),
-  child: GestureDetector(
-  onTap: widget.onTap,
-  child: AnimatedContainer(
-  duration: const Duration(milliseconds: 250),
-  transform: Matrix4.translationValues(0, _isHovered ? -6 : 0, 0),
-  padding: const EdgeInsets.all(22),
-  decoration: BoxDecoration(
-  color: Colors.white,
-  borderRadius: BorderRadius.circular(18),
-  boxShadow: [
-  BoxShadow(
-  color: Colors.black.withOpacity(_isHovered ? 0.18 : 0.08),
-  blurRadius: _isHovered ? 25 : 12,
-  offset: Offset(0, _isHovered ? 10 : 4),
-  ),
-  ],
-  ),
-  child: widget.child ?? const Text('Component'),
-  ),
-  ),
-  );
+    return Container(
+      padding: const EdgeInsets.all(48),
+      decoration: BoxDecoration(
+        color: backgroundColor ?? Colors.grey.shade50,
+      ),
+      child: Column(
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.w700,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          if (subtitle != null) ...[
+            const SizedBox(height: 12),
+            Text(
+              subtitle!,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey.shade700,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+          const SizedBox(height: 48),
+          Wrap(
+            spacing: 32,
+            runSpacing: 32,
+            alignment: WrapAlignment.center,
+            children: methods.map((method) {
+              return Container(
+                width: 280,
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.06),
+                      blurRadius: 16,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        method.icon,
+                        size: 32,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      method.title,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      method.value,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey.shade700,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
   }
+}
+
+class ContactMethod {
+  final IconData icon;
+  final String title;
+  final String value;
+
+  const ContactMethod({
+    required this.icon,
+    required this.title,
+    required this.value,
+  });
 }

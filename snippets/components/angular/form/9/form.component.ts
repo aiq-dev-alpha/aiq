@@ -1,6 +1,9 @@
 // Inline Validation Form
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-form',
   template: `<form class="inline-form"><div class="form-group"><label>Email</label><input type="email" [(ngModel)]="email" (blur)="validateEmail()" [class.error]="emailError" name="email"><span class="error-msg" *ngIf="emailError">{{ emailError }}</span></div><div class="form-group"><label>Password</label><input type="password" [(ngModel)]="password" (blur)="validatePassword()" [class.error]="passwordError" name="password"><span class="error-msg" *ngIf="passwordError">{{ passwordError }}</span></div><button type="submit">Submit</button></form>`,
   styles: [`

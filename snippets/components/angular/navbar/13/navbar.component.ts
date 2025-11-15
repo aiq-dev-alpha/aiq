@@ -1,6 +1,9 @@
 // Split Reveal Navbar
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-navbar',
   template: `<nav class="split-nav"><div class="split-left"><ng-content select="[left]"></ng-content></div><div class="split-divider"></div><div class="split-right"><ng-content select="[right]"></ng-content></div></nav>`,
   styles: [`

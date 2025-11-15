@@ -1,35 +1,88 @@
-import React from 'react';
+import React, { useState } from 'react';
+
 interface ButtonProps {
   children: React.ReactNode;
-  onClick?: () => void;
-  variant?: 'primary' | 'secondary' | 'success';
-  size?: 'sm' | 'md' | 'lg';
+  onClick?: () => Promise<void> | void;
+  variant?: 'primary' | 'secondary';
   disabled?: boolean;
 }
+
 export const Button: React.FC<ButtonProps> = ({
   children,
   onClick,
   variant = 'primary',
-  size = 'md',
   disabled = false
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleClick = async () => {
+    if (isLoading || disabled) return;
+
+    setIsLoading(true);
+    try {
+      await onClick?.();
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const variants = {
-    primary: 'bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800',
-    secondary: 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600',
-    success: 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700'
+    primary: { bg: '#4f46e5', hover: '#4338ca' },
+    secondary: { bg: '#10b981', hover: '#059669' }
   };
-  const sizes = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-5 py-2.5 text-base',
-    lg: 'px-7 py-3.5 text-lg'
-  };
+
   return (
     <button
-      onClick={onClick}
-      disabled={disabled}
-      className={`${variants[variant]} ${sizes[size]} text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+      onClick={handleClick}
+      disabled={disabled || isLoading}
+      style={{
+        padding: '12px 24px',
+        background: variants[variant].bg,
+        border: 'none',
+        borderRadius: '8px',
+        color: '#fff',
+        fontSize: '16px',
+        fontWeight: 600,
+        cursor: (disabled || isLoading) ? 'not-allowed' : 'pointer',
+        opacity: (disabled || isLoading) ? 0.7 : 1,
+        transition: 'all 0.2s ease',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        minWidth: '120px',
+        justifyContent: 'center'
+      }}
+      onMouseEnter={(e) => {
+        if (!disabled && !isLoading) {
+          e.currentTarget.style.background = variants[variant].hover;
+        }
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = variants[variant].bg;
+      }}
     >
-      {children}
+      {isLoading ? (
+        <>
+          <div
+            style={{
+              width: '16px',
+              height: '16px',
+              border: '2px solid rgba(255,255,255,0.3)',
+              borderTopColor: '#fff',
+              borderRadius: '50%',
+              animation: 'spin 0.6s linear infinite'
+            }}
+          />
+          <span>Loading...</span>
+          <style>{`
+            @keyframes spin {
+              to { transform: rotate(360deg); }
+            }
+          `}</style>
+        </>
+      ) : (
+        children
+      )}
     </button>
   );
 };

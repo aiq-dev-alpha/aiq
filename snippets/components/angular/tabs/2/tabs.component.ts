@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { trigger, transition, style, animate } from '@angular/animations';
 interface TabItem {
   id: string;
@@ -16,6 +17,8 @@ interface TabsTheme {
   indicatorColor: string;
 }
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-tabs',
   template: `
   <div [ngStyle]="containerStyles" class="tabs-container">

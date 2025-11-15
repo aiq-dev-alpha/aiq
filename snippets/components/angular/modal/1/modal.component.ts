@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 interface ModalTheme {
   primaryColor: string;
   backgroundColor: string;
@@ -7,6 +8,8 @@ interface ModalTheme {
   borderColor: string;
 }
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-modal',
   template: `
   <div *ngIf="isOpen" class="modal-overlay" [ngStyle]="overlayStyles" (click)="onOverlayClick()">

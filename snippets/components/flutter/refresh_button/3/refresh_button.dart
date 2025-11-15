@@ -1,55 +1,95 @@
 import 'package:flutter/material.dart';
-class CustomComponent extends StatefulWidget {
-  final String text;
+
+class CustomButton extends StatefulWidget {
   final VoidCallback? onPressed;
-  final bool isLoading;
+  final bool isRefreshing;
   final Color? color;
-  const CustomComponent({
-  Key? key,
-  this.text = 'Button',
-  this.onPressed,
-  this.isLoading = false,
-  this.color,
+  final double size;
+  final String? label;
+
+  const CustomButton({
+    Key? key,
+    this.onPressed,
+    this.isRefreshing = false,
+    this.color,
+    this.size = 40,
+    this.label,
   }) : super(key: key);
+
   @override
-  State<CustomComponent> createState() => _CustomComponentState();
+  State<CustomButton> createState() => _CustomButtonState();
 }
-class _CustomComponentState extends State<CustomComponent> {
+
+class _CustomButtonState extends State<CustomButton> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    );
+
+    if (widget.isRefreshing) {
+      _controller.repeat();
+    }
+  }
+
+  @override
+  void didUpdateWidget(CustomButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isRefreshing != oldWidget.isRefreshing) {
+      if (widget.isRefreshing) {
+        _controller.repeat();
+      } else {
+        _controller.stop();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-  return Material(
-  color: Colors.transparent,
-  child: InkWell(
-  onTap: widget.isLoading ? null : widget.onPressed,
-  borderRadius: BorderRadius.circular(10),
-  splashColor: (widget.color ?? Theme.of(context).primaryColor).withOpacity(0.2),
-  highlightColor: (widget.color ?? Theme.of(context).primaryColor).withOpacity(0.1),
-  child: Ink(
-  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
-  decoration: BoxDecoration(
-  color: widget.color ?? Theme.of(context).primaryColor,
-  borderRadius: BorderRadius.circular(10),
-  ),
-  child: widget.isLoading
-  ? const SizedBox(
-  width: 24,
-  height: 24,
-  child: CircularProgressIndicator(
-  color: Colors.white,
-  strokeWidth: 2.5,
-  ),
-  )
-  : Text(
-  widget.text,
-  style: const TextStyle(
-  color: Colors.white,
-  fontSize: 15,
-  fontWeight: FontWeight.w600,
-  letterSpacing: 0.8,
-  ),
-  ),
-  ),
-  ),
-  );
+    final color = widget.color ?? Theme.of(context).primaryColor;
+
+    if (widget.label != null) {
+      return ElevatedButton.icon(
+        onPressed: widget.isRefreshing ? null : widget.onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        icon: RotationTransition(
+          turns: _controller,
+          child: Icon(Icons.refresh, size: widget.size * 0.6),
+        ),
+        label: Text(
+          widget.label!,
+          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+        ),
+      );
+    }
+
+    return IconButton(
+      onPressed: widget.isRefreshing ? null : widget.onPressed,
+      icon: RotationTransition(
+        turns: _controller,
+        child: Icon(
+          Icons.refresh,
+          size: widget.size,
+          color: color,
+        ),
+      ),
+    );
   }
 }

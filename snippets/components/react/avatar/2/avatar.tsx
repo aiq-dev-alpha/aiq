@@ -1,40 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
+
 interface AvatarProps {
-  src?: string;
-  alt?: string;
+  children?: React.ReactNode;
+  variant?: 'default' | 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
-  status?: 'online' | 'offline' | 'away';
+  disabled?: boolean;
 }
-export const Avatar: React.FC<AvatarProps> = ({
-  src,
-  alt = 'User',
-  size = 'md',
-  status
-}) => {
+
+export const Avatar: React.FC<AvatarProps> = (props) => {
+  const { children, variant = 'default', size = 'md', disabled = false } = props;
+  const [isHovered, setIsHovered] = React.useState(false);
+
+  const variants = {
+    default: '#f3f4f6',
+    primary: '#3b82f6',
+    secondary: '#10b981'
+  };
+
   const sizes = {
-    sm: 'w-8 h-8',
-    md: 'w-12 h-12',
-    lg: 'w-16 h-16'
+    sm: '8px 16px',
+    md: '12px 24px',
+    lg: '16px 32px'
   };
-  const statusColors = {
-    online: 'bg-green-500',
-    offline: 'bg-gray-400',
-    away: 'bg-yellow-500'
-  };
+
   return (
-    <div className="relative inline-block">
-      <div className={`${sizes[size]} rounded overflow-hidden bg-gradient-to-br from-blue-400 to-blue-600 shadow-sm ring-2 ring-white`}>
-        {src ? (
-          <img src={src} alt={alt} className="w-full h-full object-cover" />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-white font-bold">
-            {alt[0].toUpperCase()}
-          </div>
-        )}
-      </div>
-      {status && (
-        <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${statusColors[status]} ring-2 ring-white`} />
-      )}
+    <div
+      style={{
+        background: variants[variant],
+        padding: sizes[size],
+        borderRadius: '8px',
+        transition: 'all 0.3s ease',
+        transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.5 : 1
+      }}
+    >
+      {children || 'Avatar - minimalist'}
     </div>
   );
 };

@@ -1,72 +1,314 @@
 <template>
-  <div class="input-container">
-    <label v-if="label" class="input-label">{{ label }}</label>
-    <div class="input-wrapper">
+  <div class="tel-input-wrapper-6" :class="{ focused, hasError: !!error, disabled }">
+    <label v-if="label" class="label-style-6" :for="`input-6-${_uid}`">
+      {{ label }}
+      <span v-if="required" class="required-indicator">*</span>
+      <span v-if="hint && !error" class="hint-icon" :title="hint">?</span>
+    </label>
+    
+    <div class="input-control-6" :style="inputWrapperStyle">
+      <div v-if="prefix" class="input-prefix-6">{{ prefix }}</div>
+      
       <input
-        :type="type"
-        :value="modelValue"
-        :placeholder="placeholder"
+        :id="`input-6-${_uid}`"
+        ref="inputRef"
+        v-model="internalValue"
+        :type="computedType"
+        :placeholder="placeholder || 'Enter phone...'"
         :disabled="disabled"
-        @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
-        class="text-input"
-        :class="{ error, focused }"
-        @focus="focused = true"
-        @blur="focused = false"
+        :required="required"
+        :class="['base-input-6', inputClass]"
+        @input="handleInput"
+        @focus="handleFocus"
+        @blur="handleBlur"
+        @keydown="handleKeydown"
       />
+      
+      <div v-if="suffix" class="input-suffix-6">{{ suffix }}</div>
+      
+      <button 
+        v-if="clearable && internalValue && !disabled"
+        type="button"
+        class="clear-btn-6"
+        @click="clearInput"
+        tabindex="-1"
+      >
+        ×
+      </button>
     </div>
-    <p v-if="error" class="error-text">{{ error }}</p>
+    
+    <div v-if="showCharCount" class="char-counter-6">
+      {{ internalValue.length }} / {{ maxLength || '∞' }}
+    </div>
+    
+    <transition name="error-6">
+      <div v-if="error" class="error-message-6">
+        <span class="error-icon">⚠</span>
+        {{ error }}
+      </div>
+    </transition>
+    
+    <div v-if="hint && !error" class="hint-message-6">{{ hint }}</div>
   </div>
 </template>
-<script lang="ts">
-import { defineComponent, ref } from 'vue';
-export default defineComponent({
-  name: 'TextInput',
-  props: {
-    modelValue: { type: [String, Number], default: '' },
-    type: { type: String, default: 'text' },
-    label: { type: String, default: '' },
-    placeholder: { type: String, default: '' },
-    error: { type: String, default: '' },
-    disabled: { type: Boolean, default: false }
-  },
-  emits: ['update:modelValue'],
-  setup() {
-    const focused = ref(false);
-    return { focused };
-  }
+
+<script setup lang="ts">
+import { ref, computed, watch } from 'vue';
+
+interface Props {
+  label?: string;
+  modelValue?: string | number;
+  type?: string;
+  placeholder?: string;
+  disabled?: boolean;
+  required?: boolean;
+  error?: string;
+  hint?: string;
+  prefix?: string;
+  suffix?: string;
+  clearable?: boolean;
+  showCharCount?: boolean;
+  maxLength?: number;
+  inputClass?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  type: 'text',
+  disabled: false,
+  required: false,
+  clearable: true,
+  showCharCount: false
+});
+
+const emit = defineEmits<{
+  'update:modelValue': [value: string | number];
+  focus: [];
+  blur: [];
+  keydown: [e: KeyboardEvent];
+}>();
+
+const inputRef = ref<HTMLInputElement>();
+const internalValue = ref(String(props.modelValue || ''));
+const focused = ref(false);
+const _uid = ref(Math.random().toString(36).substr(2, 9));
+
+watch(() => props.modelValue, (newVal) => {
+  internalValue.value = String(newVal || '');
+});
+
+const computedType = computed(() => {
+  if (props.type === 'tel') return 'text';
+  return props.type;
+});
+
+const inputWrapperStyle = computed(() => ({
+  '--focus-color': `hsl(72, 72%, 62%)`,
+  '--border-radius': `4px`
+}));
+
+const handleInput = () => {
+  emit('update:modelValue', internalValue.value);
+};
+
+const handleFocus = () => {
+  focused.value = true;
+  emit('focus');
+};
+
+const handleBlur = () => {
+  focused.value = false;
+  emit('blur');
+};
+
+const handleKeydown = (e: KeyboardEvent) => {
+  emit('keydown', e);
+};
+
+const clearInput = () => {
+  internalValue.value = '';
+  emit('update:modelValue', '');
+  inputRef.value?.focus();
+};
+
+defineExpose({
+  focus: () => inputRef.value?.focus(),
+  blur: () => inputRef.value?.blur()
 });
 </script>
+
 <style scoped>
-.input-container {
-  margin: 1rem 0;
-}
-.input-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #374151;
-}
-.text-input {
+.tel-input-wrapper-6 {
   width: 100%;
-  padding: 0.875rem 1.75rem;
-  font-size: 1rem;
-  border: 2px solid #d1d5db;
-  border-radius: 0.25rem;
-  outline: none;
-  transition: all 0.2s;
+  margin-bottom: 1.4rem;
+  font-family: -apple-system, sans-serif;
+}
+
+.label-style-6 {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: hsl(72, 57%, 37%);
+  letter-spacing: 0.00em;
+  text-transform: none;
+}
+
+.required-indicator {
+  color: hsl(216, 77%, 60%);
+  font-weight: 700;
+  font-size: 1.1em;
+}
+
+.hint-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: hsl(72, 57%, 82%);
+  border-radius: 50%;
+  font-size: 0.75em;
+  cursor: help;
+  font-style: normal;
+}
+
+.input-control-6 {
+  position: relative;
+  display: flex;
+  align-items: stretch;
   background: white;
+  border: 1px solid hsl(72, 32%, 87%);
+  border-radius: var(--border-radius);
+  transition: all 0.2s cubic-bezier(0.2, 0, 0.4, 1);
+  overflow: hidden;
 }
-.text-input:focus {
-  border-color: #amber500;
-  box-shadow: 0 0 0 3px rgba(var(--amber-rgb), 0.1);
+
+.tel-input-wrapper-6.focused .input-control-6 {
+  border-color: var(--focus-color);
+  box-shadow: 0 0 0 2px hsla(72, 72%, 62%, 0.1);
+  transform: translateY(-1px);
 }
-.text-input.error {
-  border-color: #ef4444;
+
+.tel-input-wrapper-6.hasError .input-control-6 {
+  border-color: hsl(0, 82%, 52%);
+  background: hsla(0, 62%, 97%, 0.5);
 }
-.error-text {
-  margin-top: 0.5rem;
+
+.tel-input-wrapper-6.disabled .input-control-6 {
+  background: hsl(72, 22%, 96%);
+  border-style: dashed;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.input-prefix-6,
+.input-suffix-6 {
+  padding: 0.5rem 1.05rem;
+  background: hsl(72, 37%, 90%);
+  color: hsl(72, 47%, 52%);
+  font-weight: 500;
   font-size: 0.875rem;
-  color: #ef4444;
+  border-['left']: 1px solid hsl(72, 32%, 82%);
+  display: flex;
+  align-items: center;
+}
+
+.base-input-6 {
+  flex: 1;
+  min-width: 0;
+  padding: 0.8500000000000001rem 0.85rem;
+  font-size: 1.0rem;
+  color: hsl(72, 42%, 32%);
+  background: transparent;
+  border: none;
+  outline: none;
+  line-height: 1.4;
+}
+
+.base-input-6::placeholder {
+  color: hsl(72, 32%, 67%);
+  opacity: 0.6;
+  font-style: normal;
+}
+
+.base-input-6:disabled {
+  cursor: not-allowed;
+  color: hsl(72, 32%, 62%);
+}
+
+.clear-btn-6 {
+  position: absolute;
+  right: 0.5rem;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: hsl(72, 42%, 87%);
+  color: hsl(72, 47%, 57%);
+  border: none;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.1s;
+  margin: 0 0.3rem;
+}
+
+.clear-btn-6:hover {
+  background: hsl(144, 57%, 52%);
+  color: white;
+  transform: scale(1.1);
+}
+
+.char-counter-6 {
+  margin-top: 0.3rem;
+  text-align: right;
+  font-size: 0.75rem;
+  color: hsl(72, 37%, 67%);
+  font-weight: 400;
+}
+
+.error-message-6 {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: hsla(0, 72%, 97%, 0.7);
+  color: hsl(0, 77%, 52%);
+  border-left: 3px solid hsl(0, 82%, 62%);
+  border-radius: 2px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.error-icon {
+  font-size: 1.1em;
+}
+
+.hint-message-6 {
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  color: hsl(72, 40%, 64%);
+  line-height: 1.4;
+  font-style: normal;
+}
+
+.error-6-enter-active,
+.error-6-leave-active {
+  transition: all 0.2s cubic-bezier(0.2, 0, 0.4, 1);
+}
+
+.error-6-enter-from {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.error-6-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
 }
 </style>

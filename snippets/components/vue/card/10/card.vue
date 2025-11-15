@@ -1,29 +1,133 @@
 <template>
-  <div class="component-10" :class="[size, variant]">
-    <slot />
+  <div :class="['stats-card', variant]">
+    <div class="icon-container">
+      <span class="icon">{{ icon }}</span>
+    </div>
+    <div class="stats-content">
+      <p class="label">{{ label }}</p>
+      <h3 class="value">{{ value }}</h3>
+      <div v-if="change !== undefined" :class="['change', changeType]">
+        <span class="change-icon">{{ changeType === 'positive' ? '↑' : '↓' }}</span>
+        <span class="change-value">{{ Math.abs(change) }}%</span>
+        <span class="change-period">vs last {{ period }}</span>
+      </div>
+    </div>
   </div>
 </template>
-<script lang="ts">
-import { defineComponent } from 'vue';
-export default defineComponent({
-  name: 'Component10',
-  props: {
-    size: { type: String, default: 'md' },
-    variant: { type: String, default: 'default' }
-  }
+
+<script setup lang="ts">
+import { computed } from 'vue';
+
+interface Props {
+  icon: string;
+  label: string;
+  value: string | number;
+  change?: number;
+  period?: string;
+  variant?: 'primary' | 'success' | 'warning' | 'danger';
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  period: 'month',
+  variant: 'primary'
+});
+
+const changeType = computed(() => {
+  if (props.change === undefined) return null;
+  return props.change >= 0 ? 'positive' : 'negative';
 });
 </script>
+
 <style scoped>
-.component-10 {
-  padding: 0.5rem 1.0rem;
-  border-radius: 1.25rem;
-  background: linear-gradient(195deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  font-weight: 600;
-  transition: all 0.3s ease;
+.stats-card {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid;
 }
-.component-10:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
+
+.stats-card.primary {
+  border-color: #3b82f6;
+}
+
+.stats-card.success {
+  border-color: #10b981;
+}
+
+.stats-card.warning {
+  border-color: #f59e0b;
+}
+
+.stats-card.danger {
+  border-color: #ef4444;
+}
+
+.icon-container {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 2rem;
+}
+
+.stats-card.primary .icon-container {
+  background: #dbeafe;
+}
+
+.stats-card.success .icon-container {
+  background: #d1fae5;
+}
+
+.stats-card.warning .icon-container {
+  background: #fef3c7;
+}
+
+.stats-card.danger .icon-container {
+  background: #fee2e2;
+}
+
+.stats-content {
+  flex: 1;
+}
+
+.label {
+  margin: 0 0 0.5rem 0;
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.value {
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.change {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.change.positive {
+  color: #10b981;
+}
+
+.change.negative {
+  color: #ef4444;
+}
+
+.change-period {
+  color: #6b7280;
 }
 </style>

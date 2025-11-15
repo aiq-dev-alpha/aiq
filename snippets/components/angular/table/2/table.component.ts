@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 interface TableTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -15,10 +16,12 @@ interface TableColumn {
   width?: string;
 }
 interface TableRow {
-  [key: string]: any;
+  [key: string]: unknown;
   id: string | number;
 }
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-table',
   template: `
   <div [ngStyle]="containerStyles" class="table-container">

@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 interface ElevationSystem {
   flat: string;
   low: string;
@@ -14,6 +15,8 @@ interface CardDesign {
 }
 type LayoutMode = 'stacked' | 'horizontal' | 'overlay' | 'masonry';
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-card',
   template: `
   <article [ngStyle]="cardStyle" [ngClass]="modeClass" class="card-element" (click)="handleCardClick()">

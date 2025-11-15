@@ -1,39 +1,68 @@
 import React from 'react';
+
 interface ButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
-  variant?: 'solid' | 'outline' | 'ghost';
+  gradient?: 'sunset' | 'ocean' | 'forest' | 'purple';
+  animated?: boolean;
   size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
-  loading?: boolean;
 }
+
 export const Button: React.FC<ButtonProps> = ({
   children,
   onClick,
-  variant = 'solid',
-  size = 'md',
-  disabled = false,
-  loading = false
+  gradient = 'sunset',
+  animated = true,
+  size = 'md'
 }) => {
-  const baseClasses = 'rounded-md font-medium transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500';
-  const variantClasses = {
-    solid: 'bg-purple-500 text-white hover:bg-purple-700 hover:scale-105 shadow',
-    outline: 'border-2 border-purple-500 text-purple-600 hover:bg-purple-50',
-    ghost: 'text-purple-600 hover:bg-purple-100'
+  const gradients = {
+    sunset: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    ocean: 'linear-gradient(135deg, #0093E9 0%, #80D0C7 100%)',
+    forest: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)',
+    purple: 'linear-gradient(135deg, #A8EDEA 0%, #FED6E3 100%)'
   };
-  const sizeClasses = {
-    sm: 'px-3 py-1 text-xs',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-7 py-3.5 text-base'
+
+  const sizes = {
+    sm: { padding: '10px 20px', fontSize: '14px' },
+    md: { padding: '14px 28px', fontSize: '16px' },
+    lg: { padding: '18px 36px', fontSize: '18px' }
   };
+
   return (
     <button
       onClick={onClick}
-      disabled={disabled || loading}
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+      style={{
+        ...sizes[size],
+        background: gradients[gradient],
+        backgroundSize: animated ? '200% 200%' : '100% 100%',
+        animation: animated ? 'gradientShift 3s ease infinite' : 'none',
+        border: 'none',
+        borderRadius: '50px',
+        color: '#fff',
+        fontWeight: 'bold',
+        cursor: 'pointer',
+        boxShadow: '0 4px 15px 0 rgba(0, 0, 0, 0.2)',
+        transition: 'all 0.3s ease',
+        position: 'relative',
+        overflow: 'hidden'
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-2px)';
+        e.currentTarget.style.boxShadow = '0 6px 20px 0 rgba(0, 0, 0, 0.3)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = '0 4px 15px 0 rgba(0, 0, 0, 0.2)';
+      }}
     >
-      {loading && <span className="animate-spin mr-2">⏳</span>}
       {children}
+      <style>{`
+        @keyframes gradientShift {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+      `}</style>
     </button>
   );
 };

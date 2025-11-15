@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
 interface InputTheme {
   primaryColor: string;
@@ -11,6 +12,8 @@ interface InputTheme {
   successColor: string;
 }
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-input',
   template: `
   <div class="input-wrapper" [ngStyle]="wrapperStyles">

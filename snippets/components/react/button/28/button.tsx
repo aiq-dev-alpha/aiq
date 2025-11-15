@@ -1,39 +1,88 @@
-import React from 'react';
+import React, { useState } from 'react';
+
 interface ButtonProps {
   children: React.ReactNode;
-  onClick?: () => void;
-  variant?: 'solid' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
+  onClick?: () => Promise<void> | void;
+  variant?: 'primary' | 'secondary';
   disabled?: boolean;
-  loading?: boolean;
 }
+
 export const Button: React.FC<ButtonProps> = ({
   children,
   onClick,
-  variant = 'solid',
-  size = 'md',
-  disabled = false,
-  loading = false
+  variant = 'primary',
+  disabled = false
 }) => {
-  const baseClasses = 'rounded-full font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500';
-  const variantClasses = {
-    solid: 'bg-purple-500 text-white hover:ring-2 hover:ring-purple-400 shadow',
-    outline: 'border-2 border-purple-500 text-purple-600 hover:bg-purple-50',
-    ghost: 'text-purple-600 hover:bg-purple-100'
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleClick = async () => {
+    if (isLoading || disabled) return;
+
+    setIsLoading(true);
+    try {
+      await onClick?.();
+    } finally {
+      setIsLoading(false);
+    }
   };
-  const sizeClasses = {
-    sm: 'px-2 py-1 text-xs',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-5 py-3 text-md'
+
+  const variants = {
+    primary: { bg: '#4f46e5', hover: '#4338ca' },
+    secondary: { bg: '#10b981', hover: '#059669' }
   };
+
   return (
     <button
-      onClick={onClick}
-      disabled={disabled || loading}
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+      onClick={handleClick}
+      disabled={disabled || isLoading}
+      style={{
+        padding: '12px 24px',
+        background: variants[variant].bg,
+        border: 'none',
+        borderRadius: '8px',
+        color: '#fff',
+        fontSize: '16px',
+        fontWeight: 600,
+        cursor: (disabled || isLoading) ? 'not-allowed' : 'pointer',
+        opacity: (disabled || isLoading) ? 0.7 : 1,
+        transition: 'all 0.2s ease',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        minWidth: '120px',
+        justifyContent: 'center'
+      }}
+      onMouseEnter={(e) => {
+        if (!disabled && !isLoading) {
+          e.currentTarget.style.background = variants[variant].hover;
+        }
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = variants[variant].bg;
+      }}
     >
-      {loading && <span className="animate-spin mr-2">⏳</span>}
-      {children}
+      {isLoading ? (
+        <>
+          <div
+            style={{
+              width: '16px',
+              height: '16px',
+              border: '2px solid rgba(255,255,255,0.3)',
+              borderTopColor: '#fff',
+              borderRadius: '50%',
+              animation: 'spin 0.6s linear infinite'
+            }}
+          />
+          <span>Loading...</span>
+          <style>{`
+            @keyframes spin {
+              to { transform: rotate(360deg); }
+            }
+          `}</style>
+        </>
+      ) : (
+        children
+      )}
     </button>
   );
 };

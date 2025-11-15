@@ -1,38 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
+
 interface ButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
-  variant?: 'solid' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
-  loading?: boolean;
+  color?: 'red' | 'blue' | 'green' | 'orange';
+  depth?: number;
 }
+
 export const Button: React.FC<ButtonProps> = ({
   children,
   onClick,
-  variant = 'solid',
-  size = 'md',
-  disabled = false,
-  loading = false
+  color = 'blue',
+  depth = 6
 }) => {
-  const baseClasses = 'rounded font-medium transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500';
-  const variantClasses = {
-    solid: 'bg-amber-500 text-white hover:opacity-90 active:scale-95 shadow-lg',
-    outline: 'border-2 border-amber-500 text-amber-600 hover:bg-amber-50',
-    ghost: 'text-amber-600 hover:bg-amber-100'
+  const [isPressed, setIsPressed] = useState(false);
+
+  const colors = {
+    red: { top: '#e74c3c', bottom: '#c0392b' },
+    blue: { top: '#3498db', bottom: '#2980b9' },
+    green: { top: '#2ecc71', bottom: '#27ae60' },
+    orange: { top: '#e67e22', bottom: '#d35400' }
   };
-  const sizeClasses = {
-    sm: 'px-2 py-1 text-xs',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-6 py-3 text-lg'
-  };
+
+  const currentColor = colors[color];
+
   return (
     <button
       onClick={onClick}
-      disabled={disabled || loading}
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+      onMouseDown={() => setIsPressed(true)}
+      onMouseUp={() => setIsPressed(false)}
+      onMouseLeave={() => setIsPressed(false)}
+      style={{
+        padding: '14px 28px',
+        background: currentColor.top,
+        border: 'none',
+        borderRadius: '10px',
+        color: '#fff',
+        fontSize: '16px',
+        fontWeight: 'bold',
+        cursor: 'pointer',
+        position: 'relative',
+        transform: isPressed ? `translateY(${depth}px)` : 'translateY(0)',
+        boxShadow: isPressed
+          ? '0 0 0 rgba(0,0,0,0.2)'
+          : `0 ${depth}px 0 ${currentColor.bottom}`,
+        transition: 'all 0.1s ease'
+      }}
     >
-      {loading && <span className="animate-spin mr-2">⏳</span>}
       {children}
     </button>
   );

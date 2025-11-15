@@ -1,55 +1,108 @@
 import 'package:flutter/material.dart';
-class CustomComponent extends StatefulWidget {
-  final String text;
+
+class CustomButton extends StatefulWidget {
+  final String label;
   final VoidCallback? onPressed;
-  final bool isLoading;
-  final Color? color;
-  const CustomComponent({
-  Key? key,
-  this.text = 'Button',
-  this.onPressed,
-  this.isLoading = false,
-  this.color,
+  final Color? backgroundColor;
+  final IconData? icon;
+  final bool showProgress;
+  final double? progress;
+
+  const CustomButton({
+    Key? key,
+    required this.label,
+    this.onPressed,
+    this.backgroundColor,
+    this.icon,
+    this.showProgress = false,
+    this.progress,
   }) : super(key: key);
+
   @override
-  State<CustomComponent> createState() => _CustomComponentState();
+  State<CustomButton> createState() => _CustomButtonState();
 }
-class _CustomComponentState extends State<CustomComponent> {
+
+class _CustomButtonState extends State<CustomButton> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  bool _isHovered = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-  return Material(
-  color: Colors.transparent,
-  child: InkWell(
-  onTap: widget.isLoading ? null : widget.onPressed,
-  borderRadius: BorderRadius.circular(10),
-  splashColor: (widget.color ?? Theme.of(context).primaryColor).withOpacity(0.2),
-  highlightColor: (widget.color ?? Theme.of(context).primaryColor).withOpacity(0.1),
-  child: Ink(
-  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
-  decoration: BoxDecoration(
-  color: widget.color ?? Theme.of(context).primaryColor,
-  borderRadius: BorderRadius.circular(10),
-  ),
-  child: widget.isLoading
-  ? const SizedBox(
-  width: 24,
-  height: 24,
-  child: CircularProgressIndicator(
-  color: Colors.white,
-  strokeWidth: 2.5,
-  ),
-  )
-  : Text(
-  widget.text,
-  style: const TextStyle(
-  color: Colors.white,
-  fontSize: 15,
-  fontWeight: FontWeight.w600,
-  letterSpacing: 0.8,
-  ),
-  ),
-  ),
-  ),
-  );
+    final bgColor = widget.backgroundColor ?? Theme.of(context).primaryColor;
+
+    return MouseRegion(
+      onEnter: (_) {
+        setState(() => _isHovered = true);
+        _controller.forward();
+      },
+      onExit: (_) {
+        setState(() => _isHovered = false);
+        _controller.reverse();
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        transform: Matrix4.identity()..scale(_isHovered ? 1.05 : 1.0),
+        child: Stack(
+          children: [
+            ElevatedButton(
+              onPressed: widget.showProgress ? null : widget.onPressed,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: bgColor,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: _isHovered ? 8 : 4,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (widget.showProgress)
+                    SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        value: widget.progress,
+                        strokeWidth: 2,
+                        valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  else
+                    Icon(widget.icon ?? Icons.download, size: 20),
+                  const SizedBox(width: 8),
+                  Text(
+                    widget.showProgress
+                        ? widget.progress != null
+                            ? '${(widget.progress! * 100).toInt()}%'
+                            : 'Downloading...'
+                        : widget.label,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

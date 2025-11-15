@@ -1,31 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
+
 interface BadgeProps {
-  variant?: 'success' | 'warning' | 'error' | 'info';
-  pulse?: boolean;
+  children?: React.ReactNode;
+  variant?: 'default' | 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
 }
-export const Badge: React.FC<BadgeProps> = ({
-  variant = 'success',
-  pulse = false,
-  size = 'md'
-}) => {
-  const colors = {
-    success: 'bg-green-500',
-    warning: 'bg-yellow-500',
-    error: 'bg-red-500',
-    info: 'bg-blue-500'
+
+export const Badge: React.FC<BadgeProps> = (props) => {
+  const { children, variant = 'default', size = 'md', disabled = false } = props;
+  const [isHovered, setIsHovered] = React.useState(false);
+
+  const variants = {
+    default: '#f3f4f6',
+    primary: '#3b82f6',
+    secondary: '#10b981'
   };
+
   const sizes = {
-    sm: 'w-2 h-2',
-    md: 'w-3 h-3',
-    lg: 'w-4 h-4'
+    sm: '8px 16px',
+    md: '12px 24px',
+    lg: '16px 32px'
   };
+
   return (
-    <span className="relative inline-flex">
-      <span className={`${sizes[size]} ${colors[variant]} rounded-full`} />
-      {pulse && (
-        <span className={`absolute inset-0 ${colors[variant]} rounded-full opacity-75 animate-ping`} />
-      )}
-    </span>
+    <div
+      style={{
+        background: variants[variant],
+        padding: sizes[size],
+        borderRadius: '8px',
+        transition: 'all 0.3s ease',
+        transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.5 : 1
+      }}
+    >
+      {children || 'Badge - gradient'}
+    </div>
   );
 };

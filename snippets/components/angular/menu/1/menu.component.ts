@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 interface ComponentTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -7,6 +8,8 @@ interface ComponentTheme {
   borderColor: string;
 }
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-component',
   template: `
   <div [ngStyle]="componentStyles">

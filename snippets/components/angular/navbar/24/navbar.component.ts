@@ -1,10 +1,13 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 interface NavItem {
   label: string;
   href: string;
   active?: boolean;
 }
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-navbar',
   template: `
   <nav class="navbar">

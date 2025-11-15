@@ -1,7 +1,10 @@
 // Modern Radio Button Group
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-radio',
   template: `
   <div class="radio-group">
@@ -31,19 +34,19 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   }]
 })
 export class RadioComponent implements ControlValueAccessor {
-  @Input() options: {label: string, value: any}[] = [];
+  @Input() options: {label: string, value: unknown}[] = [];
   @Input() name = 'radio-group';
   @Output() valueChange = new EventEmitter<any>();
-  value: any;
-  private onChangeFn: any = () => {};
-  private onTouchedFn: any = () => {};
-  onChange(value: any): void {
+  value: unknown;
+  private onChangeFn: unknown = () => {};
+  private onTouchedFn: unknown = () => {};
+  onChange(value: unknown): void {
   this.value = value;
   this.onChangeFn(value);
   this.valueChange.emit(value);
   }
-  writeValue(value: any): void { this.value = value; }
-  registerOnChange(fn: any): void { this.onChangeFn = fn; }
-  registerOnTouched(fn: any): void { this.onTouchedFn = fn; }
+  writeValue(value: unknown): void { this.value = value; }
+  registerOnChange(fn: unknown): void { this.onChangeFn = fn; }
+  registerOnTouched(fn: unknown): void { this.onTouchedFn = fn; }
   setDisabledState(isDisabled: boolean): void {}
 }

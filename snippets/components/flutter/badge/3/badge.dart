@@ -1,42 +1,64 @@
 import 'package:flutter/material.dart';
-class CustomBadge extends StatefulWidget {
-  final Widget? child;
-  final VoidCallback? onTap;
+
+class CustomBadge extends StatelessWidget {
+  final Widget child;
+  final int? count;
+  final bool showZero;
+  final Color? badgeColor;
+  final Color? textColor;
+  final double? size;
+
   const CustomBadge({
-  Key? key,
-  this.child,
-  this.onTap,
+    Key? key,
+    required this.child,
+    this.count,
+    this.showZero = false,
+    this.badgeColor,
+    this.textColor,
+    this.size,
   }) : super(key: key);
-  @override
-  State<CustomBadge> createState() => _CustomBadgeState();
-}
-class _CustomBadgeState extends State<CustomBadge> {
-  bool _isHovered = false;
+
   @override
   Widget build(BuildContext context) {
-  return MouseRegion(
-  onEnter: (_) => setState(() => _isHovered = true),
-  onExit: (_) => setState(() => _isHovered = false),
-  child: GestureDetector(
-  onTap: widget.onTap,
-  child: AnimatedContainer(
-  duration: const Duration(milliseconds: 250),
-  transform: Matrix4.translationValues(0, _isHovered ? -6 : 0, 0),
-  padding: const EdgeInsets.all(22),
-  decoration: BoxDecoration(
-  color: Colors.white,
-  borderRadius: BorderRadius.circular(18),
-  boxShadow: [
-  BoxShadow(
-  color: Colors.black.withOpacity(_isHovered ? 0.18 : 0.08),
-  blurRadius: _isHovered ? 25 : 12,
-  offset: Offset(0, _isHovered ? 10 : 4),
-  ),
-  ],
-  ),
-  child: widget.child ?? const Text('Component'),
-  ),
-  ),
-  );
+    final shouldShow = count != null && (count! > 0 || showZero);
+    final badgeSize = size ?? 20;
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        child,
+        if (shouldShow)
+          Positioned(
+            top: -8,
+            right: -8,
+            child: Container(
+              min: badgeSize,
+              height: badgeSize,
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              decoration: BoxDecoration(
+                color: badgeColor ?? Colors.red,
+                borderRadius: BorderRadius.circular(badgeSize / 2),
+                boxShadow: [
+                  BoxShadow(
+                    color: (badgeColor ?? Colors.red).withOpacity(0.4),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Center(
+                child: Text(
+                  count! > 99 ? '99+' : count.toString(),
+                  style: TextStyle(
+                    color: textColor ?? Colors.white,
+                    fontSize: badgeSize * 0.6,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
   }
 }

@@ -1,6 +1,9 @@
 // Masonry Grid List with Stagger Animation
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-list',
   template: `<div class="masonry-list"><div class="list-item" *ngFor="let item of items; let i = index" [style.animation-delay.ms]="i * 100"><ng-content></ng-content></div></div>`,
   styles: [`
@@ -12,5 +15,5 @@ import { Component, Input } from '@angular/core';
   `]
 })
 export class ListComponent {
-  @Input() items: any[] = [1, 2, 3, 4, 5, 6];
+  @Input() items: unknown[] = [1, 2, 3, 4, 5, 6];
 }

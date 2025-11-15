@@ -1,57 +1,99 @@
 <template>
-  <div class="custom-card" :class="{ elevated, bordered }">
-    <div v-if="$slots.header || title" class="card-header">
-      <h3 v-if="title" class="card-title">{{ title }}</h3>
-      <slot name="header" />
-    </div>
-    <div class="card-body">
-      <slot />
-    </div>
-    <div v-if="$slots.footer" class="card-footer">
-      <slot name="footer" />
+  <div :class="['flip-card', { flipped }]">
+    <div class="card-inner">
+      <div class="card-front">
+        <slot name="front">
+          <div class="card-content">
+            <h3>{{ title }}</h3>
+            <p>{{ description }}</p>
+          </div>
+        </slot>
+        <button class="flip-btn" @click="flipped = !flipped">Flip →</button>
+      </div>
+      <div class="card-back">
+        <slot name="back">
+          <div class="card-content">
+            <p>{{ backContent }}</p>
+          </div>
+        </slot>
+        <button class="flip-btn" @click="flipped = !flipped">← Back</button>
+      </div>
     </div>
   </div>
 </template>
-<script lang="ts">
-import { defineComponent } from 'vue';
-export default defineComponent({
-  name: 'CustomCard',
-  props: {
-    title: { type: String, default: '' },
-    elevated: { type: Boolean, default: true },
-    bordered: { type: Boolean, default: false }
-  }
+
+<script setup lang="ts">
+import { ref } from 'vue';
+
+interface Props {
+  title?: string;
+  description?: string;
+  backContent?: string;
+}
+
+withDefaults(defineProps<Props>(), {
+  title: 'Card Title',
+  description: 'Card description',
+  backContent: 'Back content'
 });
+
+const flipped = ref(false);
 </script>
+
 <style scoped>
-.custom-card {
+.flip-card {
+  perspective: 1000px;
+  width: 100%;
+  max-width: 400px;
+  height: 300px;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.flip-card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 16px;
+  padding: 2rem;
   background: white;
-  border-radius: 0.25rem;
-  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
-.custom-card.elevated {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+.card-back {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  transform: rotateY(180deg);
 }
-.custom-card.bordered {
-  border: 2px solid #e5e7eb;
+
+.flip-btn {
+  align-self: flex-end;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  color: inherit;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
 }
-.card-header {
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid #f3f4f6;
-  background: linear-gradient(to bottom, #fafafa, #ffffff);
-}
-.card-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #111827;
-  margin: 0;
-}
-.card-body {
-  padding: 1.5rem;
-}
-.card-footer {
-  padding: 1rem 1.5rem;
-  border-top: 1px solid #f3f4f6;
-  background: #f9fafb;
+
+.flip-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 </style>

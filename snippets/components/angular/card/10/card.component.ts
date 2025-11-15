@@ -1,6 +1,9 @@
 // 3D Flip Card
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-card',
   template: `<div class="flip-card" (click)="flipped = !flipped" [class.flipped]="flipped"><div class="flip-inner"><div class="flip-front"><ng-content select="[front]"></ng-content></div><div class="flip-back"><ng-content select="[back]"></ng-content></div></div></div>`,
   styles: [`

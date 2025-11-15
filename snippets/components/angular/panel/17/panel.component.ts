@@ -1,6 +1,9 @@
 // Ripple Effect Interactive Panel
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-panel',
   template: `<div class="ripple-panel" (click)="createRipple($event)"><span class="ripple-effect" *ngIf="showRipple" [style.left.px]="rippleX" [style.top.px]="rippleY"></span><ng-content></ng-content></div>`,
   styles: [`

@@ -1,6 +1,9 @@
 // Holographic Shine Card
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-card',
   template: `<div class="holo-card"><div class="holo-shine"></div><ng-content></ng-content></div>`,
   styles: [`

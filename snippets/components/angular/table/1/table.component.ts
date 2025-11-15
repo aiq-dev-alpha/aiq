@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 interface TableColumn {
   key: string;
   label: string;
@@ -14,6 +15,8 @@ interface TableTheme {
   hoverColor: string;
 }
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-table',
   template: `
   <div class="table-container" [ngStyle]="containerStyles">
@@ -113,7 +116,7 @@ interface TableTheme {
 export class TableComponent {
   @Input() theme: Partial<TableTheme> = {};
   @Input() columns: TableColumn[] = [];
-  @Input() data: any[] = [];
+  @Input() data: unknown[] = [];
   @Input() striped = true;
   @Input() hoverable = true;
   @Input() emptyMessage = 'No data available';
@@ -190,7 +193,7 @@ export class TableComponent {
   }
   this.sorted.emit({ column: column.key, direction: this.sortDirection });
   }
-  handleRowClick(row: any): void {
+  handleRowClick(row: unknown): void {
   this.rowClicked.emit(row);
   }
 }

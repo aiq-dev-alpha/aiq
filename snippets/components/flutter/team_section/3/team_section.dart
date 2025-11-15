@@ -1,42 +1,123 @@
 import 'package:flutter/material.dart';
-class CustomSection extends StatefulWidget {
-  final Widget? child;
-  final VoidCallback? onTap;
+
+class CustomSection extends StatelessWidget {
+  final String title;
+  final String? subtitle;
+  final List<TeamMember> members;
+  final Color? backgroundColor;
+
   const CustomSection({
-  Key? key,
-  this.child,
-  this.onTap,
+    Key? key,
+    required this.title,
+    this.subtitle,
+    required this.members,
+    this.backgroundColor,
   }) : super(key: key);
-  @override
-  State<CustomSection> createState() => _CustomSectionState();
-}
-class _CustomSectionState extends State<CustomSection> {
-  bool _isHovered = false;
+
   @override
   Widget build(BuildContext context) {
-  return MouseRegion(
-  onEnter: (_) => setState(() => _isHovered = true),
-  onExit: (_) => setState(() => _isHovered = false),
-  child: GestureDetector(
-  onTap: widget.onTap,
-  child: AnimatedContainer(
-  duration: const Duration(milliseconds: 250),
-  transform: Matrix4.translationValues(0, _isHovered ? -6 : 0, 0),
-  padding: const EdgeInsets.all(22),
-  decoration: BoxDecoration(
-  color: Colors.white,
-  borderRadius: BorderRadius.circular(18),
-  boxShadow: [
-  BoxShadow(
-  color: Colors.black.withOpacity(_isHovered ? 0.18 : 0.08),
-  blurRadius: _isHovered ? 25 : 12,
-  offset: Offset(0, _isHovered ? 10 : 4),
-  ),
-  ],
-  ),
-  child: widget.child ?? const Text('Component'),
-  ),
-  ),
-  );
+    return Container(
+      padding: const EdgeInsets.all(48),
+      color: backgroundColor ?? Colors.white,
+      child: Column(
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 36,
+              fontWeight: FontWeight.w700,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          if (subtitle != null) ...[
+            const SizedBox(height: 12),
+            Text(
+              subtitle!,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey.shade600,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+          const SizedBox(height: 48),
+          Wrap(
+            spacing: 32,
+            runSpacing: 40,
+            alignment: WrapAlignment.center,
+            children: members.map((member) {
+              return SizedBox(
+                width: 240,
+                child: Column(
+                  children: [
+                    Container(
+                      width: 160,
+                      height: 160,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: member.imageUrl != null
+                            ? DecorationImage(
+                                image: NetworkImage(member.imageUrl!),
+                                fit: BoxFit.cover,
+                              )
+                            : null,
+                        color: member.imageUrl == null
+                            ? Colors.grey.shade300
+                            : null,
+                      ),
+                      child: member.imageUrl == null
+                          ? const Icon(Icons.person, size: 64, color: Colors.white)
+                          : null,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      member.name,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      member.role,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    if (member.bio != null) ...[
+                      const SizedBox(height: 12),
+                      Text(
+                        member.bio!,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.grey.shade600,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
   }
+}
+
+class TeamMember {
+  final String name;
+  final String role;
+  final String? bio;
+  final String? imageUrl;
+
+  const TeamMember({
+    required this.name,
+    required this.role,
+    this.bio,
+    this.imageUrl,
+  });
 }

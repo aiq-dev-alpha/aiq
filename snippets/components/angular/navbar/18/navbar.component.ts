@@ -1,6 +1,9 @@
 // Glow Line Navbar
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-navbar',
   template: `<nav class="glow-line-nav"><div class="glow-line"></div><ng-content></ng-content></nav>`,
   styles: [`

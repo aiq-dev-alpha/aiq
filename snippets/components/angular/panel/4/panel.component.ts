@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 interface PanelTheme {
   primaryColor: string;
@@ -8,6 +9,8 @@ interface PanelTheme {
   shadowColor: string;
 }
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-panel',
   template: `
   <div class="panel-container" [ngStyle]="panelStyles">

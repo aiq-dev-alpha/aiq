@@ -1,7 +1,10 @@
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 // Neumorphism Design - Soft UI with depth
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-input',
   template: `
   <div class="neomorphic-input" [class.focused]="isFocused">
@@ -47,13 +50,13 @@ export class InputComponent implements ControlValueAccessor {
   @Output() valueChange = new EventEmitter<string>();
   value = '';
   isFocused = false;
-  private onChange: any = () => {};
-  private onTouched: any = () => {};
+  private onChange: unknown = () => {};
+  private onTouched: unknown = () => {};
   onInput(e: Event): void { this.value = (e.target as HTMLInputElement).value; this.onChange(this.value); this.valueChange.emit(this.value); }
   onFocus(): void { this.isFocused = true; }
   onBlur(): void { this.isFocused = false; this.onTouched(); }
   writeValue(value: string): void { this.value = value || ''; }
-  registerOnChange(fn: any): void { this.onChange = fn; }
-  registerOnTouched(fn: any): void { this.onTouched = fn; }
+  registerOnChange(fn: unknown): void { this.onChange = fn; }
+  registerOnTouched(fn: unknown): void { this.onTouched = fn; }
   setDisabledState(isDisabled: boolean): void {}
 }

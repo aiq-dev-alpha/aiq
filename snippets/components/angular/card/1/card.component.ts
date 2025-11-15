@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 interface CardTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -8,6 +9,8 @@ interface CardTheme {
   shadowColor: string;
 }
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-card',
   template: `
   <div class="card" [ngStyle]="cardStyles" [class.hoverable]="hoverable" [class.clickable]="clickable" (click)="handleClick()">

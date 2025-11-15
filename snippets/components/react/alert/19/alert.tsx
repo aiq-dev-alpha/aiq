@@ -1,39 +1,76 @@
 import React from 'react';
-interface ButtonProps {
-  children: React.ReactNode;
-  onClick?: () => void;
-  variant?: 'solid' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
-  loading?: boolean;
+
+interface AlertProps {
+  title: string;
+  message?: string;
+  variant?: 'filled' | 'outlined' | 'standard';
+  severity?: 'success' | 'error' | 'warning' | 'info';
+  action?: React.ReactNode;
+  icon?: React.ReactNode;
 }
-export const Button: React.FC<ButtonProps> = ({
-  children,
-  onClick,
-  variant = 'solid',
-  size = 'md',
-  disabled = false,
-  loading = false
+
+export const Alert: React.FC<AlertProps> = ({
+  title,
+  message,
+  variant = 'filled',
+  severity = 'info',
+  action,
+  icon
 }) => {
-  const baseClasses = 'rounded-2xl font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500';
-  const variantClasses = {
-    solid: 'bg-blue-500 text-white hover:brightness-110 hover:-translate-y-0.5 shadow-sm',
-    outline: 'border-2 border-blue-500 text-blue-600 hover:bg-blue-50',
-    ghost: 'text-blue-600 hover:bg-blue-100'
+  const severityConfig = {
+    success: { color: '#10b981', bg: '#d1fae5', border: '#10b981', emoji: '✅' },
+    error: { color: '#ef4444', bg: '#fee2e2', border: '#ef4444', emoji: '❌' },
+    warning: { color: '#f59e0b', bg: '#fef3c7', border: '#f59e0b', emoji: '⚠️' },
+    info: { color: '#3b82f6', bg: '#dbeafe', border: '#3b82f6', emoji: 'ℹ️' }
   };
-  const sizeClasses = {
-    sm: 'px-2.5 py-1.5 text-sm',
-    md: 'px-5 py-2.5 text-sm',
-    lg: 'px-5 py-3 text-md'
+
+  const config = severityConfig[severity];
+
+  const styles = {
+    filled: {
+      background: config.color,
+      color: '#fff',
+      border: 'none'
+    },
+    outlined: {
+      background: '#fff',
+      color: config.color,
+      border: `2px solid ${config.border}`
+    },
+    standard: {
+      background: config.bg,
+      color: config.color,
+      border: `1px solid ${config.border}`
+    }
   };
+
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled || loading}
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    <div
+      style={{
+        ...styles[variant],
+        padding: '16px 20px',
+        borderRadius: '8px',
+        display: 'flex',
+        alignItems: 'flex-start',
+        gap: '12px',
+        width: '100%',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+      }}
     >
-      {loading && <span className="animate-spin mr-2">⏳</span>}
-      {children}
-    </button>
+      <span style={{ fontSize: '20px', marginTop: '2px' }}>
+        {icon || config.emoji}
+      </span>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontWeight: 600, fontSize: '16px', marginBottom: message ? '4px' : 0 }}>
+          {title}
+        </div>
+        {message && (
+          <div style={{ fontSize: '14px', opacity: 0.9 }}>
+            {message}
+          </div>
+        )}
+      </div>
+      {action && <div>{action}</div>}
+    </div>
   );
 };

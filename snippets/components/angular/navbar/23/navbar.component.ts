@@ -1,10 +1,13 @@
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 interface NavLink {
   text: string;
   url: string;
   icon?: string;
 }
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-navbar',
   template: `
   <header class="header">

@@ -1,39 +1,76 @@
-import React from 'react';
-interface ButtonProps {
-  children: React.ReactNode;
+import React, { useState } from 'react';
+
+interface CardProps {
+  title: string;
+  description?: string;
+  image?: string;
+  footer?: React.ReactNode;
   onClick?: () => void;
-  variant?: 'solid' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
-  loading?: boolean;
+  elevation?: 'low' | 'medium' | 'high';
 }
-export const Button: React.FC<ButtonProps> = ({
-  children,
+
+export const Card: React.FC<CardProps> = ({
+  title,
+  description,
+  image,
+  footer,
   onClick,
-  variant = 'solid',
-  size = 'md',
-  disabled = false,
-  loading = false
+  elevation = 'medium'
 }) => {
-  const baseClasses = 'rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-500';
-  const variantClasses = {
-    solid: 'bg-yellow-500 text-white hover:brightness-110 hover:-translate-y-0.5 shadow',
-    outline: 'border-2 border-yellow-500 text-yellow-600 hover:bg-yellow-50',
-    ghost: 'text-yellow-600 hover:bg-yellow-100'
+  const [isHovered, setIsHovered] = useState(false);
+
+  const elevations = {
+    low: { default: '0 1px 3px rgba(0,0,0,0.12)', hover: '0 4px 6px rgba(0,0,0,0.15)' },
+    medium: { default: '0 4px 6px rgba(0,0,0,0.1)', hover: '0 10px 15px rgba(0,0,0,0.2)' },
+    high: { default: '0 10px 20px rgba(0,0,0,0.15)', hover: '0 15px 30px rgba(0,0,0,0.25)' }
   };
-  const sizeClasses = {
-    sm: 'px-2.5 py-1.5 text-sm',
-    md: 'px-3.5 py-2 text-sm',
-    lg: 'px-5 py-3 text-md'
-  };
+
   return (
-    <button
+    <div
       onClick={onClick}
-      disabled={disabled || loading}
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{
+        background: '#fff',
+        borderRadius: '12px',
+        overflow: 'hidden',
+        cursor: onClick ? 'pointer' : 'default',
+        transform: isHovered ? 'translateY(-8px)' : 'translateY(0)',
+        boxShadow: isHovered ? elevations[elevation].hover : elevations[elevation].default,
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        maxWidth: '400px'
+      }}
     >
-      {loading && <span className="animate-spin mr-2">⏳</span>}
-      {children}
-    </button>
+      {image && (
+        <div style={{ width: '100%', height: '200px', overflow: 'hidden' }}>
+          <img
+            src={image}
+            alt={title}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              transform: isHovered ? 'scale(1.05)' : 'scale(1)',
+              transition: 'transform 0.3s ease'
+            }}
+          />
+        </div>
+      )}
+      <div style={{ padding: '20px' }}>
+        <h3 style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: '600', color: '#1a1a1a' }}>
+          {title}
+        </h3>
+        {description && (
+          <p style={{ margin: 0, fontSize: '14px', color: '#666', lineHeight: '1.5' }}>
+            {description}
+          </p>
+        )}
+      </div>
+      {footer && (
+        <div style={{ padding: '12px 20px', borderTop: '1px solid #e5e5e5', background: '#fafafa' }}>
+          {footer}
+        </div>
+      )}
+    </div>
   );
 };

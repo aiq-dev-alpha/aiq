@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 interface Theme {
   primaryColor: string;
   backgroundColor: string;
@@ -6,6 +7,8 @@ interface Theme {
   borderColor: string;
 }
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-sidebar',
   template: `
   <div

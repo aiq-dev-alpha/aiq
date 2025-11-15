@@ -1,32 +1,17 @@
-import React, { useState } from 'react';
-interface BadgeProps {
-  label: string;
-  color?: string;
-  onRemove?: () => void;
-}
-export const Badge: React.FC<BadgeProps> = ({
-  label,
-  color = 'purple',
-  onRemove
-}) => {
-  const [isRemoving, setIsRemoving] = useState(false);
-  const handleRemove = () => {
-    setIsRemoving(true);
-    setTimeout(() => onRemove?.(), 300);
-  };
+import React from 'react';
+
+export const Badge: React.FC<any> = (props) => {
   return (
-    <span className={`inline-flex items-center gap-2 bg-${color}-100 text-${color}-800 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${isRemoving ? 'opacity-0 scale-0' : 'opacity-100 scale-100'}`}>
-      {label}
-      {onRemove && (
-        <button
-          onClick={handleRemove}
-          className="hover:bg-${color}-200 rounded-full p-0.5 transition-colors focus:outline-none focus:ring-2 focus:ring-${color}-500"
-        >
-          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-          </svg>
-        </button>
-      )}
-    </span>
+    <div
+      style={{
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        padding: '20px',
+        borderRadius: '16px',
+        color: '#fff',
+        boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
+      }}
+    >
+      <div>Badge - Gradient</div>
+    </div>
   );
 };

@@ -1,48 +1,82 @@
 <template>
   <button
-    :class="buttonClasses"
-    :disabled="disabled || loading"
-    @click="handleClick"
+    :class="['copy-btn', { copied, disabled }]"
+    :disabled="disabled"
+    @click="handleCopy"
   >
-    <span v-if="loading" class="animate-spin mr-2">⏳</span>
-    <slot />
+    <span v-if="!copied"><slot>Copy</slot></span>
+    <span v-else class="copied-text">✓ Copied!</span>
   </button>
 </template>
+
 <script setup lang="ts">
-import { computed } from 'vue';
+import { ref } from 'vue';
+
 interface Props {
-  variant?: 'solid' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
+  text: string;
   disabled?: boolean;
-  loading?: boolean;
 }
+
 const props = withDefaults(defineProps<Props>(), {
-  variant: 'solid',
-  size: 'md',
-  disabled: false,
-  loading: false
+  disabled: false
 });
+
 const emit = defineEmits<{
-  click: []
+  copy: [text: string];
 }>();
-const buttonClasses = computed(() => {
-  const base = 'rounded-lg font-semibold transition-all duration-200 focus:outline-none focus:ring-2';
-  const variants = {
-    solid: 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 shadow-lg',
-    outline: 'border-2 border-purple-600 text-purple-700 hover:bg-purple-50',
-    ghost: 'text-purple-700 hover:bg-purple-100'
-  };
-  const sizes = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-5 py-2.5 text-base',
-    lg: 'px-7 py-3.5 text-lg'
-  };
-  const disabled = props.disabled || props.loading ? 'opacity-50 cursor-not-allowed' : '';
-  return `${base} ${variants[props.variant]} ${sizes[props.size]} ${disabled}`;
-});
-const handleClick = () => {
-  if (!props.disabled && !props.loading) {
-    emit('click');
+
+const copied = ref(false);
+
+const handleCopy = async () => {
+  if (props.disabled) return;
+  
+  try {
+    await navigator.clipboard.writeText(props.text);
+    copied.value = true;
+    emit('copy', props.text);
+    
+    setTimeout(() => {
+      copied.value = false;
+    }, 2000);
+  } catch (err) {
+    console.error('Failed to copy:', err);
   }
 };
 </script>
+
+<style scoped>
+.copy-btn {
+  padding: 0.875rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.copy-btn:hover:not(.disabled):not(.copied) {
+  border-color: #3b82f6;
+  color: #3b82f6;
+  transform: translateY(-2px);
+}
+
+.copy-btn.copied {
+  border-color: #10b981;
+  color: #10b981;
+  background: #ecfdf5;
+}
+
+.copy-btn.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.copied-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+</style>

@@ -1,7 +1,10 @@
 // Liquid Morphing Input
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-input',
   template: `<div class="liquid"><svg class="liquid-svg"><defs><filter id="goo"><feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/><feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo"/></feGaussianBlur></filter></defs></svg><input [type]="type" [placeholder]="placeholder" [value]="value" (input)="handleInput($event)" class="liquid-field" /></div>`,
   styles: [`
@@ -14,10 +17,10 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 })
 export class InputComponent implements ControlValueAccessor {
   @Input() type = 'text'; @Input() placeholder = ''; @Output() valueChange = new EventEmitter<string>();
-  value = ''; private onChange: any = () => {}; private onTouched: any = () => {};
+  value = ''; private onChange: unknown = () => {}; private onTouched: unknown = () => {};
   handleInput(e: Event): void { this.value = (e.target as HTMLInputElement).value; this.onChange(this.value); this.valueChange.emit(this.value); }
   writeValue(v: string): void { this.value = v || ''; }
-  registerOnChange(fn: any): void { this.onChange = fn; }
-  registerOnTouched(fn: any): void { this.onTouched = fn; }
+  registerOnChange(fn: unknown): void { this.onChange = fn; }
+  registerOnTouched(fn: unknown): void { this.onTouched = fn; }
   setDisabledState(d: boolean): void {}
 }

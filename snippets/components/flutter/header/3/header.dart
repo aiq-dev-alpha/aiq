@@ -1,42 +1,85 @@
 import 'package:flutter/material.dart';
-class CustomNavigation extends StatefulWidget {
-  final Widget? child;
-  final VoidCallback? onTap;
+
+class CustomNavigation extends StatelessWidget {
+  final String title;
+  final List<NavItem>? navItems;
+  final Widget? trailing;
+  final Color? backgroundColor;
+  final double height;
+
   const CustomNavigation({
-  Key? key,
-  this.child,
-  this.onTap,
+    Key? key,
+    required this.title,
+    this.navItems,
+    this.trailing,
+    this.backgroundColor,
+    this.height = 72,
   }) : super(key: key);
-  @override
-  State<CustomNavigation> createState() => _CustomNavigationState();
-}
-class _CustomNavigationState extends State<CustomNavigation> {
-  bool _isHovered = false;
+
   @override
   Widget build(BuildContext context) {
-  return MouseRegion(
-  onEnter: (_) => setState(() => _isHovered = true),
-  onExit: (_) => setState(() => _isHovered = false),
-  child: GestureDetector(
-  onTap: widget.onTap,
-  child: AnimatedContainer(
-  duration: const Duration(milliseconds: 250),
-  transform: Matrix4.translationValues(0, _isHovered ? -6 : 0, 0),
-  padding: const EdgeInsets.all(22),
-  decoration: BoxDecoration(
-  color: Colors.white,
-  borderRadius: BorderRadius.circular(18),
-  boxShadow: [
-  BoxShadow(
-  color: Colors.black.withOpacity(_isHovered ? 0.18 : 0.08),
-  blurRadius: _isHovered ? 25 : 12,
-  offset: Offset(0, _isHovered ? 10 : 4),
-  ),
-  ],
-  ),
-  child: widget.child ?? const Text('Component'),
-  ),
-  ),
-  );
+    return Container(
+      height: height,
+      decoration: BoxDecoration(
+        color: backgroundColor ?? Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Row(
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const Spacer(),
+            if (navItems != null)
+              ...navItems!.map((item) {
+                return Padding(
+                  padding: const EdgeInsets.only(left: 32),
+                  child: InkWell(
+                    onTap: item.onTap,
+                    child: Text(
+                      item.label,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        color: item.isActive
+                            ? Theme.of(context).primaryColor
+                            : Colors.grey.shade700,
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            if (trailing != null) ...[
+              const SizedBox(width: 24),
+              trailing!,
+            ],
+          ],
+        ),
+      ),
+    );
   }
+}
+
+class NavItem {
+  final String label;
+  final VoidCallback? onTap;
+  final bool isActive;
+
+  const NavItem({
+    required this.label,
+    this.onTap,
+    this.isActive = false,
+  });
 }

@@ -1,62 +1,74 @@
 <template>
   <button
-    :class="['custom-btn', variant, size, { disabled, loading }]"
-    :disabled="disabled || loading"
-    @click="$emit('click')"
+    :class="['glass-btn', { disabled }]"
+    :disabled="disabled"
+    @click="$emit('click', $event)"
   >
-    <span v-if="loading" class="loader"></span>
-    <slot />
+    <span class="btn-bg"></span>
+    <span class="btn-content">
+      <slot />
+    </span>
   </button>
 </template>
-<script lang="ts">
-import { defineComponent } from 'vue';
-export default defineComponent({
-  name: 'CustomButton',
-  props: {
-    variant: { type: String, default: 'primary' },
-    size: { type: String, default: 'md' },
-    disabled: { type: Boolean, default: false },
-    loading: { type: Boolean, default: false }
-  },
-  emits: ['click']
+
+<script setup lang="ts">
+interface Props {
+  disabled?: boolean;
+}
+
+withDefaults(defineProps<Props>(), {
+  disabled: false
 });
+
+defineEmits<{
+  click: [event: MouseEvent];
+}>();
 </script>
+
 <style scoped>
-.custom-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.custom-btn.primary {
-  background: linear-gradient(135deg, #red400 0%, #red600 100%);
-  color: white;
-}
-.custom-btn.primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-.custom-btn.md {
+.glass-btn {
+  position: relative;
   padding: 0.875rem 1.75rem;
   font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  cursor: pointer;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05)
+  );
+  box-shadow:
+    0 8px 32px 0 rgba(31, 38, 135, 0.37),
+    inset 0 0 20px rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
 }
-.custom-btn:disabled {
+
+.glass-btn:hover:not(.disabled) {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.08)
+  );
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow:
+    0 12px 40px 0 rgba(31, 38, 135, 0.45),
+    inset 0 0 20px rgba(255, 255, 255, 0.08);
+}
+
+.glass-btn.disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
-.loader {
-  width: 1rem;
-  height: 1rem;
-  border: 2px solid currentColor;
-  border-top-color: transparent;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-}
-@keyframes spin {
-  to { transform: rotate(360deg); }
+
+.btn-content {
+  position: relative;
+  z-index: 1;
 }
 </style>

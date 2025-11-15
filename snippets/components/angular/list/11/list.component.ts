@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 interface ListItem {
   id: string;
   text: string;
@@ -6,6 +7,8 @@ interface ListItem {
   badge?: string;
 }
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-list',
   template: `
   <div class="compact-list">

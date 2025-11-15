@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 interface GridItem {
   id: string | number;
   content: string;
@@ -15,6 +16,8 @@ interface GridTheme {
   shadowColor: string;
 }
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-grid',
   template: \`
   <div class="grid-container" [ngStyle]="containerStyles">

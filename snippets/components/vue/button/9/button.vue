@@ -1,62 +1,107 @@
 <template>
   <button
-    :class="['custom-btn', variant, size, { disabled, loading }]"
-    :disabled="disabled || loading"
-    @click="$emit('click')"
+    :class="['neon-btn', { disabled, active: isActive }]"
+    :disabled="disabled"
+    @click="handleClick"
   >
-    <span v-if="loading" class="loader"></span>
     <slot />
+    <span class="neon-border"></span>
   </button>
 </template>
-<script lang="ts">
-import { defineComponent } from 'vue';
-export default defineComponent({
-  name: 'CustomButton',
-  props: {
-    variant: { type: String, default: 'primary' },
-    size: { type: String, default: 'md' },
-    disabled: { type: Boolean, default: false },
-    loading: { type: Boolean, default: false }
-  },
-  emits: ['click']
+
+<script setup lang="ts">
+import { ref } from 'vue';
+
+interface Props {
+  disabled?: boolean;
+}
+
+withDefaults(defineProps<Props>(), {
+  disabled: false
 });
+
+const emit = defineEmits<{
+  click: [event: MouseEvent];
+}>();
+
+const isActive = ref(false);
+
+const handleClick = (event: MouseEvent) => {
+  if (!disabled) {
+    isActive.value = true;
+    setTimeout(() => isActive.value = false, 300);
+    emit('click', event);
+  }
+};
 </script>
+
 <style scoped>
-.custom-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 1rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.custom-btn.primary {
-  background: linear-gradient(135deg, #teal400 0%, #teal600 100%);
-  color: white;
-}
-.custom-btn.primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-.custom-btn.md {
-  padding: 0.75rem 1.5rem;
+.neon-btn {
+  position: relative;
+  padding: 0.875rem 2rem;
   font-size: 1rem;
+  font-weight: 700;
+  color: #00ff88;
+  background: #0a0e27;
+  border: 2px solid #00ff88;
+  border-radius: 12px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  overflow: hidden;
 }
-.custom-btn:disabled {
-  opacity: 0.5;
+
+.neon-btn:hover:not(.disabled) {
+  background: rgba(0, 255, 136, 0.1);
+  box-shadow:
+    0 0 20px rgba(0, 255, 136, 0.5),
+    inset 0 0 20px rgba(0, 255, 136, 0.2);
+}
+
+.neon-btn.active {
+  animation: neon-pulse 0.3s ease;
+}
+
+.neon-btn.disabled {
+  opacity: 0.4;
   cursor: not-allowed;
 }
-.loader {
-  width: 1rem;
-  height: 1rem;
-  border: 2px solid currentColor;
-  border-top-color: transparent;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
+
+.neon-border {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #00ff88, #00ccff, #ff00ff, #00ff88);
+  border-radius: 12px;
+  opacity: 0;
+  z-index: -1;
+  animation: neon-rotate 3s linear infinite;
+  transition: opacity 0.3s ease;
 }
-@keyframes spin {
-  to { transform: rotate(360deg); }
+
+.neon-btn:hover:not(.disabled) .neon-border {
+  opacity: 0.6;
+  filter: blur(8px);
+}
+
+@keyframes neon-rotate {
+  0% {
+    filter: hue-rotate(0deg) blur(8px);
+  }
+  100% {
+    filter: hue-rotate(360deg) blur(8px);
+  }
+}
+
+@keyframes neon-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(0, 255, 136, 0.8);
+  }
 }
 </style>

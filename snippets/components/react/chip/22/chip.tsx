@@ -1,40 +1,41 @@
 import React, { useState } from 'react';
+
 interface ChipProps {
-  label: string;
-  selected?: boolean;
-  onChange?: (selected: boolean) => void;
+  children?: React.ReactNode;
+  variant?: 'default' | 'primary' | 'secondary';
+  size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
 }
-export const Chip: React.FC<ChipProps> = ({
-  label,
-  selected: controlledSelected,
-  onChange,
-  disabled = false
-}) => {
-  const [internalSelected, setInternalSelected] = useState(false);
-  const selected = controlledSelected ?? internalSelected;
-  const handleClick = () => {
-    if (disabled) return;
-    const newSelected = !selected;
-    setInternalSelected(newSelected);
-    onChange?.(newSelected);
+
+export const Chip: React.FC<ChipProps> = (props) => {
+  const { children, variant = 'default', size = 'md', disabled = false } = props;
+  const [isHovered, setIsHovered] = React.useState(false);
+
+  const variants = {
+    default: '#f3f4f6',
+    primary: '#3b82f6',
+    secondary: '#10b981'
   };
+
+  const sizes = {
+    sm: '8px 16px',
+    md: '12px 24px',
+    lg: '16px 32px'
+  };
+
   return (
-    <button
-      onClick={handleClick}
-      disabled={disabled}
-      className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-        selected
-          ? 'bg-indigo-600 text-white ring-indigo-500 shadow-md scale-105'
-          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-      } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+    <div
+      style={{
+        background: variants[variant],
+        padding: sizes[size],
+        borderRadius: '8px',
+        transition: 'all 0.3s ease',
+        transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.5 : 1
+      }}
     >
-      {selected && (
-        <svg className="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-        </svg>
-      )}
-      {label}
-    </button>
+      {children || 'Chip - material'}
+    </div>
   );
 };

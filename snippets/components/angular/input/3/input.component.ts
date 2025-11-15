@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 interface InputTheme {
   glassBg: string;
@@ -7,6 +8,8 @@ interface InputTheme {
   accentGlow: string;
 }
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-input',
   template: `
   <div class="glass-input" [ngStyle]="wrapperStyles">

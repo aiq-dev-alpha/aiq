@@ -1,32 +1,41 @@
 import React, { useState } from 'react';
+
 interface BadgeProps {
-  label: string;
-  color?: string;
-  onRemove?: () => void;
+  children?: React.ReactNode;
+  variant?: 'default' | 'primary' | 'secondary';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
 }
-export const Badge: React.FC<BadgeProps> = ({
-  label,
-  color = 'purple',
-  onRemove
-}) => {
-  const [isRemoving, setIsRemoving] = useState(false);
-  const handleRemove = () => {
-    setIsRemoving(true);
-    setTimeout(() => onRemove?.(), 300);
+
+export const Badge: React.FC<BadgeProps> = (props) => {
+  const { children, variant = 'default', size = 'md', disabled = false } = props;
+  const [isHovered, setIsHovered] = React.useState(false);
+
+  const variants = {
+    default: '#f3f4f6',
+    primary: '#3b82f6',
+    secondary: '#10b981'
   };
+
+  const sizes = {
+    sm: '8px 16px',
+    md: '12px 24px',
+    lg: '16px 32px'
+  };
+
   return (
-    <span className={`inline-flex items-center gap-2 bg-${color}-100 text-${color}-800 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${isRemoving ? 'opacity-0 scale-0' : 'opacity-100 scale-100'}`}>
-      {label}
-      {onRemove && (
-        <button
-          onClick={handleRemove}
-          className="hover:bg-${color}-200 rounded-full p-0.5 transition-colors focus:outline-none focus:ring-2 focus:ring-${color}-500"
-        >
-          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-          </svg>
-        </button>
-      )}
-    </span>
+    <div
+      style={{
+        background: variants[variant],
+        padding: sizes[size],
+        borderRadius: '8px',
+        transition: 'all 0.3s ease',
+        transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.5 : 1
+      }}
+    >
+      {children || 'Badge - flat'}
+    </div>
   );
 };

@@ -1,39 +1,41 @@
-import React from 'react';
-interface ButtonProps {
-  children: React.ReactNode;
-  onClick?: () => void;
-  variant?: 'solid' | 'outline' | 'ghost';
+import React, { useState } from 'react';
+
+interface ToggleProps {
+  children?: React.ReactNode;
+  variant?: 'default' | 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
-  loading?: boolean;
 }
-export const Button: React.FC<ButtonProps> = ({
-  children,
-  onClick,
-  variant = 'solid',
-  size = 'md',
-  disabled = false,
-  loading = false
-}) => {
-  const baseClasses = 'rounded font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-green-500';
-  const variantClasses = {
-    solid: 'bg-green-500 text-white hover:ring-2 hover:ring-green-400 shadow-2xl',
-    outline: 'border-2 border-green-500 text-green-600 hover:bg-green-50',
-    ghost: 'text-green-600 hover:bg-green-100'
+
+export const Toggle: React.FC<ToggleProps> = (props) => {
+  const { children, variant = 'default', size = 'md', disabled = false } = props;
+  const [isHovered, setIsHovered] = React.useState(false);
+
+  const variants = {
+    default: '#f3f4f6',
+    primary: '#3b82f6',
+    secondary: '#10b981'
   };
-  const sizeClasses = {
-    sm: 'px-2.5 py-1.5 text-sm',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-6 py-3 text-lg'
+
+  const sizes = {
+    sm: '8px 16px',
+    md: '12px 24px',
+    lg: '16px 32px'
   };
+
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled || loading}
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    <div
+      style={{
+        background: variants[variant],
+        padding: sizes[size],
+        borderRadius: '8px',
+        transition: 'all 0.3s ease',
+        transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.5 : 1
+      }}
     >
-      {loading && <span className="animate-spin mr-2">⏳</span>}
-      {children}
-    </button>
+      {children || 'Toggle - outlined'}
+    </div>
   );
 };

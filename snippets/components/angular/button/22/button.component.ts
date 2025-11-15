@@ -1,6 +1,9 @@
 // Magnetic Button - Follows cursor on hover
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-button',
   template: `<button class="magnetic-btn" (click)="handleClick()" [disabled]="disabled" (mousemove)="onMouseMove($event)" (mouseleave)="onMouseLeave()" [style.transform]="transform"><ng-content></ng-content></button>`,
   styles: [`

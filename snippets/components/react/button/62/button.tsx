@@ -1,39 +1,75 @@
-import React from 'react';
+import React, { useState } from 'react';
+
 interface ButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
-  variant?: 'solid' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
-  loading?: boolean;
+  neonColor?: 'cyan' | 'pink' | 'green' | 'yellow';
+  intensity?: 'low' | 'medium' | 'high';
 }
+
 export const Button: React.FC<ButtonProps> = ({
   children,
   onClick,
-  variant = 'solid',
-  size = 'md',
-  disabled = false,
-  loading = false
+  neonColor = 'cyan',
+  intensity = 'medium'
 }) => {
-  const baseClasses = 'rounded-md font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500';
-  const variantClasses = {
-    solid: 'bg-amber-500 text-white hover:brightness-110 hover:-translate-y-0.5 shadow-sm',
-    outline: 'border-2 border-amber-500 text-amber-600 hover:bg-amber-50',
-    ghost: 'text-amber-600 hover:bg-amber-100'
+  const [isGlowing, setIsGlowing] = useState(false);
+
+  const colors = {
+    cyan: { main: '#00f0ff', shadow: 'rgba(0, 240, 255, 0.5)' },
+    pink: { main: '#ff00ff', shadow: 'rgba(255, 0, 255, 0.5)' },
+    green: { main: '#00ff00', shadow: 'rgba(0, 255, 0, 0.5)' },
+    yellow: { main: '#ffff00', shadow: 'rgba(255, 255, 0, 0.5)' }
   };
-  const sizeClasses = {
-    sm: 'px-2.5 py-1.5 text-sm',
-    md: 'px-5 py-2.5 text-sm',
-    lg: 'px-5 py-3 text-md'
+
+  const intensityMap = {
+    low: '0 0 5px',
+    medium: '0 0 10px',
+    high: '0 0 20px'
   };
+
+  const color = colors[neonColor];
+
   return (
     <button
       onClick={onClick}
-      disabled={disabled || loading}
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+      onMouseEnter={() => setIsGlowing(true)}
+      onMouseLeave={() => setIsGlowing(false)}
+      style={{
+        padding: '12px 30px',
+        background: '#1a1a2e',
+        border: `2px solid ${color.main}`,
+        borderRadius: '4px',
+        color: color.main,
+        fontSize: '16px',
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
+        cursor: 'pointer',
+        letterSpacing: '2px',
+        position: 'relative',
+        transition: 'all 0.3s ease',
+        boxShadow: isGlowing
+          ? `${intensityMap[intensity]} ${color.shadow}, inset ${intensityMap[intensity]} ${color.shadow}`
+          : 'none',
+        textShadow: isGlowing ? `0 0 10px ${color.main}` : 'none'
+      }}
     >
-      {loading && <span className="animate-spin mr-2">⏳</span>}
       {children}
+      {isGlowing && (
+        <span
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            background: color.shadow,
+            filter: 'blur(8px)',
+            opacity: 0.3,
+            zIndex: -1
+          }}
+        />
+      )}
     </button>
   );
 };

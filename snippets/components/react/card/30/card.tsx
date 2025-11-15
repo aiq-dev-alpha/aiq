@@ -1,38 +1,38 @@
 import React from 'react';
+
 interface CardProps {
-  title?: string;
   children: React.ReactNode;
-  footer?: React.ReactNode;
-  variant?: 'default' | 'bordered' | 'elevated';
-  hoverable?: boolean;
+  blur?: 'light' | 'medium' | 'heavy';
+  opacity?: number;
+  bordered?: boolean;
 }
+
 export const Card: React.FC<CardProps> = ({
-  title,
   children,
-  footer,
-  variant = 'default',
-  hoverable = false
+  blur = 'medium',
+  opacity = 0.7,
+  bordered = true
 }) => {
-  const variants = {
-    default: 'bg-white shadow-md',
-    bordered: 'bg-white border-2 border-gray-200',
-    elevated: 'bg-white shadow-xl'
+  const blurValues = {
+    light: '10px',
+    medium: '16px',
+    heavy: '24px'
   };
+
   return (
-    <div className={`${variants[variant]} rounded-xl overflow-hidden ${hoverable ? 'hover:shadow-2xl hover:-translate-y-1 transition-all duration-300' : ''}`}>
-      {title && (
-        <div className="px-6 py-4 border-b border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-        </div>
-      )}
-      <div className="px-6 py-4">
-        {children}
-      </div>
-      {footer && (
-        <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
-          {footer}
-        </div>
-      )}
+    <div
+      style={{
+        background: `rgba(255, 255, 255, ${opacity})`,
+        backdropFilter: `blur(${blurValues[blur]}) saturate(180%)`,
+        WebkitBackdropFilter: `blur(${blurValues[blur]}) saturate(180%)`,
+        borderRadius: '16px',
+        border: bordered ? '1px solid rgba(255, 255, 255, 0.3)' : 'none',
+        padding: '24px',
+        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+        maxWidth: '500px'
+      }}
+    >
+      {children}
     </div>
   );
 };

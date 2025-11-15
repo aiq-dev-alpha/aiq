@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 interface ButtonTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -8,6 +9,8 @@ interface ButtonTheme {
   glowColor: string;
 }
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-button',
   template: `
   <button

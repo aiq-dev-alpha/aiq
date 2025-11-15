@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 interface CardAppearance {
   backgroundColor: string;
   borderColor: string;
@@ -8,6 +9,8 @@ interface CardAppearance {
 }
 type CardPattern = 'default' | 'image-top' | 'image-left' | 'overlay' | 'minimal';
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-card',
   template: `
   <div [ngStyle]="containerStyles" [ngClass]="patternClass" class="card-root" (click)="onCardClick($event)">

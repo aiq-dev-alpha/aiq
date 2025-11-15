@@ -1,7 +1,10 @@
 // Particle Effect Input - Animated particles on focus
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-input',
   template: `<div class="particle-input" [class.active]="isFocused"><div class="particles"><span class="particle" *ngFor="let p of [1,2,3,4,5,6]"></span></div><input [type]="type" [placeholder]="placeholder" [value]="value" (input)="handleInput($event)" (focus)="isFocused=true" (blur)="isFocused=false" class="particle-field" /></div>`,
   styles: [`
@@ -22,10 +25,10 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 })
 export class InputComponent implements ControlValueAccessor {
   @Input() type = 'text'; @Input() placeholder = ''; @Output() valueChange = new EventEmitter<string>();
-  value = ''; isFocused = false; private onChange: any = () => {}; private onTouched: any = () => {};
+  value = ''; isFocused = false; private onChange: unknown = () => {}; private onTouched: unknown = () => {};
   handleInput(e: Event): void { this.value = (e.target as HTMLInputElement).value; this.onChange(this.value); this.valueChange.emit(this.value); }
   writeValue(v: string): void { this.value = v || ''; }
-  registerOnChange(fn: any): void { this.onChange = fn; }
-  registerOnTouched(fn: any): void { this.onTouched = fn; }
+  registerOnChange(fn: unknown): void { this.onChange = fn; }
+  registerOnTouched(fn: unknown): void { this.onTouched = fn; }
   setDisabledState(d: boolean): void {}
 }

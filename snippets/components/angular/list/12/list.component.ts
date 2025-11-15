@@ -1,10 +1,13 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 interface ListItem {
   id: string;
   label: string;
   selected?: boolean;
 }
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-list',
   template: `
   <ul class="list-container">

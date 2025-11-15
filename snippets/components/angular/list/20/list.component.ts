@@ -1,6 +1,9 @@
 // Infinite Scroll Virtualized List
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-list',
   template: `<div class="virtual-list" (scroll)="onScroll($event)"><div class="list-spacer" [style.height.px]="spacerHeight"></div><div class="list-item" *ngFor="let item of visibleItems; trackBy: trackByFn" [style.height.px]="itemHeight">Item {{ item }}</div></div>`,
   styles: [`
@@ -9,9 +12,9 @@ import { Component, Input } from '@angular/core';
   `]
 })
 export class ListComponent {
-  @Input() items: any[] = Array.from({ length: 10000 }, (_, i) => i + 1);
+  @Input() items: unknown[] = Array.from({ length: 10000 }, (_, i) => i + 1);
   @Input() itemHeight = 60;
-  visibleItems: any[] = [];
+  visibleItems: unknown[] = [];
   spacerHeight = 0;
   ngOnInit() { this.updateVisibleItems(0); }
   onScroll(e: Event): void {
@@ -24,5 +27,5 @@ export class ListComponent {
   this.visibleItems = this.items.slice(startIndex, endIndex);
   this.spacerHeight = startIndex * this.itemHeight;
   }
-  trackByFn(index: number, item: any): any { return item; }
+  trackByFn(index: number, item: unknown): unknown { return item; }
 }

@@ -1,39 +1,67 @@
-import React from 'react';
-interface ButtonProps {
-  children: React.ReactNode;
-  onClick?: () => void;
-  variant?: 'solid' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
-  loading?: boolean;
+import React, { useState } from 'react';
+
+interface CardProps {
+  front: React.ReactNode;
+  back: React.ReactNode;
+  width?: number;
+  height?: number;
 }
-export const Button: React.FC<ButtonProps> = ({
-  children,
-  onClick,
-  variant = 'solid',
-  size = 'md',
-  disabled = false,
-  loading = false
+
+export const Card: React.FC<CardProps> = ({
+  front,
+  back,
+  width = 300,
+  height = 400
 }) => {
-  const baseClasses = 'rounded-2xl font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-500';
-  const variantClasses = {
-    solid: 'bg-yellow-500 text-white hover:brightness-110 hover:-translate-y-0.5 shadow-xl',
-    outline: 'border-2 border-yellow-500 text-yellow-600 hover:bg-yellow-50',
-    ghost: 'text-yellow-600 hover:bg-yellow-100'
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  const faceStyle = {
+    position: 'absolute' as const,
+    width: '100%',
+    height: '100%',
+    backfaceVisibility: 'hidden' as const,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '16px',
+    padding: '24px',
+    boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
   };
-  const sizeClasses = {
-    sm: 'px-2 py-1 text-xs',
-    md: 'px-5 py-2.5 text-sm',
-    lg: 'px-6 py-3 text-lg'
-  };
+
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled || loading}
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    <div
+      onClick={() => setIsFlipped(!isFlipped)}
+      style={{
+        width,
+        height,
+        perspective: '1000px',
+        cursor: 'pointer'
+      }}
     >
-      {loading && <span className="animate-spin mr-2">⏳</span>}
-      {children}
-    </button>
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: '100%',
+          transition: 'transform 0.6s',
+          transformStyle: 'preserve-3d',
+          transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'
+        }}
+      >
+        <div style={{ ...faceStyle, background: '#fff' }}>
+          {front}
+        </div>
+        <div
+          style={{
+            ...faceStyle,
+            background: '#4f46e5',
+            color: '#fff',
+            transform: 'rotateY(180deg)'
+          }}
+        >
+          {back}
+        </div>
+      </div>
+    </div>
   );
 };

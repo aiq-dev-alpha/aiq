@@ -1,35 +1,74 @@
-import React from 'react';
+import React, { useState } from 'react';
+
 interface ButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
-  icon?: React.ReactNode;
-  iconPosition?: 'left' | 'right';
-  loading?: boolean;
+  neonColor?: 'cyan' | 'pink' | 'green' | 'yellow';
+  intensity?: 'low' | 'medium' | 'high';
 }
+
 export const Button: React.FC<ButtonProps> = ({
   children,
   onClick,
-  icon,
-  iconPosition = 'left',
-  loading = false
+  neonColor = 'cyan',
+  intensity = 'medium'
 }) => {
+  const [isGlowing, setIsGlowing] = useState(false);
+
+  const colors = {
+    cyan: { main: '#00f0ff', shadow: 'rgba(0, 240, 255, 0.5)' },
+    pink: { main: '#ff00ff', shadow: 'rgba(255, 0, 255, 0.5)' },
+    green: { main: '#00ff00', shadow: 'rgba(0, 255, 0, 0.5)' },
+    yellow: { main: '#ffff00', shadow: 'rgba(255, 255, 0, 0.5)' }
+  };
+
+  const intensityMap = {
+    low: '0 0 5px',
+    medium: '0 0 10px',
+    high: '0 0 20px'
+  };
+
+  const color = colors[neonColor];
+
   return (
     <button
       onClick={onClick}
-      disabled={loading}
-      className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white font-medium rounded-md shadow hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors disabled:opacity-50"
+      onMouseEnter={() => setIsGlowing(true)}
+      onMouseLeave={() => setIsGlowing(false)}
+      style={{
+        padding: '12px 30px',
+        background: '#1a1a2e',
+        border: `2px solid ${color.main}`,
+        borderRadius: '4px',
+        color: color.main,
+        fontSize: '16px',
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
+        cursor: 'pointer',
+        letterSpacing: '2px',
+        position: 'relative',
+        transition: 'all 0.3s ease',
+        boxShadow: isGlowing
+          ? `${intensityMap[intensity]} ${color.shadow}, inset ${intensityMap[intensity]} ${color.shadow}`
+          : 'none',
+        textShadow: isGlowing ? `0 0 10px ${color.main}` : 'none'
+      }}
     >
-      {loading ? (
-        <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24" fill="none">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-        </svg>
-      ) : (
-        <>
-          {icon && iconPosition === 'left' && icon}
-          {children}
-          {icon && iconPosition === 'right' && icon}
-        </>
+      {children}
+      {isGlowing && (
+        <span
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            background: color.shadow,
+            filter: 'blur(8px)',
+            opacity: 0.3,
+            zIndex: -1
+          }}
+        />
       )}
     </button>
   );

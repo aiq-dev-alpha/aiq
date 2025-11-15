@@ -1,6 +1,9 @@
 // Neon Glow Card
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-card',
   template: `<div class="neon-card"><div class="neon-glow"></div><ng-content></ng-content></div>`,
   styles: [`
@@ -10,5 +13,5 @@ import { Component, Input } from '@angular/core';
   `]
 })
 export class CardComponent {
-  @Input() theme: any = {};
+  @Input() theme: unknown = {};
 }

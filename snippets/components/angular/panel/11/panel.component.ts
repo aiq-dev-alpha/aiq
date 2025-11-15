@@ -1,6 +1,9 @@
 // Accordion Panel with Smooth Expand
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-panel',
   template: `<div class="accordion-panel"><div class="panel-header" (click)="expanded = !expanded"><ng-content select="[header]"></ng-content><span class="chevron" [class.up]="expanded">›</span></div><div class="panel-body" [class.expanded]="expanded"><ng-content></ng-content></div></div>`,
   styles: [`

@@ -1,48 +1,92 @@
 <template>
   <button
-    :class="buttonClasses"
-    :disabled="disabled || loading"
-    @click="handleClick"
+    :class="['skeleton-btn', { loading, disabled }]"
+    :disabled="disabled"
+    @click="$emit('click', $event)"
   >
-    <span v-if="loading" class="animate-spin mr-2">⏳</span>
-    <slot />
+    <div v-if="loading" class="skeleton">
+      <div class="skeleton-shimmer"></div>
+    </div>
+    <span v-else class="btn-content">
+      <slot />
+    </span>
   </button>
 </template>
+
 <script setup lang="ts">
-import { computed } from 'vue';
 interface Props {
-  variant?: 'solid' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
   loading?: boolean;
+  disabled?: boolean;
 }
-const props = withDefaults(defineProps<Props>(), {
-  variant: 'solid',
-  size: 'md',
-  disabled: false,
-  loading: false
+
+withDefaults(defineProps<Props>(), {
+  loading: false,
+  disabled: false
 });
-const emit = defineEmits<{
-  click: []
+
+defineEmits<{
+  click: [event: MouseEvent];
 }>();
-const buttonClasses = computed(() => {
-  const base = 'rounded-lg font-semibold transition-all duration-200 focus:outline-none focus:ring-2';
-  const variants = {
-    solid: 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 shadow-lg',
-    outline: 'border-2 border-purple-600 text-purple-700 hover:bg-purple-50',
-    ghost: 'text-purple-700 hover:bg-purple-100'
-  };
-  const sizes = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-5 py-2.5 text-base',
-    lg: 'px-7 py-3.5 text-lg'
-  };
-  const disabled = props.disabled || props.loading ? 'opacity-50 cursor-not-allowed' : '';
-  return `${base} ${variants[props.variant]} ${sizes[props.size]} ${disabled}`;
-});
-const handleClick = () => {
-  if (!props.disabled && !props.loading) {
-    emit('click');
-  }
-};
 </script>
+
+<style scoped>
+.skeleton-btn {
+  position: relative;
+  padding: 0.875rem 2rem;
+  min-width: 120px;
+  min-height: 44px;
+  font-size: 1rem;
+  font-weight: 600;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.skeleton-btn:not(.loading):not(.disabled):hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+}
+
+.skeleton-btn.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.skeleton-btn.loading {
+  background: #e5e7eb;
+  cursor: wait;
+}
+
+.skeleton {
+  position: relative;
+  width: 100%;
+  height: 20px;
+  background: #d1d5db;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.skeleton-shimmer {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.5),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  to {
+    left: 100%;
+  }
+}
+</style>

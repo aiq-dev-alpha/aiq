@@ -1,6 +1,9 @@
 // Glassmorphism Card with Backdrop Blur
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-card',
   template: `<div class="glass-card" [ngStyle]="cardStyles"><ng-content></ng-content></div>`,
   styles: [`
@@ -8,6 +11,6 @@ import { Component, Input } from '@angular/core';
   `]
 })
 export class CardComponent {
-  @Input() theme: any = {};
+  @Input() theme: unknown = {};
   get cardStyles() { return {}; }
 }

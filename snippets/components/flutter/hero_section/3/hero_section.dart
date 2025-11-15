@@ -1,42 +1,106 @@
 import 'package:flutter/material.dart';
-class CustomSection extends StatefulWidget {
-  final Widget? child;
-  final VoidCallback? onTap;
+
+class CustomSection extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final String? description;
+  final Widget? primaryAction;
+  final Widget? secondaryAction;
+  final String? backgroundImage;
+  final bool darkMode;
+
   const CustomSection({
-  Key? key,
-  this.child,
-  this.onTap,
+    Key? key,
+    required this.title,
+    required this.subtitle,
+    this.description,
+    this.primaryAction,
+    this.secondaryAction,
+    this.backgroundImage,
+    this.darkMode = false,
   }) : super(key: key);
-  @override
-  State<CustomSection> createState() => _CustomSectionState();
-}
-class _CustomSectionState extends State<CustomSection> {
-  bool _isHovered = false;
+
   @override
   Widget build(BuildContext context) {
-  return MouseRegion(
-  onEnter: (_) => setState(() => _isHovered = true),
-  onExit: (_) => setState(() => _isHovered = false),
-  child: GestureDetector(
-  onTap: widget.onTap,
-  child: AnimatedContainer(
-  duration: const Duration(milliseconds: 250),
-  transform: Matrix4.translationValues(0, _isHovered ? -6 : 0, 0),
-  padding: const EdgeInsets.all(22),
-  decoration: BoxDecoration(
-  color: Colors.white,
-  borderRadius: BorderRadius.circular(18),
-  boxShadow: [
-  BoxShadow(
-  color: Colors.black.withOpacity(_isHovered ? 0.18 : 0.08),
-  blurRadius: _isHovered ? 25 : 12,
-  offset: Offset(0, _isHovered ? 10 : 4),
-  ),
-  ],
-  ),
-  child: widget.child ?? const Text('Component'),
-  ),
-  ),
-  );
+    return Container(
+      width: double.infinity,
+      constraints: const BoxConstraints(minHeight: 500),
+      decoration: BoxDecoration(
+        image: backgroundImage != null
+            ? DecorationImage(
+                image: NetworkImage(backgroundImage!),
+                fit: BoxFit.cover,
+              )
+            : null,
+        gradient: backgroundImage == null
+            ? LinearGradient(
+                colors: darkMode
+                    ? [Colors.grey.shade900, Colors.grey.shade800]
+                    : [Colors.white, Colors.grey.shade100],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              )
+            : null,
+      ),
+      child: Container(
+        decoration: backgroundImage != null
+            ? BoxDecoration(
+                color: Colors.black.withOpacity(darkMode ? 0.6 : 0.3),
+              )
+            : null,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              subtitle,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: darkMode ? Colors.white70 : Theme.of(context).primaryColor,
+                letterSpacing: 1.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 48,
+                fontWeight: FontWeight.w800,
+                color: darkMode ? Colors.white : Colors.grey.shade900,
+                height: 1.2,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            if (description != null) ...[
+              const SizedBox(height: 24),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 600),
+                child: Text(
+                  description!,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: darkMode ? Colors.white.withOpacity(0.9) : Colors.grey.shade700,
+                    height: 1.6,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+            const SizedBox(height: 40),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (primaryAction != null) primaryAction!,
+                if (primaryAction != null && secondaryAction != null)
+                  const SizedBox(width: 16),
+                if (secondaryAction != null) secondaryAction!,
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

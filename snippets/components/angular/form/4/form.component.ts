@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 interface FormTheme {
   primaryColor: string;
@@ -10,6 +11,8 @@ interface FormTheme {
   successColor: string;
 }
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-form',
   template: `
   <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" [ngStyle]="formStyles">
@@ -61,7 +64,7 @@ export class FormComponent {
   @Input() theme: Partial<FormTheme> = {};
   @Input() title: string = 'Login Form';
   @Input() description: string = 'Sign in to your account';
-  @Input() fields: any[] = [
+  @Input() fields: unknown[] = [
   { name: 'email', label: 'Email Address', type: 'email', required: true },
   { name: 'password', label: 'Password', type: 'password', required: true }
   ];
@@ -91,7 +94,7 @@ export class FormComponent {
   return { ...this.defaultTheme, ...this.theme };
   }
   initializeForm() {
-  const group: any = {};
+  const group: unknown = {};
   this.fields.forEach(field => {
   const validators = [];
   if (field.required) validators.push(Validators.required);

@@ -1,155 +1,216 @@
 <script lang="ts">
-  import { writable } from 'svelte/store';
   import { createEventDispatcher } from 'svelte';
-  export interface ButtonTheme {
-    primary: string;
-    secondary: string;
-    success: string;
-    danger: string;
-    warning: string;
-    info: string;
-  }
-  export let variant: 'solid' | 'outline' | 'ghost' | 'gradient' | 'glass' | 'neumorphic' = 'solid';
-  export let size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'md';
-  export let fullWidth: boolean = false;
-  export let loading: boolean = false;
-  export let icon: string = '';
-  export let iconPosition: 'left' | 'right' = 'left';
+  import { spring } from 'svelte/motion';
+
+  // Liquid/Morphing Button - Unique in FEEL (liquid physics), LOOK (morphing shape), CAPABILITIES (progress tracking)
+  export let variant: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' = 'primary';
+  export let size: 'sm' | 'md' | 'lg' = 'md';
   export let disabled: boolean = false;
-  export let theme: keyof ButtonTheme = 'primary';
+  export let progress: number = 0; // 0-100 for liquid fill animation
+  export let morphOnHover: boolean = true;
+
   const dispatch = createEventDispatcher();
-  const glowActive = writable(false);
-  const themes: ButtonTheme = {
-    primary: '#6366f1',
-    secondary: '#a855f7',
-    success: '#14b8a6',
-    danger: '#dc2626',
-    warning: '#d97706',
-    info: '#0284c7'
+  const liquidLevel = spring(0, { stiffness: 0.1, damping: 0.3 });
+  const morphAmount = spring(0, { stiffness: 0.2, damping: 0.4 });
+
+  const variants = {
+    primary: { color: '#3b82f6', gradient: 'linear-gradient(135deg, #3b82f6, #1d4ed8)' },
+    secondary: { color: '#a855f7', gradient: 'linear-gradient(135deg, #a855f7, #7c3aed)' },
+    success: { color: '#22c55e', gradient: 'linear-gradient(135deg, #22c55e, #16a34a)' },
+    danger: { color: '#f43f5e', gradient: 'linear-gradient(135deg, #f43f5e, #dc2626)' },
+    warning: { color: '#fb923c', gradient: 'linear-gradient(135deg, #fb923c, #ea580c)' },
+    info: { color: '#22d3ee', gradient: 'linear-gradient(135deg, #22d3ee, #06b6d4)' }
   };
+
   const sizes = {
-    xs: 'px-2 py-1 text-xs',
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-6 py-3 text-lg',
-    xl: 'px-8 py-4 text-xl'
+    sm: 'px-4 py-2 text-sm',
+    md: 'px-6 py-3 text-base',
+    lg: 'px-8 py-4 text-lg'
   };
-  function handleClick(event: MouseEvent) {
-    if (!disabled && !loading) {
-      glowActive.set(true);
-      setTimeout(() => glowActive.set(false), 300);
-      dispatch('click', event);
+
+  function handleClick() {
+    if (!disabled) {
+      dispatch('click');
     }
   }
+
+  function handleMouseEnter() {
+    if (morphOnHover && !disabled) {
+      morphAmount.set(1);
+    }
+  }
+
+  function handleMouseLeave() {
+    if (morphOnHover) {
+      morphAmount.set(0);
+    }
+  }
+
+  $: liquidLevel.set(progress);
 </script>
+
 <button
-  class="btn {sizes[size]} {variant} {theme}"
-  class:full-width={fullWidth}
-  class:loading={loading}
-  class:glow={$glowActive}
-  {disabled}
+  class="liquid-button {sizes[size]} {variant}"
   on:click={handleClick}
+  on:mouseenter={handleMouseEnter}
+  on:mouseleave={handleMouseLeave}
+  {disabled}
+  type="button"
 >
-  {#if loading}
-    <span class="spinner square"></span>
-  {:else}
-    {#if icon && iconPosition === 'left'}
-      <slot name="icon-left">{icon}</slot>
-    {/if}
-    <slot></slot>
-    {#if icon && iconPosition === 'right'}
-      <slot name="icon-right">{icon}</slot>
-    {/if}
-  {/if}
+  <svg class="liquid-svg" viewBox="0 0 200 60" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="liquid-gradient-{variant}" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:{variants[variant].color};stop-opacity:0.8" />
+        <stop offset="100%" style="stop-color:{variants[variant].color};stop-opacity:1" />
+      </linearGradient>
+    </defs>
+    <path
+      class="liquid-path"
+      d="M 0,{60 - ($liquidLevel * 0.6)}
+         Q 25,{60 - ($liquidLevel * 0.6) - (Math.sin(Date.now() * 0.001) * 3 * $morphAmount)}
+         50,{60 - ($liquidLevel * 0.6)}
+         T 100,{60 - ($liquidLevel * 0.6)}
+         T 150,{60 - ($liquidLevel * 0.6)}
+         T 200,{60 - ($liquidLevel * 0.6)}
+         L 200,60 L 0,60 Z"
+      fill="url(#liquid-gradient-{variant})"
+    />
+  </svg>
+  <span class="liquid-content">
+    <slot>Liquid Button</slot>
+  </span>
+  <div class="blob blob-1" style="opacity: {$morphAmount * 0.3}"></div>
+  <div class="blob blob-2" style="opacity: {$morphAmount * 0.2}"></div>
 </button>
+
 <style>
-  .btn {
+  .liquid-button {
     position: relative;
-    display: inline-flex;
+    border: 2px solid;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .liquid-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .liquid-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
     align-items: center;
     gap: 0.5rem;
-    border: none;
-    border-radius: 4px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
   }
-  .full-width {
-    width: 100%;
-    justify-content: center;
+
+  .primary {
+    border-color: #3b82f6;
+    color: #3b82f6;
   }
-  /* Solid with Sharp Corners and Bold Style */
-  .solid.primary {
-    background: #6366f1;
+
+  .primary:hover:not(:disabled) {
     color: white;
-    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+    border-color: #2563eb;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
   }
-  .solid.primary:hover {
-    background: #4f46e5;
-    transform: translateY(-2px);
+
+  .secondary {
+    border-color: #a855f7;
+    color: #a855f7;
   }
-  .solid.primary.glow {
-    animation: glowPulse 0.3s ease-out;
-  }
-  .solid.secondary {
-    background: #a855f7;
+
+  .secondary:hover:not(:disabled) {
     color: white;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
   }
-  .solid.secondary:hover {
-    background: #9333ea;
+
+  .success {
+    border-color: #22c55e;
+    color: #22c55e;
   }
-  .solid.success {
-    background: #14b8a6;
+
+  .success:hover:not(:disabled) {
     color: white;
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
   }
-  .solid.success:hover {
-    background: #0d9488;
+
+  .danger {
+    border-color: #f43f5e;
+    color: #f43f5e;
   }
-  .solid.danger {
-    background: #dc2626;
+
+  .danger:hover:not(:disabled) {
     color: white;
+    box-shadow: 0 0 20px rgba(244, 63, 94, 0.4);
   }
-  .solid.danger:hover {
-    background: #b91c1c;
+
+  .warning {
+    border-color: #fb923c;
+    color: #fb923c;
   }
-  .solid.warning {
-    background: #d97706;
+
+  .warning:hover:not(:disabled) {
     color: white;
+    box-shadow: 0 0 20px rgba(251, 146, 60, 0.4);
   }
-  .solid.warning:hover {
-    background: #b45309;
+
+  .info {
+    border-color: #22d3ee;
+    color: #22d3ee;
   }
-  .solid.info {
-    background: #0284c7;
+
+  .info:hover:not(:disabled) {
     color: white;
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
   }
-  .solid.info:hover {
-    background: #0369a1;
-  }
-  @keyframes glowPulse {
-    0% { box-shadow: 0 0 0 0 currentColor; }
-    50% { box-shadow: 0 0 20px 10px transparent; }
-    100% { box-shadow: 0 0 0 0 transparent; }
-  }
-  /* Loading State */
-  .btn.loading {
+
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    background: currentColor;
     pointer-events: none;
-    opacity: 0.7;
+    z-index: 1;
+    animation: blobFloat 3s ease-in-out infinite;
   }
-  .spinner.square {
-    width: 1em;
-    height: 1em;
-    border: 2px solid currentColor;
-    animation: rotateSquare 1s ease-in-out infinite;
+
+  .blob-1 {
+    width: 40px;
+    height: 40px;
+    top: -10px;
+    left: 10%;
+    animation-delay: 0s;
   }
-  @keyframes rotateSquare {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+
+  .blob-2 {
+    width: 30px;
+    height: 30px;
+    bottom: -5px;
+    right: 15%;
+    animation-delay: 1.5s;
   }
-  .btn:disabled {
+
+  @keyframes blobFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(10px, -10px) scale(1.1); }
+    66% { transform: translate(-10px, 10px) scale(0.9); }
+  }
+
+  .liquid-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+
+  .liquid-button:active:not(:disabled) {
+    transform: scale(0.95);
   }
 </style>

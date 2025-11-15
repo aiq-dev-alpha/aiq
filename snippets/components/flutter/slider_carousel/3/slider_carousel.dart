@@ -1,42 +1,86 @@
 import 'package:flutter/material.dart';
+
 class CustomCarousel extends StatefulWidget {
-  final Widget? child;
-  final VoidCallback? onTap;
+  final List<Widget> items;
+  final double itemWidth;
+  final double itemHeight;
+  final double spacing;
+  final EdgeInsets padding;
+
   const CustomCarousel({
-  Key? key,
-  this.child,
-  this.onTap,
+    Key? key,
+    required this.items,
+    this.itemWidth = 300,
+    this.itemHeight = 200,
+    this.spacing = 16,
+    this.padding = const EdgeInsets.symmetric(horizontal: 24),
   }) : super(key: key);
+
   @override
   State<CustomCarousel> createState() => _CustomCarouselState();
 }
+
 class _CustomCarouselState extends State<CustomCarousel> {
-  bool _isHovered = false;
+  final ScrollController _scrollController = ScrollController();
+  double _scrollOffset = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      setState(() {
+        _scrollOffset = _scrollController.offset;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-  return MouseRegion(
-  onEnter: (_) => setState(() => _isHovered = true),
-  onExit: (_) => setState(() => _isHovered = false),
-  child: GestureDetector(
-  onTap: widget.onTap,
-  child: AnimatedContainer(
-  duration: const Duration(milliseconds: 250),
-  transform: Matrix4.translationValues(0, _isHovered ? -6 : 0, 0),
-  padding: const EdgeInsets.all(22),
-  decoration: BoxDecoration(
-  color: Colors.white,
-  borderRadius: BorderRadius.circular(18),
-  boxShadow: [
-  BoxShadow(
-  color: Colors.black.withOpacity(_isHovered ? 0.18 : 0.08),
-  blurRadius: _isHovered ? 25 : 12,
-  offset: Offset(0, _isHovered ? 10 : 4),
-  ),
-  ],
-  ),
-  child: widget.child ?? const Text('Component'),
-  ),
-  ),
-  );
+    return SizedBox(
+      height: widget.itemHeight,
+      child: ListView.builder(
+        controller: _scrollController,
+        scrollDirection: Axis.horizontal,
+        padding: widget.padding,
+        itemCount: widget.items.length,
+        itemBuilder: (context, index) {
+          final itemPosition = (index * (widget.itemWidth + widget.spacing)) - _scrollOffset;
+          final screenWidth = MediaQuery.of(context).size.width;
+          final centerPosition = (screenWidth / 2) - (widget.itemWidth / 2);
+          final distanceFromCenter = (itemPosition - centerPosition).abs();
+          final scale = (1 - (distanceFromCenter / screenWidth)).clamp(0.8, 1.0);
+
+          return Padding(
+            padding: EdgeInsets.only(right: widget.spacing),
+            child: Transform.scale(
+              scale: scale,
+              child: Container(
+                width: widget.itemWidth,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.15),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: widget.items[index],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }

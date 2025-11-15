@@ -1,6 +1,9 @@
 // Morphing Shape Button - Changes shape on interaction
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-button',
   template: `<button class="morph-btn" [class.active]="isActive" (click)="handleClick()" (mousedown)="isActive=true" (mouseup)="isActive=false" (mouseleave)="isActive=false" [disabled]="disabled"><ng-content></ng-content></button>`,
   styles: [`

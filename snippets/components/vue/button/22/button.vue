@@ -1,62 +1,104 @@
 <template>
   <button
-    :class="['custom-btn', variant, size, { disabled, loading }]"
-    :disabled="disabled || loading"
-    @click="$emit('click')"
+    :class="['wave-btn', { active, disabled }]"
+    :disabled="disabled"
+    @click="handleClick"
   >
-    <span v-if="loading" class="loader"></span>
-    <slot />
+    <span class="btn-text"><slot /></span>
+    <svg class="wave" viewBox="0 0 100 20">
+      <path
+        v-for="i in 5"
+        :key="i"
+        class="wave-path"
+        :style="{ animationDelay: `${i * 0.1}s` }"
+        :d="`M 0,10 Q 25,${5 + i}, 50,10 T 100,10`"
+      />
+    </svg>
   </button>
 </template>
-<script lang="ts">
-import { defineComponent } from 'vue';
-export default defineComponent({
-  name: 'CustomButton',
-  props: {
-    variant: { type: String, default: 'primary' },
-    size: { type: String, default: 'md' },
-    disabled: { type: Boolean, default: false },
-    loading: { type: Boolean, default: false }
-  },
-  emits: ['click']
+
+<script setup lang="ts">
+import { ref } from 'vue';
+
+interface Props {
+  disabled?: boolean;
+}
+
+withDefaults(defineProps<Props>(), {
+  disabled: false
 });
+
+const emit = defineEmits<{
+  click: [event: MouseEvent];
+}>();
+
+const active = ref(false);
+
+const handleClick = (event: MouseEvent) => {
+  if (!disabled) {
+    active.value = true;
+    setTimeout(() => active.value = false, 1000);
+    emit('click', event);
+  }
+};
 </script>
+
 <style scoped>
-.custom-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
+.wave-btn {
+  position: relative;
+  padding: 0.875rem 2rem;
+  font-size: 1rem;
   font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
   border: none;
-  border-radius: 0.375rem;
+  border-radius: 10px;
   cursor: pointer;
+  overflow: hidden;
   transition: all 0.2s ease;
 }
-.custom-btn.primary {
-  background: linear-gradient(135deg, #green400 0%, #green600 100%);
-  color: white;
-}
-.custom-btn.primary:hover:not(:disabled) {
+
+.wave-btn:hover:not(.disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
-.custom-btn.md {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-}
-.custom-btn:disabled {
-  opacity: 0.5;
+
+.wave-btn.disabled {
+  opacity: 0.6;
   cursor: not-allowed;
 }
-.loader {
-  width: 1rem;
-  height: 1rem;
-  border: 2px solid currentColor;
-  border-top-color: transparent;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
+
+.btn-text {
+  position: relative;
+  z-index: 2;
 }
-@keyframes spin {
-  to { transform: rotate(360deg); }
+
+.wave {
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.wave-btn.active .wave {
+  opacity: 1;
+}
+
+.wave-path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.6);
+  stroke-width: 2;
+  animation: wave-move 1s ease-in-out infinite;
+}
+
+@keyframes wave-move {
+  0%, 100% {
+    d: path('M 0,10 Q 25,5, 50,10 T 100,10');
+  }
+  50% {
+    d: path('M 0,10 Q 25,15, 50,10 T 100,10');
+  }
 }
 </style>

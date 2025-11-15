@@ -1,6 +1,9 @@
 // Neumorphic Soft Card
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-card',
   template: `<div class="neu-card"><ng-content></ng-content></div>`,
   styles: [`

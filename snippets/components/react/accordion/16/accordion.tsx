@@ -1,39 +1,90 @@
-import React from 'react';
-interface ButtonProps {
-  children: React.ReactNode;
-  onClick?: () => void;
-  variant?: 'solid' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
-  loading?: boolean;
+import React, { useState } from 'react';
+
+interface AccordionItem {
+  title: string;
+  content: React.ReactNode;
 }
-export const Button: React.FC<ButtonProps> = ({
-  children,
-  onClick,
-  variant = 'solid',
-  size = 'md',
-  disabled = false,
-  loading = false
+
+interface AccordionProps {
+  items: AccordionItem[];
+  allowMultiple?: boolean;
+  bordered?: boolean;
+}
+
+export const Accordion: React.FC<AccordionProps> = ({
+  items,
+  allowMultiple = false,
+  bordered = true
 }) => {
-  const baseClasses = 'rounded-xl font-medium transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-pink-500';
-  const variantClasses = {
-    solid: 'bg-pink-500 text-white hover:bg-pink-700 hover:scale-105 shadow-lg',
-    outline: 'border-2 border-pink-500 text-pink-600 hover:bg-pink-50',
-    ghost: 'text-pink-600 hover:bg-pink-100'
+  const [openIndexes, setOpenIndexes] = useState<Set<number>>(new Set());
+
+  const toggleItem = (index: number) => {
+    const newSet = new Set(openIndexes);
+    if (newSet.has(index)) {
+      newSet.delete(index);
+    } else {
+      if (!allowMultiple) {
+        newSet.clear();
+      }
+      newSet.add(index);
+    }
+    setOpenIndexes(newSet);
   };
-  const sizeClasses = {
-    sm: 'px-2.5 py-1.5 text-sm',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-7 py-3.5 text-base'
-  };
+
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled || loading}
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-    >
-      {loading && <span className="animate-spin mr-2">⏳</span>}
-      {children}
-    </button>
+    <div style={{ width: '100%' }}>
+      {items.map((item, index) => {
+        const isOpen = openIndexes.has(index);
+        return (
+          <div
+            key={index}
+            style={{
+              borderBottom: bordered ? '1px solid #e5e7eb' : 'none',
+              marginBottom: bordered ? 0 : '8px'
+            }}
+          >
+            <button
+              onClick={() => toggleItem(index)}
+              style={{
+                width: '100%',
+                padding: '16px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '16px',
+                fontWeight: 600,
+                textAlign: 'left',
+                color: '#111',
+                transition: 'all 0.2s'
+              }}
+            >
+              <span>{item.title}</span>
+              <span
+                style={{
+                  transform: isOpen ? 'rotate(180deg)' : 'rotate(0)',
+                  transition: 'transform 0.3s ease'
+                }}
+              >
+                ▼
+              </span>
+            </button>
+            <div
+              style={{
+                maxHeight: isOpen ? '500px' : '0',
+                overflow: 'hidden',
+                transition: 'max-height 0.3s ease'
+              }}
+            >
+              <div style={{ padding: '0 16px 16px 16px', color: '#666', lineHeight: '1.6' }}>
+                {item.content}
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 };

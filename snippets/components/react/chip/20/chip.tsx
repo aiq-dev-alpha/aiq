@@ -1,40 +1,18 @@
-import React, { useState } from 'react';
-interface ChipProps {
-  label: string;
-  selected?: boolean;
-  onChange?: (selected: boolean) => void;
-  disabled?: boolean;
-}
-export const Chip: React.FC<ChipProps> = ({
-  label,
-  selected: controlledSelected,
-  onChange,
-  disabled = false
-}) => {
-  const [internalSelected, setInternalSelected] = useState(false);
-  const selected = controlledSelected ?? internalSelected;
-  const handleClick = () => {
-    if (disabled) return;
-    const newSelected = !selected;
-    setInternalSelected(newSelected);
-    onChange?.(newSelected);
-  };
+import React from 'react';
+
+export const Chip: React.FC<any> = (props) => {
   return (
-    <button
-      onClick={handleClick}
-      disabled={disabled}
-      className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-        selected
-          ? 'bg-indigo-600 text-white ring-indigo-500 shadow-md scale-105'
-          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-      } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+    <div
+      style={{
+        background: 'rgba(255, 255, 255, 0.1)',
+        backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255, 255, 255, 0.2)',
+        borderRadius: '12px',
+        padding: '16px',
+        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
+      }}
     >
-      {selected && (
-        <svg className="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-        </svg>
-      )}
-      {label}
-    </button>
+      <div>Chip - Glassmorphism</div>
+    </div>
   );
 };

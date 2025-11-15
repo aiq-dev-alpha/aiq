@@ -1,62 +1,71 @@
 <template>
   <button
-    :class="['custom-btn', variant, size, { disabled, loading }]"
+    :class="['progress-btn', { loading, disabled }]"
     :disabled="disabled || loading"
-    @click="$emit('click')"
+    @click="$emit('click', $event)"
   >
-    <span v-if="loading" class="loader"></span>
-    <slot />
+    <span class="btn-text">
+      <slot />
+    </span>
+    <div class="progress-bar" :style="{ width: `${progress}%` }"></div>
   </button>
 </template>
-<script lang="ts">
-import { defineComponent } from 'vue';
-export default defineComponent({
-  name: 'CustomButton',
-  props: {
-    variant: { type: String, default: 'primary' },
-    size: { type: String, default: 'md' },
-    disabled: { type: Boolean, default: false },
-    loading: { type: Boolean, default: false }
-  },
-  emits: ['click']
+
+<script setup lang="ts">
+interface Props {
+  progress?: number;
+  loading?: boolean;
+  disabled?: boolean;
+}
+
+withDefaults(defineProps<Props>(), {
+  progress: 0,
+  loading: false,
+  disabled: false
 });
+
+defineEmits<{
+  click: [event: MouseEvent];
+}>();
 </script>
+
 <style scoped>
-.custom-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.custom-btn.primary {
-  background: linear-gradient(135deg, #teal400 0%, #teal600 100%);
-  color: white;
-}
-.custom-btn.primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-.custom-btn.md {
-  padding: 0.75rem 1.5rem;
+.progress-btn {
+  position: relative;
+  padding: 0.875rem 2rem;
   font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background: #3b82f6;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: background 0.2s ease;
 }
-.custom-btn:disabled {
-  opacity: 0.5;
+
+.progress-btn:hover:not(.disabled):not(.loading) {
+  background: #2563eb;
+}
+
+.progress-btn.disabled,
+.progress-btn.loading {
+  opacity: 0.7;
   cursor: not-allowed;
 }
-.loader {
-  width: 1rem;
-  height: 1rem;
-  border: 2px solid currentColor;
-  border-top-color: transparent;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
+
+.btn-text {
+  position: relative;
+  z-index: 2;
 }
-@keyframes spin {
-  to { transform: rotate(360deg); }
+
+.progress-bar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.9);
+  transition: width 0.3s ease;
+  border-radius: 0 4px 0 0;
 }
 </style>

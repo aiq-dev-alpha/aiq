@@ -1,29 +1,83 @@
 <template>
-  <div class="component-11" :class="[size, variant]">
-    <slot />
+  <div class="testimonial-card">
+    <div class="quote-icon">"</div>
+    <p class="testimonial-text">{{ text }}</p>
+    <div class="rating">
+      <span v-for="i in rating" :key="i" class="star">★</span>
+    </div>
+    <div class="author">
+      <img :src="avatar" :alt="name" class="avatar" />
+      <div>
+        <div class="name">{{ name }}</div>
+        <div class="role">{{ role }}</div>
+      </div>
+    </div>
   </div>
 </template>
-<script lang="ts">
-import { defineComponent } from 'vue';
-export default defineComponent({
-  name: 'Component11',
-  props: {
-    size: { type: String, default: 'md' },
-    variant: { type: String, default: 'default' }
-  }
-});
+
+<script setup lang="ts">
+defineProps<{
+  text: string;
+  name: string;
+  role: string;
+  avatar: string;
+  rating: number;
+}>();
 </script>
+
 <style scoped>
-.component-11 {
-  padding: 0.75rem 1.25rem;
-  border-radius: 1.5rem;
-  background: linear-gradient(210deg, #f093fb 0%, #4facfe 100%);
+.testimonial-card {
+  padding: 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  font-weight: 700;
-  transition: all 0.4s ease;
+  border-radius: 20px;
+  position: relative;
 }
-.component-11:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 5px 13px rgba(0, 0, 0, 0.11);
+
+.quote-icon {
+  font-size: 4rem;
+  opacity: 0.2;
+  line-height: 1;
+}
+
+.testimonial-text {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  margin: 1rem 0;
+}
+
+.rating {
+  display: flex;
+  gap: 0.25rem;
+  margin: 1rem 0;
+}
+
+.star {
+  color: #fbbf24;
+  font-size: 1.25rem;
+}
+
+.author {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 3px solid white;
+}
+
+.name {
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.role {
+  opacity: 0.9;
+  font-size: 0.875rem;
 }
 </style>

@@ -1,162 +1,217 @@
 <script lang="ts">
-  import { writable } from 'svelte/store';
   import { createEventDispatcher } from 'svelte';
-  export interface ButtonTheme {
-    primary: string;
-    secondary: string;
-    success: string;
-    danger: string;
-    warning: string;
-    info: string;
-  }
-  export let variant: 'solid' | 'outline' | 'ghost' | 'gradient' | 'glass' | 'neumorphic' = 'outline';
-  export let size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'md';
-  export let fullWidth: boolean = false;
-  export let loading: boolean = false;
-  export let icon: string = '';
-  export let iconPosition: 'left' | 'right' = 'left';
+  import { writable, derived } from 'svelte/store';
+
+  // Split Button - Unique in STRUCTURE (main + dropdown), USE CASE (multi-action), CAPABILITIES (action menu)
+  export let variant: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' = 'primary';
+  export let size: 'sm' | 'md' | 'lg' = 'md';
   export let disabled: boolean = false;
-  export let theme: keyof ButtonTheme = 'primary';
+  export let actions: Array<{ label: string; value: string; icon?: string }> = [];
+  export let mainLabel: string = 'Action';
+
   const dispatch = createEventDispatcher();
-  const borderGlow = writable(false);
-  const themes: ButtonTheme = {
-    primary: '#4f46e5',
-    secondary: '#9333ea',
-    success: '#16a34a',
-    danger: '#dc2626',
-    warning: '#ca8a04',
-    info: '#0891b2'
+  const menuOpen = writable(false);
+  const selectedIndex = writable(0);
+
+  const variants = {
+    primary: { bg: '#3b82f6', hover: '#2563eb', text: 'white' },
+    secondary: { bg: '#8b5cf6', hover: '#7c3aed', text: 'white' },
+    success: { bg: '#10b981', hover: '#059669', text: 'white' },
+    danger: { bg: '#ef4444', hover: '#dc2626', text: 'white' },
+    warning: { bg: '#f59e0b', hover: '#d97706', text: 'white' },
+    info: { bg: '#06b6d4', hover: '#0891b2', text: 'white' }
   };
+
   const sizes = {
-    xs: 'px-2 py-1 text-xs',
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-6 py-3 text-lg',
-    xl: 'px-8 py-4 text-xl'
+    sm: { btn: 'px-3 py-1.5 text-sm', dropdown: 'px-2', menu: 'text-sm' },
+    md: { btn: 'px-4 py-2 text-base', dropdown: 'px-3', menu: 'text-base' },
+    lg: { btn: 'px-6 py-3 text-lg', dropdown: 'px-4', menu: 'text-lg' }
   };
-  function handleClick(event: MouseEvent) {
-    if (!disabled && !loading) {
-      borderGlow.set(true);
-      setTimeout(() => borderGlow.set(false), 400);
-      dispatch('click', event);
+
+  function handleMainClick() {
+    if (!disabled) {
+      const action = actions[0] || { value: 'default', label: mainLabel };
+      dispatch('action', { value: action.value });
+      dispatch('click');
+    }
+  }
+
+  function toggleMenu() {
+    if (!disabled && actions.length > 0) {
+      menuOpen.update(v => !v);
+    }
+  }
+
+  function selectAction(index: number) {
+    selectedIndex.set(index);
+    const action = actions[index];
+    dispatch('action', { value: action.value });
+    menuOpen.set(false);
+  }
+
+  function handleClickOutside(event: MouseEvent) {
+    if ($menuOpen) {
+      menuOpen.set(false);
     }
   }
 </script>
-<button
-  class="btn {sizes[size]} {variant} {theme}"
-  class:full-width={fullWidth}
-  class:loading={loading}
-  class:glow={$borderGlow}
-  {disabled}
-  on:click={handleClick}
->
-  {#if loading}
-    <span class="spinner circle-dots"></span>
-  {:else}
-    {#if icon && iconPosition === 'left'}
-      <slot name="icon-left">{icon}</slot>
+
+<svelte:window on:click={handleClickOutside} />
+
+<div class="split-button-container">
+  <div class="split-button {variant} {size}">
+    <button
+      class="split-button-main {sizes[size].btn}"
+      on:click|stopPropagation={handleMainClick}
+      {disabled}
+      type="button"
+      style="background: {variants[variant].bg}; color: {variants[variant].text};"
+    >
+      <slot>{mainLabel}</slot>
+    </button>
+
+    {#if actions.length > 0}
+      <button
+        class="split-button-dropdown {sizes[size].dropdown}"
+        on:click|stopPropagation={toggleMenu}
+        {disabled}
+        type="button"
+        style="background: {variants[variant].bg}; color: {variants[variant].text};"
+      >
+        <svg
+          class="dropdown-icon"
+          class:open={$menuOpen}
+          width="12"
+          height="12"
+          viewBox="0 0 12 12"
+          fill="none"
+        >
+          <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
     {/if}
-    <slot></slot>
-    {#if icon && iconPosition === 'right'}
-      <slot name="icon-right">{icon}</slot>
-    {/if}
+  </div>
+
+  {#if $menuOpen && actions.length > 0}
+    <div class="split-button-menu {sizes[size].menu}" on:click|stopPropagation>
+      {#each actions as action, index}
+        <button
+          class="menu-item"
+          on:click={() => selectAction(index)}
+          type="button"
+        >
+          {#if action.icon}
+            <span class="menu-icon">{action.icon}</span>
+          {/if}
+          <span>{action.label}</span>
+        </button>
+      {/each}
+    </div>
   {/if}
-</button>
+</div>
+
 <style>
-  .btn {
+  .split-button-container {
     position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: transparent;
-    border: 3px solid;
+    display: inline-block;
+  }
+
+  .split-button {
+    display: flex;
     border-radius: 8px;
-    font-weight: 700;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .split-button-main {
+    border: none;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
   }
-  .full-width {
-    width: 100%;
+
+  .split-button-main:hover:not(:disabled) {
+    filter: brightness(1.1);
+  }
+
+  .split-button-main:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  .split-button-dropdown {
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
     justify-content: center;
+    transition: all 0.2s ease;
   }
-  /* Thick Outline with Animated Border */
-  .outline.primary {
-    border-color: #4f46e5;
-    color: #4f46e5;
+
+  .split-button-dropdown:hover:not(:disabled) {
+    filter: brightness(1.1);
   }
-  .outline.primary:hover {
-    background: rgba(79, 70, 229, 0.05);
-    border-width: 4px;
-    padding: calc(0.5rem - 1px) calc(1rem - 1px);
+
+  .dropdown-icon {
+    transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
-  .outline.primary.glow {
-    animation: borderGlow 0.4s ease-out;
+
+  .dropdown-icon.open {
+    transform: rotate(180deg);
   }
-  .outline.secondary {
-    border-color: #9333ea;
-    color: #9333ea;
-  }
-  .outline.secondary:hover {
-    background: rgba(147, 51, 234, 0.05);
-    border-width: 4px;
-  }
-  .outline.success {
-    border-color: #16a34a;
-    color: #16a34a;
-  }
-  .outline.danger {
-    border-color: #dc2626;
-    color: #dc2626;
-  }
-  .outline.warning {
-    border-color: #ca8a04;
-    color: #ca8a04;
-  }
-  .outline.info {
-    border-color: #0891b2;
-    color: #0891b2;
-  }
-  @keyframes borderGlow {
-    0% { box-shadow: 0 0 0 0 currentColor; }
-    50% { box-shadow: 0 0 20px 5px transparent; }
-    100% { box-shadow: 0 0 0 0 transparent; }
-  }
-  /* Loading State */
-  .btn.loading {
-    pointer-events: none;
-    opacity: 0.7;
-  }
-  .spinner.circle-dots {
-    width: 1.2em;
-    height: 1.2em;
-    position: relative;
-  }
-  .spinner.circle-dots::before,
-  .spinner.circle-dots::after {
-    content: '';
+
+  .split-button-menu {
     position: absolute;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: currentColor;
-    animation: circleDots 1.5s ease-in-out infinite;
+    top: calc(100% + 4px);
+    right: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    min-width: 150px;
+    overflow: hidden;
+    animation: slideDown 0.2s ease;
+    z-index: 1000;
   }
-  .spinner.circle-dots::before {
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
-  .spinner.circle-dots::after {
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    animation-delay: 0.75s;
+
+  .menu-item {
+    width: 100%;
+    padding: 10px 16px;
+    border: none;
+    background: white;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #1f2937;
+    font-weight: 500;
   }
-  @keyframes circleDots {
-    0%, 100% { opacity: 0.2; }
-    50% { opacity: 1; }
+
+  .menu-item:hover {
+    background: #f3f4f6;
   }
-  .btn:disabled {
+
+  .menu-item:active {
+    background: #e5e7eb;
+  }
+
+  .menu-icon {
+    font-size: 1.1em;
+  }
+
+  .split-button button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }

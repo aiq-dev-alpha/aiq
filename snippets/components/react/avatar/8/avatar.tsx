@@ -1,34 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
+
 interface AvatarProps {
-  src?: string;
-  alt?: string;
-  size?: number;
-  badge?: string;
+  children?: React.ReactNode;
+  variant?: 'default' | 'primary' | 'secondary';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
 }
-export const Avatar: React.FC<AvatarProps> = ({
-  src,
-  alt = 'User',
-  size = 64,
-  badge
-}) => {
-  const clipPath = 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)';
+
+export const Avatar: React.FC<AvatarProps> = (props) => {
+  const { children, variant = 'default', size = 'md', disabled = false } = props;
+  const [isHovered, setIsHovered] = React.useState(false);
+
+  const variants = {
+    default: '#f3f4f6',
+    primary: '#3b82f6',
+    secondary: '#10b981'
+  };
+
+  const sizes = {
+    sm: '8px 16px',
+    md: '12px 24px',
+    lg: '16px 32px'
+  };
+
   return (
-    <div className="relative inline-block" style={{ width: size, height: size }}>
-      <div
-        className="w-full h-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center overflow-hidden shadow-lg"
-        style={{ clipPath }}
-      >
-        {src ? (
-          <img src={src} alt={alt} className="w-full h-full object-cover" />
-        ) : (
-          <span className="text-white font-bold text-xl">{alt[0]?.toUpperCase()}</span>
-        )}
-      </div>
-      {badge && (
-        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-2 py-0.5 font-semibold shadow">
-          {badge}
-        </span>
-      )}
+    <div
+      style={{
+        background: variants[variant],
+        padding: sizes[size],
+        borderRadius: '8px',
+        transition: 'all 0.3s ease',
+        transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.5 : 1
+      }}
+    >
+      {children || 'Avatar - gradient'}
     </div>
   );
 };

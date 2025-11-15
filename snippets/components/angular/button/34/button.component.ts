@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 interface ColorPalette {
   primary: string;
   secondary: string;
@@ -7,6 +8,8 @@ interface ColorPalette {
   onSurface: string;
 }
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-button',
   template: `
   <button [ngStyle]="styles" [disabled]="disabled || busy" [ngClass]="classes" (click)="emit($event)" class="btn">

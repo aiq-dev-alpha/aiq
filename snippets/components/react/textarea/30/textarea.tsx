@@ -1,41 +1,18 @@
-import React, { useState } from 'react';
-interface TextAreaProps {
-  value?: string;
-  onChange?: (value: string) => void;
-  placeholder?: string;
-  maxLength?: number;
-  rows?: number;
-  autoResize?: boolean;
-}
-export const TextArea: React.FC<TextAreaProps> = ({
-  value: controlledValue,
-  onChange,
-  placeholder,
-  maxLength,
-  rows = 4,
-  autoResize = false
-}) => {
-  const [value, setValue] = useState(controlledValue || '');
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = e.target.value;
-    setValue(newValue);
-    onChange?.(newValue);
-  };
+import React from 'react';
+
+export const Textarea: React.FC<any> = (props) => {
   return (
-    <div className="relative">
-      <textarea
-        value={value}
-        onChange={handleChange}
-        placeholder={placeholder}
-        maxLength={maxLength}
-        rows={rows}
-        className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-${autoResize ? 'none' : 'vertical'}`}
-      />
-      {maxLength && (
-        <div className="absolute bottom-2 right-2 text-xs text-gray-500">
-          {value.length}/{maxLength}
-        </div>
-      )}
+    <div
+      style={{
+        background: 'rgba(255, 255, 255, 0.1)',
+        backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255, 255, 255, 0.2)',
+        borderRadius: '12px',
+        padding: '16px',
+        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
+      }}
+    >
+      <div>Textarea - Glassmorphism</div>
     </div>
   );
 };

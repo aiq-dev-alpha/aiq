@@ -1,6 +1,9 @@
 // Floating Labels Form
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-form',
   template: `<form class="floating-form"><div class="float-group" [class.filled]="name"><input type="text" [(ngModel)]="name" name="name" required><label>Full Name</label></div><div class="float-group" [class.filled]="email"><input type="email" [(ngModel)]="email" name="email" required><label>Email Address</label></div><div class="float-group" [class.filled]="message"><textarea [(ngModel)]="message" name="message" rows="4" required></textarea><label>Message</label></div><button type="submit">Send Message</button></form>`,
   styles: [`

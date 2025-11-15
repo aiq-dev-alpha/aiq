@@ -1,72 +1,156 @@
 <template>
-  <div class="input-container">
-    <label v-if="label" class="input-label">{{ label }}</label>
-    <div class="input-wrapper">
+  <div class="search-input-wrapper">
+    <div class="search-container">
+      <span class="search-icon">🔍</span>
       <input
-        :type="type"
-        :value="modelValue"
+        v-model="searchQuery"
+        type="text"
+        class="search-input"
         :placeholder="placeholder"
-        :disabled="disabled"
-        @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
-        class="text-input"
-        :class="{ error, focused }"
-        @focus="focused = true"
-        @blur="focused = false"
+        @input="handleInput"
+        @focus="showResults = true"
       />
+      <button v-if="searchQuery" class="clear-btn" @click="clearSearch">×</button>
     </div>
-    <p v-if="error" class="error-text">{{ error }}</p>
+    <Transition name="dropdown">
+      <div v-if="showResults && filteredResults.length > 0" class="results-dropdown">
+        <div
+          v-for="(result, i) in filteredResults"
+          :key="i"
+          class="result-item"
+          @click="selectResult(result)"
+        >
+          {{ result }}
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
-<script lang="ts">
-import { defineComponent, ref } from 'vue';
-export default defineComponent({
-  name: 'TextInput',
-  props: {
-    modelValue: { type: [String, Number], default: '' },
-    type: { type: String, default: 'text' },
-    label: { type: String, default: '' },
-    placeholder: { type: String, default: '' },
-    error: { type: String, default: '' },
-    disabled: { type: Boolean, default: false }
-  },
-  emits: ['update:modelValue'],
-  setup() {
-    const focused = ref(false);
-    return { focused };
-  }
+
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+
+interface Props {
+  placeholder?: string;
+  suggestions?: string[];
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  placeholder: 'Search...',
+  suggestions: () => []
 });
+
+const emit = defineEmits<{
+  search: [query: string];
+  select: [result: string];
+}>();
+
+const searchQuery = ref('');
+const showResults = ref(false);
+
+const filteredResults = computed(() => {
+  if (!searchQuery.value) return [];
+  return props.suggestions.filter(s =>
+    s.toLowerCase().includes(searchQuery.value.toLowerCase())
+  ).slice(0, 5);
+});
+
+const handleInput = () => {
+  emit('search', searchQuery.value);
+};
+
+const selectResult = (result: string) => {
+  searchQuery.value = result;
+  showResults.value = false;
+  emit('select', result);
+};
+
+const clearSearch = () => {
+  searchQuery.value = '';
+  emit('search', '');
+};
 </script>
+
 <style scoped>
-.input-container {
-  margin: 1rem 0;
-}
-.input-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #374151;
-}
-.text-input {
+.search-input-wrapper {
+  position: relative;
   width: 100%;
-  padding: 0.5rem 1rem;
+}
+
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  font-size: 1.25rem;
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.875rem 3rem 0.875rem 3rem;
   font-size: 1rem;
-  border: 2px solid #d1d5db;
-  border-radius: 0.25rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
   outline: none;
   transition: all 0.2s;
+}
+
+.search-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.clear-btn {
+  position: absolute;
+  right: 1rem;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e5e7eb;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.results-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  right: 0;
   background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  z-index: 100;
 }
-.text-input:focus {
-  border-color: #blue500;
-  box-shadow: 0 0 0 3px rgba(var(--blue-rgb), 0.1);
+
+.result-item {
+  padding: 0.875rem 1rem;
+  cursor: pointer;
+  transition: background 0.15s;
 }
-.text-input.error {
-  border-color: #ef4444;
+
+.result-item:hover {
+  background: #f3f4f6;
 }
-.error-text {
-  margin-top: 0.5rem;
-  font-size: 0.875rem;
-  color: #ef4444;
+
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition: all 0.2s ease;
+}
+
+.dropdown-enter-from,
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
 }
 </style>

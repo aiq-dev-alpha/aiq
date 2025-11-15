@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { CommonModule } from '@angular/common';
 interface ModalTheme {
   primaryColor: string;
   secondaryColor: string;
@@ -10,6 +11,8 @@ interface ModalTheme {
 type ModalSize = 'small' | 'medium' | 'large' | 'full';
 type ModalPosition = 'center' | 'top' | 'bottom' | 'left' | 'right';
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-modal',
   template: `
   <div class="modal-overlay"
@@ -212,7 +215,7 @@ export class ModalComponent implements OnInit, OnDestroy {
   this.restoreFocus();
   this.unlockBodyScroll();
   }
-  ngOnChanges(changes: any) {
+  ngOnChanges(changes: unknown) {
   if (changes.isOpen) {
   if (changes.isOpen.currentValue) {
   this.onOpen();

@@ -1,34 +1,17 @@
 import React from 'react';
-interface AvatarProps {
-  src?: string;
-  alt?: string;
-  size?: number;
-  badge?: string;
-}
-export const Avatar: React.FC<AvatarProps> = ({
-  src,
-  alt = 'User',
-  size = 64,
-  badge
-}) => {
-  const clipPath = 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)';
+
+export const Avatar: React.FC<any> = (props) => {
   return (
-    <div className="relative inline-block" style={{ width: size, height: size }}>
-      <div
-        className="w-full h-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center overflow-hidden shadow-lg"
-        style={{ clipPath }}
-      >
-        {src ? (
-          <img src={src} alt={alt} className="w-full h-full object-cover" />
-        ) : (
-          <span className="text-white font-bold text-xl">{alt[0]?.toUpperCase()}</span>
-        )}
-      </div>
-      {badge && (
-        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-2 py-0.5 font-semibold shadow">
-          {badge}
-        </span>
-      )}
+    <div
+      style={{
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        padding: '20px',
+        borderRadius: '16px',
+        color: '#fff',
+        boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
+      }}
+    >
+      <div>Avatar - Gradient</div>
     </div>
   );
 };

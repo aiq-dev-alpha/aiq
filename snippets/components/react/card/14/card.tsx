@@ -1,39 +1,52 @@
 import React from 'react';
-interface ButtonProps {
+
+interface CardProps {
   children: React.ReactNode;
-  onClick?: () => void;
-  variant?: 'solid' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
-  loading?: boolean;
+  gradient?: 'rainbow' | 'sunset' | 'ocean' | 'forest';
+  borderWidth?: number;
+  padding?: number;
 }
-export const Button: React.FC<ButtonProps> = ({
+
+export const Card: React.FC<CardProps> = ({
   children,
-  onClick,
-  variant = 'solid',
-  size = 'md',
-  disabled = false,
-  loading = false
+  gradient = 'rainbow',
+  borderWidth = 2,
+  padding = 24
 }) => {
-  const baseClasses = 'rounded-2xl font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500';
-  const variantClasses = {
-    solid: 'bg-purple-500 text-white hover:brightness-110 hover:-translate-y-0.5 shadow-2xl',
-    outline: 'border-2 border-purple-500 text-purple-600 hover:bg-purple-50',
-    ghost: 'text-purple-600 hover:bg-purple-100'
+  const gradients = {
+    rainbow: 'linear-gradient(90deg, #ff0080, #ff8c00, #40e0d0, #ff0080)',
+    sunset: 'linear-gradient(90deg, #f093fb 0%, #f5576c 100%)',
+    ocean: 'linear-gradient(90deg, #4facfe 0%, #00f2fe 100%)',
+    forest: 'linear-gradient(90deg, #43e97b 0%, #38f9d7 100%)'
   };
-  const sizeClasses = {
-    sm: 'px-2.5 py-1.5 text-sm',
-    md: 'px-3.5 py-2 text-sm',
-    lg: 'px-7 py-3.5 text-base'
-  };
+
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled || loading}
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    <div
+      style={{
+        background: gradients[gradient],
+        backgroundSize: '200% 200%',
+        animation: 'gradientRotate 4s linear infinite',
+        padding: borderWidth,
+        borderRadius: '16px',
+        maxWidth: '500px'
+      }}
     >
-      {loading && <span className="animate-spin mr-2">⏳</span>}
-      {children}
-    </button>
+      <div
+        style={{
+          background: '#fff',
+          borderRadius: `${16 - borderWidth}px`,
+          padding: padding
+        }}
+      >
+        {children}
+      </div>
+      <style>{`
+        @keyframes gradientRotate {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+      `}</style>
+    </div>
   );
 };

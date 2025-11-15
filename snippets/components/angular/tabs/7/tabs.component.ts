@@ -1,6 +1,9 @@
 // Sliding Indicator Tabs
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-tabs',
   template: `<div class="sliding-tabs"><div class="tab-headers"><button class="tab-header" *ngFor="let tab of tabs; let i = index" (click)="activeIndex = i" [class.active]="activeIndex === i">{{ tab.title }}</button><div class="slider" [style.transform]="'translateX(' + (activeIndex * 100) + '%)'"></div></div><div class="tab-content"><ng-content></ng-content></div></div>`,
   styles: [`

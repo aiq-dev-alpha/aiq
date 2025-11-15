@@ -1,67 +1,314 @@
 <template>
-  <div class="relative">
-    <label v-if="label" :for="inputId" class="block text-sm font-medium text-gray-700 mb-1">
+  <div class="canvas-input-wrapper-23" :class="{ focused, hasError: !!error, disabled }">
+    <label v-if="label" class="label-style-23" :for="`input-23-${_uid}`">
       {{ label }}
-      <span v-if="required" class="text-red-500">*</span>
+      <span v-if="required" class="required-indicator">*</span>
+      <span v-if="hint && !error" class="hint-icon" :title="hint">?</span>
     </label>
-    <div class="relative">
-      <div v-if="$slots.prefix" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-        <slot name="prefix" />
-      </div>
+    
+    <div class="input-control-23" :style="inputWrapperStyle">
+      <div v-if="prefix" class="input-prefix-23">{{ prefix }}</div>
+      
       <input
-        :id="inputId"
-        :type="type"
-        :value="modelValue"
-        :placeholder="placeholder"
+        :id="`input-23-${_uid}`"
+        ref="inputRef"
+        v-model="internalValue"
+        :type="computedType"
+        :placeholder="placeholder || 'Enter signature...'"
         :disabled="disabled"
         :required="required"
-        :class="inputClasses"
+        :class="['base-input-23', inputClass]"
         @input="handleInput"
-        @focus="isFocused = true"
-        @blur="isFocused = false"
+        @focus="handleFocus"
+        @blur="handleBlur"
+        @keydown="handleKeydown"
       />
-      <div v-if="$slots.suffix" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-        <slot name="suffix" />
-      </div>
+      
+      <div v-if="suffix" class="input-suffix-23">{{ suffix }}</div>
+      
+      <button 
+        v-if="clearable && internalValue && !disabled"
+        type="button"
+        class="clear-btn-23"
+        @click="clearInput"
+        tabindex="-1"
+      >
+        ×
+      </button>
     </div>
-    <p v-if="error" class="mt-1 text-sm text-red-600">{{ error }}</p>
-    <p v-else-if="hint" class="mt-1 text-sm text-gray-500">{{ hint }}</p>
+    
+    <div v-if="showCharCount" class="char-counter-23">
+      {{ internalValue.length }} / {{ maxLength || '∞' }}
+    </div>
+    
+    <transition name="error-23">
+      <div v-if="error" class="error-message-23">
+        <span class="error-icon">⚠</span>
+        {{ error }}
+      </div>
+    </transition>
+    
+    <div v-if="hint && !error" class="hint-message-23">{{ hint }}</div>
   </div>
 </template>
+
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { ref, computed, watch } from 'vue';
+
 interface Props {
-  modelValue?: string;
   label?: string;
+  modelValue?: string | number;
   type?: string;
   placeholder?: string;
   disabled?: boolean;
   required?: boolean;
   error?: string;
   hint?: string;
+  prefix?: string;
+  suffix?: string;
+  clearable?: boolean;
+  showCharCount?: boolean;
+  maxLength?: number;
+  inputClass?: string;
 }
+
 const props = withDefaults(defineProps<Props>(), {
   type: 'text',
   disabled: false,
-  required: false
+  required: false,
+  clearable: true,
+  showCharCount: false
 });
+
 const emit = defineEmits<{
-  'update:modelValue': [value: string]
+  'update:modelValue': [value: string | number];
+  focus: [];
+  blur: [];
+  keydown: [e: KeyboardEvent];
 }>();
-const inputId = `input-${Math.random().toString(36).substr(2, 9)}`;
-const isFocused = ref(false);
-const inputClasses = computed(() => {
-  const base = 'w-full px-4 py-2.5 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2';
-  const prefix = props.$slots?.prefix ? 'pl-10' : '';
-  const suffix = props.$slots?.suffix ? 'pr-10' : '';
-  const state = props.error
-    ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
-    : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500';
-  const disabled = props.disabled ? 'bg-gray-100 cursor-not-allowed' : 'bg-white';
-  return `${base} ${prefix} ${suffix} ${state} ${disabled}`;
+
+const inputRef = ref<HTMLInputElement>();
+const internalValue = ref(String(props.modelValue || ''));
+const focused = ref(false);
+const _uid = ref(Math.random().toString(36).substr(2, 9));
+
+watch(() => props.modelValue, (newVal) => {
+  internalValue.value = String(newVal || '');
 });
-const handleInput = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  emit('update:modelValue', target.value);
+
+const computedType = computed(() => {
+  if (props.type === 'canvas') return 'text';
+  return props.type;
+});
+
+const inputWrapperStyle = computed(() => ({
+  '--focus-color': `hsl(285, 65%, 55%)`,
+  '--border-radius': `9px`
+}));
+
+const handleInput = () => {
+  emit('update:modelValue', internalValue.value);
 };
+
+const handleFocus = () => {
+  focused.value = true;
+  emit('focus');
+};
+
+const handleBlur = () => {
+  focused.value = false;
+  emit('blur');
+};
+
+const handleKeydown = (e: KeyboardEvent) => {
+  emit('keydown', e);
+};
+
+const clearInput = () => {
+  internalValue.value = '';
+  emit('update:modelValue', '');
+  inputRef.value?.focus();
+};
+
+defineExpose({
+  focus: () => inputRef.value?.focus(),
+  blur: () => inputRef.value?.blur()
+});
 </script>
+
+<style scoped>
+.canvas-input-wrapper-23 {
+  width: 100%;
+  margin-bottom: 1.0rem;
+  font-family: Georgia, sans-serif;
+}
+
+.label-style-23 {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.6rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: hsl(285, 50%, 30%);
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+
+.required-indicator {
+  color: hsl(135, 70%, 48%);
+  font-weight: 700;
+  font-size: 1.1em;
+}
+
+.hint-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  background: hsl(285, 50%, 85%);
+  border-radius: 50%;
+  font-size: 0.75em;
+  cursor: help;
+  font-style: normal;
+}
+
+.input-control-23 {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  background: white;
+  border: 2px solid hsl(285, 25%, 75%);
+  border-radius: var(--border-radius);
+  transition: all 0.2s cubic-bezier(0.0, 0, 0.0, 1);
+  overflow: hidden;
+}
+
+.canvas-input-wrapper-23.focused .input-control-23 {
+  border-color: var(--focus-color);
+  box-shadow: 0 0 0 2px hsla(285, 65%, 55%, 0.2);
+  transform: translateY(-1px);
+}
+
+.canvas-input-wrapper-23.hasError .input-control-23 {
+  border-color: hsl(15, 70%, 55%);
+  background: hsla(15, 55%, 95%, 0.6);
+}
+
+.canvas-input-wrapper-23.disabled .input-control-23 {
+  background: hsl(285, 10%, 94%);
+  border-style: dotted;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.input-prefix-23,
+.input-suffix-23 {
+  padding: 0.65rem 0.75rem;
+  background: hsl(285, 30%, 95%);
+  color: hsl(285, 40%, 45%);
+  font-weight: 500;
+  font-size: 0.925rem;
+  border-['left']: 1px solid hsl(285, 20%, 85%);
+  display: flex;
+  align-items: center;
+}
+
+.base-input-23 {
+  flex: 1;
+  min-width: 0;
+  padding: 0.65rem 1.15rem;
+  font-size: 0.9rem;
+  color: hsl(285, 35%, 20%);
+  background: transparent;
+  border: none;
+  outline: none;
+  line-height: 1.5;
+}
+
+.base-input-23::placeholder {
+  color: hsl(285, 20%, 60%);
+  opacity: 0.6;
+  font-style: italic;
+}
+
+.base-input-23:disabled {
+  cursor: not-allowed;
+  color: hsl(285, 20%, 55%);
+}
+
+.clear-btn-23 {
+  position: relative;
+  right: 0.7rem;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: hsl(285, 35%, 90%);
+  color: hsl(285, 40%, 50%);
+  border: none;
+  border-radius: 50%;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.1s;
+  margin: 0 0.3rem;
+}
+
+.clear-btn-23:hover {
+  background: hsl(210, 50%, 40%);
+  color: white;
+  transform: scale(1.1);
+}
+
+.char-counter-23 {
+  margin-top: 0.3rem;
+  text-align: right;
+  font-size: 0.75rem;
+  color: hsl(285, 30%, 60%);
+  font-weight: 400;
+}
+
+.error-message-23 {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+  padding: 0.5rem 0.9rem;
+  background: hsla(15, 65%, 95%, 0.7);
+  color: hsl(15, 70%, 40%);
+  border-left: 4px solid hsl(15, 70%, 50%);
+  border-radius: 5px;
+  font-size: 0.8500000000000001rem;
+  font-weight: 600;
+}
+
+.error-icon {
+  font-size: 1.1em;
+}
+
+.hint-message-23 {
+  margin-top: 0.4rem;
+  font-size: 0.8500000000000001rem;
+  color: hsl(285, 33%, 57%);
+  line-height: 1.4;
+  font-style: italic;
+}
+
+.error-23-enter-active,
+.error-23-leave-active {
+  transition: all 0.2s cubic-bezier(0.0, 0, 0.0, 1);
+}
+
+.error-23-enter-from {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.error-23-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
+}
+</style>

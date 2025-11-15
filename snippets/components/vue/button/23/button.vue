@@ -1,62 +1,91 @@
 <template>
   <button
-    :class="['custom-btn', variant, size, { disabled, loading }]"
-    :disabled="disabled || loading"
-    @click="$emit('click')"
+    :class="['double-tap-btn', { armed, disabled }]"
+    :disabled="disabled"
+    @click="handleClick"
   >
-    <span v-if="loading" class="loader"></span>
-    <slot />
+    <span v-if="!armed"><slot>Double Tap</slot></span>
+    <span v-else class="armed-text">Tap again to confirm</span>
   </button>
 </template>
-<script lang="ts">
-import { defineComponent } from 'vue';
-export default defineComponent({
-  name: 'CustomButton',
-  props: {
-    variant: { type: String, default: 'primary' },
-    size: { type: String, default: 'md' },
-    disabled: { type: Boolean, default: false },
-    loading: { type: Boolean, default: false }
-  },
-  emits: ['click']
+
+<script setup lang="ts">
+import { ref } from 'vue';
+
+interface Props {
+  disabled?: boolean;
+  timeout?: number;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  disabled: false,
+  timeout: 3000
 });
+
+const emit = defineEmits<{
+  confirm: [];
+}>();
+
+const armed = ref(false);
+let timeoutId: number | null = null;
+
+const handleClick = () => {
+  if (props.disabled) return;
+  
+  if (!armed.value) {
+    armed.value = true;
+    timeoutId = window.setTimeout(() => {
+      armed.value = false;
+    }, props.timeout);
+  } else {
+    if (timeoutId) clearTimeout(timeoutId);
+    armed.value = false;
+    emit('confirm');
+  }
+};
 </script>
+
 <style scoped>
-.custom-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
+.double-tap-btn {
+  padding: 0.875rem 2rem;
+  min-width: 200px;
+  font-size: 1rem;
   font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
   border: none;
-  border-radius: 0.25rem;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
-.custom-btn.primary {
-  background: linear-gradient(135deg, #indigo400 0%, #indigo600 100%);
-  color: white;
-}
-.custom-btn.primary:hover:not(:disabled) {
+
+.double-tap-btn:hover:not(.disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
-.custom-btn.md {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
+
+.double-tap-btn.armed {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  animation: shake 0.5s ease;
 }
-.custom-btn:disabled {
-  opacity: 0.5;
+
+.double-tap-btn.disabled {
+  opacity: 0.6;
   cursor: not-allowed;
 }
-.loader {
-  width: 1rem;
-  height: 1rem;
-  border: 2px solid currentColor;
-  border-top-color: transparent;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
+
+.armed-text {
+  font-size: 0.875rem;
 }
-@keyframes spin {
-  to { transform: rotate(360deg); }
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
 }
 </style>
