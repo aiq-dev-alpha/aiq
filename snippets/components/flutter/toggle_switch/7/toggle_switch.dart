@@ -1,26 +1,52 @@
 import 'package:flutter/material.dart';
 
-class CustomToggleSwitch extends StatelessWidget {
-  final bool value;
-  final ValueChanged<bool>? onChanged;
-  final Color activeColor;
-  final Color inactiveColor;
-  
+class CustomToggleSwitch extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const CustomToggleSwitch({
     Key? key,
-    required this.value,
-    this.onChanged,
-    this.activeColor = const Color(0xFF4CAF50),
-    this.inactiveColor = const Color(0xFFBDBDBD),
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
+  State<CustomToggleSwitch> createState() => _CustomToggleSwitchState();
+}
+
+class _CustomToggleSwitchState extends State<CustomToggleSwitch> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1050),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Switch(
-      value: value,
-      onChanged: onChanged,
-      activeColor: activeColor,
-      inactiveTrackColor: inactiveColor,
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(27),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(17),
+        ),
+        child: const Center(child: Text('Component')),
+      ),
     );
   }
 }

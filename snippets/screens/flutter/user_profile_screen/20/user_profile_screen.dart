@@ -1,52 +1,51 @@
 import 'package:flutter/material.dart';
 
-class UserProfileScreen extends StatelessWidget {
-  final Color primaryColor;
-  final String userName;
-  
+class UserProfileScreen extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const UserProfileScreen({
     Key? key,
-    this.primaryColor = const Color(0xFF6200EE),
-    this.userName = 'John Doe',
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
+  State<UserProfileScreen> createState() => _UserProfileScreenState();
+}
+
+class _UserProfileScreenState extends State<UserProfileScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 700),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-        backgroundColor: primaryColor,
-      ),
-      body: Column(
-        children: [
-          const SizedBox(height: 32),
-          CircleAvatar(
-            radius: 60,
-            backgroundColor: primaryColor,
-            child: const Icon(Icons.person, size: 64, color: Colors.white),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            userName,
-            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 32),
-          ListTile(
-            leading: const Icon(Icons.email),
-            title: const Text('Email'),
-            subtitle: Text('$userName@example.com'),
-          ),
-          ListTile(
-            leading: const Icon(Icons.phone),
-            title: const Text('Phone'),
-            subtitle: const Text('+1234567890'),
-          ),
-          ListTile(
-            leading: const Icon(Icons.location_on),
-            title: const Text('Location'),
-            subtitle: const Text('New York, USA'),
-          ),
-        ],
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(25),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

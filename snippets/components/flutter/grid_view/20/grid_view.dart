@@ -1,31 +1,52 @@
 import 'package:flutter/material.dart';
 
-class CustomComponent extends StatelessWidget {
-  final Color primaryColor;
-  final Color secondaryColor;
-  final double width;
-  final double height;
-  
+class CustomComponent extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const CustomComponent({
     Key? key,
-    this.primaryColor = const Color(0xFF6200EE),
-    this.secondaryColor = const Color(0xFF03DAC6),
-    this.width = 200.0,
-    this.height = 100.0,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
+  State<CustomComponent> createState() => _CustomComponentState();
+}
+
+class _CustomComponentState extends State<CustomComponent> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 700),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [primaryColor, secondaryColor],
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(25),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(15),
         ),
-        borderRadius: BorderRadius.circular(8),
+        child: const Center(child: Text('Component')),
       ),
-      child: const Center(child: Icon(Icons.widgets, color: Colors.white)),
     );
   }
 }

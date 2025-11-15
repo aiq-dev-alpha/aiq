@@ -1,195 +1,31 @@
-import React, { useState } from 'react';
-import './forgot_password_screen.css';
+import React, { useState, useEffect } from 'react';
 
-// Version 2: Modern animated card design with gradient background
+export interface ForgotPasswordScreenProps {
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
+  className?: string;
+}
 
-export const ForgotPasswordScreen: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [emailSent, setEmailSent] = useState(false);
-  const [error, setError] = useState('');
-  const [countdown, setCountdown] = useState(0);
+export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ theme = {}, className = '' }) => {
+  const [isVisible, setIsVisible] = useState(false);
 
-  const validateEmail = (email: string): boolean => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
+  const styles: React.CSSProperties = {
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible ? 'translateY(0)' : 'translateY(12px)',
+    transition: `all 400ms ease-out`,
+    padding: '18px',
+    backgroundColor: theme.background || '#ffffff',
+    color: theme.text || '#111827',
+    borderRadius: '10px',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!email.trim()) {
-      setError('Please enter your email address');
-      return;
-    }
-
-    if (!validateEmail(email)) {
-      setError('Please enter a valid email address');
-      return;
-    }
-
-    setIsLoading(true);
-    setError('');
-
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    setIsLoading(false);
-    setEmailSent(true);
-    setCountdown(60);
-
-    // Start countdown timer
-    const timer = setInterval(() => {
-      setCountdown(prev => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-  };
-
-  const handleResend = async () => {
-    if (countdown > 0) return;
-
-    setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsLoading(false);
-    setCountdown(60);
-  };
-
-  if (emailSent) {
-    return (
-      <div className="modern_forgot_container">
-        <div className="modern_card success_card">
-          <div className="animated_checkmark">
-            <svg className="checkmark" viewBox="0 0 52 52">
-              <circle className="checkmark_circle" cx="26" cy="26" r="25" fill="none"/>
-              <path className="checkmark_check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
-            </svg>
-          </div>
-
-          <h1 className="modern_title">Email Sent!</h1>
-          <p className="modern_subtitle">
-            We've sent a password reset link to
-          </p>
-          <p className="email_display">{email}</p>
-
-          <div className="info_box">
-            <div className="info_icon">💡</div>
-            <p>The link will expire in 15 minutes. Check your spam folder if you don't see it.</p>
-          </div>
-
-          <button
-            className="modern_button primary"
-            onClick={() => window.location.href = '#'}
-            disabled={isLoading}
-          >
-            <span className="button_icon">✉️</span>
-            Open Email App
-          </button>
-
-          <button
-            className={`modern_button secondary ${countdown > 0 ? 'disabled' : ''}`}
-            onClick={handleResend}
-            disabled={countdown > 0 || isLoading}
-          >
-            {countdown > 0 ? (
-              <>Resend in {countdown}s</>
-            ) : (
-              <>
-                <span className="button_icon">🔄</span>
-                Resend Link
-              </>
-            )}
-          </button>
-
-          <button
-            className="back_link"
-            onClick={() => setEmailSent(false)}
-          >
-            Use different email
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="modern_forgot_container">
-      <div className="modern_card">
-        <div className="icon_container">
-          <div className="lock_icon">
-            <div className="lock_body">
-              <div className="lock_keyhole"></div>
-            </div>
-            <div className="lock_shackle"></div>
-          </div>
-        </div>
-
-        <h1 className="modern_title">Forgot Password?</h1>
-        <p className="modern_subtitle">
-          No worries! Enter your email and we'll send you reset instructions.
-        </p>
-
-        <form onSubmit={handleSubmit} className="modern_form">
-          <div className="input_group">
-            <div className="input_icon">📧</div>
-            <input
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setError('');
-              }}
-              className={error ? 'error' : ''}
-              disabled={isLoading}
-            />
-          </div>
-
-          {error && (
-            <div className="error_message">
-              <span className="error_icon">⚠️</span>
-              {error}
-            </div>
-          )}
-
-          <button
-            type="submit"
-            className="modern_button primary"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <div className="loading_spinner">
-                <div className="spinner"></div>
-                <span>Sending...</span>
-              </div>
-            ) : (
-              <>
-                <span className="button_icon">🚀</span>
-                Send Reset Link
-              </>
-            )}
-          </button>
-
-          <button
-            type="button"
-            className="modern_button secondary"
-            onClick={() => window.history.back()}
-          >
-            <span className="button_icon">←</span>
-            Back to Sign In
-          </button>
-        </form>
-
-        <div className="help_text">
-          <span className="help_icon">🔒</span>
-          Your data is safe with us. We use industry-standard encryption.
-        </div>
-      </div>
-    </div>
-  );
+  return <div className={className} style={styles}>Component</div>;
 };
-
-export default ForgotPasswordScreen;

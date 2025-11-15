@@ -1,22 +1,33 @@
 import 'package:flutter/material.dart';
 
 class TodoListScreen extends StatefulWidget {
-  final Color primaryColor;
-  final Color backgroundColor;
-  
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const TodoListScreen({
     Key? key,
-    this.primaryColor = const Color(0xFF6200EE),
-    this.backgroundColor = Colors.white,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
   State<TodoListScreen> createState() => _TodoListScreenState();
 }
 
-class _TodoListScreenState extends State<TodoListScreen> {
-  final List<String> _todos = [];
-  final _controller = TextEditingController();
+class _TodoListScreenState extends State<TodoListScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1600),
+      vsync: this,
+    );
+    _controller.forward();
+  }
 
   @override
   void dispose() {
@@ -26,43 +37,15 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: widget.backgroundColor,
-      appBar: AppBar(
-        title: const Text('Todo List'),
-        backgroundColor: widget.primaryColor,
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: TextField(
-              controller: _controller,
-              decoration: const InputDecoration(
-                hintText: 'New task',
-                border: OutlineInputBorder(),
-              ),
-              onSubmitted: (v) {
-                if (v.trim().isNotEmpty) {
-                  setState(() => _todos.add(v));
-                  _controller.clear();
-                }
-              },
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _todos.length,
-              itemBuilder: (context, index) => ListTile(
-                title: Text(_todos[index]),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () => setState(() => _todos.removeAt(index)),
-                ),
-              ),
-            ),
-          ),
-        ],
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(23),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(13),
+        ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

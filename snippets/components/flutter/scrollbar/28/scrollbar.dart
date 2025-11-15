@@ -1,31 +1,80 @@
 import 'package:flutter/material.dart';
 
-class CustomComponent extends StatelessWidget {
-  final Color primaryColor;
-  final Color secondaryColor;
-  final double width;
-  final double height;
-  
+class CustomComponent extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+  final double? borderRadius;
+  final BoxShadow? shadow;
+
   const CustomComponent({
     Key? key,
-    this.primaryColor = const Color(0xFF6200EE),
-    this.secondaryColor = const Color(0xFF03DAC6),
-    this.width = 200.0,
-    this.height = 100.0,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
+    this.borderRadius,
+    this.shadow,
   }) : super(key: key);
 
   @override
+  State<CustomComponent> createState() => _CustomComponentState();
+}
+
+class _CustomComponentState extends State<CustomComponent> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1100),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.4),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [primaryColor, secondaryColor],
+    final bgColor = widget.backgroundColor ?? Colors.white;
+    final txtColor = widget.textColor ?? Colors.black87;
+
+    return SlideTransition(
+      position: _slideAnimation,
+      child: FadeTransition(
+        opacity: _fadeAnimation,
+        child: Container(
+          padding: widget.padding ?? const EdgeInsets.all(33),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(widget.borderRadius ?? 23),
+            boxShadow: widget.shadow != null ? [widget.shadow!] : [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.11),
+                blurRadius: 18,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+          child: const Center(
+            child: Text('Component'),
+          ),
         ),
-        borderRadius: BorderRadius.circular(8),
       ),
-      child: const Center(child: Icon(Icons.widgets, color: Colors.white)),
     );
   }
 }

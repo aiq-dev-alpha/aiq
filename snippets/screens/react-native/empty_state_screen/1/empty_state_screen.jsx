@@ -1,87 +1,31 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import React, { useState, useEffect } from 'react';
 
-const EmptyStateScreen = ({
-  title = "Nothing here yet",
-  message = "It looks like there's no content to show right now. Try refreshing or come back later.",
-  iconName = "inbox",
-  buttonText,
-  onAction,
-}) => {
-  return (
-    <View style={styles.container}>
-      <View style={styles.content}>
-        <View style={styles.iconContainer}>
-          <Icon name={iconName} size={60} color="#9CA3AF" />
-        </View>
+export interface ComponentProps {
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
+  className?: string;
+}
 
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.message}>{message}</Text>
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '' }) => {
+  const [isVisible, setIsVisible] = useState(false);
 
-        {onAction && buttonText && (
-          <TouchableOpacity style={styles.actionButton} onPress={onAction}>
-            <Text style={styles.actionButtonText}>{buttonText}</Text>
-          </TouchableOpacity>
-        )}
-      </View>
-    </View>
-  );
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
+  const styles: React.CSSProperties = {
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible ? 'translateY(0)' : 'translateY(11px)',
+    transition: `all 350ms ease-out`,
+    padding: '17px',
+    backgroundColor: theme.background || '#ffffff',
+    color: theme.text || '#111827',
+    borderRadius: '9px',
+    boxShadow: '0 3px 11px rgba(0,0,0,0.1)',
+  };
+
+  return <div className={className} style={styles}>Component</div>;
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 32,
-  },
-  content: {
-    alignItems: 'center',
-    maxWidth: 280,
-  },
-  iconContainer: {
-    width: 120,
-    height: 120,
-    backgroundColor: 'rgba(107, 114, 128, 0.1)',
-    borderRadius: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 32,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#1F2937',
-    textAlign: 'center',
-    marginBottom: 12,
-  },
-  message: {
-    fontSize: 16,
-    color: '#6B7280',
-    textAlign: 'center',
-    lineHeight: 24,
-    marginBottom: 32,
-  },
-  actionButton: {
-    backgroundColor: '#6366F1',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    width: '100%',
-    alignItems: 'center',
-  },
-  actionButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});
-
-export default EmptyStateScreen;

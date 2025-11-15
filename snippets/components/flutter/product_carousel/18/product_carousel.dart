@@ -1,26 +1,33 @@
 import 'package:flutter/material.dart';
 
 class CustomCarousel extends StatefulWidget {
-  final List<Widget> items;
-  final Color indicatorColor;
-  final Color activeIndicatorColor;
-  final double height;
-  
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const CustomCarousel({
     Key? key,
-    required this.items,
-    this.indicatorColor = Colors.grey,
-    this.activeIndicatorColor = const Color(0xFF6200EE),
-    this.height = 200.0,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
   State<CustomCarousel> createState() => _CustomCarouselState();
 }
 
-class _CustomCarouselState extends State<CustomCarousel> {
-  final PageController _controller = PageController();
-  int _currentPage = 0;
+class _CustomCarouselState extends State<CustomCarousel> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1600),
+      vsync: this,
+    );
+    _controller.forward();
+  }
 
   @override
   void dispose() {
@@ -30,36 +37,16 @@ class _CustomCarouselState extends State<CustomCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          height: widget.height,
-          child: PageView.builder(
-            controller: _controller,
-            onPageChanged: (index) => setState(() => _currentPage = index),
-            itemCount: widget.items.length,
-            itemBuilder: (context, index) => widget.items[index],
-          ),
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(23),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(13),
         ),
-        const SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(
-            widget.items.length,
-            (index) => Container(
-              width: 8,
-              height: 8,
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: _currentPage == index
-                    ? widget.activeIndicatorColor
-                    : widget.indicatorColor,
-              ),
-            ),
-          ),
-        ),
-      ],
+        child: const Center(child: Text('Component')),
+      ),
     );
   }
 }

@@ -1,93 +1,31 @@
-import React, { useState } from 'react';
-import './product_list_screen.css';
+import React, { useState, useEffect } from 'react';
 
-// Version 3: Minimal text-focused design with asymmetric layout
+export interface ComponentProps {
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
+  className?: string;
+}
 
-const ProductListScreen = () => {
-  const [selectedFilter, setSelectedFilter] = useState('All');
-  const [hoveredProduct, setHoveredProduct] = useState(null);
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '' }) => {
+  const [isVisible, setIsVisible] = useState(false);
 
-  const filters = ['All', 'New', 'Sale', 'Popular'];
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
-  const products = [
-    { id: 1, name: 'Minimal Desk Lamp', price: 89, category: 'Lighting', inStock: true },
-    { id: 2, name: 'Ceramic Vase Set', price: 45, category: 'Decor', inStock: true },
-    { id: 3, name: 'Wool Throw Blanket', price: 125, category: 'Textiles', inStock: false },
-    { id: 4, name: 'Oak Side Table', price: 220, category: 'Furniture', inStock: true },
-    { id: 5, name: 'Brass Wall Mirror', price: 180, category: 'Decor', inStock: true },
-    { id: 6, name: 'Linen Cushion', price: 35, category: 'Textiles', inStock: true },
-    { id: 7, name: 'Glass Pendant Light', price: 156, category: 'Lighting', inStock: true },
-    { id: 8, name: 'Marble Tray', price: 68, category: 'Accessories', inStock: true },
-  ];
+  const styles: React.CSSProperties = {
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible ? 'translateY(0)' : 'translateY(13px)',
+    transition: `all 450ms ease-out`,
+    padding: '19px',
+    backgroundColor: theme.background || '#ffffff',
+    color: theme.text || '#111827',
+    borderRadius: '11px',
+    boxShadow: '0 5px 13px rgba(0,0,0,0.1)',
+  };
 
-  return (
-    <div className="minimal_product_list">
-      <header className="minimal_header">
-        <div className="header_top">
-          <h1>Shop</h1>
-          <button className="cart_link">
-            Cart <span className="cart_count">3</span>
-          </button>
-        </div>
-
-        <div className="filter_bar">
-          {filters.map(filter => (
-            <button
-              key={filter}
-              className={`filter_btn ${selectedFilter === filter ? 'active' : ''}`}
-              onClick={() => setSelectedFilter(filter)}
-            >
-              {filter}
-            </button>
-          ))}
-        </div>
-      </header>
-
-      <div className="product_grid_minimal">
-        {products.map((product, index) => (
-          <div
-            key={product.id}
-            className={`minimal_product_item ${index % 3 === 0 ? 'wide' : ''}`}
-            onMouseEnter={() => setHoveredProduct(product.id)}
-            onMouseLeave={() => setHoveredProduct(null)}
-          >
-            <div className="product_number">
-              {String(index + 1).padStart(2, '0')}
-            </div>
-
-            <div className="product_main">
-              <div className="product_text">
-                <h2 className="product_name">{product.name}</h2>
-                <p className="product_category">{product.category}</p>
-              </div>
-
-              <div className="product_meta">
-                <span className="product_price">
-                  ${product.price}
-                </span>
-                {!product.inStock && (
-                  <span className="out_of_stock">Out of stock</span>
-                )}
-              </div>
-            </div>
-
-            <button
-              className={`add_button_minimal ${hoveredProduct === product.id ? 'visible' : ''}`}
-              disabled={!product.inStock}
-            >
-              {product.inStock ? 'Add' : 'Notify'}
-            </button>
-
-            <div className="divider_line"></div>
-          </div>
-        ))}
-      </div>
-
-      <footer className="minimal_footer">
-        <p>Showing {products.length} items</p>
-      </footer>
-    </div>
-  );
+  return <div className={className} style={styles}>Component</div>;
 };
-
-export default ProductListScreen;

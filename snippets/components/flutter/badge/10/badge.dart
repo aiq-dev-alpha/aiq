@@ -1,44 +1,52 @@
 import 'package:flutter/material.dart';
 
-class CustomBadge extends StatelessWidget {
-  final Widget child;
-  final String? count;
-  final Color backgroundColor;
-  final Color textColor;
-  
+class CustomBadge extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const CustomBadge({
     Key? key,
-    required this.child,
-    this.count,
-    this.backgroundColor = Colors.red,
-    this.textColor = Colors.white,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
+  State<CustomBadge> createState() => _CustomBadgeState();
+}
+
+class _CustomBadgeState extends State<CustomBadge> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1200),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        child,
-        if (count != null)
-          Positioned(
-            top: -4,
-            right: -4,
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: backgroundColor,
-                shape: BoxShape.circle,
-              ),
-              constraints: const BoxConstraints(minWidth: 18),
-              child: Text(
-                count!,
-                style: TextStyle(color: textColor, fontSize: 10),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-      ],
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(30),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: const Center(child: Text('Component')),
+      ),
     );
   }
 }

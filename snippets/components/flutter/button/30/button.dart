@@ -1,32 +1,51 @@
 import 'package:flutter/material.dart';
 
-class CustomButton extends StatelessWidget {
-  final String text;
-  final VoidCallback? onPressed;
-  final Color backgroundColor;
-  final Color textColor;
-  final double height;
-  
+class CustomButton extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const CustomButton({
     Key? key,
-    required this.text,
-    this.onPressed,
-    this.backgroundColor = const Color(0xFF6200EE),
-    this.textColor = Colors.white,
-    this.height = 48.0,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
+  State<CustomButton> createState() => _CustomButtonState();
+}
+
+class _CustomButtonState extends State<CustomButton> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1200),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: height,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor,
-          foregroundColor: textColor,
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(10),
         ),
-        child: Text(text),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

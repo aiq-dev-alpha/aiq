@@ -1,178 +1,31 @@
-import React, { useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Animated,
-} from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import React, { useState, useEffect } from 'react';
 
-const SuccessScreen = ({
-  title = "Success!",
-  message = "Your profile has been created successfully. You're ready to start your AIQ journey!",
-  buttonText = "Get Started",
-  onContinue,
-}) => {
-  const scaleAnim = new Animated.Value(0);
-  const fadeAnim = new Animated.Value(0);
+export interface ComponentProps {
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
+  className?: string;
+}
+
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '' }) => {
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    Animated.sequence([
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        tension: 50,
-        friction: 7,
-        useNativeDriver: true,
-      }),
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 600,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    setIsVisible(true);
   }, []);
 
-  return (
-    <LinearGradient
-      colors={['#10B981', '#059669']}
-      style={styles.container}
-    >
-      <View style={styles.content}>
-        {/* Success Icon */}
-        <Animated.View
-          style={[
-            styles.iconContainer,
-            {
-              transform: [{ scale: scaleAnim }],
-            },
-          ]}
-        >
-          <View style={styles.iconCircle}>
-            <Icon name="check" size={60} color="#10B981" />
-          </View>
-        </Animated.View>
+  const styles: React.CSSProperties = {
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible ? 'translateY(0)' : 'translateY(11px)',
+    transition: `all 350ms ease-out`,
+    padding: '17px',
+    backgroundColor: theme.background || '#ffffff',
+    color: theme.text || '#111827',
+    borderRadius: '9px',
+    boxShadow: '0 3px 11px rgba(0,0,0,0.1)',
+  };
 
-        {/* Content */}
-        <Animated.View
-          style={[styles.textContainer, { opacity: fadeAnim }]}
-        >
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.message}>{message}</Text>
-        </Animated.View>
-
-        {/* Floating Elements */}
-        <View style={styles.floatingElements}>
-          <Text style={[styles.emoji, styles.emoji1]}>✨</Text>
-          <Text style={[styles.emoji, styles.emoji2]}>🎉</Text>
-          <Text style={[styles.emoji, styles.emoji3]}>⭐</Text>
-          <Text style={[styles.emoji, styles.emoji4]}>🚀</Text>
-        </View>
-
-        {/* Continue Button */}
-        <Animated.View style={[styles.buttonContainer, { opacity: fadeAnim }]}>
-          <TouchableOpacity style={styles.continueButton} onPress={onContinue}>
-            <Text style={styles.buttonText}>{buttonText}</Text>
-            <Icon name="arrow-forward" size={20} color="#10B981" />
-          </TouchableOpacity>
-        </Animated.View>
-      </View>
-    </LinearGradient>
-  );
+  return <div className={className} style={styles}>Component</div>;
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 24,
-  },
-  iconContainer: {
-    marginBottom: 40,
-  },
-  iconCircle: {
-    width: 120,
-    height: 120,
-    backgroundColor: 'white',
-    borderRadius: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 15,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 30,
-    elevation: 30,
-  },
-  textContainer: {
-    alignItems: 'center',
-    marginBottom: 60,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: 'white',
-    textAlign: 'center',
-    marginBottom: 16,
-  },
-  message: {
-    fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.7)',
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-  floatingElements: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  emoji: {
-    position: 'absolute',
-    fontSize: 20,
-  },
-  emoji1: {
-    top: '20%',
-    left: '20%',
-  },
-  emoji2: {
-    top: '15%',
-    right: '15%',
-  },
-  emoji3: {
-    bottom: '40%',
-    left: '15%',
-  },
-  emoji4: {
-    bottom: '35%',
-    right: '20%',
-  },
-  buttonContainer: {
-    width: '100%',
-  },
-  continueButton: {
-    backgroundColor: 'white',
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 16,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#10B981',
-    fontSize: 16,
-    fontWeight: '600',
-    marginRight: 8,
-  },
-});
-
-export default SuccessScreen;

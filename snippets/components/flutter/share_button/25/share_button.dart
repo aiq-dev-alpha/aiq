@@ -1,35 +1,51 @@
 import 'package:flutter/material.dart';
 
 class CustomComponent extends StatefulWidget {
-  final Color activeColor;
-  final Color inactiveColor;
-  final VoidCallback? onTap;
-  
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const CustomComponent({
     Key? key,
-    this.activeColor = const Color(0xFFFF9800),
-    this.inactiveColor = const Color(0xFFBDBDBD),
-    this.onTap,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
   State<CustomComponent> createState() => _CustomComponentState();
 }
 
-class _CustomComponentState extends State<CustomComponent> {
-  bool _active = false;
+class _CustomComponentState extends State<CustomComponent> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 950),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        setState(() => _active = !_active);
-        widget.onTap?.call();
-      },
-      child: Icon(
-        Icons.star,
-        color: _active ? widget.activeColor : widget.inactiveColor,
-        size: 32,
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(30),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

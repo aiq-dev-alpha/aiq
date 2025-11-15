@@ -1,12 +1,31 @@
-import React, { useState } from 'react';
-export const Flow: React.FC = () => {
-  const [data, setData] = useState({});
-  return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
-      <div style={{ backgroundColor: '#fff', borderRadius: '1rem', padding: '2.5rem', maxWidth: '500px', width: '100%', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1.5rem' }}>Flow</h2>
-        <button style={{ padding: '0.875rem 2rem', backgroundColor: '#3b82f6', color: '#fff', border: 'none', borderRadius: '0.5rem', cursor: 'pointer', width: '100%' }}>Submit</button>
-      </div>
-    </div>
-  );
+import React, { useState, useEffect } from 'react';
+
+export interface FlowProps {
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
+  className?: string;
+}
+
+export const Flow: React.FC<FlowProps> = ({ theme = {}, className = '' }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
+  const styles: React.CSSProperties = {
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible ? 'translateY(0)' : 'translateY(14px)',
+    transition: `all 500ms ease-out`,
+    padding: '20px',
+    backgroundColor: theme.background || '#ffffff',
+    color: theme.text || '#111827',
+    borderRadius: '12px',
+    boxShadow: '0 2px 14px rgba(0,0,0,0.1)',
+  };
+
+  return <div className={className} style={styles}>Component</div>;
 };

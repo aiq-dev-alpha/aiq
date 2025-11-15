@@ -1,33 +1,51 @@
 import 'package:flutter/material.dart';
 
-class Screen extends StatelessWidget {
-  final Color primaryColor;
-  final Color secondaryColor;
-  
+class Screen extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const Screen({
     Key? key,
-    this.primaryColor = const Color(0xFF6200EE),
-    this.secondaryColor = const Color(0xFF03DAC6),
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
+  State<Screen> createState() => _ScreenState();
+}
+
+class _ScreenState extends State<Screen> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 950),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Screen'),
-        backgroundColor: primaryColor,
-      ),
-      body: GridView.count(
-        crossAxisCount: 2,
-        padding: const EdgeInsets.all(16),
-        children: List.generate(
-          8,
-          (i) => Card(
-            color: i.isEven ? primaryColor.withOpacity(0.1) : secondaryColor.withOpacity(0.1),
-            child: Center(child: Text('${i + 1}')),
-          ),
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(25),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(15),
         ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

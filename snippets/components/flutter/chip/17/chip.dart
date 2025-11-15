@@ -1,47 +1,51 @@
 import 'package:flutter/material.dart';
 
-class CustomChip extends StatelessWidget {
-  final String label;
-  final Color backgroundColor;
-  final Color textColor;
-  final VoidCallback? onTap;
-  final VoidCallback? onDelete;
-  
+class CustomChip extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const CustomChip({
     Key? key,
-    required this.label,
-    this.backgroundColor = const Color(0xFFE3F2FD),
-    this.textColor = const Color(0xFF1976D2),
-    this.onTap,
-    this.onDelete,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
+  State<CustomChip> createState() => _CustomChipState();
+}
+
+class _CustomChipState extends State<CustomChip> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1550),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
+    return FadeTransition(
+      opacity: _controller,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        padding: widget.padding ?? const EdgeInsets.all(22),
         decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.circular(16),
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(12),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              label,
-              style: TextStyle(color: textColor, fontSize: 13),
-            ),
-            if (onDelete != null) ...[
-              const SizedBox(width: 4),
-              GestureDetector(
-                onTap: onDelete,
-                child: Icon(Icons.close, size: 16, color: textColor),
-              ),
-            ],
-          ],
-        ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

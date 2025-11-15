@@ -1,29 +1,52 @@
 import 'package:flutter/material.dart';
 
-class CustomListTile extends StatelessWidget {
-  final Widget? leading;
-  final String title;
-  final String? subtitle;
-  final Widget? trailing;
-  final VoidCallback? onTap;
-  
+class CustomListTile extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const CustomListTile({
     Key? key,
-    this.leading,
-    required this.title,
-    this.subtitle,
-    this.trailing,
-    this.onTap,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
+  State<CustomListTile> createState() => _CustomListTileState();
+}
+
+class _CustomListTileState extends State<CustomListTile> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1100),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: leading,
-      title: Text(title),
-      subtitle: subtitle != null ? Text(subtitle!) : null,
-      trailing: trailing,
-      onTap: onTap,
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(28),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: const Center(child: Text('Component')),
+      ),
     );
   }
 }

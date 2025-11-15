@@ -1,94 +1,55 @@
-import React, { CSSProperties, ButtonHTMLAttributes } from 'react';
+import React, { useState, useEffect } from 'react';
 
-interface ColorSet {
-  main: string;
-  light: string;
-  dark: string;
+export interface ButtonTheme {
+  primary: string;
+  secondary: string;
+  background: string;
   text: string;
+  border: string;
 }
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  colors?: Partial<ColorSet>;
-  visual?: 'solid' | 'subtle' | 'outline' | 'ghost' | 'link';
-  scale?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  loading?: boolean;
-  icon?: React.ReactNode;
-  iconAlign?: 'left' | 'right';
-  fluid?: boolean;
-  pill?: boolean;
+export interface ButtonProps {
+  theme?: Partial<ButtonTheme>;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
-const baseColors: ColorSet = {
-  main: '#6366f1',
-  light: '#818cf8',
-  dark: '#4338ca',
-  text: '#ffffff'
+const defaultTheme: ButtonTheme = {
+  primary: '#3b82f6',
+  secondary: '#8b5cf6',
+  background: '#ffffff',
+  text: '#111827',
+  border: '#e5e7eb'
 };
 
 export const Button: React.FC<ButtonProps> = ({
-  children,
-  colors = {},
-  visual = 'solid',
-  scale = 'md',
-  loading = false,
-  icon,
-  iconAlign = 'left',
-  fluid = false,
-  pill = false,
-  disabled,
-  ...props
+  theme = {},
+  className = '',
+  style = {}
 }) => {
-  const c = { ...baseColors, ...colors };
-  const scales: Record<string, CSSProperties> = {
-    xs: { padding: '5px 10px', fontSize: '12px' },
-    sm: { padding: '7px 14px', fontSize: '13px' },
-    md: { padding: '10px 20px', fontSize: '14px' },
-    lg: { padding: '12px 24px', fontSize: '16px' },
-    xl: { padding: '14px 28px', fontSize: '18px' }
-  };
+  const [isVisible, setIsVisible] = useState(false);
+  const appliedTheme = { ...defaultTheme, ...theme };
 
-  const visuals: Record<string, CSSProperties> = {
-    solid: { background: c.main, color: c.text, border: 'none', boxShadow: `0 2px 8px ${c.main}40` },
-    subtle: { background: `${c.main}18`, color: c.dark, border: 'none', boxShadow: 'none' },
-    outline: { background: 'transparent', color: c.main, border: `2px solid ${c.main}`, boxShadow: 'none' },
-    ghost: { background: 'transparent', color: c.main, border: 'none', boxShadow: 'none' },
-    link: { background: 'transparent', color: c.main, border: 'none', boxShadow: 'none', textDecoration: 'underline' }
-  };
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
-  const style: CSSProperties = {
-    ...scales[scale],
-    ...visuals[visual],
-    borderRadius: pill ? '999px' : '9px',
-    width: fluid ? '100%' : 'auto',
-    cursor: disabled || loading ? 'not-allowed' : 'pointer',
-    opacity: disabled || loading ? 0.6 : 1,
-    transition: 'all 0.2s ease',
-    fontWeight: 600,
-    fontFamily: 'inherit',
-    outline: 'none',
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '8px'
+  const styles: React.CSSProperties = {
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible ? 'translateY(0)' : 'translateY(11px)',
+    transition: `all 850ms cubic-bezier(0.4, 0, 0.2, 1)`,
+    padding: '25px',
+    backgroundColor: appliedTheme.background,
+    color: appliedTheme.text,
+    borderRadius: '17px',
+    border: `1px solid ${appliedTheme.border}`,
+    boxShadow: '0 3px 11px rgba(0,0,0,0.6)',
+    ...style
   };
 
   return (
-    <button
-      style={style}
-      disabled={disabled || loading}
-      onMouseEnter={(e) => !disabled && !loading && (e.currentTarget.style.filter = 'brightness(1.1)')}
-      onMouseLeave={(e) => (e.currentTarget.style.filter = 'none')}
-      {...props}>
-      {loading ? (
-        <span style={{ width: '14px', height: '14px', border: '2px solid currentColor', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.6s linear infinite' }} />
-      ) : (
-        <>
-          {icon && iconAlign === 'left' && icon}
-          {children}
-          {icon && iconAlign === 'right' && icon}
-        </>
-      )}
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-    </button>
+    <div className={className} style={styles}>
+      <div>Component Content</div>
+    </div>
   );
 };

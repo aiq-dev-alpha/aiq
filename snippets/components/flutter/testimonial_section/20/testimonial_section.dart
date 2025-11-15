@@ -1,50 +1,51 @@
 import 'package:flutter/material.dart';
 
-class CustomSection extends StatelessWidget {
-  final String title;
-  final String description;
-  final Color backgroundColor;
-  final Color textColor;
-  final Widget? action;
-  
+class CustomSection extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const CustomSection({
     Key? key,
-    required this.title,
-    required this.description,
-    this.backgroundColor = Colors.white,
-    this.textColor = Colors.black87,
-    this.action,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
+  State<CustomSection> createState() => _CustomSectionState();
+}
+
+class _CustomSectionState extends State<CustomSection> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 700),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      color: backgroundColor,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: textColor,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            description,
-            style: TextStyle(
-              fontSize: 16,
-              color: textColor.withOpacity(0.8),
-            ),
-          ),
-          if (action != null) ...[
-            const SizedBox(height: 24),
-            action!,
-          ],
-        ],
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(25),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

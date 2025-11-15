@@ -1,36 +1,51 @@
 import 'package:flutter/material.dart';
 
-class CustomComponent extends StatelessWidget {
-  final String text;
-  final Color backgroundColor;
-  final Color textColor;
-  final IconData? icon;
-  
+class CustomComponent extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const CustomComponent({
     Key? key,
-    required this.text,
-    this.backgroundColor = const Color(0xFF2196F3),
-    this.textColor = Colors.white,
-    this.icon,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
+  State<CustomComponent> createState() => _CustomComponentState();
+}
+
+class _CustomComponentState extends State<CustomComponent> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (icon != null) ...[
-            Icon(icon, color: textColor, size: 16),
-            const SizedBox(width: 4),
-          ],
-          Text(text, style: TextStyle(color: textColor, fontSize: 13)),
-        ],
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(26),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

@@ -1,43 +1,51 @@
 import 'package:flutter/material.dart';
 
-/// Simple profile screen with basic user info display
-class ProfileScreenSimple extends StatelessWidget {
-  const ProfileScreenSimple({Key? key}) : super(key: key);
+class ProfileScreenSimple extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
+  const ProfileScreenSimple({
+    Key? key,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
+  }) : super(key: key);
+
+  @override
+  State<ProfileScreenSimple> createState() => _ProfileScreenSimpleState();
+}
+
+class _ProfileScreenSimpleState extends State<ProfileScreenSimple> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 750),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Profile')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            const CircleAvatar(
-              radius: 50,
-              child: Icon(Icons.person, size: 50),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'John Doe',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            const Text('john.doe@example.com'),
-            const SizedBox(height: 32),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Settings'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Logout'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {},
-            ),
-          ],
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(21),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(11),
         ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

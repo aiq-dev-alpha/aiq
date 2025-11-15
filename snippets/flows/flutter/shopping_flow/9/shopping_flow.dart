@@ -1,97 +1,51 @@
 import 'package:flutter/material.dart';
 
-class ShoppingFlow {
-  final Color primaryColor;
+class _ProductList extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
 
-  const ShoppingFlow({this.primaryColor = const Color(0xFF2196F3)});
+  const _ProductList({
+    Key? key,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
+  }) : super(key: key);
 
-  void start(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => _ProductList(color: primaryColor)),
-    );
-  }
+  @override
+  State<_ProductList> createState() => __ProductListState();
 }
 
-class _ProductList extends StatelessWidget {
-  final Color color;
+class __ProductListState extends State<_ProductList> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
 
-  const _ProductList({required this.color});
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1150),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Products'), backgroundColor: color),
-      body: ListView.builder(
-        itemCount: 10,
-        itemBuilder: (context, i) => ListTile(
-          title: Text('Product ${i + 1}'),
-          subtitle: Text('\$${(i + 1) * 10}'),
-          trailing: ElevatedButton(
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => _CartScreen(color: color)),
-            ),
-            child: const Text('Add to Cart'),
-          ),
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(29),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(19),
         ),
-      ),
-    );
-  }
-}
-
-class _CartScreen extends StatelessWidget {
-  final Color color;
-
-  const _CartScreen({required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Cart'), backgroundColor: color),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: 3,
-              itemBuilder: (context, i) => ListTile(
-                title: Text('Item ${i + 1}'),
-                trailing: Text('\$${(i + 1) * 15}'),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: color,
-                minimumSize: const Size.fromHeight(50),
-              ),
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => _CheckoutScreen(color: color)),
-              ),
-              child: const Text('Checkout'),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _CheckoutScreen extends StatelessWidget {
-  final Color color;
-
-  const _CheckoutScreen({required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Checkout'), backgroundColor: color),
-      body: Center(
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: color),
-          onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
-          child: const Text('Complete Order'),
-        ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

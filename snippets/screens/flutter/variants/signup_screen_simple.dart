@@ -1,72 +1,51 @@
 import 'package:flutter/material.dart';
 
-/// Simple signup screen with basic fields
 class SignupScreenSimple extends StatefulWidget {
-  const SignupScreenSimple({Key? key}) : super(key: key);
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
+  const SignupScreenSimple({
+    Key? key,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
+  }) : super(key: key);
 
   @override
   State<SignupScreenSimple> createState() => _SignupScreenSimpleState();
 }
 
-class _SignupScreenSimpleState extends State<SignupScreenSimple> {
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+class _SignupScreenSimpleState extends State<SignupScreenSimple> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 750),
+      vsync: this,
+    );
+    _controller.forward();
+  }
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
+    _controller.dispose();
     super.dispose();
-  }
-
-  void _signup() {
-    print('Name: ${_nameController.text}');
-    print('Email: ${_emailController.text}');
-    print('Password: ${_passwordController.text}');
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Sign Up')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Full Name',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _signup,
-              child: const Text('Sign Up'),
-            ),
-          ],
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(21),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(11),
         ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

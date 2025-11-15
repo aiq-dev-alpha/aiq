@@ -1,48 +1,51 @@
 import 'package:flutter/material.dart';
 
-class Screen extends StatelessWidget {
-  final Color primaryColor;
-  final List<Map<String, String>> items;
-  
+class Screen extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const Screen({
     Key? key,
-    this.primaryColor = const Color(0xFF1976D2),
-    this.items = const [],
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final displayItems = items.isEmpty
-        ? List.generate(10, (i) => {'title': 'Item ${i + 1}', 'subtitle': 'Description'})
-        : items;
+  State<Screen> createState() => _ScreenState();
+}
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Screen'),
-        backgroundColor: primaryColor,
-        actions: [
-          IconButton(icon: const Icon(Icons.search), onPressed: () {}),
-          IconButton(icon: const Icon(Icons.more_vert), onPressed: () {}),
-        ],
-      ),
-      body: ListView.separated(
-        itemCount: displayItems.length,
-        separatorBuilder: (_, __) => const Divider(height: 1),
-        itemBuilder: (context, index) => ListTile(
-          leading: CircleAvatar(
-            backgroundColor: primaryColor,
-            child: Text('${index + 1}'),
-          ),
-          title: Text(displayItems[index]['title']!),
-          subtitle: Text(displayItems[index]['subtitle']!),
-          trailing: const Icon(Icons.chevron_right),
-          onTap: () {},
+class _ScreenState extends State<Screen> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(31),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(21),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: primaryColor,
-        onPressed: () {},
-        child: const Icon(Icons.add),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

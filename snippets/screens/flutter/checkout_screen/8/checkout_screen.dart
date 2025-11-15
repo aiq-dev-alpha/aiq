@@ -1,28 +1,51 @@
 import 'package:flutter/material.dart';
 
-class Screen extends StatelessWidget {
-  final Color accentColor;
-  final String title;
-  
+class Screen extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const Screen({
     Key? key,
-    this.accentColor = const Color(0xFF03DAC6),
-    this.title = 'Screen',
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
+  State<Screen> createState() => _ScreenState();
+}
+
+class _ScreenState extends State<Screen> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1100),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        backgroundColor: accentColor,
-      ),
-      body: ListView.builder(
-        itemCount: 10,
-        itemBuilder: (context, index) => ListTile(
-          title: Text('Item ${index + 1}'),
-          leading: Icon(Icons.circle, color: accentColor),
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(28),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(18),
         ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

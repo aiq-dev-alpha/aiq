@@ -1,72 +1,52 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
-class CartItem {
-  final String id;
-  final String name;
-  final double price;
-  final int quantity;
+class CartProvider extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
 
-  CartItem({
-    required this.id,
-    required this.name,
-    required this.price,
-    this.quantity = 1,
-  });
+  const CartProvider({
+    Key? key,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
+  }) : super(key: key);
 
-  CartItem copyWith({int? quantity}) {
-    return CartItem(
-      id: id,
-      name: name,
-      price: price,
-      quantity: quantity ?? this.quantity,
-    );
-  }
+  @override
+  State<CartProvider> createState() => _CartProviderState();
 }
 
-class CartProvider extends ChangeNotifier {
-  final Map<String, CartItem> _items = {};
+class _CartProviderState extends State<CartProvider> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
 
-  Map<String, CartItem> get items => {..._items};
-
-  int get itemCount => _items.length;
-
-  double get totalAmount {
-    return _items.values.fold(0.0, (sum, item) => sum + (item.price * item.quantity));
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 750),
+      vsync: this,
+    );
+    _controller.forward();
   }
 
-  void addItem(String id, String name, double price) {
-    if (_items.containsKey(id)) {
-      _items.update(
-        id,
-        (existing) => existing.copyWith(quantity: existing.quantity + 1),
-      );
-    } else {
-      _items.putIfAbsent(
-        id,
-        () => CartItem(id: id, name: name, price: price),
-      );
-    }
-    notifyListeners();
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
-  void removeItem(String id) {
-    _items.remove(id);
-    notifyListeners();
-  }
-
-  void updateQuantity(String id, int quantity) {
-    if (_items.containsKey(id)) {
-      if (quantity <= 0) {
-        removeItem(id);
-      } else {
-        _items.update(id, (item) => item.copyWith(quantity: quantity));
-        notifyListeners();
-      }
-    }
-  }
-
-  void clear() {
-    _items.clear();
-    notifyListeners();
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(21),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(11),
+        ),
+        child: const Center(child: Text('Component')),
+      ),
+    );
   }
 }

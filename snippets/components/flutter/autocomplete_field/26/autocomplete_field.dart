@@ -1,39 +1,51 @@
 import 'package:flutter/material.dart';
 
-class CustomField extends StatelessWidget {
-  final String? label;
-  final String? hint;
-  final IconData? icon;
-  final TextEditingController? controller;
-  final bool obscure;
-  final Color focusColor;
-  
+class CustomField extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const CustomField({
     Key? key,
-    this.label,
-    this.hint,
-    this.icon,
-    this.controller,
-    this.obscure = false,
-    this.focusColor = const Color(0xFF6200EE),
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
+  State<CustomField> createState() => _CustomFieldState();
+}
+
+class _CustomFieldState extends State<CustomField> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      obscureText: obscure,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        prefixIcon: icon != null ? Icon(icon, color: focusColor) : null,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(31),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(21),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: focusColor, width: 2),
-        ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

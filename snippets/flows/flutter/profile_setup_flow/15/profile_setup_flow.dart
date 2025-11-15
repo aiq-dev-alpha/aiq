@@ -1,61 +1,51 @@
 import 'package:flutter/material.dart';
 
 class ProfileSetupFlow extends StatefulWidget {
-  final Color primaryColor;
-  final VoidCallback onComplete;
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
 
   const ProfileSetupFlow({
     Key? key,
-    this.primaryColor = const Color(0xFF6200EE),
-    required this.onComplete,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
   State<ProfileSetupFlow> createState() => _ProfileSetupFlowState();
 }
 
-class _ProfileSetupFlowState extends State<ProfileSetupFlow> {
-  int _step = 0;
+class _ProfileSetupFlowState extends State<ProfileSetupFlow> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1450),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile Setup'),
-        backgroundColor: widget.primaryColor,
-      ),
-      body: IndexedStack(
-        index: _step,
-        children: [
-          _buildStep('Basic Info', Icons.person),
-          _buildStep('Interests', Icons.favorite),
-          _buildStep('Preferences', Icons.settings),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStep(String title, IconData icon) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 100, color: widget.primaryColor),
-          const SizedBox(height: 32),
-          Text(title, style: const TextStyle(fontSize: 24)),
-          const SizedBox(height: 48),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: widget.primaryColor),
-            onPressed: () {
-              if (_step < 2) {
-                setState(() => _step++);
-              } else {
-                widget.onComplete();
-              }
-            },
-            child: Text(_step < 2 ? 'Next' : 'Complete'),
-          ),
-        ],
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

@@ -1,86 +1,51 @@
 import 'package:flutter/material.dart';
 
-class ChipConfig {
-  final Color backgroundColor;
-  final Color textColor;
-  final Color borderColor;
-  final double borderRadius;
-  final EdgeInsets padding;
-  final bool showBorder;
-
-  const ChipConfig({
-    this.backgroundColor = const Color(0xFFE3F2FD),
-    this.textColor = const Color(0xFF1976D2),
-    this.borderColor = const Color(0xFF1976D2),
-    this.borderRadius = 16.0,
-    this.padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-    this.showBorder = false,
-  });
-}
-
-class CustomChip extends StatelessWidget {
-  final String label;
-  final ChipConfig? config;
-  final VoidCallback? onTap;
-  final VoidCallback? onDelete;
-  final IconData? leadingIcon;
+class CustomChip extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
 
   const CustomChip({
     Key? key,
-    required this.label,
-    this.config,
-    this.onTap,
-    this.onDelete,
-    this.leadingIcon,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final effectiveConfig = config ?? const ChipConfig();
+  State<CustomChip> createState() => _CustomChipState();
+}
 
-    return GestureDetector(
-      onTap: onTap,
+class _CustomChipState extends State<CustomChip> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 900),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _controller,
       child: Container(
-        padding: effectiveConfig.padding,
+        padding: widget.padding ?? const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: effectiveConfig.backgroundColor,
-          borderRadius: BorderRadius.circular(effectiveConfig.borderRadius),
-          border: effectiveConfig.showBorder
-              ? Border.all(color: effectiveConfig.borderColor)
-              : null,
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(14),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (leadingIcon != null) ...[
-              Icon(
-                leadingIcon,
-                size: 16,
-                color: effectiveConfig.textColor,
-              ),
-              const SizedBox(width: 4),
-            ],
-            Text(
-              label,
-              style: TextStyle(
-                color: effectiveConfig.textColor,
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            if (onDelete != null) ...[
-              const SizedBox(width: 4),
-              GestureDetector(
-                onTap: onDelete,
-                child: Icon(
-                  Icons.close,
-                  size: 16,
-                  color: effectiveConfig.textColor,
-                ),
-              ),
-            ],
-          ],
-        ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

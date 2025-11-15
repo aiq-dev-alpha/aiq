@@ -1,44 +1,51 @@
 import 'package:flutter/material.dart';
 
 class CustomPicker extends StatefulWidget {
-  final Color primaryColor;
-  final Function(dynamic)? onPicked;
-  final String label;
-  
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const CustomPicker({
     Key? key,
-    this.primaryColor = const Color(0xFF6200EE),
-    this.onPicked,
-    this.label = 'Pick',
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
   State<CustomPicker> createState() => _CustomPickerState();
 }
 
-class _CustomPickerState extends State<CustomPicker> {
-  String _selected = 'Not selected';
+class _CustomPickerState extends State<CustomPicker> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
 
-  void _showPicker() async {
-    setState(() => _selected = 'Selected');
-    widget.onPicked?.call(_selected);
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 750),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton(
-      onPressed: _showPicker,
-      style: OutlinedButton.styleFrom(
-        foregroundColor: widget.primaryColor,
-        side: BorderSide(color: widget.primaryColor),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.calendar_today, size: 18),
-          const SizedBox(width: 8),
-          Text(_selected),
-        ],
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(26),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

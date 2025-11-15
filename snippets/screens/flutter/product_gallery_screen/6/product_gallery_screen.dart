@@ -1,157 +1,52 @@
 import 'package:flutter/material.dart';
 
-abstract class ProductGalleryStyler {
-  Color get backgroundColor;
-  Color get itemBackground;
-  Color get textPrimary;
-  Color get textSecondary;
-  double get spacing;
-  BorderRadius get cardRadius;
-  int get columns;
-}
-
-class MinimalProductGalleryStyle implements ProductGalleryStyler {
-  @override
-  Color get backgroundColor => const Color(0xFFFAFAFA);
-  @override
-  Color get itemBackground => Colors.white;
-  @override
-  Color get textPrimary => Colors.black87;
-  @override
-  Color get textSecondary => Colors.black54;
-  @override
-  double get spacing => 12.0;
-  @override
-  BorderRadius get cardRadius => BorderRadius.circular(4);
-  @override
-  int get columns => 2;
-}
-
-class ProductGalleryScreen extends StatelessWidget {
-  final ProductGalleryStyler style;
-  final List<GalleryProduct> products;
-  final Function(GalleryProduct)? onProductTap;
+class ProductGalleryScreen extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
 
   const ProductGalleryScreen({
     Key? key,
-    ProductGalleryStyler? style,
-    List<GalleryProduct>? products,
-    this.onProductTap,
-  })  : style = style ?? const MinimalProductGalleryStyle(),
-        products = products ?? const [],
-        super(key: key);
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
+  }) : super(key: key);
+
+  @override
+  State<ProductGalleryScreen> createState() => _ProductGalleryScreenState();
+}
+
+class _ProductGalleryScreenState extends State<ProductGalleryScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final items = products.isEmpty ? _generateDemoProducts() : products;
-
-    return Scaffold(
-      backgroundColor: style.backgroundColor,
-      appBar: AppBar(
-        title: const Text('Products'),
-        elevation: 0,
-        backgroundColor: style.backgroundColor,
-        foregroundColor: style.textPrimary,
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(style.spacing),
-        child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: style.columns,
-            childAspectRatio: 0.7,
-            crossAxisSpacing: style.spacing,
-            mainAxisSpacing: style.spacing,
-          ),
-          itemCount: items.length,
-          itemBuilder: (context, index) => _buildProductCard(items[index]),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildProductCard(GalleryProduct product) {
-    return GestureDetector(
-      onTap: () => onProductTap?.call(product),
+    return FadeTransition(
+      opacity: _controller,
       child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(26),
         decoration: BoxDecoration(
-          color: style.itemBackground,
-          borderRadius: style.cardRadius,
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(16),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              flex: 3,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.vertical(
-                    top: style.cardRadius.topLeft,
-                  ),
-                ),
-                child: product.image != null
-                    ? Image.network(product.image!, fit: BoxFit.cover)
-                    : const Icon(Icons.image_outlined, size: 48),
-              ),
-            ),
-            Expanded(
-              flex: 2,
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      product.title,
-                      style: TextStyle(
-                        color: style.textPrimary,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      '\$${product.price.toStringAsFixed(2)}',
-                      style: TextStyle(
-                        color: style.textSecondary,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }
-
-  List<GalleryProduct> _generateDemoProducts() {
-    return List.generate(
-      12,
-      (i) => GalleryProduct(
-        id: 'p$i',
-        title: 'Product ${i + 1}',
-        price: (i + 1) * 12.99,
-      ),
-    );
-  }
-}
-
-class GalleryProduct {
-  final String id;
-  final String title;
-  final double price;
-  final String? image;
-
-  GalleryProduct({
-    required this.id,
-    required this.title,
-    required this.price,
-    this.image,
-  });
 }

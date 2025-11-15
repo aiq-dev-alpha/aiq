@@ -1,35 +1,51 @@
 import 'package:flutter/material.dart';
 
-class NotificationsCenterScreen extends StatelessWidget {
-  final Color primaryColor;
-  final Color unreadColor;
-  
+class NotificationsCenterScreen extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const NotificationsCenterScreen({
     Key? key,
-    this.primaryColor = const Color(0xFF1976D2),
-    this.unreadColor = const Color(0xFFE3F2FD),
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
+  State<NotificationsCenterScreen> createState() => _NotificationsCenterScreenState();
+}
+
+class _NotificationsCenterScreenState extends State<NotificationsCenterScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Notifications'),
-        backgroundColor: primaryColor,
-      ),
-      body: ListView.builder(
-        itemCount: 10,
-        itemBuilder: (context, index) => Container(
-          color: index.isEven ? unreadColor : Colors.white,
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: primaryColor,
-              child: Icon(Icons.notifications, color: Colors.white),
-            ),
-            title: Text('Notification ${index + 1}'),
-            subtitle: Text('${index + 1} minutes ago'),
-          ),
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(21),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(11),
         ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

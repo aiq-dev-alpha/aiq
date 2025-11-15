@@ -1,32 +1,36 @@
 import SwiftUI
 
 struct ScreenView: View {
-    var primaryColor: Color = .blue
-    var backgroundColor: Color = .gray.opacity(0.1)
+    var backgroundColor: Color = .white
     var textColor: Color = .black
+    var cornerRadius: CGFloat = 19
+    var padding: CGFloat = 25
+    
+    @State private var isVisible = false
+    @State private var scale: CGFloat = 0.95
     
     var body: some View {
-        ZStack {
-            backgroundColor.ignoresSafeArea()
-            
-            VStack(alignment: .leading, spacing: 16) {
-                Text("Screen")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .foregroundColor(textColor)
-                
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Content")
-                        .foregroundColor(textColor)
-                }
-                .padding()
-                .background(Color.white)
-                .cornerRadius(12)
-                .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
-                
-                Spacer()
-            }
-            .padding()
+        VStack {
+            Text("Component")
+                .foregroundColor(textColor)
         }
+        .padding(padding)
+        .background(backgroundColor)
+        .cornerRadius(cornerRadius)
+        .shadow(color: Color.black.opacity(0.14), radius: 14, x: 0, y: 3)
+        .scaleEffect(scale)
+        .opacity(isVisible ? 1 : 0)
+        .onAppear {
+            withAnimation(.easeOut(duration: 0.75)) {
+                isVisible = true
+                scale = 1.0
+            }
+        }
+    }
+}
+
+struct ScreenView_Previews: PreviewProvider {
+    static var previews: some View {
+        ScreenView()
     }
 }

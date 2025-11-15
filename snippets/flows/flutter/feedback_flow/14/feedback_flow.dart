@@ -1,29 +1,33 @@
 import 'package:flutter/material.dart';
 
-class Flow {
-  final Color primaryColor;
-
-  const Flow({this.primaryColor = const Color(0xFF6200EE)});
-
-  Future<bool> start(BuildContext context) async {
-    final result = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(builder: (_) => _FlowScreen(color: primaryColor)),
-    );
-    return result ?? false;
-  }
-}
-
 class _FlowScreen extends StatefulWidget {
-  final Color color;
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
 
-  const _FlowScreen({required this.color});
+  const _FlowScreen({
+    Key? key,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
+  }) : super(key: key);
 
   @override
-  State<_FlowScreen> createState() => _FlowScreenState();
+  State<_FlowScreen> createState() => __FlowScreenState();
 }
 
-class _FlowScreenState extends State<_FlowScreen> {
-  final _controller = TextEditingController();
+class __FlowScreenState extends State<_FlowScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1400),
+      vsync: this,
+    );
+    _controller.forward();
+  }
 
   @override
   void dispose() {
@@ -33,35 +37,15 @@ class _FlowScreenState extends State<_FlowScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Flow'),
-        backgroundColor: widget.color,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: _controller,
-              maxLines: 5,
-              decoration: const InputDecoration(
-                labelText: 'Message',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: widget.color,
-                minimumSize: const Size.fromHeight(50),
-              ),
-              onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Submit'),
-            ),
-          ],
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(34),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(24),
         ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

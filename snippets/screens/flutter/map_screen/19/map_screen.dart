@@ -1,46 +1,51 @@
 import 'package:flutter/material.dart';
 
-class Screen extends StatelessWidget {
-  final Color themeColor;
-  final String title;
-  final IconData icon;
-  
+class Screen extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const Screen({
     Key? key,
-    this.themeColor = const Color(0xFF1976D2),
-    this.title = 'Screen',
-    this.icon = Icons.location_on,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
+  State<Screen> createState() => _ScreenState();
+}
+
+class _ScreenState extends State<Screen> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1650),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        backgroundColor: themeColor,
-      ),
-      body: Stack(
-        children: [
-          Container(
-            color: themeColor.withOpacity(0.1),
-            child: Center(
-              child: Icon(icon, size: 120, color: themeColor),
-            ),
-          ),
-          Positioned(
-            bottom: 20,
-            left: 20,
-            right: 20,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: themeColor,
-                minimumSize: const Size.fromHeight(50),
-              ),
-              onPressed: () {},
-              child: const Text('Action'),
-            ),
-          ),
-        ],
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

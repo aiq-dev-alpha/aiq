@@ -1,29 +1,52 @@
 import 'package:flutter/material.dart';
 
-class CustomSlider extends StatelessWidget {
-  final double value;
-  final ValueChanged<double>? onChanged;
-  final double min;
-  final double max;
-  final Color activeColor;
-  
+class CustomSlider extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const CustomSlider({
     Key? key,
-    required this.value,
-    this.onChanged,
-    this.min = 0.0,
-    this.max = 100.0,
-    this.activeColor = const Color(0xFF6200EE),
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
+  State<CustomSlider> createState() => _CustomSliderState();
+}
+
+class _CustomSliderState extends State<CustomSlider> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1100),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Slider(
-      value: value.clamp(min, max),
-      min: min,
-      max: max,
-      onChanged: onChanged,
-      activeColor: activeColor,
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(28),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: const Center(child: Text('Component')),
+      ),
     );
   }
 }

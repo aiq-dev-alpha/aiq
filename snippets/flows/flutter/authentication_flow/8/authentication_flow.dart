@@ -1,94 +1,52 @@
 import 'package:flutter/material.dart';
 
-class AuthenticationFlow {
-  final Color primaryColor;
-
-  const AuthenticationFlow({this.primaryColor = const Color(0xFF1976D2)});
-
-  void startLogin(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => _LoginScreen(color: primaryColor)),
-    );
-  }
-}
-
 class _LoginScreen extends StatefulWidget {
-  final Color color;
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
 
-  const _LoginScreen({required this.color});
+  const _LoginScreen({
+    Key? key,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
+  }) : super(key: key);
 
   @override
-  State<_LoginScreen> createState() => _LoginScreenState();
+  State<_LoginScreen> createState() => __LoginScreenState();
 }
 
-class _LoginScreenState extends State<_LoginScreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+class __LoginScreenState extends State<_LoginScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1100),
+      vsync: this,
+    );
+    _controller.forward();
+  }
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Login'), backgroundColor: widget.color),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: widget.color,
-                minimumSize: const Size.fromHeight(50),
-              ),
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Login'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => _SignupScreen(color: widget.color)),
-              ),
-              child: const Text('Create Account'),
-            ),
-          ],
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(28),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(18),
         ),
+        child: const Center(child: Text('Component')),
       ),
-    );
-  }
-}
-
-class _SignupScreen extends StatelessWidget {
-  final Color color;
-
-  const _SignupScreen({required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Sign Up'), backgroundColor: color),
-      body: const Center(child: Text('Sign Up Form')),
     );
   }
 }

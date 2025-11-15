@@ -1,71 +1,55 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 export interface ButtonTheme {
-  primaryColor: string;
-  secondaryColor: string;
-  textColor: string;
-  borderRadius: string;
+  primary: string;
+  secondary: string;
+  background: string;
+  text: string;
+  border: string;
 }
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'tertiary';
-  size?: 'sm' | 'md' | 'lg';
+export interface ButtonProps {
   theme?: Partial<ButtonTheme>;
-  icon?: React.ReactNode;
-  fullWidth?: boolean;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 const defaultTheme: ButtonTheme = {
-  primaryColor: '#${i}${i}${i}${i}',
-  secondaryColor: '#${i}${i}${i}${i}',
-  textColor: '#ffffff',
-  borderRadius: '0.5rem'
+  primary: '#3b82f6',
+  secondary: '#8b5cf6',
+  background: '#ffffff',
+  text: '#111827',
+  border: '#e5e7eb'
 };
 
 export const Button: React.FC<ButtonProps> = ({
-  variant = 'primary',
-  size = 'md',
   theme = {},
-  icon,
-  fullWidth = false,
-  children,
-  style,
-  ...props
+  className = '',
+  style = {}
 }) => {
+  const [isVisible, setIsVisible] = useState(false);
   const appliedTheme = { ...defaultTheme, ...theme };
 
-  const sizeMap = {
-    sm: { padding: '0.5rem 1rem', fontSize: '0.875rem' },
-    md: { padding: '0.75rem 1.5rem', fontSize: '1rem' },
-    lg: { padding: '1rem 2rem', fontSize: '1.125rem' }
-  };
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
-  const variantMap = {
-    primary: { backgroundColor: appliedTheme.primaryColor, color: appliedTheme.textColor },
-    secondary: { backgroundColor: appliedTheme.secondaryColor, color: appliedTheme.textColor },
-    tertiary: { backgroundColor: 'transparent', color: appliedTheme.primaryColor, border: `2px solid ${appliedTheme.primaryColor}` }
-  };
-
-  const baseStyles: React.CSSProperties = {
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '0.5rem',
-    border: 'none',
-    borderRadius: appliedTheme.borderRadius,
-    fontWeight: 600,
-    cursor: 'pointer',
-    transition: 'all 0.2s ease',
-    width: fullWidth ? '100%' : 'auto',
-    ...sizeMap[size],
-    ...variantMap[variant],
+  const styles: React.CSSProperties = {
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible ? 'translateY(0)' : 'translateY(14px)',
+    transition: `all 700ms cubic-bezier(0.4, 0, 0.2, 1)`,
+    padding: '20px',
+    backgroundColor: appliedTheme.background,
+    color: appliedTheme.text,
+    borderRadius: '12px',
+    border: `1px solid ${appliedTheme.border}`,
+    boxShadow: '0 2px 14px rgba(0,0,0,0.9)',
     ...style
   };
 
   return (
-    <button style={baseStyles} {...props}>
-      {icon && <span style={{ display: 'flex' }}>{icon}</span>}
-      <span>{children}</span>
-    </button>
+    <div className={className} style={styles}>
+      <div>Component Content</div>
+    </div>
   );
 };

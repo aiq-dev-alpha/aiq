@@ -1,63 +1,30 @@
 import SwiftUI
 
 struct ScreenView: View {
-    var primaryColor: Color = .blue
-    var secondaryColor: Color = .purple
-    var backgroundColor: Color = .gray.opacity(0.05)
-    var surfaceColor: Color = .white
+    var backgroundColor: Color = .white
     var textColor: Color = .black
+    var cornerRadius: CGFloat = 12
+    var padding: CGFloat = 18
     
-    @State private var isLoading = false
+    @State private var isVisible = false
+    @State private var scale: CGFloat = 0.95
     
     var body: some View {
-        ZStack {
-            backgroundColor.ignoresSafeArea()
-            
-            VStack(alignment: .leading, spacing: 20) {
-                Text("Screen Title")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundColor(textColor)
-                    .padding(.top)
-                
-                Text("Description goes here")
-                    .font(.body)
-                    .foregroundColor(textColor.opacity(0.7))
-                
-                VStack(alignment: .leading, spacing: 16) {
-                    ForEach(0..<5) { index in
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Item \(index + 1)")
-                                .font(.headline)
-                                .foregroundColor(textColor)
-                            
-                            Text("Details about this item")
-                                .font(.subheadline)
-                                .foregroundColor(textColor.opacity(0.6))
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding()
-                        .background(surfaceColor)
-                        .cornerRadius(12)
-                        .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
-                    }
-                }
-                
-                Spacer()
-                
-                Button(action: {
-                    isLoading.toggle()
-                }) {
-                    Text("Action Button")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(primaryColor)
-                        .cornerRadius(12)
-                }
+        VStack {
+            Text("Component")
+                .foregroundColor(textColor)
+        }
+        .padding(padding)
+        .background(backgroundColor)
+        .cornerRadius(cornerRadius)
+        .shadow(color: Color.black.opacity(0.7), radius: 7, x: 0, y: 4)
+        .scaleEffect(scale)
+        .opacity(isVisible ? 1 : 0)
+        .onAppear {
+            withAnimation(.easeOut(duration: 0.4)) {
+                isVisible = true
+                scale = 1.0
             }
-            .padding()
         }
     }
 }

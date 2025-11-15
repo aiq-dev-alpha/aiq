@@ -1,34 +1,31 @@
-import React from 'react';
-
-export interface ComponentTheme {
-  primaryColor: string;
-  backgroundColor: string;
-  textColor: string;
-  borderColor: string;
-}
+import React, { useState, useEffect } from 'react';
 
 export interface ComponentProps {
-  theme?: Partial<ComponentTheme>;
-  size?: 'sm' | 'md' | 'lg';
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
+  className?: string;
 }
 
-const defaultTheme: ComponentTheme = {
-  primaryColor: '#3b82f6',
-  backgroundColor: '#ffffff',
-  textColor: '#111827',
-  borderColor: '#e5e7eb'
-};
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '' }) => {
+  const [isVisible, setIsVisible] = useState(false);
 
-export const Component: React.FC<ComponentProps> = ({ theme = {}, size = 'md' }) => {
-  const appliedTheme = { ...defaultTheme, ...theme };
-  
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
   const styles: React.CSSProperties = {
-    padding: size === 'sm' ? '0.5rem' : size === 'lg' ? '1.5rem' : '1rem',
-    backgroundColor: appliedTheme.backgroundColor,
-    color: appliedTheme.textColor,
-    border: `1px solid ${appliedTheme.borderColor}`,
-    borderRadius: '0.5rem'
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible ? 'translateY(0)' : 'translateY(21px)',
+    transition: `all 850ms ease-out`,
+    padding: '27px',
+    backgroundColor: theme.background || '#ffffff',
+    color: theme.text || '#111827',
+    borderRadius: '19px',
+    boxShadow: '0 5px 11px rgba(0,0,0,0.1)',
   };
 
-  return <div style={styles}>Component</div>;
+  return <div className={className} style={styles}>Component</div>;
 };

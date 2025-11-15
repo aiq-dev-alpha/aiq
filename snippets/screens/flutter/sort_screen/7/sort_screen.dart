@@ -1,32 +1,51 @@
 import 'package:flutter/material.dart';
 
 class Screen extends StatefulWidget {
-  final Color primaryColor;
-  
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const Screen({
     Key? key,
-    this.primaryColor = const Color(0xFF1976D2),
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
   State<Screen> createState() => _ScreenState();
 }
 
-class _ScreenState extends State<Screen> {
+class _ScreenState extends State<Screen> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1050),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Screen'),
-        backgroundColor: widget.primaryColor,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Text('Screen Content', style: TextStyle(color: widget.primaryColor)),
-          ],
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(27),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(17),
         ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

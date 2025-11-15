@@ -1,37 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-interface Theme {
-  primary: string;
-  background: string;
-  card: string;
-  text: string;
+export interface FlowProps {
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
+  className?: string;
 }
 
-interface FlowProps {
-  theme?: Partial<Theme>;
-  onComplete?: (data: any) => void;
-}
+export const Flow: React.FC<FlowProps> = ({ theme = {}, className = '' }) => {
+  const [isVisible, setIsVisible] = useState(false);
 
-const defaultTheme: Theme = {
-  primary: '#8b5cf6',
-  background: '#f3f4f6',
-  card: '#ffffff',
-  text: '#1f2937'
-};
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
-export const Flow: React.FC<FlowProps> = ({ theme = {}, onComplete }) => {
-  const [step, setStep] = useState(1);
-  const [data, setData] = useState({});
-  const appliedTheme = { ...defaultTheme, ...theme };
+  const styles: React.CSSProperties = {
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible ? 'translateY(0)' : 'translateY(25px)',
+    transition: `all 350ms ease-out`,
+    padding: '19px',
+    backgroundColor: theme.background || '#ffffff',
+    color: theme.text || '#111827',
+    borderRadius: '11px',
+    boxShadow: '0 5px 15px rgba(0,0,0,0.1)',
+  };
 
-  return (
-    <div style={{ minHeight: '100vh', backgroundColor: appliedTheme.background, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', fontFamily: 'system-ui, sans-serif' }}>
-      <div style={{ backgroundColor: appliedTheme.card, padding: '2.5rem', borderRadius: '1rem', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)', maxWidth: '500px', width: '100%' }}>
-        <h2 style={{ fontSize: '1.75rem', fontWeight: 700, color: appliedTheme.text, marginBottom: '1.5rem' }}>Flow Step {step}</h2>
-        <button onClick={() => step < 3 ? setStep(step + 1) : onComplete?.(data)} style={{ width: '100%', padding: '0.875rem', backgroundColor: appliedTheme.primary, color: '#ffffff', border: 'none', borderRadius: '0.5rem', fontSize: '1rem', fontWeight: 600, cursor: 'pointer' }}>
-          {step === 3 ? 'Complete' : 'Next'}
-        </button>
-      </div>
-    </div>
-  );
+  return <div className={className} style={styles}>Component</div>;
 };

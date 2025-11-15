@@ -1,44 +1,51 @@
 import 'package:flutter/material.dart';
 
-class BarComponent extends StatelessWidget {
-  final Color backgroundColor;
-  final Color foregroundColor;
-  final List<Widget>? actions;
-  final Widget? leading;
-  final double height;
-  
+class BarComponent extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const BarComponent({
     Key? key,
-    this.backgroundColor = const Color(0xFF6200EE),
-    this.foregroundColor = Colors.white,
-    this.actions,
-    this.leading,
-    this.height = 56.0,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
+  State<BarComponent> createState() => _BarComponentState();
+}
+
+class _BarComponentState extends State<BarComponent> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1450),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      height: height,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      color: backgroundColor,
-      child: Row(
-        children: [
-          if (leading != null) ...[
-            leading!,
-            const SizedBox(width: 16),
-          ],
-          const Expanded(
-            child: Text(
-              'Bar',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-          if (actions != null) ...actions!,
-        ],
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

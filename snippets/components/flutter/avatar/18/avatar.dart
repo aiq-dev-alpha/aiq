@@ -1,35 +1,52 @@
 import 'package:flutter/material.dart';
 
-class CustomAvatar extends StatelessWidget {
-  final String? imageUrl;
-  final String? initials;
-  final double size;
-  final Color backgroundColor;
-  
+class CustomAvatar extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const CustomAvatar({
     Key? key,
-    this.imageUrl,
-    this.initials,
-    this.size = 48.0,
-    this.backgroundColor = const Color(0xFF6200EE),
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
+  State<CustomAvatar> createState() => _CustomAvatarState();
+}
+
+class _CustomAvatarState extends State<CustomAvatar> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1600),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: size / 2,
-      backgroundColor: backgroundColor,
-      backgroundImage: imageUrl != null ? NetworkImage(imageUrl!) : null,
-      child: imageUrl == null && initials != null
-          ? Text(
-              initials!,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: size * 0.4,
-                fontWeight: FontWeight.bold,
-              ),
-            )
-          : null,
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(23),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(13),
+        ),
+        child: const Center(child: Text('Component')),
+      ),
     );
   }
 }

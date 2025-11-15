@@ -1,34 +1,51 @@
 import 'package:flutter/material.dart';
 
-class CustomProgressBar extends StatelessWidget {
-  final double value;
-  final Color backgroundColor;
-  final Color progressColor;
-  final double height;
-  
+class CustomProgressBar extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const CustomProgressBar({
     Key? key,
-    required this.value,
-    this.backgroundColor = const Color(0xFFE0E0E0),
-    this.progressColor = const Color(0xFF4CAF50),
-    this.height = 8.0,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
+  State<CustomProgressBar> createState() => _CustomProgressBarState();
+}
+
+class _CustomProgressBarState extends State<CustomProgressBar> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1150),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      height: height,
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(height / 2),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(height / 2),
-        child: LinearProgressIndicator(
-          value: value.clamp(0.0, 1.0),
-          backgroundColor: Colors.transparent,
-          valueColor: AlwaysStoppedAnimation<Color>(progressColor),
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(29),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(19),
         ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

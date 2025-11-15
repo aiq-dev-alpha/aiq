@@ -1,42 +1,79 @@
 import 'package:flutter/material.dart';
 
-class CustomComponent extends StatelessWidget {
-  final double value;
-  final Color color;
-  final Color backgroundColor;
-  final double size;
-  
+class CustomComponent extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+  final double? borderRadius;
+  final BoxShadow? shadow;
+
   const CustomComponent({
     Key? key,
-    this.value = 0.5,
-    this.color = const Color(0xFF6200EE),
-    this.backgroundColor = const Color(0xFFE0E0E0),
-    this.size = 100.0,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
+    this.borderRadius,
+    this.shadow,
   }) : super(key: key);
 
   @override
+  State<CustomComponent> createState() => _CustomComponentState();
+}
+
+class _CustomComponentState extends State<CustomComponent> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1200),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: size,
-      height: size,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          CircularProgressIndicator(
-            value: value.clamp(0.0, 1.0),
-            backgroundColor: backgroundColor,
-            valueColor: AlwaysStoppedAnimation<Color>(color),
-            strokeWidth: 8,
+    final bgColor = widget.backgroundColor ?? Colors.white;
+    final txtColor = widget.textColor ?? Colors.black87;
+
+    return SlideTransition(
+      position: _slideAnimation,
+      child: FadeTransition(
+        opacity: _fadeAnimation,
+        child: Container(
+          padding: widget.padding ?? const EdgeInsets.all(30),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(widget.borderRadius ?? 20),
+            boxShadow: widget.shadow != null ? [widget.shadow!] : [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
-          Text(
-            '${(value * 100).toInt()}%',
-            style: TextStyle(
-              fontSize: size * 0.15,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
+          child: const Center(
+            child: Text('Component'),
           ),
-        ],
+        ),
       ),
     );
   }

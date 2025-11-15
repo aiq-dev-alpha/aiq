@@ -1,67 +1,51 @@
 import 'package:flutter/material.dart';
 
-class ToggleSwitchConfig {
-  final Color activeColor;
-  final Color inactiveColor;
-  final Color thumbColor;
-  final double width;
-  final double height;
-
-  const ToggleSwitchConfig({
-    this.activeColor = const Color(0xFF4CAF50),
-    this.inactiveColor = const Color(0xFFBDBDBD),
-    this.thumbColor = Colors.white,
-    this.width = 50.0,
-    this.height = 28.0,
-  });
-}
-
-class CustomToggleSwitch extends StatelessWidget {
-  final bool value;
-  final ValueChanged<bool>? onChanged;
-  final ToggleSwitchConfig? config;
+class CustomToggleSwitch extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
 
   const CustomToggleSwitch({
     Key? key,
-    required this.value,
-    this.onChanged,
-    this.config,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final effectiveConfig = config ?? const ToggleSwitchConfig();
+  State<CustomToggleSwitch> createState() => _CustomToggleSwitchState();
+}
 
-    return GestureDetector(
-      onTap: () => onChanged?.call(!value),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        width: effectiveConfig.width,
-        height: effectiveConfig.height,
+class _CustomToggleSwitchState extends State<CustomToggleSwitch> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 900),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: value ? effectiveConfig.activeColor : effectiveConfig.inactiveColor,
-          borderRadius: BorderRadius.circular(effectiveConfig.height / 2),
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(14),
         ),
-        child: AnimatedAlign(
-          duration: const Duration(milliseconds: 200),
-          alignment: value ? Alignment.centerRight : Alignment.centerLeft,
-          child: Container(
-            width: effectiveConfig.height - 4,
-            height: effectiveConfig.height - 4,
-            margin: const EdgeInsets.all(2),
-            decoration: BoxDecoration(
-              color: effectiveConfig.thumbColor,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-          ),
-        ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

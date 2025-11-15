@@ -1,83 +1,51 @@
 import 'package:flutter/material.dart';
 
-abstract class CardStyler {
-  Color get backgroundColor;
-  double get elevation;
-  BorderRadius get borderRadius;
-  EdgeInsets get contentPadding;
-  Widget wrapContent(Widget content);
-}
-
-class MinimalCardStyle implements CardStyler {
-  @override
-  Color get backgroundColor => Colors.white;
-
-  @override
-  double get elevation => 1.0;
-
-  @override
-  BorderRadius get borderRadius => BorderRadius.circular(8);
-
-  @override
-  EdgeInsets get contentPadding => const EdgeInsets.all(12);
-
-  @override
-  Widget wrapContent(Widget content) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey[300]!),
-        borderRadius: borderRadius,
-      ),
-      child: content,
-    );
-  }
-}
-
-class ElevatedCardStyle implements CardStyler {
-  @override
-  Color get backgroundColor => Colors.white;
-
-  @override
-  double get elevation => 4.0;
-
-  @override
-  BorderRadius get borderRadius => BorderRadius.circular(16);
-
-  @override
-  EdgeInsets get contentPadding => const EdgeInsets.all(20);
-
-  @override
-  Widget wrapContent(Widget content) => content;
-}
-
-class CustomCard extends StatelessWidget {
-  final Widget content;
-  final CardStyler styler;
-  final VoidCallback? onPressed;
+class CustomCard extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
 
   const CustomCard({
     Key? key,
-    required this.content,
-    CardStyler? styler,
-    this.onPressed,
-  })  : styler = styler ?? const MinimalCardStyle(),
-        super(key: key);
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
+  }) : super(key: key);
+
+  @override
+  State<CustomCard> createState() => _CustomCardState();
+}
+
+class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1550),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: styler.backgroundColor,
-      elevation: styler.elevation,
-      borderRadius: styler.borderRadius,
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: styler.borderRadius,
-        child: styler.wrapContent(
-          Padding(
-            padding: styler.contentPadding,
-            child: content,
-          ),
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(22),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(12),
         ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

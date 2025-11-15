@@ -1,88 +1,51 @@
 import 'package:flutter/material.dart';
 
-class Screen extends StatelessWidget {
-  final Color primaryColor;
-  final List<Map<String, dynamic>> items;
-  
+class Screen extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const Screen({
     Key? key,
-    this.primaryColor = const Color(0xFF2196F3),
-    this.items = const [],
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final courses = items.isEmpty
-        ? List.generate(6, (i) => {
-              'title': 'Course ${i + 1}',
-              'progress': (i + 1) * 15,
-              'lessons': (i + 1) * 10,
-            })
-        : items;
+  State<Screen> createState() => _ScreenState();
+}
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Learning'),
-        backgroundColor: primaryColor,
-      ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: courses.length,
-        itemBuilder: (context, index) => Card(
-          margin: const EdgeInsets.only(bottom: 16),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: primaryColor.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Icon(Icons.school, color: primaryColor, size: 30),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            courses[index]['title'],
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            '${courses[index]['lessons']} lessons',
-                            style: const TextStyle(color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                LinearProgressIndicator(
-                  value: courses[index]['progress'] / 100,
-                  backgroundColor: Colors.grey[300],
-                  valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  '${courses[index]['progress']}% complete',
-                  style: TextStyle(fontSize: 12, color: primaryColor),
-                ),
-              ],
-            ),
-          ),
+class _ScreenState extends State<Screen> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 850),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(28),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(18),
         ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

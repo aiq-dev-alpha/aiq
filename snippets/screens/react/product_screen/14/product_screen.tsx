@@ -1,30 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-interface Theme {
-  primary: string;
-  background: string;
-  text: string;
+export interface ScreenProps {
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
+  className?: string;
 }
 
-interface ScreenProps {
-  theme?: Partial<Theme>;
-}
+export const Screen: React.FC<ScreenProps> = ({ theme = {}, className = '' }) => {
+  const [isVisible, setIsVisible] = useState(false);
 
-const defaultTheme: Theme = {
-  primary: '#6366f1',
-  background: '#f9fafb',
-  text: '#111827'
-};
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
-export const Screen: React.FC<ScreenProps> = ({ theme = {} }) => {
-  const appliedTheme = { ...defaultTheme, ...theme };
+  const styles: React.CSSProperties = {
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible ? 'translateY(0)' : 'translateY(24px)',
+    transition: `all 300ms ease-out`,
+    padding: '18px',
+    backgroundColor: theme.background || '#ffffff',
+    color: theme.text || '#111827',
+    borderRadius: '10px',
+    boxShadow: '0 4px 14px rgba(0,0,0,0.1)',
+  };
 
-  return (
-    <div style={{ minHeight: '100vh', backgroundColor: appliedTheme.background, padding: '2rem', fontFamily: 'system-ui, sans-serif' }}>
-      <h1 style={{ fontSize: '2rem', fontWeight: 700, color: appliedTheme.text }}>Screen</h1>
-      <div style={{ marginTop: '2rem', backgroundColor: '#ffffff', padding: '1.5rem', borderRadius: '0.75rem', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)' }}>
-        <p style={{ color: appliedTheme.text }}>Content goes here</p>
-      </div>
-    </div>
-  );
+  return <div className={className} style={styles}>Component</div>;
 };

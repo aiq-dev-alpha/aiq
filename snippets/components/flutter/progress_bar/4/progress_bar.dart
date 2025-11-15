@@ -1,63 +1,52 @@
 import 'package:flutter/material.dart';
 
-class ProgressBarConfig {
-  final Color backgroundColor;
-  final Color progressColor;
-  final double height;
-  final double borderRadius;
-  final bool showPercentage;
-
-  const ProgressBarConfig({
-    this.backgroundColor = const Color(0xFFE0E0E0),
-    this.progressColor = const Color(0xFF4CAF50),
-    this.height = 8.0,
-    this.borderRadius = 4.0,
-    this.showPercentage = false,
-  });
-}
-
-class CustomProgressBar extends StatelessWidget {
-  final double value;
-  final ProgressBarConfig? config;
+class CustomProgressBar extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
 
   const CustomProgressBar({
     Key? key,
-    required this.value,
-    this.config,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final effectiveConfig = config ?? const ProgressBarConfig();
-    final clampedValue = value.clamp(0.0, 1.0);
+  State<CustomProgressBar> createState() => _CustomProgressBarState();
+}
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          height: effectiveConfig.height,
-          decoration: BoxDecoration(
-            color: effectiveConfig.backgroundColor,
-            borderRadius: BorderRadius.circular(effectiveConfig.borderRadius),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(effectiveConfig.borderRadius),
-            child: LinearProgressIndicator(
-              value: clampedValue,
-              backgroundColor: Colors.transparent,
-              valueColor: AlwaysStoppedAnimation<Color>(effectiveConfig.progressColor),
-            ),
-          ),
+class _CustomProgressBarState extends State<CustomProgressBar> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 900),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(14),
         ),
-        if (effectiveConfig.showPercentage) ...[
-          const SizedBox(height: 4),
-          Text(
-            '${(clampedValue * 100).toInt()}%',
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-          ),
-        ],
-      ],
+        child: const Center(child: Text('Component')),
+      ),
     );
   }
 }

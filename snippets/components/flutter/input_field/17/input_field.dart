@@ -1,32 +1,51 @@
 import 'package:flutter/material.dart';
 
-class CustomInputField extends StatelessWidget {
-  final String? label;
-  final String? hint;
-  final TextEditingController? controller;
-  final bool obscureText;
-  final Color borderColor;
-  
+class CustomInputField extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const CustomInputField({
     Key? key,
-    this.label,
-    this.hint,
-    this.controller,
-    this.obscureText = false,
-    this.borderColor = const Color(0xFFE0E0E0),
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
+  State<CustomInputField> createState() => _CustomInputFieldState();
+}
+
+class _CustomInputFieldState extends State<CustomInputField> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1550),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      obscureText: obscureText,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        border: OutlineInputBorder(
-          borderSide: BorderSide(color: borderColor),
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(22),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(12),
         ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

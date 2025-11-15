@@ -1,64 +1,31 @@
-import React from 'react';
-import { AlertTriangle, RefreshCw, ArrowLeft } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 
-const ErrorScreen = ({
-  title = "Oops! Something went wrong",
-  message = "We encountered an unexpected error. Don't worry, it happens to the best of us! Please try again.",
-  buttonText = "Try Again",
-  onRetry,
-  onGoBack
-}) => {
-  return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-6">
-      <div className="text-center w-full max-w-md">
-        {/* Error Icon */}
-        <div className="mb-10">
-          <div className="w-30 h-30 border-4 border-red-100 bg-red-50 rounded-full mx-auto flex items-center justify-center">
-            <AlertTriangle size={60} className="text-red-500" />
-          </div>
-        </div>
+export interface ComponentProps {
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
+  className?: string;
+}
 
-        {/* Content */}
-        <h1 className="text-3xl font-bold text-gray-900 mb-4 leading-tight">
-          {title}
-        </h1>
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '' }) => {
+  const [isVisible, setIsVisible] = useState(false);
 
-        <p className="text-gray-600 text-lg mb-10 leading-relaxed">
-          {message}
-        </p>
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
-        {/* Error Illustration */}
-        <div className="mb-10 py-8">
-          <div className="w-24 h-24 mx-auto bg-gray-100 rounded-2xl flex items-center justify-center">
-            <div className="text-gray-400 text-4xl">🤖</div>
-          </div>
-        </div>
+  const styles: React.CSSProperties = {
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible ? 'translateY(0)' : 'translateY(11px)',
+    transition: `all 350ms ease-out`,
+    padding: '17px',
+    backgroundColor: theme.background || '#ffffff',
+    color: theme.text || '#111827',
+    borderRadius: '9px',
+    boxShadow: '0 3px 11px rgba(0,0,0,0.1)',
+  };
 
-        {/* Action Buttons */}
-        <div className="space-y-3">
-          <button
-            onClick={onRetry}
-            className="w-full bg-indigo-500 text-white py-4 px-6 rounded-2xl font-semibold hover:bg-indigo-600 transition-colors flex items-center justify-center space-x-2"
-          >
-            <RefreshCw size={20} />
-            <span>{buttonText}</span>
-          </button>
-
-          <button
-            onClick={onGoBack}
-            className="w-full border-2 border-gray-200 text-gray-600 py-4 px-6 rounded-2xl font-medium hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2"
-          >
-            <ArrowLeft size={20} />
-            <span>Go Back</span>
-          </button>
-        </div>
-
-        <p className="text-sm text-gray-400 mt-6">
-          If the problem persists, please contact our support team
-        </p>
-      </div>
-    </div>
-  );
+  return <div className={className} style={styles}>Component</div>;
 };
-
-export default ErrorScreen;

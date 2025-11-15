@@ -1,80 +1,52 @@
 import 'package:flutter/material.dart';
 
-class AvatarConfig {
-  final double size;
-  final Color backgroundColor;
-  final Color borderColor;
-  final double borderWidth;
-  final bool showBorder;
-
-  const AvatarConfig({
-    this.size = 48.0,
-    this.backgroundColor = const Color(0xFF6200EE),
-    this.borderColor = Colors.white,
-    this.borderWidth = 2.0,
-    this.showBorder = false,
-  });
-}
-
-class CustomAvatar extends StatelessWidget {
-  final String? imageUrl;
-  final String? initials;
-  final IconData? icon;
-  final AvatarConfig? config;
-  final VoidCallback? onTap;
+class CustomAvatar extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
 
   const CustomAvatar({
     Key? key,
-    this.imageUrl,
-    this.initials,
-    this.icon,
-    this.config,
-    this.onTap,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final effectiveConfig = config ?? const AvatarConfig();
+  State<CustomAvatar> createState() => _CustomAvatarState();
+}
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: effectiveConfig.size,
-        height: effectiveConfig.size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: effectiveConfig.showBorder
-              ? Border.all(
-                  color: effectiveConfig.borderColor,
-                  width: effectiveConfig.borderWidth,
-                )
-              : null,
-        ),
-        child: CircleAvatar(
-          radius: effectiveConfig.size / 2,
-          backgroundColor: effectiveConfig.backgroundColor,
-          backgroundImage: imageUrl != null ? NetworkImage(imageUrl!) : null,
-          child: imageUrl == null ? _buildFallback(effectiveConfig) : null,
-        ),
-      ),
+class _CustomAvatarState extends State<CustomAvatar> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
     );
+    _controller.forward();
   }
 
-  Widget _buildFallback(AvatarConfig config) {
-    if (initials != null) {
-      return Text(
-        initials!,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: config.size * 0.4,
-          fontWeight: FontWeight.bold,
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(26),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(16),
         ),
-      );
-    }
-    return Icon(
-      icon ?? Icons.person,
-      color: Colors.white,
-      size: config.size * 0.5,
+        child: const Center(child: Text('Component')),
+      ),
     );
   }
 }

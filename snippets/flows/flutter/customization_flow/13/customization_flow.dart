@@ -1,50 +1,51 @@
 import 'package:flutter/material.dart';
 
-class Flow {
-  final Color primaryColor;
+class _FlowScreen extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
 
-  const Flow({this.primaryColor = const Color(0xFF1976D2)});
+  const _FlowScreen({
+    Key? key,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
+  }) : super(key: key);
 
-  void start(BuildContext context, {VoidCallback? onComplete}) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => _FlowScreen(color: primaryColor, onComplete: onComplete),
-      ),
-    );
-  }
+  @override
+  State<_FlowScreen> createState() => __FlowScreenState();
 }
 
-class _FlowScreen extends StatelessWidget {
-  final Color color;
-  final VoidCallback? onComplete;
+class __FlowScreenState extends State<_FlowScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
 
-  const _FlowScreen({required this.color, this.onComplete});
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1350),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Flow'),
-        backgroundColor: color,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.check_circle, size: 100, color: color),
-            const SizedBox(height: 24),
-            const Text('Flow in progress', style: TextStyle(fontSize: 20)),
-            const SizedBox(height: 48),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: color),
-              onPressed: () {
-                onComplete?.call();
-                Navigator.of(context).pop();
-              },
-              child: const Text('Complete'),
-            ),
-          ],
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(33),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(23),
         ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

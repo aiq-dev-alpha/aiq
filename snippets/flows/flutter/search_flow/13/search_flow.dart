@@ -1,68 +1,51 @@
 import 'package:flutter/material.dart';
 
 class Flow extends StatefulWidget {
-  final Color primaryColor;
-  final VoidCallback onComplete;
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
 
   const Flow({
     Key? key,
-    this.primaryColor = const Color(0xFF6200EE),
-    required this.onComplete,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
   State<Flow> createState() => _FlowState();
 }
 
-class _FlowState extends State<Flow> {
-  int _step = 0;
-  final int _totalSteps = 3;
+class _FlowState extends State<Flow> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
 
-  void _nextStep() {
-    if (_step < _totalSteps - 1) {
-      setState(() => _step++);
-    } else {
-      widget.onComplete();
-    }
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1350),
+      vsync: this,
+    );
+    _controller.forward();
   }
 
-  void _previousStep() {
-    if (_step > 0) {
-      setState(() => _step--);
-    }
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Step ${_step + 1} of $_totalSteps'),
-        backgroundColor: widget.primaryColor,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Step ${_step + 1}', style: const TextStyle(fontSize: 24)),
-            const SizedBox(height: 32),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (_step > 0)
-                  ElevatedButton(
-                    onPressed: _previousStep,
-                    child: const Text('Back'),
-                  ),
-                const SizedBox(width: 16),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: widget.primaryColor),
-                  onPressed: _nextStep,
-                  child: Text(_step == _totalSteps - 1 ? 'Complete' : 'Next'),
-                ),
-              ],
-            ),
-          ],
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(33),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(23),
         ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

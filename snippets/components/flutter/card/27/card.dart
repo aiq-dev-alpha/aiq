@@ -1,32 +1,51 @@
 import 'package:flutter/material.dart';
 
-class CustomCard extends StatelessWidget {
-  final Widget child;
-  final Color backgroundColor;
-  final double elevation;
-  final VoidCallback? onTap;
-  
+class CustomCard extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const CustomCard({
     Key? key,
-    required this.child,
-    this.backgroundColor = Colors.white,
-    this.elevation = 2.0,
-    this.onTap,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
+  State<CustomCard> createState() => _CustomCardState();
+}
+
+class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1050),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Material(
-      color: backgroundColor,
-      elevation: elevation,
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: child,
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(32),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(22),
         ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

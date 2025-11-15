@@ -1,52 +1,51 @@
 import 'package:flutter/material.dart';
 
-class ProductGalleryScreen extends StatelessWidget {
-  final Color primaryColor;
-  final int gridColumns;
-  
+class ProductGalleryScreen extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const ProductGalleryScreen({
     Key? key,
-    this.primaryColor = const Color(0xFF2196F3),
-    this.gridColumns = 2,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
+  State<ProductGalleryScreen> createState() => _ProductGalleryScreenState();
+}
+
+class _ProductGalleryScreenState extends State<ProductGalleryScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1100),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Products'),
-        backgroundColor: primaryColor,
-      ),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(16),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: gridColumns,
-          childAspectRatio: 0.75,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(28),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(18),
         ),
-        itemCount: 20,
-        itemBuilder: (context, index) => Card(
-          child: Column(
-            children: [
-              Expanded(
-                child: Container(
-                  color: Colors.grey[300],
-                  child: const Icon(Icons.shopping_bag, size: 48),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  children: [
-                    Text('Product ${index + 1}'),
-                    Text('\$${(index + 1) * 10}'),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

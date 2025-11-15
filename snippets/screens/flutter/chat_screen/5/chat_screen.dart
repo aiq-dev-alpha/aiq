@@ -1,22 +1,33 @@
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatefulWidget {
-  final Color myMessageColor;
-  final Color otherMessageColor;
-  
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
+
   const ChatScreen({
     Key? key,
-    this.myMessageColor = const Color(0xFF6200EE),
-    this.otherMessageColor = const Color(0xFFE0E0E0),
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
-  final _controller = TextEditingController();
-  final List<Map<String, dynamic>> _messages = [];
+class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 950),
+      vsync: this,
+    );
+    _controller.forward();
+  }
 
   @override
   void dispose() {
@@ -24,65 +35,17 @@ class _ChatScreenState extends State<ChatScreen> {
     super.dispose();
   }
 
-  void _sendMessage() {
-    if (_controller.text.trim().isEmpty) return;
-    setState(() {
-      _messages.add({'text': _controller.text, 'isMine': true});
-      _controller.clear();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Chat')),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                final msg = _messages[index];
-                return Align(
-                  alignment: msg['isMine'] ? Alignment.centerRight : Alignment.centerLeft,
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: msg['isMine'] ? widget.myMessageColor : widget.otherMessageColor,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      msg['text'],
-                      style: TextStyle(color: msg['isMine'] ? Colors.white : Colors.black87),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    decoration: const InputDecoration(
-                      hintText: 'Type a message',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: _sendMessage,
-                ),
-              ],
-            ),
-          ),
-        ],
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(25),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: const Center(child: Text('Component')),
       ),
     );
   }

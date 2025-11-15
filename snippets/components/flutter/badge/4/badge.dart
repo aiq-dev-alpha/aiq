@@ -1,87 +1,52 @@
 import 'package:flutter/material.dart';
 
-class BadgeConfig {
-  final Color backgroundColor;
-  final Color textColor;
-  final double size;
-  final EdgeInsets padding;
-  final BadgePosition position;
-
-  const BadgeConfig({
-    this.backgroundColor = Colors.red,
-    this.textColor = Colors.white,
-    this.size = 18.0,
-    this.padding = const EdgeInsets.all(4),
-    this.position = BadgePosition.topRight,
-  });
-}
-
-enum BadgePosition { topRight, topLeft, bottomRight, bottomLeft }
-
-class CustomBadge extends StatelessWidget {
-  final Widget child;
-  final String? count;
-  final bool showBadge;
-  final BadgeConfig? config;
+class CustomBadge extends StatefulWidget {
+  final Color? backgroundColor;
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
 
   const CustomBadge({
     Key? key,
-    required this.child,
-    this.count,
-    this.showBadge = true,
-    this.config,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final effectiveConfig = config ?? const BadgeConfig();
+  State<CustomBadge> createState() => _CustomBadgeState();
+}
 
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        child,
-        if (showBadge && count != null)
-          Positioned(
-            top: _getTop(effectiveConfig.position),
-            right: _getRight(effectiveConfig.position),
-            bottom: _getBottom(effectiveConfig.position),
-            left: _getLeft(effectiveConfig.position),
-            child: Container(
-              padding: effectiveConfig.padding,
-              constraints: BoxConstraints(minWidth: effectiveConfig.size),
-              decoration: BoxDecoration(
-                color: effectiveConfig.backgroundColor,
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Text(
-                  count!,
-                  style: TextStyle(
-                    color: effectiveConfig.textColor,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-      ],
+class _CustomBadgeState extends State<CustomBadge> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 900),
+      vsync: this,
     );
+    _controller.forward();
   }
 
-  double? _getTop(BadgePosition pos) {
-    return pos == BadgePosition.topRight || pos == BadgePosition.topLeft ? -4 : null;
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
-  double? _getRight(BadgePosition pos) {
-    return pos == BadgePosition.topRight || pos == BadgePosition.bottomRight ? -4 : null;
-  }
-
-  double? _getBottom(BadgePosition pos) {
-    return pos == BadgePosition.bottomRight || pos == BadgePosition.bottomLeft ? -4 : null;
-  }
-
-  double? _getLeft(BadgePosition pos) {
-    return pos == BadgePosition.topLeft || pos == BadgePosition.bottomLeft ? -4 : null;
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: const Center(child: Text('Component')),
+      ),
+    );
   }
 }

@@ -1,8 +1,31 @@
-import React from 'react';
-export const Screen: React.FC = () => (
-  <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', padding: '2rem' }}>
-    <div style={{ backgroundColor: '#fff', borderRadius: '0.75rem', padding: '2rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-      Content
-    </div>
-  </div>
-);
+import React, { useState, useEffect } from 'react';
+
+export interface ScreenProps {
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
+  className?: string;
+}
+
+export const Screen: React.FC<ScreenProps> = ({ theme = {}, className = '' }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
+  const styles: React.CSSProperties = {
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible ? 'translateY(0)' : 'translateY(11px)',
+    transition: `all 350ms ease-out`,
+    padding: '17px',
+    backgroundColor: theme.background || '#ffffff',
+    color: theme.text || '#111827',
+    borderRadius: '9px',
+    boxShadow: '0 3px 11px rgba(0,0,0,0.1)',
+  };
+
+  return <div className={className} style={styles}>Component</div>;
+};

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 export interface ComponentTheme {
   primary: string;
@@ -10,8 +10,8 @@ export interface ComponentTheme {
 
 export interface ComponentProps {
   theme?: Partial<ComponentTheme>;
-  variant?: 'default' | 'outlined' | 'filled';
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 const defaultTheme: ComponentTheme = {
@@ -24,44 +24,32 @@ const defaultTheme: ComponentTheme = {
 
 export const Component: React.FC<ComponentProps> = ({
   theme = {},
-  variant = 'default',
-  size = 'md'
+  className = '',
+  style = {}
 }) => {
+  const [isVisible, setIsVisible] = useState(false);
   const appliedTheme = { ...defaultTheme, ...theme };
-  
-  const sizeMap = {
-    xs: { padding: '0.25rem 0.5rem', fontSize: '0.75rem' },
-    sm: { padding: '0.5rem 1rem', fontSize: '0.875rem' },
-    md: { padding: '0.75rem 1.5rem', fontSize: '1rem' },
-    lg: { padding: '1rem 2rem', fontSize: '1.125rem' },
-    xl: { padding: '1.25rem 2.5rem', fontSize: '1.25rem' }
-  };
 
-  const variantMap = {
-    default: {
-      backgroundColor: appliedTheme.background,
-      border: `1px solid ${appliedTheme.border}`
-    },
-    outlined: {
-      backgroundColor: 'transparent',
-      border: `2px solid ${appliedTheme.primary}`
-    },
-    filled: {
-      backgroundColor: appliedTheme.primary,
-      border: 'none'
-    }
-  };
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
   const styles: React.CSSProperties = {
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible ? 'translateY(0)' : 'translateY(16px)',
+    transition: `all 900ms cubic-bezier(0.4, 0, 0.2, 1)`,
+    padding: '18px',
+    backgroundColor: appliedTheme.background,
     color: appliedTheme.text,
-    borderRadius: '0.5rem',
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    transition: 'all 0.2s ease',
-    ...sizeMap[size],
-    ...variantMap[variant]
+    borderRadius: '10px',
+    border: `1px solid ${appliedTheme.border}`,
+    boxShadow: '0 4px 16px rgba(0,0,0,0.11)',
+    ...style
   };
 
-  return <div style={styles}>Component</div>;
+  return (
+    <div className={className} style={styles}>
+      <div>Component Content</div>
+    </div>
+  );
 };

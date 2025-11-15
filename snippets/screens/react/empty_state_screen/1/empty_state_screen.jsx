@@ -1,44 +1,31 @@
-import React from 'react';
-import { Inbox } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 
-const EmptyStateScreen = ({
-  title = "Nothing here yet",
-  message = "It looks like there's no content to show right now. Try refreshing or come back later.",
-  icon: Icon = Inbox,
-  buttonText,
-  onAction
-}) => {
-  return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-8">
-      <div className="text-center w-full max-w-sm">
-        {/* Icon */}
-        <div className="mb-8">
-          <div className="w-30 h-30 bg-gray-100 rounded-full mx-auto flex items-center justify-center">
-            <Icon size={60} className="text-gray-400" />
-          </div>
-        </div>
+export interface ComponentProps {
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
+  className?: string;
+}
 
-        {/* Content */}
-        <h2 className="text-2xl font-bold text-gray-900 mb-3">
-          {title}
-        </h2>
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '' }) => {
+  const [isVisible, setIsVisible] = useState(false);
 
-        <p className="text-gray-600 leading-relaxed mb-8">
-          {message}
-        </p>
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
-        {/* Action Button */}
-        {onAction && buttonText && (
-          <button
-            onClick={onAction}
-            className="w-full bg-indigo-500 text-white py-3 px-6 rounded-xl font-semibold hover:bg-indigo-600 transition-colors"
-          >
-            {buttonText}
-          </button>
-        )}
-      </div>
-    </div>
-  );
+  const styles: React.CSSProperties = {
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible ? 'translateY(0)' : 'translateY(11px)',
+    transition: `all 350ms ease-out`,
+    padding: '17px',
+    backgroundColor: theme.background || '#ffffff',
+    color: theme.text || '#111827',
+    borderRadius: '9px',
+    boxShadow: '0 3px 11px rgba(0,0,0,0.1)',
+  };
+
+  return <div className={className} style={styles}>Component</div>;
 };
-
-export default EmptyStateScreen;

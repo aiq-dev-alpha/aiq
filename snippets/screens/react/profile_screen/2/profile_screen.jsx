@@ -1,113 +1,31 @@
-import React, { useState } from 'react';
-import './profile_screen.css';
+import React, { useState, useEffect } from 'react';
 
-// Version 2: Modern profile with stats cards and achievements
+export interface ComponentProps {
+  theme?: {
+    primary?: string;
+    background?: string;
+    text?: string;
+  };
+  className?: string;
+}
 
-const ProfileScreen = () => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [profile, setProfile] = useState({
-    name: 'Sarah Johnson',
-    username: '@sarahjohnson',
-    email: 'sarah.j@example.com',
-    bio: 'Product designer & creative thinker. Coffee enthusiast.',
-    location: 'San Francisco, CA',
-  });
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '' }) => {
+  const [isVisible, setIsVisible] = useState(false);
 
-  const stats = [
-    { label: 'Posts', value: '127', icon: '📝' },
-    { label: 'Followers', value: '2.4K', icon: '👥' },
-    { label: 'Following', value: '892', icon: '➕' },
-    { label: 'Likes', value: '8.1K', icon: '❤️' },
-  ];
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
-  const achievements = [
-    { title: 'Early Adopter', icon: '🚀' },
-    { title: 'Top Contributor', icon: '⭐' },
-    { title: 'Verified', icon: '✓' },
-  ];
+  const styles: React.CSSProperties = {
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible ? 'translateY(0)' : 'translateY(12px)',
+    transition: `all 400ms ease-out`,
+    padding: '18px',
+    backgroundColor: theme.background || '#ffffff',
+    color: theme.text || '#111827',
+    borderRadius: '10px',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+  };
 
-  return (
-    <div className="modern_profile">
-      <div className="modern_profile_container">
-        <div className="profile_header_modern">
-          <button className="back_btn_profile">←</button>
-          <button className="menu_btn_profile">⋯</button>
-        </div>
-
-        <div className="profile_hero">
-          <div className="cover_gradient"></div>
-          <div className="avatar_modern">
-            <div className="avatar_circle">SJ</div>
-            <button className="avatar_edit_btn">📷</button>
-          </div>
-        </div>
-
-        <div className="profile_info_modern">
-          <h1 className="profile_name_modern">{profile.name}</h1>
-          <p className="profile_username_modern">{profile.username}</p>
-          <p className="profile_bio_modern">{profile.bio}</p>
-
-          <div className="profile_meta_modern">
-            <span className="meta_item">📍 {profile.location}</span>
-            <span className="meta_item">✉️ {profile.email}</span>
-          </div>
-
-          <div className="action_buttons_modern">
-            <button className="btn_primary_modern">
-              Edit Profile
-            </button>
-            <button className="btn_secondary_modern">
-              Share Profile
-            </button>
-          </div>
-        </div>
-
-        <div className="stats_grid_modern">
-          {stats.map((stat, index) => (
-            <div key={index} className="stat_card_modern">
-              <div className="stat_icon_modern">{stat.icon}</div>
-              <div className="stat_value_modern">{stat.value}</div>
-              <div className="stat_label_modern">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-
-        <div className="achievements_section_modern">
-          <h2 className="section_title_modern">Achievements</h2>
-          <div className="achievements_grid">
-            {achievements.map((achievement, index) => (
-              <div key={index} className="achievement_badge">
-                <div className="achievement_icon">{achievement.icon}</div>
-                <span>{achievement.title}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="profile_menu_modern">
-          <button className="menu_item_modern">
-            <span>⚙️ Settings</span>
-            <span>→</span>
-          </button>
-          <button className="menu_item_modern">
-            <span>🔔 Notifications</span>
-            <span>→</span>
-          </button>
-          <button className="menu_item_modern">
-            <span>🔒 Privacy</span>
-            <span>→</span>
-          </button>
-          <button className="menu_item_modern">
-            <span>💳 Billing</span>
-            <span>→</span>
-          </button>
-          <button className="menu_item_modern logout">
-            <span>🚪 Sign Out</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+  return <div className={className} style={styles}>Component</div>;
 };
-
-export default ProfileScreen;
