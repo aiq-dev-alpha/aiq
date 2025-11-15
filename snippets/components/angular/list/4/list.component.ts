@@ -1,150 +1,213 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
+
 interface ListItem {
   id: string | number;
   content: string;
   icon?: string;
-  metadata?: unknown;
+  subtitle?: string;
+  badge?: string;
+  disabled?: boolean;
+  metadata?: Record<string, unknown>;
 }
-interface ListTheme {
-  primaryColor: string;
-  secondaryColor: string;
-  backgroundColor: string;
-  textColor: string;
-  borderColor: string;
-  hoverColor: string;
+
+interface GroupedList {
+  [category: string]: ListItem[];
 }
+
 @Component({
   standalone: true,
   imports: [CommonModule],
   selector: 'app-list',
+  animations: [
+    trigger('listAnimation', [
+      transition('* => *', [
+        query(':enter', [
+          style({ opacity: 0, transform: 'translateY(-15px)' }),
+          stagger(50, [
+            animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+          ])
+        ], { optional: true })
+      ])
+    ])
+  ],
   template: `
-  <div class="list-container" [ngStyle]="containerStyles">
-  <div *ngIf="loading" class="skeleton-loader">
-  <div *ngFor="let item of [1,2,3,4,5]" class="skeleton-item glow-pulse"></div>
-  </div>
-  <div *ngIf="!loading" class="list-items">
-  <div *ngFor="let item of items"
-  class="list-item amber-slide"
-  [class.selected]="isSelected(item)"
-  [ngStyle]="getItemStyles(item)"
-  (click)="onItemClick(item)">
-  <div class="item-glow"></div>
-  <span *ngIf="item.icon" class="item-icon">{{ item.icon }}</span>
-  <span class="item-content">{{ item.content }}</span>
-  <span *ngIf="item.metadata" class="item-metadata">{{ item.metadata }}</span>
-  </div>
-  </div>
-  </div>
+    <div class="list-container" [@listAnimation]="items.length">
+      <div *ngIf="loading" class="skeleton-loader">
+        <div *ngFor="let i of [1,2,3,4,5]" class="skeleton-item"></div>
+      </div>
+
+      <div *ngIf="!loading && groupBy" class="grouped-list">
+        <div *ngFor="let group of groupedItems | keyvalue" class="list-group">
+          <h3 class="group-header">{{ group.key }}</h3>
+          <div class="list-items">
+            <div *ngFor="let item of group.value; trackBy: trackByFn"
+                 class="list-item"
+                 [class.disabled]="item.disabled"
+                 [class.selected]="isSelected(item)"
+                 (click)="!item.disabled && onItemClick(item)">
+              <span *ngIf="item.icon" class="item-icon">{{ item.icon }}</span>
+              <div class="item-content">
+                <span class="item-title">{{ item.content }}</span>
+                <span *ngIf="item.subtitle" class="item-subtitle">{{ item.subtitle }}</span>
+              </div>
+              <span *ngIf="item.badge" class="item-badge">{{ item.badge }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!loading && !groupBy" class="list-items">
+        <div *ngFor="let item of items; trackBy: trackByFn"
+             class="list-item"
+             [class.disabled]="item.disabled"
+             [class.selected]="isSelected(item)"
+             (click)="!item.disabled && onItemClick(item)">
+          <span *ngIf="item.icon" class="item-icon">{{ item.icon }}</span>
+          <div class="item-content">
+            <span class="item-title">{{ item.content }}</span>
+            <span *ngIf="item.subtitle" class="item-subtitle">{{ item.subtitle }}</span>
+          </div>
+          <span *ngIf="item.badge" class="item-badge">{{ item.badge }}</span>
+        </div>
+      </div>
+
+      <div *ngIf="!loading && items.length === 0" class="empty-state">
+        <p>No items to display</p>
+      </div>
+    </div>
   `,
   styles: [`
-  .list-container { width: 100%; }
-  .list-items { display: flex; flex-direction: column; gap: 10px; }
-  .list-item {
-  padding: 16px 20px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  border-radius: 10px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.1);
-  }
-  .item-glow {
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.3), transparent);
-  transition: left 0.5s ease;
-  }
-  .amber-slide:hover .item-glow {
-  left: 100%;
-  }
-  .amber-slide:hover {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(217, 119, 6, 0.12));
-  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.25), 0 0 0 2px rgba(245, 158, 11, 0.4);
-  transform: translateX(5px);
-  }
-  .item-icon { font-size: 1.5rem; flex-shrink: 0; color: #f59e0b; z-index: 1; }
-  .item-content { flex: 1; font-weight: 600; z-index: 1; }
-  .item-metadata { font-size: 0.875rem; opacity: 0.7; z-index: 1; }
-  .selected {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.2));
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.5);
-  }
-  .skeleton-loader { display: flex; flex-direction: column; gap: 10px; }
-  .skeleton-item {
-  height: 62px;
-  border-radius: 10px;
-  background: linear-gradient(90deg, #fef3c7, #fde68a, #fef3c7);
-  background-size: 200% 100%;
-  }
-  @keyframes glow-pulse {
-  0%, 100% { opacity: 0.5; box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
-  50% { opacity: 1; box-shadow: 0 0 20px rgba(245, 158, 11, 0.6); }
-  }
-  .glow-pulse { animation: glow-pulse 2s ease-in-out infinite; }
+    .list-container { width: 100%; }
+    .list-items { display: flex; flex-direction: column; gap: 8px; }
+    .list-item {
+      padding: 14px 18px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-radius: 8px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+    }
+    .list-item:hover:not(.disabled) {
+      background: #f9fafb;
+      border-color: #3b82f6;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    .list-item.selected {
+      background: #eff6ff;
+      border-color: #3b82f6;
+    }
+    .list-item.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .item-icon { font-size: 1.25rem; flex-shrink: 0; color: #6b7280; }
+    .item-content { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+    .item-title { font-weight: 500; color: #111827; }
+    .item-subtitle { font-size: 0.875rem; color: #6b7280; }
+    .item-badge {
+      padding: 2px 8px;
+      background: #3b82f6;
+      color: white;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .grouped-list { display: flex; flex-direction: column; gap: 24px; }
+    .list-group { display: flex; flex-direction: column; gap: 8px; }
+    .group-header {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 0;
+      padding: 0 4px;
+    }
+    .skeleton-loader { display: flex; flex-direction: column; gap: 8px; }
+    .skeleton-item {
+      height: 58px;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s ease-in-out infinite;
+    }
+    @keyframes loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .empty-state {
+      padding: 32px;
+      text-align: center;
+      color: #9ca3af;
+    }
   `]
 })
-export class ListComponent {
+export class ListComponent implements OnInit {
   @Input() items: ListItem[] = [];
-  @Input() theme: Partial<ListTheme> = {};
-  @Input() variant: 'default' | 'bordered' | 'striped' | 'card' | 'compact' | 'detailed' = 'default';
   @Input() selectable: boolean = false;
   @Input() multiSelect: boolean = false;
   @Input() loading: boolean = false;
+  @Input() groupBy?: keyof ListItem;
   @Output() itemClicked = new EventEmitter<ListItem>();
   @Output() selectionChanged = new EventEmitter<ListItem[]>();
+
   selectedItems: Set<string | number> = new Set();
-  private defaultTheme: ListTheme = {
-  primaryColor: '#f59e0b',
-  secondaryColor: '#d97706',
-  backgroundColor: '#fffbeb',
-  backdropFilter: 'blur(10px)',
-  textColor: '#78350f',
-  borderColor: '#fde68a',
-  hoverColor: '#fef3c7'
-  };
-  get appliedTheme(): ListTheme {
-  return { ...this.defaultTheme, ...this.theme };
+  groupedItems: GroupedList = {};
+
+  ngOnInit() {
+    if (this.groupBy) {
+      this.updateGroupedItems();
+    }
   }
-  get containerStyles() {
-  return {
-  backgroundColor: this.appliedTheme.backgroundColor,
-  color: this.appliedTheme.textColor,
-  padding: '16px',
-  borderRadius: '14px'
-  };
+
+  ngOnChanges() {
+    if (this.groupBy) {
+      this.updateGroupedItems();
+    }
   }
-  getItemStyles(item: ListItem) {
-  return {
-  backgroundColor: this.appliedTheme.hoverColor,
-  color: this.appliedTheme.textColor
-  };
+
+  private updateGroupedItems() {
+    this.groupedItems = this.items.reduce((acc, item) => {
+      const key = String(item[this.groupBy!] || 'Other');
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(item);
+      return acc;
+    }, {} as GroupedList);
   }
+
+  trackByFn(index: number, item: ListItem): string | number {
+    return item.id;
+  }
+
   isSelected(item: ListItem): boolean {
-  return this.selectedItems.has(item.id);
+    return this.selectedItems.has(item.id);
   }
+
   onItemClick(item: ListItem) {
-  this.itemClicked.emit(item);
-  if (this.selectable) {
-  if (this.multiSelect) {
-  if (this.selectedItems.has(item.id)) {
-  this.selectedItems.delete(item.id);
-  } else {
-  this.selectedItems.add(item.id);
-  }
-  } else {
-  this.selectedItems.clear();
-  this.selectedItems.add(item.id);
-  }
-  this.selectionChanged.emit(Array.from(this.selectedItems).map(id =>
-  this.items.find(i => i.id === id)!
-  ));
-  }
+    this.itemClicked.emit(item);
+
+    if (this.selectable) {
+      if (this.multiSelect) {
+        if (this.selectedItems.has(item.id)) {
+          this.selectedItems.delete(item.id);
+        } else {
+          this.selectedItems.add(item.id);
+        }
+      } else {
+        this.selectedItems.clear();
+        this.selectedItems.add(item.id);
+      }
+
+      this.selectionChanged.emit(
+        Array.from(this.selectedItems)
+          .map(id => this.items.find(i => i.id === id))
+          .filter(Boolean) as ListItem[]
+      );
+    }
   }
 }
