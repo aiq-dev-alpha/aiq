@@ -1,51 +1,49 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  theme = {},
-  className = '',
-  onInteract
-}) => {
-  const [state, setState] = useState({ active: false, hovered: false });
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [loading, setLoading] = useState(false);
+  const primary = theme.primary || '#22c55e';
 
-  const primary = theme.primary || '#84cc16';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
+  const handleClick = () => {
+    setLoading(true);
+    onInteract?.('loading');
+    setTimeout(() => setLoading(false), 2000);
+  };
 
   return (
-    <div
+    <button
       className={className}
-      onClick={() => {
-        setState(s => ({ ...s, active: !s.active }));
-        onInteract?.('interact');
-      }}
-      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
+      onClick={handleClick}
+      disabled={loading}
       style={{
-        padding: '12px 24px',
-        backgroundColor: state.active ? primary : background,
-        color: state.active ? '#fff' : text,
-        borderRadius: '50px',
-        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-        boxShadow: state.hovered ? '0 12px 24px rgba(0,0,0,0.20)' : '0 6px 12px rgba(0,0,0,0.12)',
-        transform: state.hovered ? 'rotate(1deg) scale(1.02)' : 'translateY(0) scale(1)',
-        transition: `all 250ms cubic-bezier(0.4, 0, 0.2, 1)`,
-        cursor: 'pointer',
-        fontSize: '16px',
+        padding: '16px 36px',
+        background: loading ? '#9ca3af' : `linear-gradient(to right, ${primary}, ${primary}cc)`,
+        color: '#ffffff',
+        border: 'none',
+        borderRadius: '8px',
+        cursor: loading ? 'not-allowed' : 'pointer',
+        fontSize: '15px',
         fontWeight: 600,
-        userSelect: 'none' as const
+        minWidth: '140px',
+        position: 'relative',
+        overflow: 'hidden',
+        transition: 'background 300ms'
       }}
     >
-      tooltip - variant 17
-    </div>
+      {loading ? (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+          <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#fff', animation: 'pulse 1.2s infinite' }} />
+          <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#fff', animation: 'pulse 1.2s infinite 0.2s' }} />
+          <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#fff', animation: 'pulse 1.2s infinite 0.4s' }} />
+          <style>{'@keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }'}</style>
+        </div>
+      ) : 'Submit'}
+    </button>
   );
 };

@@ -1,51 +1,22 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  theme = {},
-  className = '',
-  onInteract
-}) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [visible, setVisible] = useState(true);
   const primary = theme.primary || '#f59e0b';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
+  if (!visible) return null;
   return (
-    <div
-      className={className}
-      onClick={() => {
-        setState(s => ({ ...s, active: !s.active }));
-        onInteract?.('interact');
-      }}
-      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-      style={{
-        padding: '14px 28px',
-        backgroundColor: state.active ? primary : background,
-        color: state.active ? '#fff' : text,
-        borderRadius: '12px',
-        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-        boxShadow: state.hovered ? '0 1px 2px rgba(0,0,0,0.05)' : '0 8px 16px rgba(0,0,0,0.15)',
-        transform: state.hovered ? 'scale(1.05)' : 'translateY(0) scale(1)',
-        transition: `all 300ms cubic-bezier(0.4, 0, 0.2, 1)`,
-        cursor: 'pointer',
-        fontSize: '17px',
-        fontWeight: 800,
-        userSelect: 'none' as const
-      }}
-    >
-      alert - variant 4
+    <div className={className} style={{ padding: '16px 20px', backgroundColor: `${primary}15`, border: `1px solid ${primary}40`, borderLeft: `4px solid ${primary}`, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <span style={{ fontSize: '20px' }}>ℹ️</span>
+        <span style={{ color: primary, fontWeight: 500 }}>Alert message</span>
+      </div>
+      <button onClick={() => { setVisible(false); onInteract?.('close'); }} style={{ background: 'none', border: 'none', color: primary, fontSize: '18px', cursor: 'pointer', padding: '4px' }}>×</button>
     </div>
   );
 };

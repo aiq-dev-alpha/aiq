@@ -1,51 +1,17 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  theme = {},
-  className = '',
-  onInteract
-}) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || '#84cc16';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [hover, setHover] = useState(false);
+  const primary = theme.primary || '#f43f5e';
   return (
-    <div
-      className={className}
-      onClick={() => {
-        setState(s => ({ ...s, active: !s.active }));
-        onInteract?.('interact');
-      }}
-      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-      style={{
-        padding: '10px 20px',
-        backgroundColor: state.active ? primary : background,
-        color: state.active ? '#fff' : text,
-        borderRadius: '6px',
-        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-        boxShadow: state.hovered ? '0 10px 20px rgba(0,0,0,0.18)' : '0 4px 8px rgba(0,0,0,0.10)',
-        transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-        transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-        cursor: 'pointer',
-        fontSize: '15px',
-        fontWeight: 600,
-        userSelect: 'none' as const
-      }}
-    >
-      button - variant 37
+    <div className={className} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onClick={() => onInteract?.('click')} style={{ padding: '14px 28px', backgroundColor: 'transparent', color: primary, border: `2px solid ${primary}`, borderRadius: '2px', cursor: 'pointer', fontSize: '14px', fontWeight: 500, transform: hover ? 'translateY(-2px)' : 'translateY(0)', boxShadow: hover ? `0 8px 16px ${primary}30` : 'none', transition: 'all 250ms cubic-bezier(0.4, 0, 0.2, 1)' }}>
+      Hover Effect
     </div>
   );
 };

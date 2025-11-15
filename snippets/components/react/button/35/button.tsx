@@ -1,51 +1,18 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  theme = {},
-  className = '',
-  onInteract
-}) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || '#ec4899';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [loading, setLoading] = useState(false);
+  const primary = theme.primary || '#06b6d4';
+  const handleClick = () => { setLoading(true); onInteract?.('loading'); setTimeout(() => setLoading(false), 1500); };
   return (
-    <div
-      className={className}
-      onClick={() => {
-        setState(s => ({ ...s, active: !s.active }));
-        onInteract?.('interact');
-      }}
-      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-      style={{
-        padding: '6px 12px',
-        backgroundColor: state.active ? primary : background,
-        color: state.active ? '#fff' : text,
-        borderRadius: '50px',
-        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-        boxShadow: state.hovered ? '0 6px 12px rgba(0,0,0,0.12)' : '0 1px 2px rgba(0,0,0,0.05)',
-        transform: state.hovered ? 'rotate(1deg) scale(1.02)' : 'translateY(0) scale(1)',
-        transition: `all 100ms cubic-bezier(0.4, 0, 0.2, 1)`,
-        cursor: 'pointer',
-        fontSize: '13px',
-        fontWeight: 400,
-        userSelect: 'none' as const
-      }}
-    >
-      button - variant 35
-    </div>
+    <button className={className} onClick={handleClick} disabled={loading} style={{ padding: '12px 32px', backgroundColor: primary, color: '#fff', border: 'none', borderRadius: '24px', cursor: loading ? 'not-allowed' : 'pointer', fontSize: '14px', fontWeight: 600, opacity: loading ? 0.6 : 1, minWidth: '120px', transition: 'opacity 200ms' }}>
+      {loading ? 'Loading...' : 'Submit'}
+    </button>
   );
 };

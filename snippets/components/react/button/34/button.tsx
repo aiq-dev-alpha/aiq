@@ -1,51 +1,34 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  theme = {},
-  className = '',
-  onInteract
-}) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || '#f59e0b';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const primary = theme.primary || '#ef4444';
 
   return (
-    <div
+    <button
       className={className}
-      onClick={() => {
-        setState(s => ({ ...s, active: !s.active }));
-        onInteract?.('interact');
-      }}
-      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={() => onInteract?.('click')}
       style={{
-        padding: '18px 36px',
-        backgroundColor: state.active ? primary : background,
-        color: state.active ? '#fff' : text,
+        padding: '10px 24px',
+        backgroundColor: isHovered ? `${primary}10` : 'transparent',
+        color: primary,
+        border: 'none',
         borderRadius: '24px',
-        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-        boxShadow: state.hovered ? '0 4px 8px rgba(0,0,0,0.10)' : '0 12px 24px rgba(0,0,0,0.20)',
-        transform: state.hovered ? 'scale(1.05)' : 'translateY(0) scale(1)',
-        transition: `all 400ms cubic-bezier(0.4, 0, 0.2, 1)`,
+        fontSize: '14px',
+        fontWeight: 500,
         cursor: 'pointer',
-        fontSize: '19px',
-        fontWeight: 800,
-        userSelect: 'none' as const
+        transition: 'background-color 200ms ease'
       }}
     >
-      button - variant 34
-    </div>
+      Ghost Button
+    </button>
   );
 };

@@ -1,51 +1,47 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  theme = {},
-  className = '',
-  onInteract
-}) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || '#ec4899';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [selected, setSelected] = useState(false);
+  const primary = theme.primary || '#06b6d4';
 
   return (
     <div
       className={className}
-      onClick={() => {
-        setState(s => ({ ...s, active: !s.active }));
-        onInteract?.('interact');
-      }}
-      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
+      onClick={() => { setSelected(!selected); onInteract?.('select'); }}
       style={{
-        padding: '14px 28px',
-        backgroundColor: state.active ? primary : background,
-        color: state.active ? '#fff' : text,
-        borderRadius: '24px',
-        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-        boxShadow: state.hovered ? '0 1px 2px rgba(0,0,0,0.05)' : '0 8px 16px rgba(0,0,0,0.15)',
-        transform: state.hovered ? 'translateY(-2px) scale(1.02)' : 'translateY(0) scale(1)',
-        transition: `all 300ms cubic-bezier(0.4, 0, 0.2, 1)`,
+        padding: '18px 24px',
+        backgroundColor: selected ? `${primary}15` : '#ffffff',
+        border: `2px solid ${selected ? primary : '#e5e7eb'}`,
+        borderRadius: '6px',
         cursor: 'pointer',
-        fontSize: '17px',
-        fontWeight: 400,
-        userSelect: 'none' as const
+        transition: 'all 200ms ease',
+        position: 'relative'
       }}
     >
-      chip - variant 25
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{
+          width: '24px',
+          height: '24px',
+          borderRadius: '50%',
+          border: `2px solid ${selected ? primary : '#d1d5db'}`,
+          backgroundColor: selected ? primary : 'transparent',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'all 200ms'
+        }}>
+          {selected && <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#fff' }} />}
+        </div>
+        <span style={{ fontSize: '15px', fontWeight: 500, color: selected ? primary : '#1f2937' }}>
+          Option {idx}
+        </span>
+      </div>
     </div>
   );
 };

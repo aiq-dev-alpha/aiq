@@ -1,51 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export interface ComponentProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  theme = {},
-  className = '',
-  onInteract
-}) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || '#84cc16';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const primary = theme.primary || '#06b6d4';
   return (
-    <div
-      className={className}
-      onClick={() => {
-        setState(s => ({ ...s, active: !s.active }));
-        onInteract?.('interact');
-      }}
-      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-      style={{
-        padding: '12px 24px',
-        backgroundColor: state.active ? primary : background,
-        color: state.active ? '#fff' : text,
-        borderRadius: '50px',
-        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-        boxShadow: state.hovered ? '0 12px 24px rgba(0,0,0,0.20)' : '0 6px 12px rgba(0,0,0,0.12)',
-        transform: state.hovered ? 'rotate(1deg) scale(1.02)' : 'translateY(0) scale(1)',
-        transition: `all 250ms cubic-bezier(0.4, 0, 0.2, 1)`,
-        cursor: 'pointer',
-        fontSize: '16px',
-        fontWeight: 600,
-        userSelect: 'none' as const
-      }}
-    >
-      badge - variant 17
-    </div>
+    <span className={className} onClick={() => onInteract?.('click')} style={{ display: 'inline-block', padding: '4px 10px', backgroundColor: primary, color: '#ffffff', borderRadius: '4px', fontSize: '12px', fontWeight: 600, letterSpacing: '0.3px', cursor: 'pointer' }}>
+      Badge
+    </span>
   );
 };

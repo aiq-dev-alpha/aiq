@@ -1,51 +1,17 @@
 import React, { useState } from 'react';
 
 export interface ComponentProps {
-  theme?: {
-    primary?: string;
-    background?: string;
-    text?: string;
-  };
+  theme?: { primary?: string; background?: string; text?: string; };
   className?: string;
   onInteract?: (type: string) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({
-  theme = {},
-  className = '',
-  onInteract
-}) => {
-  const [state, setState] = useState({ active: false, hovered: false });
-
-  const primary = theme.primary || '#06b6d4';
-  const background = theme.background || '#ffffff';
-  const text = theme.text || '#1f2937';
-
+export const Component: React.FC<ComponentProps> = ({ theme = {}, className = '', onInteract }) => {
+  const [count, setCount] = useState(0);
+  const primary = theme.primary || '#84cc16';
   return (
-    <div
-      className={className}
-      onClick={() => {
-        setState(s => ({ ...s, active: !s.active }));
-        onInteract?.('interact');
-      }}
-      onMouseEnter={() => setState(s => ({ ...s, hovered: true }))}
-      onMouseLeave={() => setState(s => ({ ...s, hovered: false }))}
-      style={{
-        padding: '8px 16px',
-        backgroundColor: state.active ? primary : background,
-        color: state.active ? '#fff' : text,
-        borderRadius: '4px',
-        border: `${state.hovered ? 2 : 1}px solid ${state.active ? primary : '#e5e7eb'}`,
-        boxShadow: state.hovered ? '0 8px 16px rgba(0,0,0,0.15)' : '0 2px 4px rgba(0,0,0,0.08)',
-        transform: state.hovered ? 'translateY(-1px) scale(1.01)' : 'translateY(0) scale(1)',
-        transition: `all 150ms cubic-bezier(0.4, 0, 0.2, 1)`,
-        cursor: 'pointer',
-        fontSize: '14px',
-        fontWeight: 500,
-        userSelect: 'none' as const
-      }}
-    >
-      button - variant 36
+    <div className={className} onClick={() => { setCount(c => c + 1); onInteract?.('click'); }} style={{ padding: '16px 24px', background: `linear-gradient(135deg, ${primary}, ${primary}cc)`, color: '#fff', borderRadius: '32px', cursor: 'pointer', fontSize: '15px', fontWeight: 600, boxShadow: '0 4px 12px rgba(0,0,0,0.15)', transition: 'transform 150ms', transform: count > 0 ? 'scale(0.98)' : 'scale(1)' }}>
+      Clicks: {count}
     </div>
   );
 };
